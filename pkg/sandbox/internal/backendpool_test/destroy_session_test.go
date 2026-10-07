@@ -11,9 +11,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/sandbox"
-	"github.com/SAP/astonish/pkg/sandbox/mock"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/mock"
 )
 
 // TestDestroySessionEverywhere_MockBackend exercises the full path through

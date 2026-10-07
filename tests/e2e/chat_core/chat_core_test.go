@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SAP/astonish/tests/e2eboot"
+	"github.com/zhu13818202655/troupe/tests/e2eboot"
 )
 
 // collectText concatenates the text payload of every "text" SSE event in

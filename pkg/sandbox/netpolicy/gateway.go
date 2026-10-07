@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/SAP/astonish/pkg/sandbox/openshell"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/openshell"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // newGRPCGatewayClient is the factory used by PreSeed/AutoApprove. Tests

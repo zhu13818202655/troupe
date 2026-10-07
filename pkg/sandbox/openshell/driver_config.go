@@ -5,7 +5,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 // systemCABundlePath is where OpenShell's supervisor loads system CA roots

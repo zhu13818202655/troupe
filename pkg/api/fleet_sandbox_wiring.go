@@ -6,14 +6,14 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/SAP/astonish/pkg/agent"
-	"github.com/SAP/astonish/pkg/browser"
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/fleet"
-	"github.com/SAP/astonish/pkg/sandbox"
-	"github.com/SAP/astonish/pkg/sandbox/openshell"
-	"github.com/SAP/astonish/pkg/store"
-	"github.com/SAP/astonish/pkg/tools"
+	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/browser"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/fleet"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/openshell"
+	"github.com/zhu13818202655/troupe/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/tools"
 	"google.golang.org/adk/tool"
 )
 

@@ -15,14 +15,14 @@ import (
 	entsql "entgo.io/ent/dialect/sql"
 	entschema "entgo.io/ent/dialect/sql/schema"
 
-	orgent "github.com/SAP/astonish/ent/org"
-	"github.com/SAP/astonish/ent/org/orgencryptionkey"
-	personalent "github.com/SAP/astonish/ent/personal"
-	"github.com/SAP/astonish/ent/platform/organization"
-	teament "github.com/SAP/astonish/ent/team"
-	"github.com/SAP/astonish/pkg/credentials"
-	"github.com/SAP/astonish/pkg/store"
-	"github.com/SAP/astonish/pkg/store/pgutil"
+	orgent "github.com/zhu13818202655/troupe/ent/org"
+	"github.com/zhu13818202655/troupe/ent/org/orgencryptionkey"
+	personalent "github.com/zhu13818202655/troupe/ent/personal"
+	"github.com/zhu13818202655/troupe/ent/platform/organization"
+	teament "github.com/zhu13818202655/troupe/ent/team"
+	"github.com/zhu13818202655/troupe/pkg/credentials"
+	"github.com/zhu13818202655/troupe/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/store/pgutil"
 )
 
 // --- store.TenantRouter implementation ---

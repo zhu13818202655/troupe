@@ -9,7 +9,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/SAP/astonish/pkg/provider/httpool"
+	"github.com/zhu13818202655/troupe/pkg/provider/httpool"
 )
 
 // xaiModelResponse represents a single model from the xAI API.

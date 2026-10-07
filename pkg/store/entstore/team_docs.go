@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	teament "github.com/SAP/astonish/ent/team"
-	teamdeck "github.com/SAP/astonish/ent/team/deck"
-	teamdeckversion "github.com/SAP/astonish/ent/team/deckversion"
-	teamslide "github.com/SAP/astonish/ent/team/slide"
-	"github.com/SAP/astonish/pkg/store"
+	teament "github.com/zhu13818202655/troupe/ent/team"
+	teamdeck "github.com/zhu13818202655/troupe/ent/team/deck"
+	teamdeckversion "github.com/zhu13818202655/troupe/ent/team/deckversion"
+	teamslide "github.com/zhu13818202655/troupe/ent/team/slide"
+	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/google/uuid"
 )
 

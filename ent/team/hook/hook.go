@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/SAP/astonish/ent/team"
+	"github.com/zhu13818202655/troupe/ent/team"
 )
 
 // The A2aAgentFunc type is an adapter to allow the use of ordinary

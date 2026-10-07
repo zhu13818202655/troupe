@@ -3,7 +3,7 @@ package sandbox
 import (
 	"testing"
 
-	"github.com/SAP/astonish/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 // TestParseMemoryToMiB exercises the shapes the operator docs advertise

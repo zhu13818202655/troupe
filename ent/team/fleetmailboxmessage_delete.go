@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/team/fleetmailboxmessage"
-	"github.com/SAP/astonish/ent/team/predicate"
+	"github.com/zhu13818202655/troupe/ent/team/fleetmailboxmessage"
+	"github.com/zhu13818202655/troupe/ent/team/predicate"
 )
 
 // FleetMailboxMessageDelete is the builder for deleting a FleetMailboxMessage entity.

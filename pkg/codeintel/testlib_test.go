@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/SAP/astonish/pkg/codeintel/internal/treesitter"
+	"github.com/zhu13818202655/troupe/pkg/codeintel/internal/treesitter"
 )
 
 // resolveTestLibraryPath returns a usable libastonish-treesitter.so path, or "".

@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/SAP/astonish/pkg/provider/httpool"
+	"github.com/zhu13818202655/troupe/pkg/provider/httpool"
 )
 
 const modelsURL = "https://openrouter.ai/api/v1/models"

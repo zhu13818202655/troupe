@@ -3,8 +3,8 @@ package api
 import (
 	"testing"
 
-	"github.com/SAP/astonish/pkg/agent"
-	"github.com/SAP/astonish/pkg/fleet"
+	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/fleet"
 )
 
 func testResumeFleetConfig() *fleet.FleetConfig {

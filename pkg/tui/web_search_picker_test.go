@@ -3,7 +3,7 @@ package tui
 import (
 	"testing"
 
-	"github.com/SAP/astonish/pkg/tui/backend"
+	"github.com/zhu13818202655/troupe/pkg/tui/backend"
 )
 
 func TestWebSearchPicker_SlashCommandAppears(t *testing.T) {

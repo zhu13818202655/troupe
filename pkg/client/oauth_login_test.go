@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/oauthserver"
+	"github.com/zhu13818202655/troupe/pkg/oauthserver"
 )
 
 func TestBuildCLIAuthorizeURLUsesFirstPartyClientAndPKCE(t *testing.T) {

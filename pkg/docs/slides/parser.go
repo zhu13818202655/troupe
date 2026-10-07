@@ -9,7 +9,7 @@ import (
 
 	"golang.org/x/net/html"
 
-	"github.com/SAP/astonish/pkg/docs/slides/components"
+	"github.com/zhu13818202655/troupe/pkg/docs/slides/components"
 )
 
 const MaxMarkupBytes = 1 << 20

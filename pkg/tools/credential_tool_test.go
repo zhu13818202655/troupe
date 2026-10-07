@@ -3,7 +3,7 @@ package tools
 import (
 	"testing"
 
-	"github.com/SAP/astonish/pkg/credentials"
+	"github.com/zhu13818202655/troupe/pkg/credentials"
 )
 
 // setupCredentialStore creates a temp credential store and sets it as the global.

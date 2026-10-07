@@ -5,11 +5,11 @@ import (
 	"errors"
 	"fmt"
 
-	personalent "github.com/SAP/astonish/ent/personal"
-	personaldeck "github.com/SAP/astonish/ent/personal/deck"
-	personaldeckversion "github.com/SAP/astonish/ent/personal/deckversion"
-	personalslide "github.com/SAP/astonish/ent/personal/slide"
-	"github.com/SAP/astonish/pkg/store"
+	personalent "github.com/zhu13818202655/troupe/ent/personal"
+	personaldeck "github.com/zhu13818202655/troupe/ent/personal/deck"
+	personaldeckversion "github.com/zhu13818202655/troupe/ent/personal/deckversion"
+	personalslide "github.com/zhu13818202655/troupe/ent/personal/slide"
+	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/google/uuid"
 )
 

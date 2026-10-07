@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/codeintel/internal/treesitter"
+	"github.com/zhu13818202655/troupe/pkg/codeintel/internal/treesitter"
 )
 
 func TestRepoMap_LibraryMissingReturnsUnavailable(t *testing.T) {

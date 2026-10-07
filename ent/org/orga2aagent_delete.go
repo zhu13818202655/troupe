@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/org/orga2aagent"
-	"github.com/SAP/astonish/ent/org/predicate"
+	"github.com/zhu13818202655/troupe/ent/org/orga2aagent"
+	"github.com/zhu13818202655/troupe/ent/org/predicate"
 )
 
 // OrgA2AAgentDelete is the builder for deleting a OrgA2AAgent entity.

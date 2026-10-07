@@ -3,7 +3,7 @@ package entstore
 import (
 	"testing"
 
-	platformmigrate "github.com/SAP/astonish/ent/platform/migrate"
+	platformmigrate "github.com/zhu13818202655/troupe/ent/platform/migrate"
 )
 
 func TestPostgresPlatformAutoMigrateTablesIncludesOAuth(t *testing.T) {

@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/team/teamauditlog"
+	"github.com/zhu13818202655/troupe/ent/team/teamauditlog"
 	"github.com/google/uuid"
 )
 

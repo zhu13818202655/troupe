@@ -12,8 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/platform/oauthauthorization"
-	"github.com/SAP/astonish/ent/platform/predicate"
+	"github.com/zhu13818202655/troupe/ent/platform/oauthauthorization"
+	"github.com/zhu13818202655/troupe/ent/platform/predicate"
 )
 
 // OAuthAuthorizationUpdate is the builder for updating OAuthAuthorization entities.

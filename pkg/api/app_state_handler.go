@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/apps"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/apps"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // ── SQL Safety Validation ────────────────────────────────────────────

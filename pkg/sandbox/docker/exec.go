@@ -17,7 +17,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
 )
 
 // Exec runs a command non-interactively inside the container and returns the

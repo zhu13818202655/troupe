@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/agent"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 type channelRuntimePlatformSettingsStore struct {

@@ -9,7 +9,7 @@ export
 SHELL := /bin/bash
 
 # Variables
-BINARY_NAME = astonish
+BINARY_NAME = troupe
 WEB_DIR = web
 VERSION ?= dev
 DOCKER_REGISTRY ?= ghcr.io/sap
@@ -51,19 +51,19 @@ help:
 	@echo ""
 	@echo "Kubernetes Platform Init:"
 	@echo "  make platform-init PLATFORM_HOST=<host> PLATFORM_USER=<user> PLATFORM_PASSWORD=<pass>"
-	@echo "                       - Run 'astonish platform init' inside the cluster"
+	@echo "                       - Run 'troupe platform init' inside the cluster"
 	@echo "  make create-secrets K8S_NAMESPACE=<ns> PLATFORM_DSN=<dsn>"
-	@echo "                       - Create astonish-secrets (master-key, jwt-secret, platform-dsn)"
+	@echo "                       - Create troupe-secrets (master-key, jwt-secret, platform-dsn)"
 	@echo ""
 	@echo "Docker Production (Persistent Data):"
-	@echo "  make docker-up       - Start persistent container (maps ./.astonish-data)"
+	@echo "  make docker-up       - Start persistent container (maps ./.troupe-data)"
 	@echo "  make docker-down     - Stop persistent container"
 	@echo "  make docker-rebuild  - Rebuild and restart persistent container"
 	@echo ""
 	@echo "Sandbox (Docker OverlayFS + Kubernetes images):"
 	@echo "  make build-linux       - Cross-compile Linux amd64 binary"
 	@echo "  make build-linux-arm64 - Cross-compile Linux arm64 binary"
-	@echo "  make sandbox-entrypoint - Generate astonish-sandbox-entrypoint script (host)"
+	@echo "  make sandbox-entrypoint - Generate troupe-sandbox-entrypoint script (host)"
 	@echo "  make docker-sandbox-base - Build+LOAD local sandbox-base image (native arch)"
 	@echo ""
 	@echo "OpenShell Sandbox:"
@@ -72,13 +72,13 @@ help:
 	@echo "  make helm-deps                - Update Helm subchart dependencies"
 	@echo ""
 	@echo "Registry Push (multi-arch, requires docker login + buildx):"
-	@echo "  make push-dev                      - Build+push astonish:dev (multi-arch)"
-	@echo "  make push-sandbox-base-dev         - Build+push astonish-sandbox-base:dev (multi-arch)"
-	@echo "  make push-sandbox-openshell-dev    - Build+push astonish-sandbox-openshell:dev (multi-arch)"
+	@echo "  make push-dev                      - Build+push troupe:dev (multi-arch)"
+	@echo "  make push-sandbox-base-dev         - Build+push troupe-sandbox-base:dev (multi-arch)"
+	@echo "  make push-sandbox-openshell-dev    - Build+push troupe-sandbox-openshell:dev (multi-arch)"
 	@echo "  make push-all-dev                  - Push all dev images"
 	@echo ""
 	@echo "Registry Push (fast single-arch, dev iteration):"
-	@echo "  make push-dev-fast                      - Build+push astonish:dev (native arch only)"
+	@echo "  make push-dev-fast                      - Build+push troupe:dev (native arch only)"
 	@echo "  make push-sandbox-base-dev-fast         - Build+push sandbox-base:dev (native arch only)"
 	@echo "  make push-sandbox-openshell-dev-fast    - Build+push sandbox-openshell:dev (native arch only)"
 	@echo "  make push-all-dev-fast                  - Push all dev images (native arch only)"
@@ -180,8 +180,8 @@ test-integration:
 test-e2e:
 	@if [ -z "$$ASTONISH_TEST_DSN" ]; then echo "ERROR: ASTONISH_TEST_DSN required"; exit 1; fi
 	@which kubectl >/dev/null 2>&1 || { echo "ERROR: kubectl not found in PATH (required for e2e sandbox preflight)"; exit 1; }
-	@CP_NS="$${ASTONISH_E2E_CONTROL_PLANE_NAMESPACE:-astonish}"; \
-	SB_NS="$${ASTONISH_E2E_SANDBOX_NAMESPACE:-astonish-sandbox}"; \
+	@CP_NS="$${ASTONISH_E2E_CONTROL_PLANE_NAMESPACE:-troupe}"; \
+	SB_NS="$${ASTONISH_E2E_SANDBOX_NAMESPACE:-troupe-sandbox}"; \
 	echo "Preflight: verifying e2e k8s infra ($$CP_NS + $$SB_NS)..."; \
 	for NS in "$$CP_NS" "$$SB_NS"; do \
 		if ! kubectl get ns "$$NS" >/dev/null 2>&1; then \
@@ -192,12 +192,12 @@ test-e2e:
 			echo "  Tear it down with:    make e2e-k8s-down"; \
 			echo ""; \
 			echo "  Override namespaces by setting ASTONISH_E2E_CONTROL_PLANE_NAMESPACE"; \
-			echo "  and ASTONISH_E2E_SANDBOX_NAMESPACE in .env (defaults: astonish, astonish-sandbox)."; \
+			echo "  and ASTONISH_E2E_SANDBOX_NAMESPACE in .env (defaults: troupe, troupe-sandbox)."; \
 			echo ""; \
 			exit 1; \
 		fi; \
 	done; \
-	for PVC in astonish-layers astonish-uppers; do \
+	for PVC in troupe-layers troupe-uppers; do \
 		if ! kubectl get pvc -n "$$SB_NS" "$$PVC" >/dev/null 2>&1; then \
 			echo ""; \
 			echo "ERROR: e2e k8s infra incomplete — PVC \"$$PVC\" missing in namespace \"$$SB_NS\"."; \
@@ -220,8 +220,8 @@ test-e2e:
 # Still requires K8s for sandbox-dependent tests.
 test-e2e-sqlite:
 	@which kubectl >/dev/null 2>&1 || { echo "ERROR: kubectl not found in PATH (required for e2e sandbox preflight)"; exit 1; }
-	@CP_NS="$${ASTONISH_E2E_CONTROL_PLANE_NAMESPACE:-astonish}"; \
-	SB_NS="$${ASTONISH_E2E_SANDBOX_NAMESPACE:-astonish-sandbox}"; \
+	@CP_NS="$${ASTONISH_E2E_CONTROL_PLANE_NAMESPACE:-troupe}"; \
+	SB_NS="$${ASTONISH_E2E_SANDBOX_NAMESPACE:-troupe-sandbox}"; \
 	echo "Preflight: verifying e2e k8s infra ($$CP_NS + $$SB_NS)..."; \
 	for NS in "$$CP_NS" "$$SB_NS"; do \
 		if ! kubectl get ns "$$NS" >/dev/null 2>&1; then \
@@ -232,7 +232,7 @@ test-e2e-sqlite:
 			exit 1; \
 		fi; \
 	done; \
-	for PVC in astonish-layers astonish-uppers; do \
+	for PVC in troupe-layers troupe-uppers; do \
 		if ! kubectl get pvc -n "$$SB_NS" "$$PVC" >/dev/null 2>&1; then \
 			echo ""; \
 			echo "ERROR: e2e k8s infra incomplete — PVC \"$$PVC\" missing in namespace \"$$SB_NS\"."; \
@@ -255,23 +255,23 @@ test-e2e-sqlite:
 # PVCs, RBAC, and seeded @base layer used by sandbox-aware E2E tests.
 #
 # Namespace layout (DEDICATED to e2e — never reuse a live install):
-#   control plane: astonishe2e
-#   sandbox:       astonishe2e-sandbox
+#   control plane: troupee2e
+#   sandbox:       troupee2e-sandbox
 #
 # Tests run on the host using your kubeconfig; the chart's api/worker pods
 # are scaled to 0 (we only need the sandbox slice). See
-# deploy/helm/astonish/values-e2e.yaml for details.
-E2E_K8S_RELEASE := astonishe2e
-E2E_K8S_NS := astonishe2e
-E2E_K8S_SANDBOX_NS := astonishe2e-sandbox
+# deploy/helm/troupe/values-e2e.yaml for details.
+E2E_K8S_RELEASE := troupee2e
+E2E_K8S_NS := troupee2e
+E2E_K8S_SANDBOX_NS := troupee2e-sandbox
 
 e2e-k8s-up:
 	@which helm >/dev/null 2>&1 || { echo "ERROR: helm not found in PATH"; exit 1; }
 	@which kubectl >/dev/null 2>&1 || { echo "ERROR: kubectl not found in PATH"; exit 1; }
 	@echo "Provisioning isolated e2e k8s infra ($(E2E_K8S_NS) + $(E2E_K8S_SANDBOX_NS))..."
-	helm upgrade --install $(E2E_K8S_RELEASE) deploy/helm/astonish \
+	helm upgrade --install $(E2E_K8S_RELEASE) deploy/helm/troupe \
 		-n $(E2E_K8S_NS) --create-namespace \
-		-f deploy/helm/astonish/values-e2e.yaml \
+		-f deploy/helm/troupe/values-e2e.yaml \
 		--history-max=3 \
 		--wait --timeout=10m
 	@echo "Patching NFS server (if present) to tolerate disk-pressure (prevents cleanup deadlock)..."
@@ -299,25 +299,25 @@ e2e-k8s-down:
 # gateway and sandbox namespace for E2E tests against the OpenShell backend.
 #
 # Namespace layout (DEDICATED to e2e — never reuse a live install):
-#   control plane: astonishe2eos        (OpenShell gateway pod lives here)
-#   sandbox:       astonishe2eos-sandbox (sandbox pods spawned by gateway)
+#   control plane: troupee2eos        (OpenShell gateway pod lives here)
+#   sandbox:       troupee2eos-sandbox (sandbox pods spawned by gateway)
 #
 # The chart's api/worker pods are scaled to 0 — tests run in-process on the
 # host (same pattern as K8s e2e). Only the OpenShell gateway is deployed.
 # ===========================================================================
-E2E_OS_RELEASE := astonishe2eos
-E2E_OS_NS := astonishe2eos
-E2E_OS_SANDBOX_NS := astonishe2eos-sandbox
+E2E_OS_RELEASE := troupee2eos
+E2E_OS_NS := troupee2eos
+E2E_OS_SANDBOX_NS := troupee2eos-sandbox
 
 e2e-openshell-up:
 	@which helm >/dev/null 2>&1 || { echo "ERROR: helm not found in PATH"; exit 1; }
 	@which kubectl >/dev/null 2>&1 || { echo "ERROR: kubectl not found in PATH"; exit 1; }
 	@echo "Pulling OpenShell subchart dependency..."
-	helm dependency update deploy/helm/astonish
+	helm dependency update deploy/helm/troupe
 	@echo "Deploying OpenShell e2e infra ($(E2E_OS_NS) + $(E2E_OS_SANDBOX_NS))..."
-	helm upgrade --install $(E2E_OS_RELEASE) deploy/helm/astonish \
+	helm upgrade --install $(E2E_OS_RELEASE) deploy/helm/troupe \
 		-n $(E2E_OS_NS) --create-namespace \
-		-f deploy/helm/astonish/values-e2e-openshell.yaml \
+		-f deploy/helm/troupe/values-e2e-openshell.yaml \
 		--history-max=3 \
 		--wait --timeout=10m
 	@echo "Verifying OpenShell gateway is Running..."
@@ -407,7 +407,7 @@ test-e2e-openshell:
 # The platform DB (suffix=e2einspect) is dropped & re-created on every
 # `test-e2e-inspect` invocation — each run starts fresh.
 E2E_INSPECT_BIN := bin/e2e-inspector
-E2E_INSPECT_LOG := /tmp/astonish-e2e-inspect.log
+E2E_INSPECT_LOG := /tmp/troupe-e2e-inspect.log
 E2E_INSPECT_PORT := 9394
 
 # Inspector links the full StudioServer (pkg/...), so any change to backend
@@ -423,32 +423,32 @@ $(E2E_INSPECT_BIN): $(E2E_INSPECT_DEPS)
 test-e2e-inspect: $(E2E_INSPECT_BIN)
 	@if [ -z "$$ASTONISH_TEST_DSN" ]; then echo "ERROR: ASTONISH_TEST_DSN required"; exit 1; fi
 	@which kubectl >/dev/null 2>&1 || { echo "ERROR: kubectl not found in PATH (required for e2e sandbox preflight)"; exit 1; }
-	@CP_NS="$${ASTONISH_E2E_CONTROL_PLANE_NAMESPACE:-astonish}"; \
-	SB_NS="$${ASTONISH_E2E_SANDBOX_NAMESPACE:-astonish-sandbox}"; \
+	@CP_NS="$${ASTONISH_E2E_CONTROL_PLANE_NAMESPACE:-troupe}"; \
+	SB_NS="$${ASTONISH_E2E_SANDBOX_NAMESPACE:-troupe-sandbox}"; \
 	echo "Preflight: verifying e2e k8s infra ($$CP_NS + $$SB_NS)..."; \
 	for NS in "$$CP_NS" "$$SB_NS"; do \
 		kubectl get ns "$$NS" >/dev/null 2>&1 || { echo "ERROR: namespace $$NS missing — run 'make e2e-k8s-up' first"; exit 1; }; \
 	done; \
-	for PVC in astonish-layers astonish-uppers; do \
+	for PVC in troupe-layers troupe-uppers; do \
 		kubectl get pvc -n "$$SB_NS" "$$PVC" >/dev/null 2>&1 || { echo "ERROR: PVC $$PVC missing in $$SB_NS"; exit 1; }; \
 	done; \
 	echo "Preflight OK."
-	@if [ -f /tmp/astonish-e2e-inspect.json ] && kill -0 $$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/astonish-e2e-inspect.json')).pid)" 2>/dev/null) 2>/dev/null; then \
+	@if [ -f /tmp/troupe-e2e-inspect.json ] && kill -0 $$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/troupe-e2e-inspect.json')).pid)" 2>/dev/null) 2>/dev/null; then \
 		echo "Inspector already running. Stop it first with: make test-e2e-inspect-stop"; \
 		exit 1; \
 	fi
-	@rm -f /tmp/astonish-e2e-inspect.json /tmp/astonish-e2e-inspect.secret
+	@rm -f /tmp/troupe-e2e-inspect.json /tmp/troupe-e2e-inspect.secret
 	@echo ""
 	@echo "Draining any sandbox pods left over from previous runs..."
 	@$(E2E_INSPECT_BIN) --stop-pods 2>&1 | sed 's/^/  /'
 	@echo ""
 	@echo "Starting e2e inspector on port $(E2E_INSPECT_PORT) (log: $(E2E_INSPECT_LOG))..."
-	@nohup $(E2E_INSPECT_BIN) > $(E2E_INSPECT_LOG) 2>&1 & echo $$! > /tmp/astonish-e2e-inspect.pid
+	@nohup $(E2E_INSPECT_BIN) > $(E2E_INSPECT_LOG) 2>&1 & echo $$! > /tmp/troupe-e2e-inspect.pid
 	@for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do \
-		if [ -f /tmp/astonish-e2e-inspect.json ]; then break; fi; \
+		if [ -f /tmp/troupe-e2e-inspect.json ]; then break; fi; \
 		sleep 1; \
 	done
-	@if [ ! -f /tmp/astonish-e2e-inspect.json ]; then \
+	@if [ ! -f /tmp/troupe-e2e-inspect.json ]; then \
 		echo "ERROR: inspector failed to start within 15s. Log:"; \
 		cat $(E2E_INSPECT_LOG); \
 		exit 1; \
@@ -491,12 +491,12 @@ test-e2e-inspect: $(E2E_INSPECT_BIN)
 # safe to run when nothing is running, when only DBs are orphaned, or when
 # only state files are stale. Order: kill first (using PID file or pgrep
 # fallback), then call `e2e-inspector --cleanup` which drops the DBs and
-# removes /tmp/astonish-e2e-inspect-* dirs and state files.
+# removes /tmp/troupe-e2e-inspect-* dirs and state files.
 test-e2e-inspect-stop: $(E2E_INSPECT_BIN)
 	@if [ -z "$$ASTONISH_TEST_DSN" ]; then echo "ERROR: ASTONISH_TEST_DSN required (used to drop databases)"; exit 1; fi
 	@PIDS=""; \
-	if [ -f /tmp/astonish-e2e-inspect.pid ]; then \
-		FILE_PID=$$(cat /tmp/astonish-e2e-inspect.pid 2>/dev/null); \
+	if [ -f /tmp/troupe-e2e-inspect.pid ]; then \
+		FILE_PID=$$(cat /tmp/troupe-e2e-inspect.pid 2>/dev/null); \
 		if [ -n "$$FILE_PID" ] && kill -0 $$FILE_PID 2>/dev/null; then \
 			PIDS="$$FILE_PID"; \
 		fi; \
@@ -527,7 +527,7 @@ test-e2e-inspect-stop: $(E2E_INSPECT_BIN)
 	else \
 		echo "No inspector process running."; \
 	fi
-	@rm -f /tmp/astonish-e2e-inspect.pid
+	@rm -f /tmp/troupe-e2e-inspect.pid
 	@$(E2E_INSPECT_BIN) --cleanup
 
 # Scenario coverage report — reads YAML catalogs under tests/scenarios/
@@ -545,7 +545,7 @@ install: build-all
 clean:
 	@echo "Cleaning up build artifacts..."
 	rm -rf $(BINARY_NAME)
-	rm -f astonish-linux-amd64 astonish-linux-arm64 astonish-sandbox-entrypoint
+	rm -f troupe-linux-amd64 troupe-linux-arm64 troupe-sandbox-entrypoint
 	rm -rf $(WEB_DIR)/dist
 	rm -rf $(WEB_DIR)/node_modules
 	@echo "Cleanup complete!"
@@ -580,7 +580,7 @@ docker-up: build-linux build-linux-arm64
 	@echo "Starting persistent container..."
 	docker compose up -d --build
 	@echo "Astonish running at http://localhost:9393"
-	@echo "Data stored in ./.astonish-data"
+	@echo "Data stored in ./.troupe-data"
 
 docker-down:
 	@echo "Stopping persistent container..."
@@ -604,9 +604,9 @@ endif
 ifndef PLATFORM_PASSWORD
 	$(error PLATFORM_PASSWORD is required. Usage: make platform-init PLATFORM_HOST=... PLATFORM_USER=... PLATFORM_PASSWORD=...)
 endif
-	kubectl run astonish-platform-init --rm -it --restart=Never \
-	  -n astonish --image=$(DOCKER_REGISTRY)/astonish:$(DEV_TAG) --image-pull-policy=Always \
-	  --command -- astonish platform init \
+	kubectl run troupe-platform-init --rm -it --restart=Never \
+	  -n troupe --image=$(DOCKER_REGISTRY)/troupe:$(DEV_TAG) --image-pull-policy=Always \
+	  --command -- troupe platform init \
 	  --host $(PLATFORM_HOST) --user $(PLATFORM_USER) --password $(PLATFORM_PASSWORD)
 
 # Create Kubernetes secrets for Astonish
@@ -617,7 +617,7 @@ endif
 ifndef PLATFORM_DSN
 	$(error PLATFORM_DSN is required. Usage: make create-secrets K8S_NAMESPACE=... PLATFORM_DSN=...)
 endif
-	kubectl -n $(K8S_NAMESPACE) create secret generic astonish-secrets \
+	kubectl -n $(K8S_NAMESPACE) create secret generic troupe-secrets \
 	  --from-literal=master-key="$$(openssl rand -hex 32)" \
 	  --from-literal=jwt-secret="$$(openssl rand -hex 32)" \
 	  --from-literal=platform-dsn="$(PLATFORM_DSN)"
@@ -627,23 +627,23 @@ build-linux:
 	@echo "Cross-compiling Linux amd64 binary..."
 	@# go:embed requires web/dist; create a placeholder tree if the UI has not been built.
 	@mkdir -p $(WEB_DIR)/dist
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w -X github.com/SAP/astonish/cmd/astonish.Version=$(VERSION)" -o astonish-linux-amd64 .
-	@echo "Linux binary built: astonish-linux-amd64"
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w -X github.com/zhu13818202655/troupe/cmd/troupe.Version=$(VERSION)" -o troupe-linux-amd64 .
+	@echo "Linux binary built: troupe-linux-amd64"
 
 build-linux-arm64:
 	@echo "Cross-compiling Linux arm64 binary..."
 	@mkdir -p $(WEB_DIR)/dist
-	GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -ldflags="-s -w -X github.com/SAP/astonish/cmd/astonish.Version=$(VERSION)" -o astonish-linux-arm64 .
-	@echo "Linux binary built: astonish-linux-arm64"
+	GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -ldflags="-s -w -X github.com/zhu13818202655/troupe/cmd/troupe.Version=$(VERSION)" -o troupe-linux-arm64 .
+	@echo "Linux binary built: troupe-linux-arm64"
 
 # Emit the K8s sandbox PID-1 entrypoint script to the repo root for COPY into
 # docker/sandbox-base. Host-side so the image build does not run a Go toolchain.
 sandbox-entrypoint:
-	@echo "Generating astonish-sandbox-entrypoint..."
-	go run ./cmd/astonish-sandbox-entrypoint-script > astonish-sandbox-entrypoint
-	@chmod +x astonish-sandbox-entrypoint
-	@head -1 astonish-sandbox-entrypoint | grep -q '^#!/bin/sh'
-	@echo "Wrote astonish-sandbox-entrypoint"
+	@echo "Generating troupe-sandbox-entrypoint..."
+	go run ./cmd/troupe-sandbox-entrypoint-script > troupe-sandbox-entrypoint
+	@chmod +x troupe-sandbox-entrypoint
+	@head -1 troupe-sandbox-entrypoint | grep -q '^#!/bin/sh'
+	@echo "Wrote troupe-sandbox-entrypoint"
 
 # Generate Go gRPC stubs from vendored NVIDIA OpenShell proto files
 proto-gen:
@@ -653,7 +653,7 @@ proto-gen:
 
 # Update Helm chart dependencies (pull OpenShell subchart archive)
 helm-deps:
-	helm dependency update deploy/helm/astonish
+	helm dependency update deploy/helm/troupe
 	@echo "Helm dependencies updated (Chart.lock + charts/ archive)"
 
 # Build the K8s sandbox-base image locally (native arch). Host-builds the
@@ -668,60 +668,60 @@ docker-sandbox-base: sandbox-entrypoint
 	docker buildx build \
 		--platform linux/$(DEV_ARCH) \
 		-f docker/sandbox-base/Dockerfile \
-		-t $(DOCKER_REGISTRY)/astonish-sandbox-base:$(VERSION) \
+		-t $(DOCKER_REGISTRY)/troupe-sandbox-base:$(VERSION) \
 		--load .
-	@echo "Image built: $(DOCKER_REGISTRY)/astonish-sandbox-base:$(VERSION)"
+	@echo "Image built: $(DOCKER_REGISTRY)/troupe-sandbox-base:$(VERSION)"
 
 # Build the OpenShell sandbox image (NVIDIA sandbox base + Astonish agent tools)
 docker-sandbox-openshell: build-linux
 	@echo "Building OpenShell sandbox image..."
-	docker build -f docker/sandbox-openshell/Dockerfile -t $(DOCKER_REGISTRY)/astonish-sandbox-openshell:$(VERSION) .
-	@echo "Image built: $(DOCKER_REGISTRY)/astonish-sandbox-openshell:$(VERSION)"
+	docker build -f docker/sandbox-openshell/Dockerfile -t $(DOCKER_REGISTRY)/troupe-sandbox-openshell:$(VERSION) .
+	@echo "Image built: $(DOCKER_REGISTRY)/troupe-sandbox-openshell:$(VERSION)"
 
 # --- Registry Push (multi-arch via buildx) ---
 
 # Ensure a buildx builder with multi-platform support exists
 ensure-builder:
-	@docker buildx inspect astonish-builder >/dev/null 2>&1 || \
-		docker buildx create --name astonish-builder --use --driver docker-container --bootstrap
-	@docker buildx use astonish-builder
+	@docker buildx inspect troupe-builder >/dev/null 2>&1 || \
+		docker buildx create --name troupe-builder --use --driver docker-container --bootstrap
+	@docker buildx use troupe-builder
 
 # Build and push the main Astonish image (multi-arch)
 # Cross-compiles Go on the host to avoid QEMU segfaults with Go 1.26.
 push-dev: ensure-builder build-linux build-linux-arm64
-	@echo "Building and pushing $(DOCKER_REGISTRY)/astonish:$(DEV_TAG) (linux/amd64,linux/arm64)..."
-	@mkdir -p .buildx-cache/astonish
+	@echo "Building and pushing $(DOCKER_REGISTRY)/troupe:$(DEV_TAG) (linux/amd64,linux/arm64)..."
+	@mkdir -p .buildx-cache/troupe
 	docker buildx build --platform linux/amd64,linux/arm64 \
-		-f docker/astonish/Dockerfile \
-		-t $(DOCKER_REGISTRY)/astonish:$(DEV_TAG) \
-		--cache-from type=local,src=.buildx-cache/astonish \
-		--cache-to type=local,dest=.buildx-cache/astonish,mode=max \
+		-f docker/troupe/Dockerfile \
+		-t $(DOCKER_REGISTRY)/troupe:$(DEV_TAG) \
+		--cache-from type=local,src=.buildx-cache/troupe \
+		--cache-to type=local,dest=.buildx-cache/troupe,mode=max \
 		--push .
-	@echo "Pushed: $(DOCKER_REGISTRY)/astonish:$(DEV_TAG)"
+	@echo "Pushed: $(DOCKER_REGISTRY)/troupe:$(DEV_TAG)"
 
 # Build and push the sandbox base image (multi-arch).
 # Host-cross-compiles both arches + generates the entrypoint, then Docker only
 # runs apt + treesitter + COPY (stable layers cache across code edits).
 # Requires web/dist/ for go:embed (mkdir placeholder is enough for sandbox; full UI optional).
 push-sandbox-base-dev: ensure-builder build-linux build-linux-arm64 sandbox-entrypoint
-	@echo "Building and pushing $(DOCKER_REGISTRY)/astonish-sandbox-base:$(DEV_TAG) (linux/amd64,linux/arm64)..."
+	@echo "Building and pushing $(DOCKER_REGISTRY)/troupe-sandbox-base:$(DEV_TAG) (linux/amd64,linux/arm64)..."
 	@mkdir -p .buildx-cache/sandbox-base
 	docker buildx build --platform linux/amd64,linux/arm64 \
 		-f docker/sandbox-base/Dockerfile \
-		-t $(DOCKER_REGISTRY)/astonish-sandbox-base:$(DEV_TAG) \
+		-t $(DOCKER_REGISTRY)/troupe-sandbox-base:$(DEV_TAG) \
 		--cache-from type=local,src=.buildx-cache/sandbox-base \
 		--cache-to type=local,dest=.buildx-cache/sandbox-base,mode=max \
 		--push .
-	@echo "Pushed: $(DOCKER_REGISTRY)/astonish-sandbox-base:$(DEV_TAG)"
+	@echo "Pushed: $(DOCKER_REGISTRY)/troupe-sandbox-base:$(DEV_TAG)"
 
 # Build and push the OpenShell sandbox image (amd64 only — KasmVNC + CloakBrowser are amd64)
 push-sandbox-openshell-dev: ensure-builder build-linux
-	@echo "Building and pushing $(DOCKER_REGISTRY)/astonish-sandbox-openshell:$(DEV_TAG) (linux/amd64)..."
+	@echo "Building and pushing $(DOCKER_REGISTRY)/troupe-sandbox-openshell:$(DEV_TAG) (linux/amd64)..."
 	docker buildx build --platform linux/amd64 \
 		-f docker/sandbox-openshell/Dockerfile \
-		-t $(DOCKER_REGISTRY)/astonish-sandbox-openshell:$(DEV_TAG) \
+		-t $(DOCKER_REGISTRY)/troupe-sandbox-openshell:$(DEV_TAG) \
 		--push .
-	@echo "Pushed: $(DOCKER_REGISTRY)/astonish-sandbox-openshell:$(DEV_TAG)"
+	@echo "Pushed: $(DOCKER_REGISTRY)/troupe-sandbox-openshell:$(DEV_TAG)"
 
 # Push all dev images
 push-all-dev: push-dev push-sandbox-base-dev push-sandbox-openshell-dev
@@ -738,15 +738,15 @@ push-dev-fast: ensure-builder
 	else \
 		$(MAKE) build-linux; \
 	fi
-	@echo "Building and pushing $(DOCKER_REGISTRY)/astonish:$(DEV_TAG) (linux/$(DEV_ARCH) only)..."
-	@mkdir -p .buildx-cache/astonish
+	@echo "Building and pushing $(DOCKER_REGISTRY)/troupe:$(DEV_TAG) (linux/$(DEV_ARCH) only)..."
+	@mkdir -p .buildx-cache/troupe
 	docker buildx build --platform linux/$(DEV_ARCH) \
-		-f docker/astonish/Dockerfile \
-		-t $(DOCKER_REGISTRY)/astonish:$(DEV_TAG) \
-		--cache-from type=local,src=.buildx-cache/astonish \
-		--cache-to type=local,dest=.buildx-cache/astonish,mode=max \
+		-f docker/troupe/Dockerfile \
+		-t $(DOCKER_REGISTRY)/troupe:$(DEV_TAG) \
+		--cache-from type=local,src=.buildx-cache/troupe \
+		--cache-to type=local,dest=.buildx-cache/troupe,mode=max \
 		--push .
-	@echo "Pushed: $(DOCKER_REGISTRY)/astonish:$(DEV_TAG)"
+	@echo "Pushed: $(DOCKER_REGISTRY)/troupe:$(DEV_TAG)"
 
 # Fast: build and push sandbox base image (single arch)
 push-sandbox-base-dev-fast: ensure-builder sandbox-entrypoint
@@ -755,24 +755,24 @@ push-sandbox-base-dev-fast: ensure-builder sandbox-entrypoint
 	else \
 		$(MAKE) build-linux; \
 	fi
-	@echo "Building and pushing $(DOCKER_REGISTRY)/astonish-sandbox-base:$(DEV_TAG) (linux/$(DEV_ARCH) only)..."
+	@echo "Building and pushing $(DOCKER_REGISTRY)/troupe-sandbox-base:$(DEV_TAG) (linux/$(DEV_ARCH) only)..."
 	@mkdir -p .buildx-cache/sandbox-base
 	docker buildx build --platform linux/$(DEV_ARCH) \
 		-f docker/sandbox-base/Dockerfile \
-		-t $(DOCKER_REGISTRY)/astonish-sandbox-base:$(DEV_TAG) \
+		-t $(DOCKER_REGISTRY)/troupe-sandbox-base:$(DEV_TAG) \
 		--cache-from type=local,src=.buildx-cache/sandbox-base \
 		--cache-to type=local,dest=.buildx-cache/sandbox-base,mode=max \
 		--push .
-	@echo "Pushed: $(DOCKER_REGISTRY)/astonish-sandbox-base:$(DEV_TAG)"
+	@echo "Pushed: $(DOCKER_REGISTRY)/troupe-sandbox-base:$(DEV_TAG)"
 
 # Fast: build and push OpenShell sandbox image (amd64 only — KasmVNC + CloakBrowser are amd64)
 push-sandbox-openshell-dev-fast: ensure-builder build-linux
-	@echo "Building and pushing $(DOCKER_REGISTRY)/astonish-sandbox-openshell:$(DEV_TAG) (linux/amd64)..."
+	@echo "Building and pushing $(DOCKER_REGISTRY)/troupe-sandbox-openshell:$(DEV_TAG) (linux/amd64)..."
 	docker buildx build --platform linux/amd64 \
 		-f docker/sandbox-openshell/Dockerfile \
-		-t $(DOCKER_REGISTRY)/astonish-sandbox-openshell:$(DEV_TAG) \
+		-t $(DOCKER_REGISTRY)/troupe-sandbox-openshell:$(DEV_TAG) \
 		--push .
-	@echo "Pushed: $(DOCKER_REGISTRY)/astonish-sandbox-openshell:$(DEV_TAG)"
+	@echo "Pushed: $(DOCKER_REGISTRY)/troupe-sandbox-openshell:$(DEV_TAG)"
 
 # Fast: push all dev images (single arch)
 push-all-dev-fast: push-dev-fast push-sandbox-base-dev-fast push-sandbox-openshell-dev-fast

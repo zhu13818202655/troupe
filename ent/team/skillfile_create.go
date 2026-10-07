@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/team/skill"
-	"github.com/SAP/astonish/ent/team/skillfile"
+	"github.com/zhu13818202655/troupe/ent/team/skill"
+	"github.com/zhu13818202655/troupe/ent/team/skillfile"
 	"github.com/google/uuid"
 )
 

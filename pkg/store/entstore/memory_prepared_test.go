@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	_ "modernc.org/sqlite"
 
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 func TestPreparedMemoryStoresSeparateQueriesAndFilterCategory(t *testing.T) {

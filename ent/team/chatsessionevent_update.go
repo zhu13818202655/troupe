@@ -10,9 +10,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/team/chatsessionevent"
-	"github.com/SAP/astonish/ent/team/predicate"
-	"github.com/SAP/astonish/ent/team/session"
+	"github.com/zhu13818202655/troupe/ent/team/chatsessionevent"
+	"github.com/zhu13818202655/troupe/ent/team/predicate"
+	"github.com/zhu13818202655/troupe/ent/team/session"
 )
 
 // ChatSessionEventUpdate is the builder for updating ChatSessionEvent entities.

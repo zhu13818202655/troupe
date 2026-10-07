@@ -20,7 +20,7 @@ const (
 	// OfficialStoreName is the name of the official Astonish flow store
 	OfficialStoreName = "official"
 	// OfficialStoreURL is the GitHub repository for the official store
-	OfficialStoreURL = "github.com/SAP/astonish-flows"
+	OfficialStoreURL = "github.com/zhu13818202655/troupe-flows"
 )
 
 // Manifest represents the required manifest.yaml in a tap repository

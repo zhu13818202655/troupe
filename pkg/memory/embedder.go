@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/SAP/astonish/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 // EmbeddingFunc is a function that embeds a single text string into a vector.

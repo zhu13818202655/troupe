@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // healthBackend holds a reference to the platform backend for readiness checks.

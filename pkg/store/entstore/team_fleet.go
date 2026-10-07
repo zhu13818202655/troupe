@@ -8,11 +8,11 @@ import (
 	"github.com/google/uuid"
 	"gopkg.in/yaml.v3"
 
-	teament "github.com/SAP/astonish/ent/team"
-	"github.com/SAP/astonish/ent/team/fleetplan"
-	"github.com/SAP/astonish/ent/team/fleettemplate"
-	"github.com/SAP/astonish/pkg/fleet"
-	"github.com/SAP/astonish/pkg/store"
+	teament "github.com/zhu13818202655/troupe/ent/team"
+	"github.com/zhu13818202655/troupe/ent/team/fleetplan"
+	"github.com/zhu13818202655/troupe/ent/team/fleettemplate"
+	"github.com/zhu13818202655/troupe/pkg/fleet"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // ===========================================================================

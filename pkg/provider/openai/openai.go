@@ -13,8 +13,8 @@ import (
 	"strings"
 	"sync/atomic"
 
-	"github.com/SAP/astonish/pkg/common"
-	"github.com/SAP/astonish/pkg/provider/llmerror"
+	"github.com/zhu13818202655/troupe/pkg/common"
+	"github.com/zhu13818202655/troupe/pkg/provider/llmerror"
 	"github.com/sashabaranov/go-openai"
 	"google.golang.org/adk/model"
 	"google.golang.org/genai"

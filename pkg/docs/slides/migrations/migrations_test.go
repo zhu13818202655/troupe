@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/SAP/astonish/pkg/docs/slides"
+	"github.com/zhu13818202655/troupe/pkg/docs/slides"
 	"testing"
 )
 

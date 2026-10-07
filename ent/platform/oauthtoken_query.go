@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/platform/oauthtoken"
-	"github.com/SAP/astonish/ent/platform/predicate"
+	"github.com/zhu13818202655/troupe/ent/platform/oauthtoken"
+	"github.com/zhu13818202655/troupe/ent/platform/predicate"
 )
 
 // OAuthTokenQuery is the builder for querying OAuthToken entities.

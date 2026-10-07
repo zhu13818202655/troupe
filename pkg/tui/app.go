@@ -20,11 +20,11 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 
-	"github.com/SAP/astonish/pkg/provider"
-	"github.com/SAP/astonish/pkg/provider/xai_oauth"
-	"github.com/SAP/astonish/pkg/tui/backend"
-	"github.com/SAP/astonish/pkg/tui/events"
-	"github.com/SAP/astonish/pkg/tui/render"
+	"github.com/zhu13818202655/troupe/pkg/provider"
+	"github.com/zhu13818202655/troupe/pkg/provider/xai_oauth"
+	"github.com/zhu13818202655/troupe/pkg/tui/backend"
+	"github.com/zhu13818202655/troupe/pkg/tui/events"
+	"github.com/zhu13818202655/troupe/pkg/tui/render"
 )
 
 // hitRegion maps a range of rendered transcript lines to a transcript item.

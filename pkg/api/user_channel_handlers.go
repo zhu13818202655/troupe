@@ -10,8 +10,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"github.com/SAP/astonish/pkg/mailer"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/mailer"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // --- Link Code Store ---

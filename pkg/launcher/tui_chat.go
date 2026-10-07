@@ -11,10 +11,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/SAP/astonish/pkg/client"
-	"github.com/SAP/astonish/pkg/tui"
-	"github.com/SAP/astonish/pkg/tui/backend"
-	"github.com/SAP/astonish/pkg/tui/events"
+	"github.com/zhu13818202655/troupe/pkg/client"
+	"github.com/zhu13818202655/troupe/pkg/tui"
+	"github.com/zhu13818202655/troupe/pkg/tui/backend"
+	"github.com/zhu13818202655/troupe/pkg/tui/events"
 )
 
 // ChatConfig configures the platform-backed interactive chat TUI.

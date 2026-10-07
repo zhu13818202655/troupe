@@ -6,9 +6,9 @@ import (
 
 	"charm.land/lipgloss/v2"
 
-	"github.com/SAP/astonish/pkg/agent"
-	"github.com/SAP/astonish/pkg/tui/events"
-	"github.com/SAP/astonish/pkg/tui/render"
+	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/tui/events"
+	"github.com/zhu13818202655/troupe/pkg/tui/render"
 )
 
 // renderPlanDocument paints a PLAN.md transcript item. When the document

@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/tui/events"
+	"github.com/zhu13818202655/troupe/pkg/tui/events"
 )
 
 func TestRenderPlanCardOwnsPendingApprovalControls(t *testing.T) {

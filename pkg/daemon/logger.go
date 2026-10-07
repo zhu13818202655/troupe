@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/SAP/astonish/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 const (

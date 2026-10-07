@@ -8,10 +8,10 @@ import (
 
 	"github.com/google/uuid"
 
-	teament "github.com/SAP/astonish/ent/team"
-	"github.com/SAP/astonish/ent/team/fleetsetupprofile"
-	"github.com/SAP/astonish/pkg/fleet"
-	"github.com/SAP/astonish/pkg/store"
+	teament "github.com/zhu13818202655/troupe/ent/team"
+	"github.com/zhu13818202655/troupe/ent/team/fleetsetupprofile"
+	"github.com/zhu13818202655/troupe/pkg/fleet"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 type teamFleetSetupProfileStore struct {

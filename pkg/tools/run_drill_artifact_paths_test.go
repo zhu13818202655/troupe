@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	adrill "github.com/SAP/astonish/pkg/drill"
+	adrill "github.com/zhu13818202655/troupe/pkg/drill"
 )
 
 func TestCollectRunDrillArtifactPaths(t *testing.T) {

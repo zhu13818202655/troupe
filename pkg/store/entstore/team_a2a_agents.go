@@ -8,9 +8,9 @@ import (
 
 	"github.com/google/uuid"
 
-	teament "github.com/SAP/astonish/ent/team"
-	"github.com/SAP/astonish/ent/team/a2aagent"
-	"github.com/SAP/astonish/pkg/store"
+	teament "github.com/zhu13818202655/troupe/ent/team"
+	"github.com/zhu13818202655/troupe/ent/team/a2aagent"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // teamA2AAgentStore implements store.A2AAgentStore using the Ent team client.

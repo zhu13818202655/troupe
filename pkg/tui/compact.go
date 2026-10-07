@@ -3,8 +3,8 @@ package tui
 import (
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/SAP/astonish/pkg/tui/backend"
-	"github.com/SAP/astonish/pkg/tui/events"
+	"github.com/zhu13818202655/troupe/pkg/tui/backend"
+	"github.com/zhu13818202655/troupe/pkg/tui/events"
 )
 
 // compactionCap returns the backend's compaction capability, or nil when the

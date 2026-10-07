@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
 )
 
 func TestGetVNCDialFunc_DockerIgnoresStaleGlobalDialer(t *testing.T) {

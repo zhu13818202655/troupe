@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"log/slog"
 
-	"github.com/SAP/astonish/pkg/store"
-	"github.com/SAP/astonish/pkg/store/entstore"
+	"github.com/zhu13818202655/troupe/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/store/entstore"
 )
 
 // DeviceSessionBackendFromStore returns a DeviceSessionBackend backed by the

@@ -1,4 +1,4 @@
-module github.com/SAP/astonish
+module github.com/zhu13818202655/troupe
 
 go 1.26.0
 

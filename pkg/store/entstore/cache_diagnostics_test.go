@@ -6,11 +6,11 @@ import (
 	"testing"
 	"time"
 
-	personalent "github.com/SAP/astonish/ent/personal"
-	personalcachediagnostic "github.com/SAP/astonish/ent/personal/cachediagnostic"
-	teament "github.com/SAP/astonish/ent/team"
-	teamcachediagnostic "github.com/SAP/astonish/ent/team/cachediagnostic"
-	"github.com/SAP/astonish/pkg/store"
+	personalent "github.com/zhu13818202655/troupe/ent/personal"
+	personalcachediagnostic "github.com/zhu13818202655/troupe/ent/personal/cachediagnostic"
+	teament "github.com/zhu13818202655/troupe/ent/team"
+	teamcachediagnostic "github.com/zhu13818202655/troupe/ent/team/cachediagnostic"
+	"github.com/zhu13818202655/troupe/pkg/store"
 	adksession "google.golang.org/adk/session"
 )
 

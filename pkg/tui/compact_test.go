@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/tui/backend"
+	"github.com/zhu13818202655/troupe/pkg/tui/backend"
 )
 
 // compactBackend is a staticBackend that also implements CompactionBackend.

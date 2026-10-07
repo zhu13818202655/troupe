@@ -18,12 +18,12 @@ import (
 	"time"
 
 	goopenai "github.com/sashabaranov/go-openai"
-	"github.com/SAP/astonish/pkg/provider/bedrock"
-	"github.com/SAP/astonish/pkg/provider/httpool"
-	"github.com/SAP/astonish/pkg/provider/llmerror"
-	"github.com/SAP/astonish/pkg/provider/openai"
-	"github.com/SAP/astonish/pkg/provider/vertex"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/provider/bedrock"
+	"github.com/zhu13818202655/troupe/pkg/provider/httpool"
+	"github.com/zhu13818202655/troupe/pkg/provider/llmerror"
+	"github.com/zhu13818202655/troupe/pkg/provider/openai"
+	"github.com/zhu13818202655/troupe/pkg/provider/vertex"
+	"github.com/zhu13818202655/troupe/pkg/store"
 	"google.golang.org/adk/model"
 )
 

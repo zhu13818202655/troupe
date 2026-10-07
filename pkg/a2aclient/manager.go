@@ -6,8 +6,8 @@ import (
 	"log"
 	"sync"
 
-	"github.com/SAP/astonish/pkg/a2a"
-	"github.com/SAP/astonish/pkg/credentials"
+	"github.com/zhu13818202655/troupe/pkg/a2a"
+	"github.com/zhu13818202655/troupe/pkg/credentials"
 )
 
 // AgentInfo provides summary information about a connected remote agent.

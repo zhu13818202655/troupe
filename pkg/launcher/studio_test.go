@@ -3,7 +3,7 @@ package launcher
 import (
 	"testing"
 
-	"github.com/SAP/astonish/pkg/skills"
+	"github.com/zhu13818202655/troupe/pkg/skills"
 )
 
 func TestStudioChatComponentsFromFactoryResult_CopiesFilesystemSkills(t *testing.T) {

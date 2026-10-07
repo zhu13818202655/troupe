@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"strings"
 
-	mem "github.com/SAP/astonish/pkg/memory"
-	"github.com/SAP/astonish/pkg/store"
+	mem "github.com/zhu13818202655/troupe/pkg/memory"
+	"github.com/zhu13818202655/troupe/pkg/store"
 	"google.golang.org/adk/model"
 )
 

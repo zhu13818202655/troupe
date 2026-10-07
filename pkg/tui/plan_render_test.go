@@ -7,8 +7,8 @@ import (
 
 	"charm.land/lipgloss/v2"
 
-	"github.com/SAP/astonish/pkg/agent"
-	"github.com/SAP/astonish/pkg/tui/events"
+	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/tui/events"
 )
 
 const samplePlanContent = `# Execution Plan

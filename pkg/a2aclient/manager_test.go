@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/a2a"
+	"github.com/zhu13818202655/troupe/pkg/a2a"
 )
 
 func TestManagerInitialize(t *testing.T) {

@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/browser"
-	"github.com/SAP/astonish/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/browser"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
 )
 
 // saveRegisteredPDF snapshots and clears the process-global PDF browser

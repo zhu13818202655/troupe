@@ -1,6 +1,6 @@
 package tui
 
-import "github.com/SAP/astonish/pkg/gitutil"
+import "github.com/zhu13818202655/troupe/pkg/gitutil"
 
 // detectGitBranch returns the active git branch for dir, delegating to
 // pkg/gitutil. Returns empty string for non-git directories or when git

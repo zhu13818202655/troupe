@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/team/networkpolicy"
-	"github.com/SAP/astonish/ent/team/predicate"
+	"github.com/zhu13818202655/troupe/ent/team/networkpolicy"
+	"github.com/zhu13818202655/troupe/ent/team/predicate"
 )
 
 // NetworkPolicyDelete is the builder for deleting a NetworkPolicy entity.

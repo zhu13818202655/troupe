@@ -13,9 +13,9 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/SAP/astonish/pkg/codeintel"
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/pathscope"
+	"github.com/zhu13818202655/troupe/pkg/codeintel"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/pathscope"
 	"google.golang.org/adk/tool"
 	"google.golang.org/adk/tool/functiontool"
 )

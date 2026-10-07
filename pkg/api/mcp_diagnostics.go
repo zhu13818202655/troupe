@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/mcp"
-	"github.com/SAP/astonish/pkg/sandbox/netpolicy"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/mcp"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/netpolicy"
 )
 
 type mcpSandboxDiagnosticsError struct {

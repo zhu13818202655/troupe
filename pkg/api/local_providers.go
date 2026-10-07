@@ -3,7 +3,7 @@ package api
 import (
 	"sync"
 
-	"github.com/SAP/astonish/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 // localProvidersMu guards the process-wide snapshot of providers configured in

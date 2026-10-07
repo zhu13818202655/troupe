@@ -10,7 +10,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/SAP/astonish/pkg/fleet"
+	"github.com/zhu13818202655/troupe/pkg/fleet"
 )
 
 func TestCloneFleetSetupProfileHandler_CreatesCustomCopy(t *testing.T) {

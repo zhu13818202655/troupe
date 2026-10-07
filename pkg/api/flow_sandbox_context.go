@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/agent"
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/provider"
-	"github.com/SAP/astonish/pkg/sandbox"
-	"github.com/SAP/astonish/pkg/store"
-	"github.com/SAP/astonish/pkg/tools"
+	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/provider"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/tools"
 	adktool "google.golang.org/adk/tool"
 )
 

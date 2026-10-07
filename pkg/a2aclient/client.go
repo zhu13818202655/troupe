@@ -13,8 +13,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/SAP/astonish/pkg/a2a"
-	"github.com/SAP/astonish/pkg/credentials"
+	"github.com/zhu13818202655/troupe/pkg/a2a"
+	"github.com/zhu13818202655/troupe/pkg/credentials"
 )
 
 // StreamEvent represents an event received from an SSE stream.

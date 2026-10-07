@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/SAP/astonish/pkg/sandbox/openshell"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/openshell"
 )
 
 // credentialEgressHints maps logical credential names to optional L7 egress hints.

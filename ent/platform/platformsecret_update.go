@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/platform/platformsecret"
-	"github.com/SAP/astonish/ent/platform/predicate"
+	"github.com/zhu13818202655/troupe/ent/platform/platformsecret"
+	"github.com/zhu13818202655/troupe/ent/platform/predicate"
 )
 
 // PlatformSecretUpdate is the builder for updating PlatformSecret entities.

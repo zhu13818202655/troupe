@@ -3,10 +3,10 @@ package daemon
 import (
 	"context"
 
-	"github.com/SAP/astonish/pkg/agent"
-	"github.com/SAP/astonish/pkg/fleet"
-	"github.com/SAP/astonish/pkg/session"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/fleet"
+	"github.com/zhu13818202655/troupe/pkg/session"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // platformDB is the daemon-level interface for the platform database backend.

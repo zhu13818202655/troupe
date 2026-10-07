@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SAP/astonish/pkg/channels"
+	"github.com/zhu13818202655/troupe/pkg/channels"
 	slackapi "github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 	"github.com/slack-go/slack/socketmode"

@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/flowstore"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/flowstore"
 )
 
 // LoadedSuite holds a parsed suite with its associated tests.

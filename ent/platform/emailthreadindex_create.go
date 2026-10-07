@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/platform/emailthreadindex"
+	"github.com/zhu13818202655/troupe/ent/platform/emailthreadindex"
 )
 
 // EmailThreadIndexCreate is the builder for creating a EmailThreadIndex entity.

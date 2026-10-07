@@ -8,11 +8,11 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/SAP/astonish/pkg/execution"
-	"github.com/SAP/astonish/pkg/sandbox/netpolicy"
-	"github.com/SAP/astonish/pkg/sandbox/openshell"
-	"github.com/SAP/astonish/pkg/store"
-	"github.com/SAP/astonish/pkg/store/entstore"
+	"github.com/zhu13818202655/troupe/pkg/execution"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/netpolicy"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/openshell"
+	"github.com/zhu13818202655/troupe/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/store/entstore"
 )
 
 // TestResolveChannelUser_InjectsAllSkillStores verifies that the channel

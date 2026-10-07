@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	nativeembed "github.com/SAP/astonish/pkg/codeintel/native/embed"
+	nativeembed "github.com/zhu13818202655/troupe/pkg/codeintel/native/embed"
 )
 
 func hasCompiler() bool {

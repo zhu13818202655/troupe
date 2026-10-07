@@ -15,8 +15,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 
-	"github.com/SAP/astonish/pkg/store"
-	"github.com/SAP/astonish/pkg/store/pgutil"
+	"github.com/zhu13818202655/troupe/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/store/pgutil"
 )
 
 func TestIntegrationPostgresQuerySurvivesResultTypeChange(t *testing.T) {

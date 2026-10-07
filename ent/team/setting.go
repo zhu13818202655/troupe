@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/SAP/astonish/ent/team/setting"
+	"github.com/zhu13818202655/troupe/ent/team/setting"
 )
 
 // Setting is the model entity for the Setting schema.

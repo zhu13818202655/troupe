@@ -5,10 +5,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/sandbox"
-	"github.com/SAP/astonish/pkg/sandbox/mock"
-	"github.com/SAP/astonish/pkg/sandbox/sessioncreds"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/mock"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/sessioncreds"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 type vaultMemStore struct {

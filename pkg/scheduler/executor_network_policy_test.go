@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/sandbox/netpolicy"
-	"github.com/SAP/astonish/pkg/sandbox/openshell"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/netpolicy"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/openshell"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 func TestExecuteRoutine_AttachesGatewayConfig(t *testing.T) {

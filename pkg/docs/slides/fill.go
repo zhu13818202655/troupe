@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/docs/slides/components"
-	"github.com/SAP/astonish/pkg/docs/slides/themes"
+	"github.com/zhu13818202655/troupe/pkg/docs/slides/components"
+	"github.com/zhu13818202655/troupe/pkg/docs/slides/themes"
 )
 
 // themeKeyTemplateName is stamped onto a deck's theme when create_deck seeds

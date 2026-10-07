@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/personal/cachediagnostic"
-	"github.com/SAP/astonish/ent/personal/predicate"
-	"github.com/SAP/astonish/ent/personal/session"
+	"github.com/zhu13818202655/troupe/ent/personal/cachediagnostic"
+	"github.com/zhu13818202655/troupe/ent/personal/predicate"
+	"github.com/zhu13818202655/troupe/ent/personal/session"
 )
 
 // CacheDiagnosticQuery is the builder for querying CacheDiagnostic entities.

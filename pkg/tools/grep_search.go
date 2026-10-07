@@ -16,7 +16,7 @@ import (
 
 	"google.golang.org/adk/tool"
 
-	"github.com/SAP/astonish/pkg/tools/ripgrep"
+	"github.com/zhu13818202655/troupe/pkg/tools/ripgrep"
 )
 
 // grepSearchTimeout bounds how long a single grep_search may run. Without it, a

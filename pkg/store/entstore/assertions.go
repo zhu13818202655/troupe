@@ -1,6 +1,6 @@
 package entstore
 
-import "github.com/SAP/astonish/pkg/store"
+import "github.com/zhu13818202655/troupe/pkg/store"
 
 // Compile-time assertions for top-level store interfaces.
 // These will cause build failures if any method is missing.

@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/personal/cachediagnostic"
-	"github.com/SAP/astonish/ent/personal/session"
+	"github.com/zhu13818202655/troupe/ent/personal/cachediagnostic"
+	"github.com/zhu13818202655/troupe/ent/personal/session"
 )
 
 // CacheDiagnosticCreate is the builder for creating a CacheDiagnostic entity.

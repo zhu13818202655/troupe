@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/SAP/astonish/pkg/pdfgen"
+	"github.com/zhu13818202655/troupe/pkg/pdfgen"
 )
 
 // deckSlideThumbVersion is bumped whenever the baked-thumbnail FORMAT changes

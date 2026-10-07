@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/sandbox/openshell"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/openshell"
 )
 
 // LooksLikeNetworkDenial checks a shell_command response for L7 proxy denial.

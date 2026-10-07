@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/codeintel"
+	"github.com/zhu13818202655/troupe/pkg/codeintel"
 	"google.golang.org/adk/tool"
 )
 

@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/sandbox"
-	"github.com/SAP/astonish/pkg/sandbox/docker"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/docker"
 )
 
 func TestAliasLayer_CreatesRelativeSymlink(t *testing.T) {

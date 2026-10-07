@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SAP/astonish/pkg/mailer"
-	"github.com/SAP/astonish/pkg/tools"
+	"github.com/zhu13818202655/troupe/pkg/mailer"
+	"github.com/zhu13818202655/troupe/pkg/tools"
 )
 
 func TestStartupPhaseRecord(t *testing.T) {

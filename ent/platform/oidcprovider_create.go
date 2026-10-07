@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/platform/oidcprovider"
-	"github.com/SAP/astonish/ent/platform/organization"
+	"github.com/zhu13818202655/troupe/ent/platform/oidcprovider"
+	"github.com/zhu13818202655/troupe/ent/platform/organization"
 	"github.com/google/uuid"
 )
 

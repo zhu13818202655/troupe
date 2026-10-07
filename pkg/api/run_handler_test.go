@@ -5,9 +5,9 @@ import (
 	"net"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/browser"
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/browser"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
 	"google.golang.org/adk/session"
 )
 

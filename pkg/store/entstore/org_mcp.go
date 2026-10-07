@@ -8,9 +8,9 @@ import (
 
 	"github.com/google/uuid"
 
-	orgent "github.com/SAP/astonish/ent/org"
-	"github.com/SAP/astonish/ent/org/orgmcpserver"
-	"github.com/SAP/astonish/pkg/store"
+	orgent "github.com/zhu13818202655/troupe/ent/org"
+	"github.com/zhu13818202655/troupe/ent/org/orgmcpserver"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // orgMCPServerStore implements store.MCPServerStore for org-level MCP servers.

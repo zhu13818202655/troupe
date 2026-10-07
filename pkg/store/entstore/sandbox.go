@@ -9,11 +9,11 @@ import (
 
 	"github.com/google/uuid"
 
-	platforment "github.com/SAP/astonish/ent/platform"
-	"github.com/SAP/astonish/ent/platform/sandboxlayer"
-	"github.com/SAP/astonish/ent/platform/sandboxtemplate"
-	"github.com/SAP/astonish/ent/platform/schema"
-	"github.com/SAP/astonish/pkg/store"
+	platforment "github.com/zhu13818202655/troupe/ent/platform"
+	"github.com/zhu13818202655/troupe/ent/platform/sandboxlayer"
+	"github.com/zhu13818202655/troupe/ent/platform/sandboxtemplate"
+	"github.com/zhu13818202655/troupe/ent/platform/schema"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // --------------------------------------------------------------------------

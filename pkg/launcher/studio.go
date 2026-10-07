@@ -11,14 +11,14 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/agent"
-	"github.com/SAP/astonish/pkg/api"
-	"github.com/SAP/astonish/pkg/oauthserver"
-	"github.com/SAP/astonish/pkg/sandbox"
-	"github.com/SAP/astonish/pkg/skills"
-	"github.com/SAP/astonish/pkg/store"
-	"github.com/SAP/astonish/pkg/tools"
-	"github.com/SAP/astonish/web"
+	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/api"
+	"github.com/zhu13818202655/troupe/pkg/oauthserver"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/skills"
+	"github.com/zhu13818202655/troupe/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/tools"
+	"github.com/zhu13818202655/troupe/web"
 	"github.com/gorilla/mux"
 )
 

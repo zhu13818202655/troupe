@@ -6,9 +6,9 @@ import (
 
 	"github.com/google/uuid"
 
-	platforment "github.com/SAP/astonish/ent/platform"
-	"github.com/SAP/astonish/ent/platform/platformnetworkpolicy"
-	"github.com/SAP/astonish/pkg/store"
+	platforment "github.com/zhu13818202655/troupe/ent/platform"
+	"github.com/zhu13818202655/troupe/ent/platform/platformnetworkpolicy"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // platformNetworkPolicyStore implements store.NetworkPolicyStore using the platform Ent client.

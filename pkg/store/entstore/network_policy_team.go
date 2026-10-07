@@ -6,9 +6,9 @@ import (
 
 	"github.com/google/uuid"
 
-	teament "github.com/SAP/astonish/ent/team"
-	"github.com/SAP/astonish/ent/team/networkpolicy"
-	"github.com/SAP/astonish/pkg/store"
+	teament "github.com/zhu13818202655/troupe/ent/team"
+	"github.com/zhu13818202655/troupe/ent/team/networkpolicy"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // teamNetworkPolicyStore implements store.NetworkPolicyStore using the Ent team client.

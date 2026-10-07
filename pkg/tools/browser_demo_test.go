@@ -3,7 +3,7 @@ package tools
 import (
 	"testing"
 
-	"github.com/SAP/astonish/pkg/browser"
+	"github.com/zhu13818202655/troupe/pkg/browser"
 )
 
 func TestBrowserHighlight_RequiresTarget(t *testing.T) {

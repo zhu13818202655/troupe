@@ -18,10 +18,10 @@ import (
 	"google.golang.org/adk/tool"
 	"google.golang.org/genai"
 
-	"github.com/SAP/astonish/pkg/credentials"
-	"github.com/SAP/astonish/pkg/provider/llmerror"
-	persistentsession "github.com/SAP/astonish/pkg/session"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/credentials"
+	"github.com/zhu13818202655/troupe/pkg/provider/llmerror"
+	persistentsession "github.com/zhu13818202655/troupe/pkg/session"
+	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/google/uuid"
 )
 

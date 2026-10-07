@@ -7,7 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/SAP/astonish/ent/personal/predicate"
+	"github.com/zhu13818202655/troupe/ent/personal/predicate"
 	"github.com/google/uuid"
 )
 

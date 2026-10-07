@@ -14,11 +14,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/sandbox"
-	sboxdocker "github.com/SAP/astonish/pkg/sandbox/docker"
-	persistentsession "github.com/SAP/astonish/pkg/session"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
+	sboxdocker "github.com/zhu13818202655/troupe/pkg/sandbox/docker"
+	persistentsession "github.com/zhu13818202655/troupe/pkg/session"
+	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/gorilla/mux"
 )
 

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/pathscope"
+	"github.com/zhu13818202655/troupe/pkg/pathscope"
 )
 
 // disableTmpAllowlist clears the /tmp always-allowed dirs for tests that verify

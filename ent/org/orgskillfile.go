@@ -9,8 +9,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/SAP/astonish/ent/org/orgskill"
-	"github.com/SAP/astonish/ent/org/orgskillfile"
+	"github.com/zhu13818202655/troupe/ent/org/orgskill"
+	"github.com/zhu13818202655/troupe/ent/org/orgskillfile"
 	"github.com/google/uuid"
 )
 

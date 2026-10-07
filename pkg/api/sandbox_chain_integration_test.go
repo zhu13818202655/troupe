@@ -10,10 +10,10 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"github.com/SAP/astonish/pkg/sandbox"
-	"github.com/SAP/astonish/pkg/store"
-	"github.com/SAP/astonish/pkg/store/entstore"
-	"github.com/SAP/astonish/pkg/store/pgutil"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/store/entstore"
+	"github.com/zhu13818202655/troupe/pkg/store/pgutil"
 )
 
 // ---------------------------------------------------------------------------

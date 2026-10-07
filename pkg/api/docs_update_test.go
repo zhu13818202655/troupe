@@ -3,7 +3,7 @@ package api
 import (
 	"testing"
 
-	"github.com/SAP/astonish/pkg/docs/slides"
+	"github.com/zhu13818202655/troupe/pkg/docs/slides"
 )
 
 func TestTryParseDocsUpdateMessage(t *testing.T) {

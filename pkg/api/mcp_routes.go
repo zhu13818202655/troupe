@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/agent"
-	"github.com/SAP/astonish/pkg/execution"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/execution"
+	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/gorilla/mux"
 	mcp "github.com/modelcontextprotocol/go-sdk/mcp"
 )

@@ -1,6 +1,6 @@
 package sandbox
 
-import "github.com/SAP/astonish/pkg/sandbox/tmplmeta"
+import "github.com/zhu13818202655/troupe/pkg/sandbox/tmplmeta"
 
 // TemplateMeta is re-exported from pkg/sandbox/tmplmeta.
 type TemplateMeta = tmplmeta.TemplateMeta

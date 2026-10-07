@@ -6,11 +6,11 @@ import (
 
 	"github.com/google/uuid"
 
-	platforment "github.com/SAP/astonish/ent/platform"
-	"github.com/SAP/astonish/ent/platform/loginsession"
-	"github.com/SAP/astonish/ent/platform/organization"
-	"github.com/SAP/astonish/ent/platform/orgmembership"
-	"github.com/SAP/astonish/pkg/store"
+	platforment "github.com/zhu13818202655/troupe/ent/platform"
+	"github.com/zhu13818202655/troupe/ent/platform/loginsession"
+	"github.com/zhu13818202655/troupe/ent/platform/organization"
+	"github.com/zhu13818202655/troupe/ent/platform/orgmembership"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // orgStore implements store.OrganizationStore using the Ent platform client.

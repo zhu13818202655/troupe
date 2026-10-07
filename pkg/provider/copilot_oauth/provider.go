@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/sashabaranov/go-openai"
-	openai_provider "github.com/SAP/astonish/pkg/provider/openai"
+	openai_provider "github.com/zhu13818202655/troupe/pkg/provider/openai"
 	"google.golang.org/adk/model"
 )
 

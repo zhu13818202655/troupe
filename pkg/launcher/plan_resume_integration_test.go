@@ -11,8 +11,8 @@ import (
 	adksession "google.golang.org/adk/session"
 	"google.golang.org/genai"
 
-	"github.com/SAP/astonish/pkg/agent"
-	"github.com/SAP/astonish/pkg/tui/events"
+	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/tui/events"
 )
 
 // TestPlanResumesAfterCompactionAndRestart drives the full user-visible chain

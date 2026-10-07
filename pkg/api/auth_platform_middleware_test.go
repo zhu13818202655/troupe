@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/execution"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/execution"
 )
 
 // testPlatformAuth creates a minimal PlatformAuth for middleware testing.

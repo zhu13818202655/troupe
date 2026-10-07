@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SAP/astonish/pkg/agent"
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/credentials"
+	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/credentials"
 	"google.golang.org/adk/tool"
 	"google.golang.org/adk/tool/functiontool"
 )

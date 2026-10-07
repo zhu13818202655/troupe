@@ -6,10 +6,10 @@ import (
 
 	"github.com/google/uuid"
 
-	platforment "github.com/SAP/astonish/ent/platform"
-	"github.com/SAP/astonish/ent/platform/orgmembership"
-	"github.com/SAP/astonish/ent/platform/user"
-	"github.com/SAP/astonish/pkg/store"
+	platforment "github.com/zhu13818202655/troupe/ent/platform"
+	"github.com/zhu13818202655/troupe/ent/platform/orgmembership"
+	"github.com/zhu13818202655/troupe/ent/platform/user"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // userStore implements store.UserStore using the Ent platform client.

@@ -20,7 +20,7 @@ import (
 	"sync"
 	"time"
 
-	pb "github.com/SAP/astonish/pkg/sandbox/openshell/gen/openshellv1"
+	pb "github.com/zhu13818202655/troupe/pkg/sandbox/openshell/gen/openshellv1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"

@@ -9,9 +9,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/SAP/astonish/ent/platform/loginsession"
-	"github.com/SAP/astonish/ent/platform/organization"
-	"github.com/SAP/astonish/ent/platform/user"
+	"github.com/zhu13818202655/troupe/ent/platform/loginsession"
+	"github.com/zhu13818202655/troupe/ent/platform/organization"
+	"github.com/zhu13818202655/troupe/ent/platform/user"
 	"github.com/google/uuid"
 )
 

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/tests/e2eboot"
+	"github.com/zhu13818202655/troupe/tests/e2eboot"
 )
 
 // Minimal drill suite YAML for CRUD testing.

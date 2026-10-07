@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/SAP/astonish/pkg/api"
-	"github.com/SAP/astonish/pkg/channels"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/api"
+	"github.com/zhu13818202655/troupe/pkg/channels"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // buildTelegramLinkHandler returns a function suitable for TelegramChannel.LinkHandler.

@@ -12,7 +12,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 
-	"github.com/SAP/astonish/pkg/execution"
+	"github.com/zhu13818202655/troupe/pkg/execution"
 )
 
 // ValidateBearer validates an Astonish-issued OAuth access token and maps its

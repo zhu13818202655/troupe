@@ -10,9 +10,9 @@ import (
 
 	"github.com/google/uuid"
 
-	teament "github.com/SAP/astonish/ent/team"
-	"github.com/SAP/astonish/ent/team/memory"
-	"github.com/SAP/astonish/pkg/store"
+	teament "github.com/zhu13818202655/troupe/ent/team"
+	"github.com/zhu13818202655/troupe/ent/team/memory"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // teamMemoryStore implements store.MemoryStore backed by the team Ent client.

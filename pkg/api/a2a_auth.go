@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/SAP/astonish/pkg/execution"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/execution"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 const a2aScope = string(execution.CapabilityA2A)

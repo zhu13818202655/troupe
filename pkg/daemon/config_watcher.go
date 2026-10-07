@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/SAP/astonish/pkg/channels"
-	"github.com/SAP/astonish/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/channels"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 // ConfigWatcherOpts holds the options for the config file watcher.

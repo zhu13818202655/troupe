@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/platform/platformsecret"
-	"github.com/SAP/astonish/ent/platform/predicate"
+	"github.com/zhu13818202655/troupe/ent/platform/platformsecret"
+	"github.com/zhu13818202655/troupe/ent/platform/predicate"
 )
 
 // PlatformSecretDelete is the builder for deleting a PlatformSecret entity.

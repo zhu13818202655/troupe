@@ -12,8 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/team/fleetrunstate"
-	"github.com/SAP/astonish/ent/team/predicate"
+	"github.com/zhu13818202655/troupe/ent/team/fleetrunstate"
+	"github.com/zhu13818202655/troupe/ent/team/predicate"
 )
 
 // FleetRunStateUpdate is the builder for updating FleetRunState entities.

@@ -14,9 +14,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/SAP/astonish/pkg/common"
-	"github.com/SAP/astonish/pkg/provider/httpool"
-	"github.com/SAP/astonish/pkg/provider/llmerror"
+	"github.com/zhu13818202655/troupe/pkg/common"
+	"github.com/zhu13818202655/troupe/pkg/provider/httpool"
+	"github.com/zhu13818202655/troupe/pkg/provider/llmerror"
 
 	"google.golang.org/adk/model"
 	"google.golang.org/genai"

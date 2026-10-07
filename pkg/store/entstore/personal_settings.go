@@ -7,9 +7,9 @@ import (
 
 	"github.com/google/uuid"
 
-	personalent "github.com/SAP/astonish/ent/personal"
-	"github.com/SAP/astonish/ent/personal/personalsettings"
-	"github.com/SAP/astonish/pkg/store"
+	personalent "github.com/zhu13818202655/troupe/ent/personal"
+	"github.com/zhu13818202655/troupe/ent/personal/personalsettings"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // personalSettingsStore implements store.PersonalSettingsStore for personal scope.

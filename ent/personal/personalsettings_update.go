@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/personal/personalsettings"
-	"github.com/SAP/astonish/ent/personal/predicate"
+	"github.com/zhu13818202655/troupe/ent/personal/personalsettings"
+	"github.com/zhu13818202655/troupe/ent/personal/predicate"
 )
 
 // PersonalSettingsUpdate is the builder for updating PersonalSettings entities.

@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
-	"github.com/SAP/astonish/pkg/session"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/session"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // FleetSessionTraceHandler handles GET /api/studio/fleet/sessions/{id}/trace.

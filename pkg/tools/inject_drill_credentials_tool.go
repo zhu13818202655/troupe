@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/browser"
-	adrill "github.com/SAP/astonish/pkg/drill"
-	"github.com/SAP/astonish/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/browser"
+	adrill "github.com/zhu13818202655/troupe/pkg/drill"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
 	"google.golang.org/adk/tool"
 	"google.golang.org/adk/tool/functiontool"
 )

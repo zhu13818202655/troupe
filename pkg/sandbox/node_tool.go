@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/SAP/astonish/pkg/common"
-	"github.com/SAP/astonish/pkg/sandbox/sessioncreds"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/common"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/sessioncreds"
+	"github.com/zhu13818202655/troupe/pkg/store"
 	"google.golang.org/adk/model"
 	"google.golang.org/adk/tool"
 	"google.golang.org/genai"

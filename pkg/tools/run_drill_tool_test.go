@@ -8,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/browser"
-	"github.com/SAP/astonish/pkg/config"
-	adrill "github.com/SAP/astonish/pkg/drill"
-	"github.com/SAP/astonish/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/browser"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	adrill "github.com/zhu13818202655/troupe/pkg/drill"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
 )
 
 // ---------------------------------------------------------------------------

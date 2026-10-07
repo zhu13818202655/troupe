@@ -9,8 +9,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/channels"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/channels"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // mockChannel is a minimal Channel implementation for testing.

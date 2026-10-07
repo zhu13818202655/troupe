@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/SAP/astonish/pkg/credentials"
-	"github.com/SAP/astonish/pkg/provider/llmerror"
+	"github.com/zhu13818202655/troupe/pkg/credentials"
+	"github.com/zhu13818202655/troupe/pkg/provider/llmerror"
 	"google.golang.org/adk/model"
 	"google.golang.org/adk/session"
 	"google.golang.org/adk/tool"

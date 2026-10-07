@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"time"
 
-	platforment "github.com/SAP/astonish/ent/platform"
-	"github.com/SAP/astonish/ent/platform/oauthauthorization"
-	"github.com/SAP/astonish/ent/platform/oauthclient"
-	"github.com/SAP/astonish/ent/platform/oauthconsent"
-	"github.com/SAP/astonish/ent/platform/oauthsigningkey"
-	"github.com/SAP/astonish/ent/platform/oauthtoken"
-	"github.com/SAP/astonish/pkg/store"
+	platforment "github.com/zhu13818202655/troupe/ent/platform"
+	"github.com/zhu13818202655/troupe/ent/platform/oauthauthorization"
+	"github.com/zhu13818202655/troupe/ent/platform/oauthclient"
+	"github.com/zhu13818202655/troupe/ent/platform/oauthconsent"
+	"github.com/zhu13818202655/troupe/ent/platform/oauthsigningkey"
+	"github.com/zhu13818202655/troupe/ent/platform/oauthtoken"
+	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/google/uuid"
 )
 

@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/SAP/astonish/ent/org/orgmcpserver"
+	"github.com/zhu13818202655/troupe/ent/org/orgmcpserver"
 	"github.com/google/uuid"
 )
 

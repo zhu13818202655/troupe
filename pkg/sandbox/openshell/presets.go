@@ -1,6 +1,6 @@
 package openshell
 
-import "github.com/SAP/astonish/pkg/config"
+import "github.com/zhu13818202655/troupe/pkg/config"
 
 // presetEndpoint defines a single allowed host:port pair within a preset.
 type presetEndpoint struct {

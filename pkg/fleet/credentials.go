@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/credentials"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/credentials"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // ResolvedCredential holds a credential resolved from the encrypted store at runtime.

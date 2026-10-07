@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/sandbox/tmplmeta"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/tmplmeta"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // MaterializeBootstrapFiles writes template bootstrap files into a sandbox

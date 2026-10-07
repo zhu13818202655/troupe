@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/platform/predicate"
-	"github.com/SAP/astonish/ent/platform/userchannel"
+	"github.com/zhu13818202655/troupe/ent/platform/predicate"
+	"github.com/zhu13818202655/troupe/ent/platform/userchannel"
 )
 
 // UserChannelDelete is the builder for deleting a UserChannel entity.

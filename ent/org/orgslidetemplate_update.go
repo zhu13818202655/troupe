@@ -12,8 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/org/orgslidetemplate"
-	"github.com/SAP/astonish/ent/org/predicate"
+	"github.com/zhu13818202655/troupe/ent/org/orgslidetemplate"
+	"github.com/zhu13818202655/troupe/ent/org/predicate"
 )
 
 // OrgSlideTemplateUpdate is the builder for updating OrgSlideTemplate entities.

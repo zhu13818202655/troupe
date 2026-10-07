@@ -3,8 +3,8 @@ package openshell
 import (
 	"testing"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
 )
 
 func TestMergeSessionNetworkAllows_AppendsCloudSAP(t *testing.T) {

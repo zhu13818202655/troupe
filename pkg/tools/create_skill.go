@@ -7,8 +7,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/SAP/astonish/pkg/safepath"
-	"github.com/SAP/astonish/pkg/skills"
+	"github.com/zhu13818202655/troupe/pkg/safepath"
+	"github.com/zhu13818202655/troupe/pkg/skills"
 	"google.golang.org/adk/tool"
 	"google.golang.org/adk/tool/functiontool"
 )

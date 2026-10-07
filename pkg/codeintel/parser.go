@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/codeintel/internal/treesitter"
+	"github.com/zhu13818202655/troupe/pkg/codeintel/internal/treesitter"
 )
 
 type fileParser struct {

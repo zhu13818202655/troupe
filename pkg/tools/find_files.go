@@ -11,7 +11,7 @@ import (
 
 	"google.golang.org/adk/tool"
 
-	"github.com/SAP/astonish/pkg/tools/ripgrep"
+	"github.com/zhu13818202655/troupe/pkg/tools/ripgrep"
 )
 
 // FindFilesArgs defines arguments for the find_files tool

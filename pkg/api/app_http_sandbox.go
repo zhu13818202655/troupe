@@ -13,8 +13,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/sandbox"
-	"github.com/SAP/astonish/pkg/sandbox/netpolicy"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/netpolicy"
 )
 
 // appHTTPFetch performs an HTTP request via the App sandbox (curl Exec).

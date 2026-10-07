@@ -16,8 +16,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/sandbox"
-	"github.com/SAP/astonish/pkg/sandbox/mock"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/mock"
 )
 
 // -----------------------------------------------------------------------------

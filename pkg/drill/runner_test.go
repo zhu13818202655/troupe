@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 // mockExecutor is a test double for ToolExecutor.

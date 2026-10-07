@@ -5,8 +5,8 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // LoadA2AAgentConfig loads A2A agent configuration with the platform cascade.

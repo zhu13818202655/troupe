@@ -22,7 +22,7 @@ import (
 	"strings"
 	"time"
 
-	nativeembed "github.com/SAP/astonish/pkg/codeintel/native/embed"
+	nativeembed "github.com/zhu13818202655/troupe/pkg/codeintel/native/embed"
 )
 
 // ErrNoCompiler indicates no usable C compiler was found on PATH, so the library

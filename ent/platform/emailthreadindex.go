@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/SAP/astonish/ent/platform/emailthreadindex"
+	"github.com/zhu13818202655/troupe/ent/platform/emailthreadindex"
 )
 
 // EmailThreadIndex is the model entity for the EmailThreadIndex schema.

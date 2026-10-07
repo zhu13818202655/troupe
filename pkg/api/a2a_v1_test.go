@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/a2a"
+	"github.com/zhu13818202655/troupe/pkg/a2a"
 )
 
 func TestDecodeA2AV1SendMessageParamsParts(t *testing.T) {

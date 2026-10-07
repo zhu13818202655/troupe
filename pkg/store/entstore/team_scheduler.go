@@ -7,9 +7,9 @@ import (
 
 	"github.com/google/uuid"
 
-	teament "github.com/SAP/astonish/ent/team"
-	"github.com/SAP/astonish/ent/team/scheduledjob"
-	"github.com/SAP/astonish/pkg/store"
+	teament "github.com/zhu13818202655/troupe/ent/team"
+	"github.com/zhu13818202655/troupe/ent/team/scheduledjob"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // teamSchedulerStore implements store.SchedulerStore using the Ent team client.

@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"strings"
 
-	teament "github.com/SAP/astonish/ent/team"
-	"github.com/SAP/astonish/ent/team/app"
-	"github.com/SAP/astonish/ent/team/appstate"
-	"github.com/SAP/astonish/pkg/store"
+	teament "github.com/zhu13818202655/troupe/ent/team"
+	"github.com/zhu13818202655/troupe/ent/team/app"
+	"github.com/zhu13818202655/troupe/ent/team/appstate"
+	"github.com/zhu13818202655/troupe/pkg/store"
 
 	"github.com/google/uuid"
 )

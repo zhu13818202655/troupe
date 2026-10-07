@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/provider"
-	copilot_oauth "github.com/SAP/astonish/pkg/provider/copilot_oauth"
-	"github.com/SAP/astonish/pkg/tui/backend"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/provider"
+	copilot_oauth "github.com/zhu13818202655/troupe/pkg/provider/copilot_oauth"
+	"github.com/zhu13818202655/troupe/pkg/tui/backend"
 )
 
 // codeProviderCatalogSupported is the set of provider types that the /provider

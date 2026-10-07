@@ -17,10 +17,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SAP/astonish/pkg/docs/slides"
-	"github.com/SAP/astonish/pkg/docs/slides/pptxworker"
-	"github.com/SAP/astonish/pkg/docs/slides/themes"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/docs/slides"
+	"github.com/zhu13818202655/troupe/pkg/docs/slides/pptxworker"
+	"github.com/zhu13818202655/troupe/pkg/docs/slides/themes"
+	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/gorilla/mux"
 )
 

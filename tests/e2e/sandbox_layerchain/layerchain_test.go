@@ -23,8 +23,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SAP/astonish/pkg/store"
-	"github.com/SAP/astonish/tests/e2eboot"
+	"github.com/zhu13818202655/troupe/pkg/store"
+	"github.com/zhu13818202655/troupe/tests/e2eboot"
 )
 
 // COVERS: SANDBOX-001

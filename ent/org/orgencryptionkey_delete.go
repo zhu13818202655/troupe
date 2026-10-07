@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/org/orgencryptionkey"
-	"github.com/SAP/astonish/ent/org/predicate"
+	"github.com/zhu13818202655/troupe/ent/org/orgencryptionkey"
+	"github.com/zhu13818202655/troupe/ent/org/predicate"
 )
 
 // OrgEncryptionKeyDelete is the builder for deleting a OrgEncryptionKey entity.

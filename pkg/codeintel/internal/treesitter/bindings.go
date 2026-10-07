@@ -11,7 +11,7 @@ import (
 
 	"github.com/ebitengine/purego"
 
-	"github.com/SAP/astonish/pkg/codeintel/native"
+	"github.com/zhu13818202655/troupe/pkg/codeintel/native"
 )
 
 const DefaultLibraryPath = "/usr/lib/astonish/libastonish-treesitter.so"

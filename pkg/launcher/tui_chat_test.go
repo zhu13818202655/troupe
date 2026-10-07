@@ -8,10 +8,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/client"
-	"github.com/SAP/astonish/pkg/skills"
-	"github.com/SAP/astonish/pkg/tui/backend"
-	"github.com/SAP/astonish/pkg/tui/events"
+	"github.com/zhu13818202655/troupe/pkg/client"
+	"github.com/zhu13818202655/troupe/pkg/skills"
+	"github.com/zhu13818202655/troupe/pkg/tui/backend"
+	"github.com/zhu13818202655/troupe/pkg/tui/events"
 )
 
 func TestMapSSEToEvents_TextAndTools(t *testing.T) {

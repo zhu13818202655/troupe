@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/SAP/astonish/ent/org"
+	"github.com/zhu13818202655/troupe/ent/org"
 )
 
 // The OrgA2AAgentFunc type is an adapter to allow the use of ordinary

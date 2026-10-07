@@ -3,7 +3,7 @@ package migrations
 import (
 	"fmt"
 
-	"github.com/SAP/astonish/pkg/docs/slides"
+	"github.com/zhu13818202655/troupe/pkg/docs/slides"
 )
 
 // Normalize upgrades an in-memory graph without mutating persisted source.

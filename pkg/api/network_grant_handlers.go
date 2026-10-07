@@ -21,9 +21,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/SAP/astonish/pkg/sandbox/netpolicy"
-	"github.com/SAP/astonish/pkg/sandbox/openshell"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/netpolicy"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/openshell"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // networkGrantApproveRequest is the body for approving a specific draft chunk.

@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/ent/team/fleetplan"
-	"github.com/SAP/astonish/pkg/fleet"
+	"github.com/zhu13818202655/troupe/ent/team/fleetplan"
+	"github.com/zhu13818202655/troupe/pkg/fleet"
 
 	"gopkg.in/yaml.v3"
 )

@@ -43,8 +43,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SAP/astonish/pkg/sandbox"
-	"github.com/SAP/astonish/pkg/sandbox/mock"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/mock"
 )
 
 // execHandler is a convenience wrapper that replays the astonish-node

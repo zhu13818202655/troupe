@@ -14,9 +14,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/SAP/astonish/pkg/channels"
-	emailpkg "github.com/SAP/astonish/pkg/email"
-	"github.com/SAP/astonish/pkg/session"
+	"github.com/zhu13818202655/troupe/pkg/channels"
+	emailpkg "github.com/zhu13818202655/troupe/pkg/email"
+	"github.com/zhu13818202655/troupe/pkg/session"
 )
 
 // Config holds configuration for the Email channel adapter.

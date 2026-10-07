@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 
-	orgent "github.com/SAP/astonish/ent/org"
-	"github.com/SAP/astonish/ent/org/orgslidetemplate"
-	platforment "github.com/SAP/astonish/ent/platform"
-	"github.com/SAP/astonish/ent/platform/platformslidetemplate"
-	"github.com/SAP/astonish/pkg/store"
+	orgent "github.com/zhu13818202655/troupe/ent/org"
+	"github.com/zhu13818202655/troupe/ent/org/orgslidetemplate"
+	platforment "github.com/zhu13818202655/troupe/ent/platform"
+	"github.com/zhu13818202655/troupe/ent/platform/platformslidetemplate"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 type platformSlideTemplateStore struct {

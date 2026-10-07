@@ -13,10 +13,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/a2a"
-	"github.com/SAP/astonish/pkg/agent"
-	"github.com/SAP/astonish/pkg/provider/llmerror"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/a2a"
+	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/provider/llmerror"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 type dispatchPlatformResolver struct {

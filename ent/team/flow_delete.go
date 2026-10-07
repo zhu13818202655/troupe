@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/team/flow"
-	"github.com/SAP/astonish/ent/team/predicate"
+	"github.com/zhu13818202655/troupe/ent/team/flow"
+	"github.com/zhu13818202655/troupe/ent/team/predicate"
 )
 
 // FlowDelete is the builder for deleting a Flow entity.

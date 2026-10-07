@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/SAP/astonish/pkg/a2a"
-	"github.com/SAP/astonish/pkg/a2aserver"
-	"github.com/SAP/astonish/pkg/execution"
+	"github.com/zhu13818202655/troupe/pkg/a2a"
+	"github.com/zhu13818202655/troupe/pkg/a2aserver"
+	"github.com/zhu13818202655/troupe/pkg/execution"
 	"github.com/gorilla/mux"
 )
 

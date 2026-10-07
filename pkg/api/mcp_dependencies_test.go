@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/flowstore"
-	"github.com/SAP/astonish/pkg/mcpstore"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/flowstore"
+	"github.com/zhu13818202655/troupe/pkg/mcpstore"
 )
 
 // TestResolveMCPDependencies_ExactNameMatching verifies that the dependency

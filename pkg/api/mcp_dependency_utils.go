@@ -1,6 +1,6 @@
 package api
 
-import "github.com/SAP/astonish/pkg/config"
+import "github.com/zhu13818202655/troupe/pkg/config"
 
 func mcpDependenciesEqual(a, b []config.MCPDependency) bool {
 	if len(a) != len(b) {

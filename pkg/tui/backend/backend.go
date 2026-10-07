@@ -6,7 +6,7 @@ package backend
 import (
 	"context"
 
-	"github.com/SAP/astonish/pkg/tui/events"
+	"github.com/zhu13818202655/troupe/pkg/tui/events"
 )
 
 // Info is static session metadata shown in the TUI header / footer.

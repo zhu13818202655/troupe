@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/SAP/astonish/pkg/backup"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/backup"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 const backupModeLogical = "logical"

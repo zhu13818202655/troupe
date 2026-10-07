@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/credentials"
-	"github.com/SAP/astonish/pkg/execution"
-	"github.com/SAP/astonish/pkg/provider"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/credentials"
+	"github.com/zhu13818202655/troupe/pkg/execution"
+	"github.com/zhu13818202655/troupe/pkg/provider"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // effectiveUserID returns the user ID for the current request.

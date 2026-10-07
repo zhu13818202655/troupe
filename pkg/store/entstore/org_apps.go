@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	orgent "github.com/SAP/astonish/ent/org"
-	"github.com/SAP/astonish/ent/org/orgapp"
-	"github.com/SAP/astonish/pkg/store"
+	orgent "github.com/zhu13818202655/troupe/ent/org"
+	"github.com/zhu13818202655/troupe/ent/org/orgapp"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // orgAppStore implements store.AppStore for org-level apps.

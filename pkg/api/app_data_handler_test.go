@@ -10,11 +10,11 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/sandbox"
-	"github.com/SAP/astonish/pkg/sandbox/mock"
-	"github.com/SAP/astonish/pkg/sandbox/netpolicy"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/mock"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/netpolicy"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 func TestCredentialSuffixParsing(t *testing.T) {

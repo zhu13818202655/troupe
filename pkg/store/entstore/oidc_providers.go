@@ -6,9 +6,9 @@ import (
 
 	"github.com/google/uuid"
 
-	platforment "github.com/SAP/astonish/ent/platform"
-	"github.com/SAP/astonish/ent/platform/oidcprovider"
-	"github.com/SAP/astonish/pkg/store"
+	platforment "github.com/zhu13818202655/troupe/ent/platform"
+	"github.com/zhu13818202655/troupe/ent/platform/oidcprovider"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // oidcProviderStore implements store.OIDCProviderStore using the Ent platform client.

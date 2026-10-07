@@ -14,8 +14,8 @@ import (
 
 	"context"
 
-	"github.com/SAP/astonish/pkg/sandbox"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // ---------------------------------------------------------------------------

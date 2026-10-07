@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	platforment "github.com/SAP/astonish/ent/platform"
-	"github.com/SAP/astonish/pkg/store"
+	platforment "github.com/zhu13818202655/troupe/ent/platform"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 const modelLimitsKey = "model_limits"

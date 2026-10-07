@@ -3,7 +3,7 @@ package tui
 import (
 	"testing"
 
-	"github.com/SAP/astonish/pkg/tui/events"
+	"github.com/zhu13818202655/troupe/pkg/tui/events"
 )
 
 // BenchmarkRenderTranscript200Items measures refreshViewport with a fully

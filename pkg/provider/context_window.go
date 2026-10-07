@@ -5,12 +5,12 @@ import (
 	"os"
 	"sync"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/provider/google"
-	"github.com/SAP/astonish/pkg/provider/groq"
-	"github.com/SAP/astonish/pkg/provider/openrouter"
-	"github.com/SAP/astonish/pkg/provider/sap"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/provider/google"
+	"github.com/zhu13818202655/troupe/pkg/provider/groq"
+	"github.com/zhu13818202655/troupe/pkg/provider/openrouter"
+	"github.com/zhu13818202655/troupe/pkg/provider/sap"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // SetSAPModelLimitsStore wires the durable learned-limits store into the SAP

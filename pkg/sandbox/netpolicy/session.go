@@ -3,8 +3,8 @@ package netpolicy
 import (
 	"context"
 
-	"github.com/SAP/astonish/pkg/sandbox/openshell"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/openshell"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // SessionBridge applies network policy to a headless session (scheduler, etc.).

@@ -18,7 +18,7 @@ const (
 
 	// RouterWeightsURL is the download URL for the pre-trained router weights.
 	// This is used when no local copy is available.
-	RouterWeightsURL = "https://github.com/SAP/astonish/releases/latest/download/router_weights.npz"
+	RouterWeightsURL = "https://github.com/zhu13818202655/troupe/releases/latest/download/router_weights.npz"
 
 	// maxWeightsFileSize is the maximum size we'll download for the weights file (10 MB).
 	// The actual file is ~99 KB; this is a generous safety cap.

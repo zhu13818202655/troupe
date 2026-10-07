@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/SAP/astonish/ent/team"
+	"github.com/zhu13818202655/troupe/ent/team"
 	// required by schema hooks.
-	_ "github.com/SAP/astonish/ent/team/runtime"
+	_ "github.com/zhu13818202655/troupe/ent/team/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/SAP/astonish/ent/team/migrate"
+	"github.com/zhu13818202655/troupe/ent/team/migrate"
 )
 
 type (

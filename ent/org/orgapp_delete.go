@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/org/orgapp"
-	"github.com/SAP/astonish/ent/org/predicate"
+	"github.com/zhu13818202655/troupe/ent/org/orgapp"
+	"github.com/zhu13818202655/troupe/ent/org/predicate"
 )
 
 // OrgAppDelete is the builder for deleting a OrgApp entity.

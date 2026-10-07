@@ -16,8 +16,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SAP/astonish/pkg/api"
-	"github.com/SAP/astonish/tests/e2eboot"
+	"github.com/zhu13818202655/troupe/pkg/api"
+	"github.com/zhu13818202655/troupe/tests/e2eboot"
 )
 
 // COVERS: FLOWS-001

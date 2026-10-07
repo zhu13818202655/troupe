@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/platform/oauthclient"
-	"github.com/SAP/astonish/ent/platform/predicate"
+	"github.com/zhu13818202655/troupe/ent/platform/oauthclient"
+	"github.com/zhu13818202655/troupe/ent/platform/predicate"
 )
 
 // OAuthClientDelete is the builder for deleting a OAuthClient entity.

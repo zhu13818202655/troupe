@@ -11,11 +11,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/team/cachediagnostic"
-	"github.com/SAP/astonish/ent/team/chatsessionevent"
-	"github.com/SAP/astonish/ent/team/predicate"
-	"github.com/SAP/astonish/ent/team/session"
-	"github.com/SAP/astonish/ent/team/sessionevent"
+	"github.com/zhu13818202655/troupe/ent/team/cachediagnostic"
+	"github.com/zhu13818202655/troupe/ent/team/chatsessionevent"
+	"github.com/zhu13818202655/troupe/ent/team/predicate"
+	"github.com/zhu13818202655/troupe/ent/team/session"
+	"github.com/zhu13818202655/troupe/ent/team/sessionevent"
 	"github.com/google/uuid"
 )
 

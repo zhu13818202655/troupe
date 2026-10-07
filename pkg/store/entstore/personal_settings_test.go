@@ -9,8 +9,8 @@ import (
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
 
-	personalent "github.com/SAP/astonish/ent/personal"
-	"github.com/SAP/astonish/pkg/store"
+	personalent "github.com/zhu13818202655/troupe/ent/personal"
+	"github.com/zhu13818202655/troupe/pkg/store"
 
 	_ "modernc.org/sqlite"
 )

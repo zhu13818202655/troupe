@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/SAP/astonish/ent/platform/oauthtoken"
+	"github.com/zhu13818202655/troupe/ent/platform/oauthtoken"
 )
 
 // OAuthToken is the model entity for the OAuthToken schema.

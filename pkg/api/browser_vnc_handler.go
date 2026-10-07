@@ -13,8 +13,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/SAP/astonish/pkg/browser"
-	"github.com/SAP/astonish/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/browser"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
 	"github.com/gorilla/mux"
 )
 

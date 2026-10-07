@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/SAP/astonish/pkg/provider/openrouter"
+	"github.com/zhu13818202655/troupe/pkg/provider/openrouter"
 )
 
 // ModelCost holds parsed pricing for a model (USD per token).

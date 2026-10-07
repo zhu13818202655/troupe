@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/SAP/astonish/ent/personal"
+	"github.com/zhu13818202655/troupe/ent/personal"
 )
 
 // The AppFunc type is an adapter to allow the use of ordinary

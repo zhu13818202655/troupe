@@ -11,7 +11,7 @@
 package e2eboot
 
 import (
-	_ "github.com/SAP/astonish/pkg/sandbox/k8s"
-	_ "github.com/SAP/astonish/pkg/sandbox/mock"
-	_ "github.com/SAP/astonish/pkg/sandbox/openshell"
+	_ "github.com/zhu13818202655/troupe/pkg/sandbox/k8s"
+	_ "github.com/zhu13818202655/troupe/pkg/sandbox/mock"
+	_ "github.com/zhu13818202655/troupe/pkg/sandbox/openshell"
 )

@@ -15,8 +15,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/sandbox"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/sandbox"
 	"github.com/gorilla/mux"
 )
 

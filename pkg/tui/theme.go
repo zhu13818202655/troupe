@@ -7,7 +7,7 @@ import (
 	"charm.land/bubbles/v2/textarea"
 	"charm.land/lipgloss/v2"
 
-	"github.com/SAP/astonish/pkg/tui/render"
+	"github.com/zhu13818202655/troupe/pkg/tui/render"
 )
 
 // Theme holds lipgloss styles for the terminal app.

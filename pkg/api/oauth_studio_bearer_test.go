@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/execution"
+	"github.com/zhu13818202655/troupe/pkg/execution"
 )
 
 type studioOAuthValidatorStub struct {

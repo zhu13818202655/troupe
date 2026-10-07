@@ -10,7 +10,7 @@ import (
 
 	"github.com/google/uuid"
 
-	storepkg "github.com/SAP/astonish/pkg/store"
+	storepkg "github.com/zhu13818202655/troupe/pkg/store"
 )
 
 func TestOAuthServerLifecycle(t *testing.T) {

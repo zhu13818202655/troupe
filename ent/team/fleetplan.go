@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/SAP/astonish/ent/team/fleetplan"
+	"github.com/zhu13818202655/troupe/ent/team/fleetplan"
 	"github.com/google/uuid"
 )
 

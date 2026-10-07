@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/flowstore"
-	"github.com/SAP/astonish/pkg/mcpstore"
-	"github.com/SAP/astonish/pkg/store"
-	"github.com/SAP/astonish/pkg/tools"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/flowstore"
+	"github.com/zhu13818202655/troupe/pkg/mcpstore"
+	"github.com/zhu13818202655/troupe/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/tools"
 )
 
 // ResolveMCPDependencies analyzes tools used in a flow and resolves them to MCP server dependencies.

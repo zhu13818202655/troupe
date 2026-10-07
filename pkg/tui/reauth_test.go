@@ -7,9 +7,9 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/SAP/astonish/pkg/provider/xai_oauth"
-	"github.com/SAP/astonish/pkg/tui/backend"
-	"github.com/SAP/astonish/pkg/tui/events"
+	"github.com/zhu13818202655/troupe/pkg/provider/xai_oauth"
+	"github.com/zhu13818202655/troupe/pkg/tui/backend"
+	"github.com/zhu13818202655/troupe/pkg/tui/events"
 )
 
 // transcriptContains reports whether any transcript item's content contains sub.

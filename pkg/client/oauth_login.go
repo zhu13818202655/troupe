@@ -15,7 +15,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 
-	"github.com/SAP/astonish/pkg/oauthserver"
+	"github.com/zhu13818202655/troupe/pkg/oauthserver"
 )
 
 const (

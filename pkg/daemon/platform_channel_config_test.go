@@ -5,11 +5,11 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/launcher"
-	"github.com/SAP/astonish/pkg/skills"
-	"github.com/SAP/astonish/pkg/store"
-	"github.com/SAP/astonish/pkg/store/entstore"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/launcher"
+	"github.com/zhu13818202655/troupe/pkg/skills"
+	"github.com/zhu13818202655/troupe/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/store/entstore"
 )
 
 func TestChannelManagerConfigFromFactoryResult_CopiesFilesystemSkills(t *testing.T) {

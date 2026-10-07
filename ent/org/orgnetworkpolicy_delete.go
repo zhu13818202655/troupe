@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/org/orgnetworkpolicy"
-	"github.com/SAP/astonish/ent/org/predicate"
+	"github.com/zhu13818202655/troupe/ent/org/orgnetworkpolicy"
+	"github.com/zhu13818202655/troupe/ent/org/predicate"
 )
 
 // OrgNetworkPolicyDelete is the builder for deleting a OrgNetworkPolicy entity.

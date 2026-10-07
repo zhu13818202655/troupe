@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/platform/sandboxlayer"
-	"github.com/SAP/astonish/ent/platform/sandboxtemplate"
-	"github.com/SAP/astonish/ent/platform/schema"
+	"github.com/zhu13818202655/troupe/ent/platform/sandboxlayer"
+	"github.com/zhu13818202655/troupe/ent/platform/sandboxtemplate"
+	"github.com/zhu13818202655/troupe/ent/platform/schema"
 	"github.com/google/uuid"
 )
 

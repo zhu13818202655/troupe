@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/platform/oauthsigningkey"
-	"github.com/SAP/astonish/ent/platform/predicate"
+	"github.com/zhu13818202655/troupe/ent/platform/oauthsigningkey"
+	"github.com/zhu13818202655/troupe/ent/platform/predicate"
 )
 
 // OAuthSigningKeyUpdate is the builder for updating OAuthSigningKey entities.

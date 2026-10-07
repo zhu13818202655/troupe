@@ -5,7 +5,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/SAP/astonish/pkg/pathscope"
+	"github.com/zhu13818202655/troupe/pkg/pathscope"
 )
 
 // This file implements the code-mode authorization model: two independent

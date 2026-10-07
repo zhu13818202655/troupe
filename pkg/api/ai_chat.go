@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/provider"
+	"github.com/zhu13818202655/troupe/pkg/provider"
 	"google.golang.org/adk/model"
 	"google.golang.org/genai"
 )

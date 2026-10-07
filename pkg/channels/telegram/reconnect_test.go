@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SAP/astonish/pkg/channels"
+	"github.com/zhu13818202655/troupe/pkg/channels"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 

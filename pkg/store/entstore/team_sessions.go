@@ -12,12 +12,12 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 
-	teament "github.com/SAP/astonish/ent/team"
-	"github.com/SAP/astonish/ent/team/cachediagnostic"
-	"github.com/SAP/astonish/ent/team/predicate"
-	"github.com/SAP/astonish/ent/team/session"
-	"github.com/SAP/astonish/ent/team/sessionevent"
-	"github.com/SAP/astonish/pkg/store"
+	teament "github.com/zhu13818202655/troupe/ent/team"
+	"github.com/zhu13818202655/troupe/ent/team/cachediagnostic"
+	"github.com/zhu13818202655/troupe/ent/team/predicate"
+	"github.com/zhu13818202655/troupe/ent/team/session"
+	"github.com/zhu13818202655/troupe/ent/team/sessionevent"
+	"github.com/zhu13818202655/troupe/pkg/store"
 
 	adksession "google.golang.org/adk/session"
 )

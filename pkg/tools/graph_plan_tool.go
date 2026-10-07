@@ -4,8 +4,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/agent"
-	"github.com/SAP/astonish/pkg/pathscope"
+	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/pathscope"
 	"google.golang.org/adk/tool"
 	"google.golang.org/adk/tool/functiontool"
 )

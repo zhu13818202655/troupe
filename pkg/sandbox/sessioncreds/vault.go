@@ -12,8 +12,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/SAP/astonish/pkg/credentials"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/credentials"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // VaultPath is the fixed path inside the sandbox for the session credential vault.

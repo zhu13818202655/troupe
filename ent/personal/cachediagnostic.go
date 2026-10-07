@@ -9,8 +9,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/SAP/astonish/ent/personal/cachediagnostic"
-	"github.com/SAP/astonish/ent/personal/session"
+	"github.com/zhu13818202655/troupe/ent/personal/cachediagnostic"
+	"github.com/zhu13818202655/troupe/ent/personal/session"
 )
 
 // CacheDiagnostic is the model entity for the CacheDiagnostic schema.

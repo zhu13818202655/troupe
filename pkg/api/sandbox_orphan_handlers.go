@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/sandbox/openshell"
-	"github.com/SAP/astonish/pkg/store/entstore"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/openshell"
+	"github.com/zhu13818202655/troupe/pkg/store/entstore"
 )
 
 // PlatformAdminDeleteOrphanSandboxesHandler handles DELETE /api/platform/admin/sandbox/orphans.

@@ -7,8 +7,8 @@ import (
 	"log/slog"
 	"os/exec"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/credentials"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/credentials"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	"google.golang.org/adk/tool"
 	"google.golang.org/adk/tool/mcptoolset"

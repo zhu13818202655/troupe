@@ -11,8 +11,8 @@ import (
 	"google.golang.org/adk/tool/toolconfirmation"
 	"google.golang.org/genai"
 
-	astonishmemory "github.com/SAP/astonish/pkg/memory"
-	"github.com/SAP/astonish/pkg/store"
+	astonishmemory "github.com/zhu13818202655/troupe/pkg/memory"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 type memorySearchToolCtx struct {

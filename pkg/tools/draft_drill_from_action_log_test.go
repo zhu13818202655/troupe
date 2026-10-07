@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/browser"
+	"github.com/zhu13818202655/troupe/pkg/browser"
 )
 
 func TestDraftDrillYAMLFromActions(t *testing.T) {

@@ -3,7 +3,7 @@ package launcher
 import (
 	"testing"
 
-	"github.com/SAP/astonish/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 // TestSpinnerShouldShow verifies the logic for when spinner should be shown.

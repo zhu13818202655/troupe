@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SAP/astonish/pkg/a2a"
-	"github.com/SAP/astonish/pkg/channels"
+	"github.com/zhu13818202655/troupe/pkg/a2a"
+	"github.com/zhu13818202655/troupe/pkg/channels"
 )
 
 func TestA2AChannel_Lifecycle(t *testing.T) {

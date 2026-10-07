@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/pdfgen"
+	"github.com/zhu13818202655/troupe/pkg/pdfgen"
 )
 
 // seedDeckWithSlides creates a deck via the service and writes n valid slides,

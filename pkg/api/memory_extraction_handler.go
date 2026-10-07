@@ -9,8 +9,8 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/SAP/astonish/pkg/memory"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/memory"
+	"github.com/zhu13818202655/troupe/pkg/store"
 	"google.golang.org/adk/model"
 	"google.golang.org/genai"
 )

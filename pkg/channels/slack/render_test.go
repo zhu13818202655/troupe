@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/channels"
+	"github.com/zhu13818202655/troupe/pkg/channels"
 
 	"github.com/slack-go/slack"
 )

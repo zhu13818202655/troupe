@@ -3,7 +3,7 @@ package slides
 import (
 	"testing"
 
-	"github.com/SAP/astonish/pkg/docs/slides/themes"
+	"github.com/zhu13818202655/troupe/pkg/docs/slides/themes"
 )
 
 // TestBuiltinTemplateArchetypesAreValidASD guards that every archetype skeleton

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/SAP/astonish/pkg/channels"
-	"github.com/SAP/astonish/pkg/execution"
-	"github.com/SAP/astonish/pkg/sandbox/netpolicy"
-	"github.com/SAP/astonish/pkg/sandbox/openshell"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/channels"
+	"github.com/zhu13818202655/troupe/pkg/execution"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/netpolicy"
+	"github.com/zhu13818202655/troupe/pkg/sandbox/openshell"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // channelPlatformResolver implements channels.PlatformResolver using the

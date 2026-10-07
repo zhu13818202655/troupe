@@ -1,7 +1,7 @@
 package tools
 
 import (
-	"github.com/SAP/astonish/pkg/browser"
+	"github.com/zhu13818202655/troupe/pkg/browser"
 	"google.golang.org/adk/tool"
 	"google.golang.org/adk/tool/functiontool"
 )

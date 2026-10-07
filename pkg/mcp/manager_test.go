@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/credentials"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/credentials"
 )
 
 func TestGetStderr_NilBuffer(t *testing.T) {

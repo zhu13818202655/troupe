@@ -6,8 +6,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/backup"
-	"github.com/SAP/astonish/pkg/credentials"
+	"github.com/zhu13818202655/troupe/pkg/backup"
+	"github.com/zhu13818202655/troupe/pkg/credentials"
 )
 
 const (

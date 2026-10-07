@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/agent"
 	"google.golang.org/genai"
 )
 

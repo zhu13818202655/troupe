@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/SAP/astonish/pkg/a2a"
+	"github.com/zhu13818202655/troupe/pkg/a2a"
 )
 
 // nonAlphanumericRe matches any character that is not a letter, digit, or underscore.

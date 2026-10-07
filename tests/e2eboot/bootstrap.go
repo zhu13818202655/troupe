@@ -21,12 +21,12 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"github.com/SAP/astonish/pkg/api"
-	"github.com/SAP/astonish/pkg/config"
-	"github.com/SAP/astonish/pkg/launcher"
-	"github.com/SAP/astonish/pkg/store"
-	"github.com/SAP/astonish/pkg/store/entstore"
-	"github.com/SAP/astonish/pkg/store/pgutil"
+	"github.com/zhu13818202655/troupe/pkg/api"
+	"github.com/zhu13818202655/troupe/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/launcher"
+	"github.com/zhu13818202655/troupe/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/store/entstore"
+	"github.com/zhu13818202655/troupe/pkg/store/pgutil"
 )
 
 const (

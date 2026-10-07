@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 func TestNetworkAuthorizationFromMCPError_ExtractsURLAndPackageManagerHint(t *testing.T) {

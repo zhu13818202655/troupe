@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/SAP/astonish/pkg/browser"
+	"github.com/zhu13818202655/troupe/pkg/browser"
 )
 
 const recordingPIDFile = "/tmp/astonish-recording.pid"

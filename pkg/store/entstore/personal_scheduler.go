@@ -7,9 +7,9 @@ import (
 
 	"github.com/google/uuid"
 
-	personalent "github.com/SAP/astonish/ent/personal"
-	"github.com/SAP/astonish/ent/personal/scheduledjob"
-	"github.com/SAP/astonish/pkg/store"
+	personalent "github.com/zhu13818202655/troupe/ent/personal"
+	"github.com/zhu13818202655/troupe/ent/personal/scheduledjob"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // personalSchedulerStore implements store.SchedulerStore using the Ent personal client.

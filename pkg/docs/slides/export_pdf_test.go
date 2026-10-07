@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SAP/astonish/pkg/pdfgen"
+	"github.com/zhu13818202655/troupe/pkg/pdfgen"
 )
 
 func TestPDFExporterUsesSlidePrintContract(t *testing.T) {

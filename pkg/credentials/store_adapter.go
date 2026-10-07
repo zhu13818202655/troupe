@@ -3,7 +3,7 @@ package credentials
 import (
 	"context"
 
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // StoreAdapter wraps a store.CredentialStore to satisfy CredentialResolver.

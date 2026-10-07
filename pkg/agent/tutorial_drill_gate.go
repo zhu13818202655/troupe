@@ -3,7 +3,7 @@ package agent
 import (
 	"strings"
 
-	"github.com/SAP/astonish/pkg/config"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 const tutorialBlueprintApprovalRequiredMsg = "Cannot use validate_drill / save_drill / blueprint_to_tutorial_drill for mode:tutorial until the creator Approves a tutorial blueprint. Call present_tutorial_blueprint and wait for Approve & generate."

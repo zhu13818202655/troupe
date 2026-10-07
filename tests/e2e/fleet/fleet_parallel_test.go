@@ -5,7 +5,7 @@ package fleet
 import (
 	"testing"
 
-	"github.com/SAP/astonish/pkg/fleet"
+	"github.com/zhu13818202655/troupe/pkg/fleet"
 )
 
 // TestE2E_Fleet_SoftwareDevSequentialConfig verifies the software-dev

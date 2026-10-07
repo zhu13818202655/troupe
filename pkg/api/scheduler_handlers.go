@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/SAP/astonish/pkg/scheduler"
-	"github.com/SAP/astonish/pkg/store"
+	"github.com/zhu13818202655/troupe/pkg/scheduler"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // executorInstance holds a reference to the active scheduler Executor.

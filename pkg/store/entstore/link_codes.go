@@ -7,9 +7,9 @@ import (
 
 	"github.com/google/uuid"
 
-	platforment "github.com/SAP/astonish/ent/platform"
-	"github.com/SAP/astonish/ent/platform/pendinglinkcode"
-	"github.com/SAP/astonish/pkg/store"
+	platforment "github.com/zhu13818202655/troupe/ent/platform"
+	"github.com/zhu13818202655/troupe/ent/platform/pendinglinkcode"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 const defaultLinkCodeTTL = 10 * time.Minute

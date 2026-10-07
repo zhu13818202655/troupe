@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/SAP/astonish/ent/org/orgslidetemplate"
-	"github.com/SAP/astonish/ent/org/predicate"
+	"github.com/zhu13818202655/troupe/ent/org/orgslidetemplate"
+	"github.com/zhu13818202655/troupe/ent/org/predicate"
 )
 
 // OrgSlideTemplateDelete is the builder for deleting a OrgSlideTemplate entity.

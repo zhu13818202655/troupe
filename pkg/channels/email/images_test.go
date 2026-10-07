@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/SAP/astonish/pkg/channels"
-	emailpkg "github.com/SAP/astonish/pkg/email"
+	"github.com/zhu13818202655/troupe/pkg/channels"
+	emailpkg "github.com/zhu13818202655/troupe/pkg/email"
 )
 
 // captureClient records the last OutgoingMessage sent.

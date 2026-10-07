@@ -3,7 +3,7 @@ package a2aclient
 import (
 	"time"
 
-	"github.com/SAP/astonish/pkg/a2a"
+	"github.com/zhu13818202655/troupe/pkg/a2a"
 )
 
 // A2AAgentConfig holds configuration for connecting to a single remote A2A agent.
