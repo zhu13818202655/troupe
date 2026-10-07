@@ -5,6 +5,7 @@ package personal
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/personal/app"
 	"github.com/zhu13818202655/troupe/ent/personal/appstate"
 	"github.com/zhu13818202655/troupe/ent/personal/cachediagnostic"
@@ -19,7 +20,6 @@ import (
 	"github.com/zhu13818202655/troupe/ent/personal/session"
 	"github.com/zhu13818202655/troupe/ent/personal/sessionevent"
 	"github.com/zhu13818202655/troupe/ent/personal/slide"
-	"github.com/google/uuid"
 )
 
 // The init function reads all schema descriptors with runtime code

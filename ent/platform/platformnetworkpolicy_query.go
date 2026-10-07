@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/platform/platformnetworkpolicy"
 	"github.com/zhu13818202655/troupe/ent/platform/predicate"
-	"github.com/google/uuid"
 )
 
 // PlatformNetworkPolicyQuery is the builder for querying PlatformNetworkPolicy entities.

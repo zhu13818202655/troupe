@@ -11,10 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/platform/predicate"
 	"github.com/zhu13818202655/troupe/ent/platform/user"
 	"github.com/zhu13818202655/troupe/ent/platform/userchannel"
-	"github.com/google/uuid"
 )
 
 // UserChannelQuery is the builder for querying UserChannel entities.

@@ -10,10 +10,10 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/platform/sandboxlayer"
 	"github.com/zhu13818202655/troupe/ent/platform/sandboxtemplate"
 	"github.com/zhu13818202655/troupe/ent/platform/schema"
-	"github.com/google/uuid"
 )
 
 // SandboxTemplate is the model entity for the SandboxTemplate schema.

@@ -9,8 +9,8 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/zhu13818202655/troupe/ent/platform/migrate"
 	"github.com/google/uuid"
+	"github.com/zhu13818202655/troupe/ent/platform/migrate"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"

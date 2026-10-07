@@ -10,9 +10,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/org/orgauditlog"
 	"github.com/zhu13818202655/troupe/ent/org/predicate"
-	"github.com/google/uuid"
 )
 
 // OrgAuditLogUpdate is the builder for updating OrgAuditLog entities.

@@ -9,8 +9,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/zhu13818202655/troupe/ent/team/deckversion"
 	"github.com/google/uuid"
+	"github.com/zhu13818202655/troupe/ent/team/deckversion"
 )
 
 // DeckVersion is the model entity for the DeckVersion schema.

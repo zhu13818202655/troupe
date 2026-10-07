@@ -10,8 +10,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/zhu13818202655/troupe/ent/team/memory"
 	"github.com/google/uuid"
+	"github.com/zhu13818202655/troupe/ent/team/memory"
 )
 
 // Memory is the model entity for the Memory schema.

@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/team/predicate"
 	"github.com/zhu13818202655/troupe/ent/team/sandboxsession"
-	"github.com/google/uuid"
 )
 
 // SandboxSessionUpdate is the builder for updating SandboxSession entities.

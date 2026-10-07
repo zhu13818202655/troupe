@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/team/a2aagent"
 	"github.com/zhu13818202655/troupe/ent/team/predicate"
-	"github.com/google/uuid"
 )
 
 // A2aAgentQuery is the builder for querying A2aAgent entities.

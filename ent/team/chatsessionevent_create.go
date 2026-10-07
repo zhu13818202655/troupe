@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/team/chatsessionevent"
 	"github.com/zhu13818202655/troupe/ent/team/session"
-	"github.com/google/uuid"
 )
 
 // ChatSessionEventCreate is the builder for creating a ChatSessionEvent entity.

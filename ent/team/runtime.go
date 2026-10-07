@@ -5,6 +5,7 @@ package team
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/team/a2aagent"
 	"github.com/zhu13818202655/troupe/ent/team/app"
 	"github.com/zhu13818202655/troupe/ent/team/appstate"
@@ -36,7 +37,6 @@ import (
 	"github.com/zhu13818202655/troupe/ent/team/skillfile"
 	"github.com/zhu13818202655/troupe/ent/team/slide"
 	"github.com/zhu13818202655/troupe/ent/team/teamauditlog"
-	"github.com/google/uuid"
 )
 
 // The init function reads all schema descriptors with runtime code

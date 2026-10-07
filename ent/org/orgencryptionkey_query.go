@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/org/orgencryptionkey"
 	"github.com/zhu13818202655/troupe/ent/org/predicate"
-	"github.com/google/uuid"
 )
 
 // OrgEncryptionKeyQuery is the builder for querying OrgEncryptionKey entities.

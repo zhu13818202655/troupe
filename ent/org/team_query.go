@@ -12,10 +12,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/org/predicate"
 	"github.com/zhu13818202655/troupe/ent/org/team"
 	"github.com/zhu13818202655/troupe/ent/org/teammembership"
-	"github.com/google/uuid"
 )
 
 // TeamQuery is the builder for querying Team entities.

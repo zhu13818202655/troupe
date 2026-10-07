@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/personal/deckversion"
 	"github.com/zhu13818202655/troupe/ent/personal/predicate"
-	"github.com/google/uuid"
 )
 
 // DeckVersionQuery is the builder for querying DeckVersion entities.

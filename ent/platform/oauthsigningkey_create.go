@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/zhu13818202655/troupe/ent/platform/oauthsigningkey"
 	"github.com/google/uuid"
+	"github.com/zhu13818202655/troupe/ent/platform/oauthsigningkey"
 )
 
 // OAuthSigningKeyCreate is the builder for creating a OAuthSigningKey entity.

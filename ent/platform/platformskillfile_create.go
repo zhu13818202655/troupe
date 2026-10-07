@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/platform/platformskill"
 	"github.com/zhu13818202655/troupe/ent/platform/platformskillfile"
-	"github.com/google/uuid"
 )
 
 // PlatformSkillFileCreate is the builder for creating a PlatformSkillFile entity.

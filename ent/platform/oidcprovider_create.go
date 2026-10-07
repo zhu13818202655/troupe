@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/platform/oidcprovider"
 	"github.com/zhu13818202655/troupe/ent/platform/organization"
-	"github.com/google/uuid"
 )
 
 // OIDCProviderCreate is the builder for creating a OIDCProvider entity.

@@ -9,10 +9,10 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/platform/organization"
 	"github.com/zhu13818202655/troupe/ent/platform/orgmembership"
 	"github.com/zhu13818202655/troupe/ent/platform/user"
-	"github.com/google/uuid"
 )
 
 // OrgMembership is the model entity for the OrgMembership schema.

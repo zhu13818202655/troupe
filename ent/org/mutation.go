@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/org/orga2aagent"
 	"github.com/zhu13818202655/troupe/ent/org/orgapp"
 	"github.com/zhu13818202655/troupe/ent/org/orgauditlog"
@@ -24,7 +25,6 @@ import (
 	"github.com/zhu13818202655/troupe/ent/org/predicate"
 	"github.com/zhu13818202655/troupe/ent/org/team"
 	"github.com/zhu13818202655/troupe/ent/org/teammembership"
-	"github.com/google/uuid"
 )
 
 const (

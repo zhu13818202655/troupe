@@ -11,11 +11,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/personal/cachediagnostic"
 	"github.com/zhu13818202655/troupe/ent/personal/predicate"
 	"github.com/zhu13818202655/troupe/ent/personal/session"
 	"github.com/zhu13818202655/troupe/ent/personal/sessionevent"
-	"github.com/google/uuid"
 )
 
 // SessionUpdate is the builder for updating Session entities.

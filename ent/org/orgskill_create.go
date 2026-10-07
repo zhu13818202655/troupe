@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/org/orgskill"
 	"github.com/zhu13818202655/troupe/ent/org/orgskillfile"
-	"github.com/google/uuid"
 )
 
 // OrgSkillCreate is the builder for creating a OrgSkill entity.

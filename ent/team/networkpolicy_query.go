@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/team/networkpolicy"
 	"github.com/zhu13818202655/troupe/ent/team/predicate"
-	"github.com/google/uuid"
 )
 
 // NetworkPolicyQuery is the builder for querying NetworkPolicy entities.

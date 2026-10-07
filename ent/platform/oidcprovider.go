@@ -10,9 +10,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/platform/oidcprovider"
 	"github.com/zhu13818202655/troupe/ent/platform/organization"
-	"github.com/google/uuid"
 )
 
 // OIDCProvider is the model entity for the OIDCProvider schema.

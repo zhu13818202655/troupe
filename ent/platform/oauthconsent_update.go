@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/platform/oauthconsent"
 	"github.com/zhu13818202655/troupe/ent/platform/predicate"
-	"github.com/google/uuid"
 )
 
 // OAuthConsentUpdate is the builder for updating OAuthConsent entities.

@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/zhu13818202655/troupe/ent/team/fleetsetupprofile"
 	"github.com/google/uuid"
+	"github.com/zhu13818202655/troupe/ent/team/fleetsetupprofile"
 )
 
 // FleetSetupProfileCreate is the builder for creating a FleetSetupProfile entity.

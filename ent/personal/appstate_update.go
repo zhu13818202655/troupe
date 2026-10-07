@@ -11,10 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/personal/app"
 	"github.com/zhu13818202655/troupe/ent/personal/appstate"
 	"github.com/zhu13818202655/troupe/ent/personal/predicate"
-	"github.com/google/uuid"
 )
 
 // AppStateUpdate is the builder for updating AppState entities.

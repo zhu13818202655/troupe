@@ -9,9 +9,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/team/skill"
 	"github.com/zhu13818202655/troupe/ent/team/skillfile"
-	"github.com/google/uuid"
 )
 
 // SkillFile is the model entity for the SkillFile schema.

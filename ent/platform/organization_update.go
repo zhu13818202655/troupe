@@ -10,12 +10,12 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/platform/loginsession"
 	"github.com/zhu13818202655/troupe/ent/platform/oidcprovider"
 	"github.com/zhu13818202655/troupe/ent/platform/organization"
 	"github.com/zhu13818202655/troupe/ent/platform/predicate"
 	"github.com/zhu13818202655/troupe/ent/platform/user"
-	"github.com/google/uuid"
 )
 
 // OrganizationUpdate is the builder for updating Organization entities.

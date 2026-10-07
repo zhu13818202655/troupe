@@ -11,10 +11,10 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/platform/sandboxlayer"
 	"github.com/zhu13818202655/troupe/ent/platform/sandboxtemplate"
 	"github.com/zhu13818202655/troupe/ent/platform/schema"
-	"github.com/google/uuid"
 )
 
 // SandboxTemplateCreate is the builder for creating a SandboxTemplate entity.

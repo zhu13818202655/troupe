@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/org/orgnetworkpolicy"
 	"github.com/zhu13818202655/troupe/ent/org/predicate"
-	"github.com/google/uuid"
 )
 
 // OrgNetworkPolicyQuery is the builder for querying OrgNetworkPolicy entities.

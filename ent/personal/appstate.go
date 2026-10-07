@@ -10,9 +10,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/personal/app"
 	"github.com/zhu13818202655/troupe/ent/personal/appstate"
-	"github.com/google/uuid"
 )
 
 // AppState is the model entity for the AppState schema.

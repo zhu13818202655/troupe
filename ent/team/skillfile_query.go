@@ -11,10 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/team/predicate"
 	"github.com/zhu13818202655/troupe/ent/team/skill"
 	"github.com/zhu13818202655/troupe/ent/team/skillfile"
-	"github.com/google/uuid"
 )
 
 // SkillFileQuery is the builder for querying SkillFile entities.

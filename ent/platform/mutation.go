@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/platform/devicesession"
 	"github.com/zhu13818202655/troupe/ent/platform/emailthreadindex"
 	"github.com/zhu13818202655/troupe/ent/platform/loginsession"
@@ -37,7 +38,6 @@ import (
 	"github.com/zhu13818202655/troupe/ent/platform/toolindex"
 	"github.com/zhu13818202655/troupe/ent/platform/user"
 	"github.com/zhu13818202655/troupe/ent/platform/userchannel"
-	"github.com/google/uuid"
 )
 
 const (

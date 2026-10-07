@@ -11,10 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/personal/deck"
 	"github.com/zhu13818202655/troupe/ent/personal/predicate"
 	"github.com/zhu13818202655/troupe/ent/personal/slide"
-	"github.com/google/uuid"
 )
 
 // SlideQuery is the builder for querying Slide entities.

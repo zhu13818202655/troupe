@@ -9,9 +9,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/personal/deck"
 	"github.com/zhu13818202655/troupe/ent/personal/slide"
-	"github.com/google/uuid"
 )
 
 // Slide is the model entity for the Slide schema.

@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/platform/oauthclient"
 	"github.com/zhu13818202655/troupe/ent/platform/predicate"
-	"github.com/google/uuid"
 )
 
 // OAuthClientQuery is the builder for querying OAuthClient entities.

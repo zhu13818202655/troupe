@@ -11,10 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/team/chatsessionevent"
 	"github.com/zhu13818202655/troupe/ent/team/predicate"
 	"github.com/zhu13818202655/troupe/ent/team/session"
-	"github.com/google/uuid"
 )
 
 // ChatSessionEventQuery is the builder for querying ChatSessionEvent entities.

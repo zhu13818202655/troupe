@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/personal/app"
 	"github.com/zhu13818202655/troupe/ent/personal/appstate"
-	"github.com/google/uuid"
 )
 
 // AppStateCreate is the builder for creating a AppState entity.

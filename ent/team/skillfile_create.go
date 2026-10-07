@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/team/skill"
 	"github.com/zhu13818202655/troupe/ent/team/skillfile"
-	"github.com/google/uuid"
 )
 
 // SkillFileCreate is the builder for creating a SkillFile entity.

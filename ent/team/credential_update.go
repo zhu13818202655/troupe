@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/team/credential"
 	"github.com/zhu13818202655/troupe/ent/team/predicate"
-	"github.com/google/uuid"
 )
 
 // CredentialUpdate is the builder for updating Credential entities.

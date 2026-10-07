@@ -10,11 +10,11 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/ent/platform/organization"
 	"github.com/zhu13818202655/troupe/ent/platform/orgmembership"
 	"github.com/zhu13818202655/troupe/ent/platform/predicate"
 	"github.com/zhu13818202655/troupe/ent/platform/user"
-	"github.com/google/uuid"
 )
 
 // OrgMembershipQuery is the builder for querying OrgMembership entities.
