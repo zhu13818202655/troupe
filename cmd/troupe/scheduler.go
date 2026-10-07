@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"encoding/json"
@@ -24,22 +24,22 @@ func handleSchedulerCommand(args []string) error {
 		return handleSchedulerList()
 	case "enable":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish scheduler enable <name>")
+			return fmt.Errorf("usage: troupe scheduler enable <name>")
 		}
 		return handleSchedulerToggle(strings.Join(args[1:], " "), true)
 	case "disable":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish scheduler disable <name>")
+			return fmt.Errorf("usage: troupe scheduler disable <name>")
 		}
 		return handleSchedulerToggle(strings.Join(args[1:], " "), false)
 	case "remove", "rm":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish scheduler remove <name>")
+			return fmt.Errorf("usage: troupe scheduler remove <name>")
 		}
 		return handleSchedulerRemove(strings.Join(args[1:], " "))
 	case "run":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish scheduler run <name>")
+			return fmt.Errorf("usage: troupe scheduler run <name>")
 		}
 		return handleSchedulerRun(strings.Join(args[1:], " "))
 	case "status":
@@ -51,7 +51,7 @@ func handleSchedulerCommand(args []string) error {
 }
 
 func printSchedulerUsage() {
-	fmt.Println("usage: astonish scheduler {list,enable,disable,remove,run,status}")
+	fmt.Println("usage: troupe scheduler {list,enable,disable,remove,run,status}")
 	fmt.Println("")
 	fmt.Println("Manage scheduled jobs. Jobs are created through chat (talk to the AI).")
 	fmt.Println("")

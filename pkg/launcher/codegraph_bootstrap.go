@@ -6,7 +6,15 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
+
+// codegraphBootstrapTimeout bounds the one-time indexing step. `npx` may need to
+// fetch the package from a registry, and an offline or slow network must not
+// block the launcher indefinitely: the bootstrap is a convenience, and skipping
+// the graph phase is an explicitly supported outcome. A caller whose context
+// carries an earlier deadline still cancels first.
+const codegraphBootstrapTimeout = 2 * time.Minute
 
 // codegraphInitFailedNotice is emitted when the .codegraph/ index cannot be
 // created. It instructs the model to call gplan_gaps to skip the graph phase
@@ -42,8 +50,14 @@ func EnsureCodegraph(ctx context.Context, workingDir string, onProgress func(str
 		onProgress("Indexing project for code intelligence (one-time)…")
 	}
 
+	ctx, cancel := context.WithTimeout(ctx, codegraphBootstrapTimeout)
+	defer cancel()
+
 	cmd := exec.CommandContext(ctx, "npx", "--yes", "@colbymchenry/codegraph", "init")
 	cmd.Dir = workingDir
+	// npx spawns a node child process; WaitDelay guarantees we stop waiting on
+	// inherited pipes once the context is cancelled instead of blocking forever.
+	cmd.WaitDelay = 5 * time.Second
 	if out, err := cmd.CombinedOutput(); err != nil {
 		detail := strings.TrimSpace(string(out))
 		if detail != "" {

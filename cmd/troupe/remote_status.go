@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ func handleStatusCommand(_ []string) error {
 		fmt.Println("No remote server configured.")
 		fmt.Println("")
 		fmt.Println("To connect to a remote server:")
-		fmt.Println("  astonish login <server-url>")
+		fmt.Println("  troupe login <server-url>")
 		return nil
 	}
 

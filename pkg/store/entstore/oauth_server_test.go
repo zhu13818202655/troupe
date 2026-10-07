@@ -207,3 +207,48 @@ func TestOAuthServerCleanup(t *testing.T) {
 		t.Fatalf("keys remaining = %d", n)
 	}
 }
+
+// TestCleanupExpired_UTCCutoffRegardlessOfHostTimezone guards the cleanup cutoff
+// against host-timezone drift.
+//
+// OAuth records are written with time.Now().UTC(), and SQLite stores time
+// columns as text that it compares lexically. A cutoff taken from time.Now()
+// (host-local) therefore sits a whole UTC offset away from the stored values and
+// purges records that are still valid. The failure is invisible when the host
+// runs in UTC, so this test pins time.Local to a positive offset: with a local
+// cutoff it fails on any machine, including UTC-only CI.
+func TestCleanupExpired_UTCCutoffRegardlessOfHostTimezone(t *testing.T) {
+	restoreLocal := time.Local
+	time.Local = time.FixedZone("TEST+08", 8*60*60)
+	defer func() { time.Local = restoreLocal }()
+
+	ctx := context.Background()
+	s, err := New(ctx, Config{DSN: "file:" + filepath.Join(t.TempDir(), "tz.db")})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	if err := s.platformClient.Schema.Create(ctx); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := s.OAuthServer().SaveOAuthAuthorization(ctx, storepkg.OAuthAuthorization{
+		CodeHash:            "still-valid",
+		ClientID:            "c",
+		RedirectURI:         "https://example.test",
+		CodeChallenge:       "c",
+		CodeChallengeMethod: "S256",
+		Subject:             "u",
+		OrgID:               "o",
+		ExpiresAt:           time.Now().UTC().Add(30 * time.Minute),
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := s.CleanupExpired(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if n, _ := s.platformClient.OAuthAuthorization.Query().Count(ctx); n != 1 {
+		t.Fatalf("a still-valid authorization was purged by cleanup (remaining = %d)", n)
+	}
+}

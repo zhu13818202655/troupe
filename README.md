@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/SAP/astonish/main/images/astonish-logo-only.svg" width="200" height="200" alt="Astonish Logo">
+<img src="https://raw.githubusercontent.com/zhu13818202655/troupe/main/images/astonish-logo-only.svg" width="200" height="200" alt="Astonish Logo">
 
 # Astonish
 
@@ -8,10 +8,10 @@
 _When one person solves a problem, everyone benefits. Multi-tenant. Three-tier memory. Enterprise-ready. Built in Go._
 
 [![Documentation](https://img.shields.io/badge/Documentation-Astonish-purple.svg)](https://sap.github.io/astonish/)
-[![Lint](https://github.com/SAP/astonish/actions/workflows/lint.yml/badge.svg)](https://github.com/SAP/astonish/actions/workflows/lint.yml)
-[![Build Status](https://github.com/SAP/astonish/actions/workflows/build.yml/badge.svg)](https://github.com/SAP/astonish/actions/workflows/build.yml)
+[![Lint](https://github.com/zhu13818202655/troupe/actions/workflows/lint.yml/badge.svg)](https://github.com/zhu13818202655/troupe/actions/workflows/lint.yml)
+[![Build Status](https://github.com/zhu13818202655/troupe/actions/workflows/build.yml/badge.svg)](https://github.com/zhu13818202655/troupe/actions/workflows/build.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
-[![REUSE status](https://api.reuse.software/badge/github.com/SAP/astonish)](https://api.reuse.software/info/github.com/SAP/astonish)
+[![REUSE status](https://api.reuse.software/badge/github.com/zhu13818202655/troupe)](https://api.reuse.software/info/github.com/zhu13818202655/troupe)
 
 <br>
 
@@ -36,7 +36,7 @@ Run it as a shared platform backed by PostgreSQL for your organization, or stand
 **Personal mode** — zero config, single user, SQLite:
 
 ```bash
-brew install SAP/astonish/astonish   # or: curl -fsSL https://raw.githubusercontent.com/SAP/astonish/refs/heads/main/install.sh | sh
+brew install zhu13818202655/troupe/troupe   # or: curl -fsSL https://raw.githubusercontent.com/zhu13818202655/troupe/refs/heads/main/install.sh | sh
 astonish setup                              # Configure your AI provider
 astonish chat                               # Start chatting
 ```
@@ -365,15 +365,15 @@ Built on [Google's Agent Development Kit (ADK)](https://github.com/google/adk-go
 
 - [Full Documentation](https://sap.github.io/astonish/)
 - [Testing Guide](docs/TESTING.md) — 1,650+ tests across 4 layers
-- [Submit a Pull Request](https://github.com/SAP/astonish/pulls)
+- [Submit a Pull Request](https://github.com/zhu13818202655/troupe/pulls)
 - **License**: Apache-2.0
 
 <div align="center">
-<b><a href="https://github.com/SAP/astonish">Star us on GitHub</a></b>
+<b><a href="https://github.com/zhu13818202655/troupe">Star us on GitHub</a></b>
 </div>
 
 ## Licensing
 
-Copyright 2026 SAP SE or an SAP affiliate company and astonish contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/astonish).
+Copyright 2026 SAP SE or an SAP affiliate company and astonish contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/zhu13818202655/troupe).
 
 This project was originally developed and maintained by [schardosin](https://github.com/schardosin). Since 2026-07-15, Astonish has been maintained by SAP.

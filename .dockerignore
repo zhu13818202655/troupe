@@ -37,7 +37,6 @@ recordings/
 .env.*
 !.env.example
 .mcp.json
-deploy/helm/astonish/values-dev.yaml
 
 # Logs and caches
 *.log

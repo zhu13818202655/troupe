@@ -5,7 +5,7 @@ Astonish ships as a single binary for macOS and Linux. Choose the installation m
 ## Homebrew (macOS and Linux)
 
 ```bash
-brew install SAP/astonish/astonish
+brew install zhu13818202655/troupe/troupe
 ```
 
 Verify the installation:
@@ -19,7 +19,7 @@ astonish --version
 For quick installation without Homebrew:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SAP/astonish/refs/heads/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/zhu13818202655/troupe/refs/heads/main/install.sh | sh
 ```
 
 The script detects your OS and architecture, downloads the appropriate binary, and places it in your PATH.
@@ -33,7 +33,7 @@ Requirements:
 - Make
 
 ```bash
-git clone https://github.com/SAP/astonish.git
+git clone https://github.com/zhu13818202655/troupe.git
 cd astonish
 make build-all
 ```
@@ -73,5 +73,5 @@ astonish setup       # Interactive configuration wizard
 The setup wizard walks you through AI provider configuration. See [Quick Start: Local](./quick-start-local.md) or [Quick Start: Cloud](./quick-start-cloud.md) for next steps.
 
 ::: tip Kubernetes with OpenShell (Recommended for Production)
-For production deployments on Kubernetes with secure agent sandboxing, see the [OpenShell Deployment](../deployment/openshell.md) guide. It provides kernel-level isolation, granular policy enforcement, and full audit trails for autonomous agent execution.
+For production deployments on Kubernetes with secure agent sandboxing, the OpenShell backend provides kernel-level isolation, granular policy enforcement, and full audit trails for autonomous agent execution. Deployment tooling is being rebuilt against our own requirements.
 :::

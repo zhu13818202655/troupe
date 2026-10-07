@@ -44,10 +44,10 @@ func (ls *layerStore) PutLayer(ctx context.Context, layer *store.SandboxLayer) e
 		SetNillableCreatedBy(nilIfEmpty(layer.CreatedBy))
 
 	if !layer.AddedAt.IsZero() {
-		create.SetAddedAt(layer.AddedAt)
+		create.SetAddedAt(layer.AddedAt.UTC())
 	}
 	if !layer.LastReferenced.IsZero() {
-		create.SetLastReferenced(layer.LastReferenced)
+		create.SetLastReferenced(layer.LastReferenced.UTC())
 	}
 
 	_, err = create.Save(ctx)
@@ -106,7 +106,9 @@ func (ls *layerStore) DecrementRefCount(ctx context.Context, layerID string) err
 }
 
 func (ls *layerStore) ListUnreferenced(ctx context.Context, grace time.Duration) ([]*store.SandboxLayer, error) {
-	cutoff := time.Now().Add(-grace)
+	// UTC, matching how AddedAt/LastReferenced are stored below — SQLite compares
+	// time columns as text, so a local cutoff would misjudge layer age.
+	cutoff := time.Now().UTC().Add(-grace)
 	ents, err := ls.client.SandboxLayer.Query().
 		Where(
 			sandboxlayer.RefCountEQ(0),

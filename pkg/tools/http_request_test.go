@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -754,10 +755,11 @@ func TestHttpRequest_AllowPrivateNetworks(t *testing.T) {
 	SetAllowPrivateNetworks(true)
 	defer SetAllowPrivateNetworks(false)
 
-	// Requests to private IPs should NOT be blocked by SSRF.
-	// They will fail with connection errors (no server listening), but the error
-	// must NOT be "private/loopback" — that would mean SSRF is still active.
-	// Use a 1-second timeout so tests don't hang waiting for unreachable IPs.
+	// Requests to private IPs must not be rejected by the SSRF guard while the
+	// toggle is on. Whether one of them then *succeeds* is a property of the
+	// network, not of the guard: a host may genuinely answer at a private
+	// address (a LAN gateway, a corporate proxy, a service on loopback), so a
+	// successful request is not a failure here. Only the SSRF block is asserted.
 	privateURLs := []string{
 		"http://10.0.0.1:8080/api",
 		"http://192.168.1.1/api",
@@ -769,16 +771,39 @@ func TestHttpRequest_AllowPrivateNetworks(t *testing.T) {
 		t.Run(u, func(t *testing.T) {
 			_, err := HttpRequest(nil, HttpRequestArgs{URL: u, Timeout: 1})
 			if err == nil {
-				t.Fatal("expected connection error, got nil")
+				return
 			}
 			if strings.Contains(err.Error(), "private/loopback") {
 				t.Errorf("SSRF should be bypassed but got: %v", err)
 			}
-			// The error should be a connection error (refused/timeout), not SSRF block
 			if !strings.Contains(err.Error(), "request failed") {
 				t.Errorf("expected 'request failed' error, got: %v", err)
 			}
 		})
+	}
+
+	// Cover the transport-failure path deterministically: reserve a loopback
+	// port, close it, then use it. Nothing can be listening on it afterwards,
+	// so this always produces a connection error rather than an SSRF block,
+	// without depending on what answers at the addresses above.
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("reserve loopback port: %v", err)
+	}
+	deadURL := fmt.Sprintf("http://%s/api", ln.Addr().String())
+	if err := ln.Close(); err != nil {
+		t.Fatalf("release loopback port: %v", err)
+	}
+
+	if _, err := HttpRequest(nil, HttpRequestArgs{URL: deadURL, Timeout: 1}); err == nil {
+		t.Errorf("expected connection error from %s, got nil", deadURL)
+	} else {
+		if strings.Contains(err.Error(), "private/loopback") {
+			t.Errorf("SSRF should be bypassed but got: %v", err)
+		}
+		if !strings.Contains(err.Error(), "request failed") {
+			t.Errorf("expected 'request failed' error, got: %v", err)
+		}
 	}
 }
 

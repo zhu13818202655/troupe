@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"bytes"
@@ -45,7 +45,7 @@ func handleSandboxCommand(args []string) error {
 		return handleSandboxList()
 	case "create":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish sandbox create <template> [--name <label>]")
+			return fmt.Errorf("usage: troupe sandbox create <template> [--name <label>]")
 		}
 		name := ""
 		for i, a := range args[2:] {
@@ -56,7 +56,7 @@ func handleSandboxCommand(args []string) error {
 		return handleSandboxCreate(args[1], name)
 	case "expose":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish sandbox expose <container> <port> [<port>...]\n       astonish sandbox expose <container> --list")
+			return fmt.Errorf("usage: troupe sandbox expose <container> <port> [<port>...]\n       troupe sandbox expose <container> --list")
 		}
 		// Check for --list flag
 		for _, a := range args[2:] {
@@ -65,34 +65,34 @@ func handleSandboxCommand(args []string) error {
 			}
 		}
 		if len(args) < 3 {
-			return fmt.Errorf("usage: astonish sandbox expose <container> <port> [<port>...]")
+			return fmt.Errorf("usage: troupe sandbox expose <container> <port> [<port>...]")
 		}
 		return handleSandboxExpose(args[1], args[2:])
 	case "unexpose":
 		if len(args) < 3 {
-			return fmt.Errorf("usage: astonish sandbox unexpose <container> <port> [<port>...]")
+			return fmt.Errorf("usage: troupe sandbox unexpose <container> <port> [<port>...]")
 		}
 		return handleSandboxUnexpose(args[1], args[2:])
 	case "url":
 		if len(args) < 3 {
-			return fmt.Errorf("usage: astonish sandbox url <container> <port>")
+			return fmt.Errorf("usage: troupe sandbox url <container> <port>")
 		}
 		return handleSandboxURL(args[1], args[2])
 	case "refresh":
 		return handleSandboxRefresh()
 	case "destroy", "rm":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish sandbox destroy <session-id>")
+			return fmt.Errorf("usage: troupe sandbox destroy <session-id>")
 		}
 		return handleSandboxDestroy(args[1])
 	case "shell":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish sandbox shell <session-id>")
+			return fmt.Errorf("usage: troupe sandbox shell <session-id>")
 		}
 		return handleSandboxShell(args[1])
 	case "cp":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish sandbox cp <session-id>:<container-path> [local-path]")
+			return fmt.Errorf("usage: troupe sandbox cp <session-id>:<container-path> [local-path]")
 		}
 		localPath := ""
 		if len(args) >= 3 {
@@ -105,7 +105,7 @@ func handleSandboxCommand(args []string) error {
 		return handleSandboxReset()
 	case "save":
 		if len(args) < 3 {
-			return fmt.Errorf("usage: astonish sandbox save <session-id> <template-name> [--description \"...\"]")
+			return fmt.Errorf("usage: troupe sandbox save <session-id> <template-name> [--description \"...\"]")
 		}
 		description := ""
 		for i, a := range args[3:] {
@@ -133,7 +133,7 @@ func handleSandboxTemplateCommand(args []string) error {
 		return handleTemplateList()
 	case "create":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish sandbox template create <name> [--description \"...\"]")
+			return fmt.Errorf("usage: troupe sandbox template create <name> [--description \"...\"]")
 		}
 		description := ""
 		for i, a := range args[2:] {
@@ -146,27 +146,27 @@ func handleSandboxTemplateCommand(args []string) error {
 		return handleTemplateCreate(args[1], description)
 	case "shell":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish sandbox template shell <name>")
+			return fmt.Errorf("usage: troupe sandbox template shell <name>")
 		}
 		return handleTemplateShell(args[1])
 	case "snapshot":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish sandbox template snapshot <name>")
+			return fmt.Errorf("usage: troupe sandbox template snapshot <name>")
 		}
 		return handleTemplateSnapshot(args[1])
 	case "promote":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish sandbox template promote <name>")
+			return fmt.Errorf("usage: troupe sandbox template promote <name>")
 		}
 		return handleTemplatePromote(args[1])
 	case "delete", "rm":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish sandbox template delete <name>")
+			return fmt.Errorf("usage: troupe sandbox template delete <name>")
 		}
 		return handleTemplateDelete(args[1])
 	case "info":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish sandbox template info <name>")
+			return fmt.Errorf("usage: troupe sandbox template info <name>")
 		}
 		return handleTemplateInfo(args[1])
 	default:
@@ -176,7 +176,7 @@ func handleSandboxTemplateCommand(args []string) error {
 }
 
 func printSandboxUsage() {
-	fmt.Println("usage: astonish sandbox {status,init,list,create,shell,save,reset,expose,unexpose,url,cp,refresh,destroy,prune,template} ...")
+	fmt.Println("usage: troupe sandbox {status,init,list,create,shell,save,reset,expose,unexpose,url,cp,refresh,destroy,prune,template} ...")
 	fmt.Println("")
 	fmt.Println("Manage session container isolation.")
 	fmt.Println("")
@@ -200,7 +200,7 @@ func printSandboxUsage() {
 }
 
 func printSandboxTemplateUsage() {
-	fmt.Println("usage: astonish sandbox template {list,create,shell,snapshot,promote,delete,info} ...")
+	fmt.Println("usage: troupe sandbox template {list,create,shell,snapshot,promote,delete,info} ...")
 	fmt.Println("")
 	fmt.Println("Manage container templates for session isolation.")
 	fmt.Println("")
@@ -256,7 +256,7 @@ func handleSandboxStatus() error {
 	if entries, err := os.ReadDir(rootfs); err == nil && len(entries) > 0 {
 		fmt.Println("Session creation: overlay ready (@base layer present)")
 	} else {
-		fmt.Println("Session creation: not configured (run 'astonish sandbox init')")
+		fmt.Println("Session creation: not configured (run 'troupe sandbox init')")
 	}
 
 	sessions, err := b.ListSessions(context.Background(), sandbox.SessionFilter{})
@@ -294,7 +294,7 @@ func handleSandboxInit() error {
 func openDockerCLI() (*sboxdocker.DockerBackend, error) {
 	det := sboxdocker.DetectDocker("")
 	if !det.Available {
-		return nil, fmt.Errorf("docker is not available: %s\nInstall Docker and run 'astonish sandbox init'", det.Reason)
+		return nil, fmt.Errorf("docker is not available: %s\nInstall Docker and run 'troupe sandbox init'", det.Reason)
 	}
 	return sboxdocker.Open()
 }
@@ -319,7 +319,7 @@ func resolveDockerSession(ctx context.Context, b *sboxdocker.DockerBackend, iden
 		}
 	}
 	if match == nil {
-		return nil, fmt.Errorf("no container found for %q\nUse 'astonish sandbox list' to see active sessions", identifier)
+		return nil, fmt.Errorf("no container found for %q\nUse 'troupe sandbox list' to see active sessions", identifier)
 	}
 	return match, nil
 }
@@ -380,14 +380,14 @@ func handleSandboxCreate(templateName, label string) error {
 		return fmt.Errorf("sandbox not ready: %w", err)
 	}
 	fmt.Printf("Container %q ready (session: %s)\n", sess.BackendRef, sess.SessionID)
-	fmt.Printf("To re-enter later:  astonish sandbox shell %s\n", sess.SessionID)
-	fmt.Printf("To destroy:         astonish sandbox destroy %s\n", sess.SessionID)
+	fmt.Printf("To re-enter later:  troupe sandbox shell %s\n", sess.SessionID)
+	fmt.Printf("To destroy:         troupe sandbox destroy %s\n", sess.SessionID)
 	return dockerShell(sess.BackendRef)
 }
 
 func dockerShell(containerName string) error {
 	fmt.Printf("Entering container %s. Type 'exit' to leave.\n", containerName)
-	cmd := exec.Command("docker", "exec", "-it", containerName, "/usr/local/bin/astonish-shell", "bash", "-l")
+	cmd := exec.Command("docker", "exec", "-it", containerName, "/usr/local/bin/troupe-shell", "bash", "-l")
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -408,7 +408,7 @@ func handleSandboxExpose(containerID string, portArgs []string) error {
 	// Resolve container name
 	containerName := resolveContainerNameCLI(registry, containerID)
 	if containerName == "" {
-		return fmt.Errorf("container %q not found\nUse 'astonish sandbox list' to see active containers", containerID)
+		return fmt.Errorf("container %q not found\nUse 'troupe sandbox list' to see active containers", containerID)
 	}
 
 	for _, portStr := range portArgs {
@@ -470,7 +470,7 @@ func handleSandboxUnexpose(containerID string, portArgs []string) error {
 
 	containerName := resolveContainerNameCLI(registry, containerID)
 	if containerName == "" {
-		return fmt.Errorf("container %q not found\nUse 'astonish sandbox list' to see active containers", containerID)
+		return fmt.Errorf("container %q not found\nUse 'troupe sandbox list' to see active containers", containerID)
 	}
 
 	for _, portStr := range portArgs {
@@ -511,7 +511,7 @@ func handleSandboxURL(containerID string, portStr string) error {
 	}
 
 	if !registry.IsPortExposed(containerName, port) {
-		return fmt.Errorf("port %d is not exposed on %s\nRun 'astonish sandbox expose %s %d' first", port, containerName, containerName, port)
+		return fmt.Errorf("port %d is not exposed on %s\nRun 'troupe sandbox expose %s %d' first", port, containerName, containerName, port)
 	}
 
 	// The per-port proxy listener runs in the Studio daemon process.
@@ -788,7 +788,7 @@ func handleTemplateList() error {
 	}
 
 	if len(rows) == 0 {
-		fmt.Println("No templates. Run 'astonish sandbox init' to create the base overlay layer.")
+		fmt.Println("No templates. Run 'troupe sandbox init' to create the base overlay layer.")
 		return nil
 	}
 
@@ -819,7 +819,7 @@ func handleTemplateCreate(name, description string) error {
 		return err
 	}
 	if !overlayLayerExists(b, sandbox.BaseTemplateID) {
-		return fmt.Errorf("base overlay layer is missing; run 'astonish sandbox init' first")
+		return fmt.Errorf("base overlay layer is missing; run 'troupe sandbox init' first")
 	}
 
 	registry, err := sandbox.NewTemplateRegistry()
@@ -838,7 +838,7 @@ func handleTemplateCreate(name, description string) error {
 		Type:       sandbox.SessionTypeChat,
 		TemplateID: sandbox.BaseTemplateID,
 		LayerChain: []string{sandbox.BaseTemplateID},
-		Labels:     map[string]string{"astonish.io/purpose": "template"},
+		Labels:     map[string]string{"troupe.io/purpose": "template"},
 	})
 	if err != nil {
 		return fmt.Errorf("failed to create template session: %w", err)
@@ -850,7 +850,7 @@ func handleTemplateCreate(name, description string) error {
 		return err
 	}
 	fmt.Printf("Template %q created (session %s).\n", name, sess.SessionID)
-	fmt.Printf("Use 'astonish sandbox template shell %s' to customize, then 'template snapshot %s'.\n", name, name)
+	fmt.Printf("Use 'troupe sandbox template shell %s' to customize, then 'template snapshot %s'.\n", name, name)
 	return nil
 }
 
@@ -866,7 +866,7 @@ func handleTemplateShell(name string) error {
 	sess, err := resolveDockerSession(ctx, b, sessionID)
 	if err != nil {
 		if !overlayLayerExists(b, sandbox.BaseTemplateID) {
-			return fmt.Errorf("template %q does not exist; run 'astonish sandbox template create %s'", name, name)
+			return fmt.Errorf("template %q does not exist; run 'troupe sandbox template create %s'", name, name)
 		}
 		chain := overlayLayerChainFromRegistry(name)
 		if !overlayLayerExists(b, name) {
@@ -878,7 +878,7 @@ func handleTemplateShell(name string) error {
 			Type:       sandbox.SessionTypeChat,
 			TemplateID: name,
 			LayerChain: chain,
-			Labels:     map[string]string{"astonish.io/purpose": "template"},
+			Labels:     map[string]string{"troupe.io/purpose": "template"},
 		})
 		if err != nil {
 			return err
@@ -902,7 +902,7 @@ func handleTemplateShell(name string) error {
 
 func handleTemplateSnapshot(name string) error {
 	if isBaseTemplateName(name) {
-		return fmt.Errorf("cannot snapshot %q; use 'astonish sandbox save <session> base' to replace @base", name)
+		return fmt.Errorf("cannot snapshot %q; use 'troupe sandbox save <session> base' to replace @base", name)
 	}
 	b, err := openDockerCLI()
 	if err != nil {
@@ -911,7 +911,7 @@ func handleTemplateSnapshot(name string) error {
 	ctx := context.Background()
 	sess, err := resolveDockerSession(ctx, b, templateSessionID(name))
 	if err != nil {
-		return fmt.Errorf("template session %q is not running: %w\nUse 'astonish sandbox template shell %s' first", name, err, name)
+		return fmt.Errorf("template session %q is not running: %w\nUse 'troupe sandbox template shell %s' first", name, err, name)
 	}
 	if sess.State != sandbox.SessionStateRunning {
 		if err := b.StartSession(ctx, sess.SessionID); err != nil {
@@ -960,7 +960,7 @@ func handleTemplatePromote(name string) error {
 			Type:       sandbox.SessionTypeChat,
 			TemplateID: name,
 			LayerChain: chain,
-			Labels:     map[string]string{"astonish.io/purpose": "template"},
+			Labels:     map[string]string{"troupe.io/purpose": "template"},
 		})
 		if err != nil {
 			return err
@@ -989,7 +989,7 @@ func handleTemplatePromote(name string) error {
 
 func handleTemplateDelete(name string) error {
 	if isBaseTemplateName(name) {
-		return fmt.Errorf("cannot delete %q; use 'astonish sandbox reset' to re-seed it", name)
+		return fmt.Errorf("cannot delete %q; use 'troupe sandbox reset' to re-seed it", name)
 	}
 	b, err := openDockerCLI()
 	if err != nil {
@@ -1042,7 +1042,7 @@ func handleTemplateInfo(name string) error {
 	} else if overlayLayerExists(b, display) {
 		fmt.Printf("Layer:         ready (%s)\n", filepath.Join(b.LayersDir(), display, "rootfs"))
 	} else {
-		fmt.Printf("Layer:         (none — run 'astonish sandbox template snapshot %s')\n", name)
+		fmt.Printf("Layer:         (none — run 'troupe sandbox template snapshot %s')\n", name)
 	}
 	if meta != nil && meta.BasedOn != "" {
 		fmt.Printf("Based on:      %s\n", meta.BasedOn)
@@ -1171,7 +1171,7 @@ func parseSandboxCpSource(source string) (identifier, containerPath string, err 
 	colonIdx := strings.Index(source, ":")
 	if colonIdx < 1 {
 		return "", "", fmt.Errorf("invalid source format: expected <session-id>:<path>\n" +
-			"Example: astonish sandbox cp ff5c1146:/tmp/video.mp4 ./video.mp4")
+			"Example: troupe sandbox cp ff5c1146:/tmp/video.mp4 ./video.mp4")
 	}
 	identifier = source[:colonIdx]
 	containerPath = source[colonIdx+1:]

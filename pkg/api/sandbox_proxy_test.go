@@ -192,7 +192,7 @@ func TestSubdomainRouterSingleton(t *testing.T) {
 }
 
 func TestSubdomainHostname(t *testing.T) {
-	got := SubdomainHostname("astn-sess-abc123", 3000, "astonish.local.muxpie.com")
+	got := SubdomainHostname("astn-sess-abc123", 3000, "troupe.local.muxpie.com")
 	want := "astn-sess-abc123-3000.troupe.local.muxpie.com"
 	if got != want {
 		t.Errorf("SubdomainHostname = %q, want %q", got, want)

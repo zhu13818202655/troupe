@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	if err := astonish.Execute(); err != nil {
+	if err := troupe.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}

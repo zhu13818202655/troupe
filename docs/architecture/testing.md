@@ -1,5 +1,10 @@
 # Testing Architecture
 
+> **Note (2026-10-07).** The Helm chart (`deploy/helm`) was removed, so the
+> Kubernetes e2e suites no longer have a provisioning path in this repo. Provision
+> the control-plane and sandbox namespaces plus the sandbox PVCs yourself before
+> running `make test-e2e` or `make test-e2e-sqlite`.
+
 This document defines the three-tier testing structure for Astonish.
 
 `docs/TESTING.md` is the comprehensive reference for the unit / SSE-scenario / backend-integration / prompt-contract layers (vocabulary: "Layer 0–3"). This document is authoritative for the **build-tag taxonomy** (`unit` / `integration` / `e2e`) and for the e2e harness, K8s sandbox infra, and inspector mode. The two are complementary: the layers describe **what kind of bug a test catches**; the build tags describe **what infrastructure a test needs to run**.
@@ -120,9 +125,7 @@ Sandbox-aware E2E tests (any test that exercises `write_file`, `edit_file`, `she
 
 The repo ships everything needed:
 
-- `deploy/helm/astonish/values-e2e.yaml` — values file installing only the sandbox slice of the chart (api/worker `replicaCount: 0`) under the `astonishe2e` prefix.
-- `make e2e-k8s-up` — provisions namespaces, RBAC, PVCs, and runs the seed Job.
-- `make e2e-k8s-down` — uninstalls the helm release and force-deletes both namespaces.
+- The Helm values file and the `make e2e-k8s-up` / `make e2e-k8s-down` targets were **removed on 2026-10-07** along with the chart. Provision the control-plane and sandbox namespaces, the RBAC and the sandbox PVCs yourself, then run the suites.
 
 ```bash
 # One-time setup per cluster (or after `make e2e-k8s-down`)
@@ -301,7 +304,7 @@ import (
     "testing"
     "time"
 
-    "github.com/SAP/astonish/tests/e2eboot"
+    "github.com/zhu13818202655/troupe/tests/e2eboot"
 )
 
 func TestE2E_MyFeature(t *testing.T) {
@@ -371,7 +374,7 @@ package my_feature
 
 import (
     "testing"
-    "github.com/SAP/astonish/tests/e2eboot"
+    "github.com/zhu13818202655/troupe/tests/e2eboot"
 )
 
 // COVERS: CHAT-NNN

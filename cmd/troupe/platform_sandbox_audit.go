@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"context"
@@ -86,7 +86,7 @@ func handlePlatformSandboxAudit(args []string) error {
 		if appCfg.Sandbox.Kubernetes.Namespace != "" {
 			namespace = appCfg.Sandbox.Kubernetes.Namespace
 		} else {
-			namespace = "astonish-sandbox"
+			namespace = "troupe-sandbox"
 		}
 	}
 
@@ -190,7 +190,7 @@ func handlePlatformSandboxAudit(args []string) error {
 
 	// --- Phase 4: Print report ---
 	fmt.Println()
-	fmt.Println("Layers PVC (/mnt/astonish-layers):")
+	fmt.Println("Layers PVC (/mnt/troupe-layers):")
 	fmt.Printf("  Total directories on disk:   %d\n", len(layersDirs))
 	fmt.Printf("  Tracked in PG:               %d\n", len(allLayers))
 	fmt.Printf("  Orphan directories (disk, no PG row):  %d\n", len(orphanLayerDirs))
@@ -198,7 +198,7 @@ func handlePlatformSandboxAudit(args []string) error {
 	fmt.Printf("  PG rows with ref_count=0 (>%s old):  %d\n", grace, len(unreferencedLayers))
 	fmt.Printf("  PG rows without disk dir:    %d\n", len(pgOrphanLayers))
 	fmt.Println()
-	fmt.Println("Uppers PVC (/mnt/astonish-uppers):")
+	fmt.Println("Uppers PVC (/mnt/troupe-uppers):")
 	fmt.Printf("  Total session directories:   %d\n", len(uppersDirs))
 	fmt.Printf("  Tracked in PG sessions:      %d\n", len(knownSessionIDs))
 	fmt.Printf("  Orphan directories:          %d\n", len(orphanUpperDirs))
@@ -321,8 +321,8 @@ type pgLayerInfo struct {
 // runAuditPod spawns a pod that mounts both PVCs and prints directory listings
 // as JSON. Returns the list of top-level directory names for each PVC.
 func runAuditPod(ctx context.Context, cs kubernetes.Interface, namespace string, appCfg *config.AppConfig) ([]string, []string, error) {
-	layersPVC := "astonish-layers"
-	uppersPVC := "astonish-uppers"
+	layersPVC := "troupe-layers"
+	uppersPVC := "troupe-uppers"
 	if appCfg.Sandbox.Kubernetes.LayersPVCName != "" {
 		layersPVC = appCfg.Sandbox.Kubernetes.LayersPVCName
 	}
@@ -347,7 +347,7 @@ printf '{"layers":%s,"uppers":%s}\n' \
 			Name:      podName,
 			Namespace: namespace,
 			Labels: map[string]string{
-				"astonish.io/type": "audit",
+				"troupe.io/type": "audit",
 			},
 		},
 		Spec: corev1.PodSpec{
@@ -449,13 +449,13 @@ func reclaimDirsFromPVC(ctx context.Context, cs kubernetes.Interface, namespace 
 	var pvcName, mountPath string
 	switch pvcType {
 	case "layers":
-		pvcName = "astonish-layers"
+		pvcName = "troupe-layers"
 		mountPath = "/mnt/layers"
 		if appCfg.Sandbox.Kubernetes.LayersPVCName != "" {
 			pvcName = appCfg.Sandbox.Kubernetes.LayersPVCName
 		}
 	case "uppers":
-		pvcName = "astonish-uppers"
+		pvcName = "troupe-uppers"
 		mountPath = "/mnt/uppers"
 		if appCfg.Sandbox.Kubernetes.UppersPVCName != "" {
 			pvcName = appCfg.Sandbox.Kubernetes.UppersPVCName
@@ -482,7 +482,7 @@ func reclaimDirsFromPVC(ctx context.Context, cs kubernetes.Interface, namespace 
 			Name:      podName,
 			Namespace: namespace,
 			Labels: map[string]string{
-				"astonish.io/type": "audit-gc",
+				"troupe.io/type": "audit-gc",
 			},
 		},
 		Spec: corev1.PodSpec{
@@ -570,7 +570,7 @@ func filterEmpty(ss []string) []string {
 }
 
 func printSandboxAuditUsage() {
-	fmt.Println("usage: astonish platform sandbox-audit [options]")
+	fmt.Println("usage: troupe platform sandbox-audit [options]")
 	fmt.Println("")
 	fmt.Println("Audit sandbox PVCs for orphaned data and optionally reclaim space.")
 	fmt.Println("")
@@ -586,8 +586,8 @@ func printSandboxAuditUsage() {
 	fmt.Println("  --grace DURATION  Grace period for orphan detection (default: 1h)")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish platform sandbox-audit")
-	fmt.Println("  astonish platform sandbox-audit --reclaim --grace 24h")
-	fmt.Println("  astonish platform sandbox-audit --reclaim --reclaim-pg")
-	fmt.Println("  astonish platform sandbox-audit --kubeconfig ~/.kube/prod --namespace astonish-sandbox")
+	fmt.Println("  troupe platform sandbox-audit")
+	fmt.Println("  troupe platform sandbox-audit --reclaim --grace 24h")
+	fmt.Println("  troupe platform sandbox-audit --reclaim --reclaim-pg")
+	fmt.Println("  troupe platform sandbox-audit --kubeconfig ~/.kube/prod --namespace troupe-sandbox")
 }

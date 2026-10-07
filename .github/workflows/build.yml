@@ -51,7 +51,7 @@ jobs:
           # Force Go to see embed.go as modified so it re-embeds the dist folder
           touch web/embed.go
           go clean -cache
-          go build -v -o astonish .
+          go build -v -o troupe .
 
       - name: Build tree-sitter native library
         run: |

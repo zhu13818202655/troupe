@@ -33,7 +33,9 @@ func (lc *linkCodeStore) GenerateWithTTL(ctx context.Context, code, userID, emai
 		return fmt.Errorf("invalid user ID: %w", err)
 	}
 
-	now := time.Now()
+	// UTC: SQLite compares time columns as text, so the stored value and every
+	// later bound must share the same offset.
+	now := time.Now().UTC()
 	create := lc.client.PendingLinkCode.Create().
 		SetID(code).
 		SetUserID(uid).
@@ -53,7 +55,7 @@ func (lc *linkCodeStore) Consume(ctx context.Context, code string) (*store.LinkC
 	ent, err := lc.client.PendingLinkCode.Query().
 		Where(
 			pendinglinkcode.IDEQ(code),
-			pendinglinkcode.ExpiresAtGT(time.Now()),
+			pendinglinkcode.ExpiresAtGT(time.Now().UTC()),
 		).
 		Only(ctx)
 	if err != nil {
@@ -73,7 +75,7 @@ func (lc *linkCodeStore) Consume(ctx context.Context, code string) (*store.LinkC
 
 func (lc *linkCodeStore) Cleanup(ctx context.Context) error {
 	_, err := lc.client.PendingLinkCode.Delete().
-		Where(pendinglinkcode.ExpiresAtLT(time.Now())).
+		Where(pendinglinkcode.ExpiresAtLT(time.Now().UTC())).
 		Exec(ctx)
 	return err
 }

@@ -38,8 +38,6 @@ help:
 	@echo "  make test-e2e-sqlite - Run E2E tests with SQLite backend (no DB needed, needs k8s)"
 	@echo "  make test-e2e-inspect - Run E2E tests in shared mode (browse sessions in UI after run)"
 	@echo "  make test-e2e-inspect-stop - Stop the inspector started by 'test-e2e-inspect'"
-	@echo "  make e2e-k8s-up      - Provision isolated k8s sandbox infra for e2e tests"
-	@echo "  make e2e-k8s-down    - Tear down e2e k8s sandbox infra"
 	@echo "  make install         - Install the binary to ~/bin"
 	@echo "  make clean           - Clean up build artifacts"
 	@echo "  make update-mcp-stars - Update MCP store GitHub star counts"
@@ -69,7 +67,6 @@ help:
 	@echo "OpenShell Sandbox:"
 	@echo "  make docker-sandbox-openshell - Build the OpenShell sandbox image"
 	@echo "  make proto-gen                - Regenerate gRPC stubs from vendored protos"
-	@echo "  make helm-deps                - Update Helm subchart dependencies"
 	@echo ""
 	@echo "Registry Push (multi-arch, requires docker login + buildx):"
 	@echo "  make push-dev                      - Build+push troupe:dev (multi-arch)"
@@ -188,8 +185,7 @@ test-e2e:
 			echo ""; \
 			echo "ERROR: e2e k8s infra not found — namespace \"$$NS\" missing."; \
 			echo ""; \
-			echo "  Provision it with:    make e2e-k8s-up"; \
-			echo "  Tear it down with:    make e2e-k8s-down"; \
+			echo "  Provision the control-plane and sandbox namespaces first."; \
 			echo ""; \
 			echo "  Override namespaces by setting TROUPE_E2E_CONTROL_PLANE_NAMESPACE"; \
 			echo "  and TROUPE_E2E_SANDBOX_NAMESPACE in .env (defaults: troupe, troupe-sandbox)."; \
@@ -201,7 +197,7 @@ test-e2e:
 		if ! kubectl get pvc -n "$$SB_NS" "$$PVC" >/dev/null 2>&1; then \
 			echo ""; \
 			echo "ERROR: e2e k8s infra incomplete — PVC \"$$PVC\" missing in namespace \"$$SB_NS\"."; \
-			echo "  Re-provision with:    make e2e-k8s-up"; \
+			echo "  Ensure the sandbox namespace and PVCs exist."; \
 			echo ""; \
 			exit 1; \
 		fi; \
@@ -227,7 +223,7 @@ test-e2e-sqlite:
 		if ! kubectl get ns "$$NS" >/dev/null 2>&1; then \
 			echo ""; \
 			echo "ERROR: e2e k8s infra not found — namespace \"$$NS\" missing."; \
-			echo "  Provision it with:    make e2e-k8s-up"; \
+			echo "  Provision the control-plane and sandbox namespaces first."; \
 			echo ""; \
 			exit 1; \
 		fi; \
@@ -236,7 +232,7 @@ test-e2e-sqlite:
 		if ! kubectl get pvc -n "$$SB_NS" "$$PVC" >/dev/null 2>&1; then \
 			echo ""; \
 			echo "ERROR: e2e k8s infra incomplete — PVC \"$$PVC\" missing in namespace \"$$SB_NS\"."; \
-			echo "  Re-provision with:    make e2e-k8s-up"; \
+			echo "  Ensure the sandbox namespace and PVCs exist."; \
 			echo ""; \
 			exit 1; \
 		fi; \
@@ -251,99 +247,27 @@ test-e2e-sqlite:
 	node tests/scenarios/parse-run.mjs /tmp/e2e-results-sqlite.json; \
 	exit $$RESULT
 
-# E2E k8s sandbox infrastructure — provision/destroy the isolated namespaces,
-# PVCs, RBAC, and seeded @base layer used by sandbox-aware E2E tests.
-#
-# Namespace layout (DEDICATED to e2e — never reuse a live install):
-#   control plane: troupee2e
-#   sandbox:       troupee2e-sandbox
-#
-# Tests run on the host using your kubeconfig; the chart's api/worker pods
-# are scaled to 0 (we only need the sandbox slice). See
-# deploy/helm/troupe/values-e2e.yaml for details.
-E2E_K8S_RELEASE := troupee2e
-E2E_K8S_NS := troupee2e
-E2E_K8S_SANDBOX_NS := troupee2e-sandbox
-
-e2e-k8s-up:
-	@which helm >/dev/null 2>&1 || { echo "ERROR: helm not found in PATH"; exit 1; }
-	@which kubectl >/dev/null 2>&1 || { echo "ERROR: kubectl not found in PATH"; exit 1; }
-	@echo "Provisioning isolated e2e k8s infra ($(E2E_K8S_NS) + $(E2E_K8S_SANDBOX_NS))..."
-	helm upgrade --install $(E2E_K8S_RELEASE) deploy/helm/troupe \
-		-n $(E2E_K8S_NS) --create-namespace \
-		-f deploy/helm/troupe/values-e2e.yaml \
-		--history-max=3 \
-		--wait --timeout=10m
-	@echo "Patching NFS server (if present) to tolerate disk-pressure (prevents cleanup deadlock)..."
-	-kubectl -n nfs-system patch deployment nfs-server --type=json -p='[{"op":"add","path":"/spec/template/spec/tolerations/-","value":{"key":"node.kubernetes.io/disk-pressure","effect":"NoSchedule","operator":"Exists"}}]' 2>/dev/null || true
-	@echo "Verifying seeded @base layer..."
-	@E2E_K8S_SANDBOX_NS=$(E2E_K8S_SANDBOX_NS) scripts/verify-e2e-seed.sh
-	@echo "E2E k8s infra ready."
-
-e2e-k8s-down:
-	@which helm >/dev/null 2>&1 || { echo "ERROR: helm not found in PATH"; exit 1; }
-	@which kubectl >/dev/null 2>&1 || { echo "ERROR: kubectl not found in PATH"; exit 1; }
-	@echo "Tearing down e2e k8s infra..."
-	-helm uninstall $(E2E_K8S_RELEASE) -n $(E2E_K8S_NS) 2>/dev/null
-	-kubectl delete pods --all -n $(E2E_K8S_SANDBOX_NS) --force --grace-period=0 --ignore-not-found 2>/dev/null
-	-kubectl delete ns $(E2E_K8S_NS) --ignore-not-found
-	-kubectl delete ns $(E2E_K8S_SANDBOX_NS) --ignore-not-found
-	@echo "Pruning unused containerd images on nodes (best effort)..."
-	-for node in $$(kubectl get nodes -o name 2>/dev/null); do \
-		kubectl debug $$node -it --image=alpine -- chroot /host sh -c 'crictl rmi --prune 2>/dev/null || true' 2>/dev/null || true; \
-	done
-	@echo "E2E k8s infra removed."
+# E2E k8s sandbox infrastructure is no longer provisioned by this
+# Makefile. The Helm chart under deploy/helm was removed; provision the
+# control-plane + sandbox namespaces, the sandbox PVCs (troupe-layers,
+# troupe-uppers) and the seeded @base layer with your own deployment
+# tooling, then run `make test-e2e` or `make test-e2e-sqlite`.
 
 # ===========================================================================
-# E2E OpenShell sandbox infrastructure — provision/destroy the OpenShell
-# gateway and sandbox namespace for E2E tests against the OpenShell backend.
+# E2E OpenShell sandbox infrastructure.
 #
-# Namespace layout (DEDICATED to e2e — never reuse a live install):
-#   control plane: troupee2eos        (OpenShell gateway pod lives here)
+# The Helm chart under deploy/helm was removed; provision the OpenShell
+# gateway and sandbox namespace with your own deployment tooling.
+# Namespace layout expected by the tests below (DEDICATED to e2e — never
+# reuse a live install):
+#   control plane: troupee2eos         (OpenShell gateway pod lives here)
 #   sandbox:       troupee2eos-sandbox (sandbox pods spawned by gateway)
-#
-# The chart's api/worker pods are scaled to 0 — tests run in-process on the
-# host (same pattern as K8s e2e). Only the OpenShell gateway is deployed.
 # ===========================================================================
 E2E_OS_RELEASE := troupee2eos
 E2E_OS_NS := troupee2eos
 E2E_OS_SANDBOX_NS := troupee2eos-sandbox
 
-e2e-openshell-up:
-	@which helm >/dev/null 2>&1 || { echo "ERROR: helm not found in PATH"; exit 1; }
-	@which kubectl >/dev/null 2>&1 || { echo "ERROR: kubectl not found in PATH"; exit 1; }
-	@echo "Pulling OpenShell subchart dependency..."
-	helm dependency update deploy/helm/troupe
-	@echo "Deploying OpenShell e2e infra ($(E2E_OS_NS) + $(E2E_OS_SANDBOX_NS))..."
-	helm upgrade --install $(E2E_OS_RELEASE) deploy/helm/troupe \
-		-n $(E2E_OS_NS) --create-namespace \
-		-f deploy/helm/troupe/values-e2e-openshell.yaml \
-		--history-max=3 \
-		--wait --timeout=10m
-	@echo "Verifying OpenShell gateway is Running..."
-	@for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do \
-		PHASE=$$(kubectl get pod -n $(E2E_OS_NS) -l app.kubernetes.io/name=openshell \
-			-o jsonpath='{.items[0].status.phase}' 2>/dev/null); \
-		if [ "$$PHASE" = "Running" ]; then break; fi; \
-		if [ $$i -eq 15 ]; then \
-			echo "ERROR: OpenShell gateway not Running after 45s."; \
-			kubectl get pods -n $(E2E_OS_NS); \
-			exit 1; \
-		fi; \
-		sleep 3; \
-	done
-	@echo "OpenShell e2e infra ready."
-	@echo "  Gateway: $(E2E_OS_RELEASE)-openshell.$(E2E_OS_NS).svc.cluster.local:8080"
 
-e2e-openshell-down:
-	@which helm >/dev/null 2>&1 || { echo "ERROR: helm not found in PATH"; exit 1; }
-	@which kubectl >/dev/null 2>&1 || { echo "ERROR: kubectl not found in PATH"; exit 1; }
-	@echo "Tearing down OpenShell e2e infra..."
-	-helm uninstall $(E2E_OS_RELEASE) -n $(E2E_OS_NS) 2>/dev/null
-	-kubectl delete pods --all -n $(E2E_OS_SANDBOX_NS) --force --grace-period=0 --ignore-not-found 2>/dev/null
-	-kubectl delete ns $(E2E_OS_NS) --ignore-not-found
-	-kubectl delete ns $(E2E_OS_SANDBOX_NS) --ignore-not-found
-	@echo "OpenShell e2e infra removed."
 
 # Run E2E tests against the OpenShell backend.
 # Requires: TROUPE_TEST_DSN, provider API key, OpenShell gateway Running.
@@ -362,8 +286,7 @@ test-e2e-openshell:
 	if [ "$$PHASE" != "Running" ]; then \
 		echo ""; \
 		echo "ERROR: OpenShell gateway not Running (phase=$$PHASE)."; \
-		echo "  Provision it with:    make e2e-openshell-up"; \
-		echo "  Tear it down with:    make e2e-openshell-down"; \
+		echo "  Provision the OpenShell gateway in the e2e namespace first."; \
 		echo ""; \
 		exit 1; \
 	fi
@@ -427,7 +350,7 @@ test-e2e-inspect: $(E2E_INSPECT_BIN)
 	SB_NS="$${TROUPE_E2E_SANDBOX_NAMESPACE:-troupe-sandbox}"; \
 	echo "Preflight: verifying e2e k8s infra ($$CP_NS + $$SB_NS)..."; \
 	for NS in "$$CP_NS" "$$SB_NS"; do \
-		kubectl get ns "$$NS" >/dev/null 2>&1 || { echo "ERROR: namespace $$NS missing — run 'make e2e-k8s-up' first"; exit 1; }; \
+		kubectl get ns "$$NS" >/dev/null 2>&1 || { echo "ERROR: namespace $$NS missing — provision it before running e2e"; exit 1; }; \
 	done; \
 	for PVC in troupe-layers troupe-uppers; do \
 		kubectl get pvc -n "$$SB_NS" "$$PVC" >/dev/null 2>&1 || { echo "ERROR: PVC $$PVC missing in $$SB_NS"; exit 1; }; \
@@ -556,7 +479,7 @@ update-mcp-stars:
 	GITHUB_TOKEN=$$(gh auth token) python3 scripts/update-mcp-stars.py
 	@echo "Star counts updated!"
 
-.PHONY: all help build build-ui build-extension build-all run daemon daemon-dev test test-unit test-integration test-e2e test-e2e-sqlite test-e2e-inspect test-e2e-inspect-stop e2e-k8s-up e2e-k8s-down install clean update-mcp-stars setup-hooks platform-init create-secrets e2e-env-up e2e-env-down e2e-env-rebuild docker-up docker-down docker-rebuild build-linux build-linux-arm64 sandbox-entrypoint docker-sandbox-base docker-sandbox-openshell ensure-builder push-dev push-sandbox-base-dev push-sandbox-openshell-dev push-all-dev push-dev-fast push-sandbox-base-dev-fast push-sandbox-openshell-dev-fast push-all-dev-fast ent-generate proto-gen
+.PHONY: all help build build-ui build-extension build-all run daemon daemon-dev test test-unit test-integration test-e2e test-e2e-sqlite test-e2e-inspect test-e2e-inspect-stop install clean update-mcp-stars setup-hooks platform-init create-secrets e2e-env-up e2e-env-down e2e-env-rebuild docker-up docker-down docker-rebuild build-linux build-linux-arm64 sandbox-entrypoint docker-sandbox-base docker-sandbox-openshell ensure-builder push-dev push-sandbox-base-dev push-sandbox-openshell-dev push-all-dev push-dev-fast push-sandbox-base-dev-fast push-sandbox-openshell-dev-fast push-all-dev-fast ent-generate proto-gen
 
 # Docker Test Environment - isolated environment for running integration/E2E tests
 e2e-env-up:
@@ -651,10 +574,6 @@ proto-gen:
 	buf generate
 	@echo "Generated: pkg/sandbox/openshell/gen/openshellv1/"
 
-# Update Helm chart dependencies (pull OpenShell subchart archive)
-helm-deps:
-	helm dependency update deploy/helm/troupe
-	@echo "Helm dependencies updated (Chart.lock + charts/ archive)"
 
 # Build the K8s sandbox-base image locally (native arch). Host-builds the
 # binary + entrypoint so Docker only layers apt/treesitter + COPY.

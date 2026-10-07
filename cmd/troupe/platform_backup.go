@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"context"
@@ -288,7 +288,7 @@ func printBackupSummary(summary backup.Summary, jsonOut bool, verified bool) err
 }
 
 func printPlatformBackupUsage() {
-	fmt.Println("usage: astonish platform backup <command> [options]")
+	fmt.Println("usage: troupe platform backup <command> [options]")
 	fmt.Println("")
 	fmt.Println("Create, inspect, and verify Astonish backup archives.")
 	fmt.Println("")
@@ -298,13 +298,13 @@ func printPlatformBackupUsage() {
 	fmt.Println("  verify <archive> [--json]    Validate archive manifest and checksums")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish platform backup create --output backup.troupe-backup")
-	fmt.Println("  astonish platform backup inspect backup.troupe-backup")
-	fmt.Println("  astonish platform backup verify backup.troupe-backup")
+	fmt.Println("  troupe platform backup create --output backup.troupe-backup")
+	fmt.Println("  troupe platform backup inspect backup.troupe-backup")
+	fmt.Println("  troupe platform backup verify backup.troupe-backup")
 }
 
 func printPlatformBackupCreateUsage() {
-	fmt.Println("usage: astonish platform backup create --output <archive> [--compression gzip|none] [--org <slug>] [--team <slug>|--user <id>] [--passphrase <secret>] [--redact-secrets]")
+	fmt.Println("usage: troupe platform backup create --output <archive> [--compression gzip|none] [--org <slug>] [--team <slug>|--user <id>] [--passphrase <secret>] [--redact-secrets]")
 	fmt.Println("")
 	fmt.Println("Create a logical recovery backup archive containing exported platform data.")
 	fmt.Println("Archives are gzip-compressed by default and contain multiple JSONL files plus manifest and checksum files.")
@@ -313,13 +313,13 @@ func printPlatformBackupCreateUsage() {
 }
 
 func printPlatformBackupInspectUsage() {
-	fmt.Println("usage: astonish platform backup inspect <archive> [--json] [--passphrase <secret>]")
+	fmt.Println("usage: troupe platform backup inspect <archive> [--json] [--passphrase <secret>]")
 	fmt.Println("")
 	fmt.Println("Show manifest metadata for an Astonish backup archive.")
 }
 
 func printPlatformBackupVerifyUsage() {
-	fmt.Println("usage: astonish platform backup verify <archive> [--json] [--passphrase <secret>]")
+	fmt.Println("usage: troupe platform backup verify <archive> [--json] [--passphrase <secret>]")
 	fmt.Println("")
 	fmt.Println("Validate manifest metadata and SHA-256 checksums for an Astonish backup archive.")
 }

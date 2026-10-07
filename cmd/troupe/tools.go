@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"context"
@@ -30,7 +30,7 @@ type minimalReadonlyContext struct {
 }
 
 func (m *minimalReadonlyContext) AgentName() string                    { return "tools-list" }
-func (m *minimalReadonlyContext) AppName() string                      { return "astonish" }
+func (m *minimalReadonlyContext) AppName() string                      { return "troupe" }
 func (m *minimalReadonlyContext) UserContent() *genai.Content          { return nil }
 func (m *minimalReadonlyContext) InvocationID() string                 { return "" }
 func (m *minimalReadonlyContext) ReadonlyState() session.ReadonlyState { return nil }
@@ -67,7 +67,7 @@ func handleToolsCommand(args []string) error {
 }
 
 func printToolsUsage() {
-	fmt.Println("usage: astonish tools [-h] {list,search,edit,store,servers,enable,disable,refresh} ...")
+	fmt.Println("usage: troupe tools [-h] {list,search,edit,store,servers,enable,disable,refresh} ...")
 	fmt.Println("")
 	fmt.Println("positional arguments:")
 	fmt.Println("  {list,search,edit,store,servers,enable,disable,refresh}")
@@ -156,7 +156,7 @@ func handleToolsServersCommand(args []string) error {
 
 	if len(servers) == 0 {
 		fmt.Println("  No MCP servers configured.")
-		fmt.Println("  Run 'astonish tools store' to browse and install servers.")
+		fmt.Println("  Run 'troupe tools store' to browse and install servers.")
 		return nil
 	}
 
@@ -188,7 +188,7 @@ func handleToolsServersCommand(args []string) error {
 // handleToolsEnableCommand enables an MCP server
 func handleToolsEnableCommand(args []string) error {
 	if len(args) < 1 {
-		return fmt.Errorf("usage: astonish tools enable <server-name>")
+		return fmt.Errorf("usage: troupe tools enable <server-name>")
 	}
 
 	serverName := args[0]
@@ -218,7 +218,7 @@ func handleToolsEnableCommand(args []string) error {
 // handleToolsDisableCommand disables an MCP server
 func handleToolsDisableCommand(args []string) error {
 	if len(args) < 1 {
-		return fmt.Errorf("usage: astonish tools disable <server-name>")
+		return fmt.Errorf("usage: troupe tools disable <server-name>")
 	}
 
 	serverName := args[0]
@@ -461,7 +461,7 @@ func handleToolsStoreCommand(args []string) error {
 	case "list":
 		return handleToolsStoreList()
 	default:
-		fmt.Println("usage: astonish tools store [list|install]")
+		fmt.Println("usage: troupe tools store [list|install]")
 		fmt.Println("")
 		fmt.Println("commands:")
 		fmt.Println("  list      List all available MCP servers (official + tapped)")
@@ -550,8 +550,8 @@ func handleToolsStoreList() error {
 	}
 
 	fmt.Println("")
-	fmt.Println("Tip: Run 'astonish tools store install' to install a server")
-	fmt.Println("     Run 'astonish tap add <repo>' to add more repositories")
+	fmt.Println("Tip: Run 'troupe tools store install' to install a server")
+	fmt.Println("     Run 'troupe tap add <repo>' to add more repositories")
 
 	return nil
 }
@@ -742,7 +742,7 @@ func handleToolsStoreInstall() error {
 		Bold(true)
 
 	fmt.Println(successStyle.Render(fmt.Sprintf("✓ %s installed successfully!", selectedServer.Name)))
-	fmt.Printf("  Run 'astonish tools list' to see available tools.\n")
+	fmt.Printf("  Run 'troupe tools list' to see available tools.\n")
 
 	return nil
 }

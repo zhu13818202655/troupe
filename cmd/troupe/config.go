@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"fmt"
@@ -29,7 +29,7 @@ func handleConfigCommand(args []string) error {
 }
 
 func printConfigUsage() {
-	fmt.Println("usage: astonish config [-h] {edit,show,directory,browser} ...")
+	fmt.Println("usage: troupe config [-h] {edit,show,directory,browser} ...")
 	fmt.Println("")
 	fmt.Println("positional arguments:")
 	fmt.Println("  {edit,show,directory,browser}")

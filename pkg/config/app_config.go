@@ -379,7 +379,7 @@ type SandboxKubernetesConfig struct {
 	// managing.
 	InCluster bool `yaml:"in_cluster,omitempty" json:"in_cluster,omitempty"`
 
-	// Namespace for sandbox pods. Default: "astonish-sandboxes".
+	// Namespace for sandbox pods. Default: "troupe-sandboxes".
 	Namespace string `yaml:"namespace,omitempty" json:"namespace,omitempty"`
 
 	// ControlPlaneNamespace is the namespace running the Astonish API

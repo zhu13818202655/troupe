@@ -49,7 +49,7 @@ sandbox:
           port: 443
 ```
 
-For full deployment configuration details, see [OpenShell Deployment](../deployment/openshell.md#network-policy-presets).
+Deployment tooling for OpenShell is being rebuilt against our own requirements; the presets documented on this page are the current reference.
 
 ## Admin-Managed Network Policy Rules
 
@@ -169,5 +169,4 @@ internal.corp.com   → matches only internal.corp.com (exact)
 ## See Also
 
 - [Sandboxes](./sandboxes.md) — sandbox isolation architecture overview
-- [OpenShell Deployment](../deployment/openshell.md) — full deployment guide with config-level network presets
 - [Settings](../studio/settings.md) — Studio settings panel overview

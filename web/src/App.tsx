@@ -376,7 +376,7 @@ function App() {
       }
 
       // Check GitHub for latest release
-      const releaseRes = await fetch('https://api.github.com/repos/SAP/astonish/releases/latest')
+      const releaseRes = await fetch('https://api.github.com/repos/zhu13818202655/troupe/releases/latest')
       if (!releaseRes.ok) {
         return
       }

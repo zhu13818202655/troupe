@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"fmt"
@@ -8,17 +8,17 @@ import (
 
 func handleOrgCommand(args []string) error {
 	if len(args) == 0 {
-		fmt.Println("Usage: astonish org <subcommand>")
+		fmt.Println("Usage: troupe org <subcommand>")
 		fmt.Println("")
 		fmt.Println("Subcommands:")
 		fmt.Println("  list          List available organizations")
 		fmt.Println("")
-		fmt.Println("To switch organizations, run 'astonish logout' then 'astonish login'")
+		fmt.Println("To switch organizations, run 'troupe logout' then 'troupe login'")
 		return nil
 	}
 
 	if !client.IsRemoteMode() {
-		return fmt.Errorf("'org' command is only available in remote mode. Run 'astonish login' first")
+		return fmt.Errorf("'org' command is only available in remote mode. Run 'troupe login' first")
 	}
 
 	switch args[0] {

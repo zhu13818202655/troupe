@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"encoding/json"
@@ -21,27 +21,27 @@ func handleFleetCommand(args []string) error {
 		return handleFleetList()
 	case "show":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish fleet show <key>")
+			return fmt.Errorf("usage: troupe fleet show <key>")
 		}
 		return handleFleetShow(strings.Join(args[1:], " "))
 	case "activate":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish fleet activate <key>")
+			return fmt.Errorf("usage: troupe fleet activate <key>")
 		}
 		return handleFleetActivate(strings.Join(args[1:], " "))
 	case "deactivate":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish fleet deactivate <key>")
+			return fmt.Errorf("usage: troupe fleet deactivate <key>")
 		}
 		return handleFleetDeactivate(strings.Join(args[1:], " "))
 	case "status":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish fleet status <key>")
+			return fmt.Errorf("usage: troupe fleet status <key>")
 		}
 		return handleFleetStatus(strings.Join(args[1:], " "))
 	case "delete", "rm":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish fleet delete <key>")
+			return fmt.Errorf("usage: troupe fleet delete <key>")
 		}
 		return handleFleetDelete(strings.Join(args[1:], " "))
 	case "templates":
@@ -53,7 +53,7 @@ func handleFleetCommand(args []string) error {
 }
 
 func printFleetUsage() {
-	fmt.Println("usage: astonish fleet {list,show,activate,deactivate,status,delete,templates}")
+	fmt.Println("usage: troupe fleet {list,show,activate,deactivate,status,delete,templates}")
 	fmt.Println("")
 	fmt.Println("Manage fleet plans and autonomous agent teams.")
 	fmt.Println("")
@@ -349,7 +349,7 @@ func handleFleetShow(keyOrPrefix string) error {
 		fmt.Printf("  Sessions started: %d\n", p.Activation.SessionsStarted)
 	} else {
 		fmt.Println("  Status: NOT ACTIVE")
-		fmt.Printf("  Run: astonish fleet activate %s\n", p.Key)
+		fmt.Printf("  Run: troupe fleet activate %s\n", p.Key)
 	}
 
 	return nil
@@ -382,7 +382,7 @@ func handleFleetActivate(keyOrPrefix string) error {
 
 	fmt.Printf("Plan %q activated.\n", plan.Name)
 	fmt.Printf("The scheduler will now poll for new items on the configured channel.\n")
-	fmt.Printf("Run: astonish fleet status %s  to check polling status.\n", plan.Key)
+	fmt.Printf("Run: troupe fleet status %s  to check polling status.\n", plan.Key)
 	return nil
 }
 
@@ -477,10 +477,10 @@ func handleFleetStatus(keyOrPrefix string) error {
 			fmt.Printf("Last error:      %s\n", status.LastPollError)
 		}
 		fmt.Printf("Sessions started: %d\n", status.SessionsStarted)
-		fmt.Printf("\nTo stop: astonish fleet deactivate %s\n", plan.Key)
+		fmt.Printf("\nTo stop: troupe fleet deactivate %s\n", plan.Key)
 	} else {
 		fmt.Println("Status: NOT ACTIVE")
-		fmt.Printf("\nTo start: astonish fleet activate %s\n", plan.Key)
+		fmt.Printf("\nTo start: troupe fleet activate %s\n", plan.Key)
 	}
 
 	return nil

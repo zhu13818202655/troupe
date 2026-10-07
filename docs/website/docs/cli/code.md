@@ -13,7 +13,7 @@ astonish code --auto-approve           # Bypass all authorization prompts
 
 ```bash
 # 1. Install Astonish
-brew install SAP/astonish/astonish
+brew install zhu13818202655/troupe/troupe
 
 # 2. Navigate to your project
 cd ~/Projects/my-app

@@ -123,7 +123,7 @@ describe('redesigned dialog components', () => {
     render(<UpgradeDialog info={{ version: '2.5.0', url: 'https://example.test/releases' }} onClose={onClose} />)
 
     expect(screen.getByRole('heading', { name: 'Update Available: 2.5.0' })).toBeInTheDocument()
-    expect(screen.getByText('brew upgrade SAP/astonish/astonish')).toBeInTheDocument()
+    expect(screen.getByText('brew upgrade zhu13818202655/troupe/troupe')).toBeInTheDocument()
 
     await userEvent.click(screen.getByRole('button', { name: 'Download from GitHub Releases' }))
     expect(open).toHaveBeenCalledWith('https://example.test/releases', '_blank')

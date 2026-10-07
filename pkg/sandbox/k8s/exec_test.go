@@ -169,7 +169,7 @@ func TestExec_ZeroExitCaptures(t *testing.T) {
 	if se.url == nil {
 		t.Fatal("executor factory not called")
 	}
-	if !strings.Contains(se.url.Path, "/namespaces/astonish-sandboxes/pods/astn-sess-s1/exec") {
+	if !strings.Contains(se.url.Path, "/namespaces/troupe-sandboxes/pods/astn-sess-s1/exec") {
 		t.Errorf("URL path = %q, want pod exec subresource", se.url.Path)
 	}
 	if se.method != "POST" {

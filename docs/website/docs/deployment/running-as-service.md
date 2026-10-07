@@ -137,8 +137,3 @@ This stops the service and removes the plist or systemd unit file.
 | `daemon status` | Show current daemon status |
 | `daemon run` | Run in foreground (for debugging) |
 | `daemon logs` | View daemon logs |
-
-## See Also
-
-- [Deployment Overview](./index.md) — choosing between local and cloud deployment
-- [Kubernetes Deployment](./kubernetes.md) — cloud deployments use Kubernetes instead of the daemon

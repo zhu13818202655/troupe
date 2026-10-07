@@ -13,7 +13,7 @@ export default function UpgradeDialog({ info, onClose }: UpgradeDialogProps) {
     {
       title: 'Homebrew (Recommended)',
       icon: Terminal,
-      command: 'brew upgrade SAP/astonish/astonish',
+      command: 'brew upgrade zhu13818202655/troupe/troupe',
     },
     {
       title: 'Install Script',

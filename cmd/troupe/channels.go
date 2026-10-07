@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"context"
@@ -37,7 +37,7 @@ func handleChannelsCommand(args []string) error {
 		return handleChannelsStatus()
 	case "setup":
 		if len(args) < 2 {
-			fmt.Println("usage: astonish channels setup <channel>")
+			fmt.Println("usage: troupe channels setup <channel>")
 			fmt.Println("")
 			fmt.Println("Available channels:")
 			fmt.Println("  telegram      Set up Telegram bot integration")
@@ -57,7 +57,7 @@ func handleChannelsCommand(args []string) error {
 		}
 	case "disable":
 		if len(args) < 2 {
-			fmt.Println("usage: astonish channels disable <channel>")
+			fmt.Println("usage: troupe channels disable <channel>")
 			return nil
 		}
 		return handleChannelDisable(args[1])
@@ -138,7 +138,7 @@ func handleTelegramSetup() error {
 		fmt.Printf("    \033[4;36mhttps://t.me/BotFather\033[0m\n")
 		fmt.Println()
 		fmt.Println("  Once you have your token, run this command again:")
-		fmt.Println("    astonish channels setup telegram")
+		fmt.Println("    troupe channels setup telegram")
 		fmt.Println()
 		return nil
 	}
@@ -595,8 +595,8 @@ func handleEmailSetup() error {
 	fmt.Println()
 	channelsPrintSuccess("Email channel configured!")
 	fmt.Println()
-	fmt.Println("  Run 'astonish daemon start' to activate, or")
-	fmt.Println("  'astonish daemon run' for foreground mode.")
+	fmt.Println("  Run 'troupe daemon start' to activate, or")
+	fmt.Println("  'troupe daemon run' for foreground mode.")
 	fmt.Println()
 
 	notifyDaemonChannelsChanged(cfg)
@@ -1108,7 +1108,7 @@ func notifyDaemonChannelsChanged(appCfg *config.AppConfig) {
 
 	// Strategy 3: Manual instructions
 	fmt.Println("  Start the daemon to activate:")
-	fmt.Println("    astonish daemon start")
+	fmt.Println("    troupe daemon start")
 	fmt.Println()
 }
 
@@ -1129,7 +1129,7 @@ func handleChannelsStatus() error {
 		fmt.Println("  Daemon is not running. Channels require the daemon to operate.")
 		fmt.Println()
 		fmt.Println("  Start the daemon:")
-		fmt.Println("    astonish daemon start")
+		fmt.Println("    troupe daemon start")
 		fmt.Println()
 		return nil
 	}
@@ -1159,7 +1159,7 @@ func handleChannelsStatus() error {
 		fmt.Println("  No channels configured.")
 		fmt.Println()
 		fmt.Println("  Set up a channel:")
-		fmt.Println("    astonish channels setup telegram")
+		fmt.Println("    troupe channels setup telegram")
 		fmt.Println()
 		return nil
 	}
@@ -1192,7 +1192,7 @@ func handleChannelsStatus() error {
 }
 
 func printChannelsUsage() {
-	fmt.Println("usage: astonish channels {status,setup,disable}")
+	fmt.Println("usage: troupe channels {status,setup,disable}")
 	fmt.Println("")
 	fmt.Println("Manage communication channels (Telegram, Email, Slack)")
 	fmt.Println("")

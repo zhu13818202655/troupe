@@ -204,7 +204,7 @@ sandbox:
     orphan_check_hours: 0
     idle_timeout_minutes: 10
   kubernetes:                  # Only for backend: k8s
-    namespace: "astonish-sandboxes"
+    namespace: "troupe-sandboxes"
     sandbox_image: "ghcr.io/sap/astonish-sandbox-base:latest"
     overlay_mode: "fuse"       # fuse | kernel | auto
     layers_pvc_name: "astonish-layers"

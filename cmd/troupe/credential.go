@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"fmt"
@@ -35,22 +35,22 @@ func handleCredentialCommand(args []string) error {
 		return handleCredentialList()
 	case "show":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish credential show <name>")
+			return fmt.Errorf("usage: troupe credential show <name>")
 		}
 		return handleCredentialShow(strings.Join(args[1:], " "))
 	case "add":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish credential add <name>")
+			return fmt.Errorf("usage: troupe credential add <name>")
 		}
 		return handleCredentialAdd(strings.Join(args[1:], " "))
 	case "remove", "rm":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish credential remove <name>")
+			return fmt.Errorf("usage: troupe credential remove <name>")
 		}
 		return handleCredentialRemove(strings.Join(args[1:], " "))
 	case "test":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish credential test <name>")
+			return fmt.Errorf("usage: troupe credential test <name>")
 		}
 		return handleCredentialTest(strings.Join(args[1:], " "))
 	case "master-key":
@@ -62,7 +62,7 @@ func handleCredentialCommand(args []string) error {
 }
 
 func printCredentialUsage() {
-	fmt.Println("usage: astonish credential {list,show,add,remove,test,master-key}")
+	fmt.Println("usage: troupe credential {list,show,add,remove,test,master-key}")
 	fmt.Println("")
 	fmt.Println("Manage the encrypted credential store.")
 	fmt.Println("")
@@ -88,7 +88,7 @@ func handleCredentialList() error {
 	if len(creds) == 0 && len(secrets) == 0 {
 		fmt.Println("No stored credentials or secrets.")
 		fmt.Println("\nAdd credentials via CLI or chat:")
-		fmt.Println("  astonish credential add <name>")
+		fmt.Println("  troupe credential add <name>")
 		fmt.Println("  Chat: \"Save my API key sk-... as 'my-api'\"")
 		return nil
 	}

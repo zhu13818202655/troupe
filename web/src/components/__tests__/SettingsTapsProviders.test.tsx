@@ -42,12 +42,12 @@ describe('TapsSettings', () => {
     render(<TapsSettings />)
 
     await screen.findByText(/no repositories configured/i)
-    await user.type(screen.getByLabelText(/repository url or owner\/repo/i), 'SAP/astonish-flows')
+    await user.type(screen.getByLabelText(/repository url or owner\/repo/i), 'zhu13818202655/troupe-flows')
     await user.type(screen.getByLabelText(/alias/i), 'flows')
     await user.click(screen.getByRole('button', { name: /add repository/i }))
 
     await waitFor(() => {
-      expect(addTap).toHaveBeenCalledWith('SAP/astonish-flows', 'flows', undefined)
+      expect(addTap).toHaveBeenCalledWith('zhu13818202655/troupe-flows', 'flows', undefined)
     })
     expect(fetchTaps).toHaveBeenCalledTimes(2)
   })

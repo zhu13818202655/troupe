@@ -73,7 +73,7 @@ func TestEnsureOrgNetwork_CreatesPolicyWithExpectedShape(t *testing.T) {
 	if err := b.EnsureOrgNetwork(context.Background(), "acme"); err != nil {
 		t.Fatalf("EnsureOrgNetwork: %v", err)
 	}
-	np, err := cs.NetworkingV1().NetworkPolicies("astonish-sandboxes").
+	np, err := cs.NetworkingV1().NetworkPolicies("troupe-sandboxes").
 		Get(context.Background(), "astn-org-acme", metav1.GetOptions{})
 	if err != nil {
 		t.Fatalf("Get NetworkPolicy: %v", err)
@@ -165,7 +165,7 @@ func TestEnsureOrgNetwork_Idempotent(t *testing.T) {
 	if err := b.EnsureOrgNetwork(ctx, "acme"); err != nil {
 		t.Fatalf("second EnsureOrgNetwork: %v", err)
 	}
-	list, err := cs.NetworkingV1().NetworkPolicies("astonish-sandboxes").
+	list, err := cs.NetworkingV1().NetworkPolicies("troupe-sandboxes").
 		List(ctx, metav1.ListOptions{})
 	if err != nil {
 		t.Fatalf("List: %v", err)
@@ -181,7 +181,7 @@ func TestEnsureOrgNetwork_SanitisesName(t *testing.T) {
 	if err := b.EnsureOrgNetwork(context.Background(), "ACME_Corp"); err != nil {
 		t.Fatalf("EnsureOrgNetwork: %v", err)
 	}
-	_, err := cs.NetworkingV1().NetworkPolicies("astonish-sandboxes").
+	_, err := cs.NetworkingV1().NetworkPolicies("troupe-sandboxes").
 		Get(context.Background(), "astn-org-acme-corp", metav1.GetOptions{})
 	if err != nil {
 		t.Errorf("policy name = astn-org-acme-corp: %v", err)
@@ -197,7 +197,7 @@ func TestDeleteOrgNetwork_DeletesPolicy(t *testing.T) {
 	if err := b.DeleteOrgNetwork(ctx, "acme"); err != nil {
 		t.Fatalf("DeleteOrgNetwork: %v", err)
 	}
-	_, err := cs.NetworkingV1().NetworkPolicies("astonish-sandboxes").
+	_, err := cs.NetworkingV1().NetworkPolicies("troupe-sandboxes").
 		Get(ctx, "astn-org-acme", metav1.GetOptions{})
 	if !apierrors.IsNotFound(err) {
 		t.Errorf("policy still exists: err=%v", err)
@@ -265,7 +265,7 @@ func TestExposePort_CreatesServiceAndReturnsDNS(t *testing.T) {
 		t.Errorf("Protocol = %q, want tcp", addr.Protocol)
 	}
 
-	svc, err := cs.CoreV1().Services("astonish-sandboxes").
+	svc, err := cs.CoreV1().Services("troupe-sandboxes").
 		Get(context.Background(), "sess-sess-001-8080", metav1.GetOptions{})
 	if err != nil {
 		t.Fatalf("Get Service: %v", err)
@@ -328,7 +328,7 @@ func TestExposePort_Idempotent(t *testing.T) {
 	if addr1.Host != addr2.Host {
 		t.Errorf("hosts differ: %q vs %q", addr1.Host, addr2.Host)
 	}
-	list, _ := cs.CoreV1().Services("astonish-sandboxes").List(ctx, metav1.ListOptions{})
+	list, _ := cs.CoreV1().Services("troupe-sandboxes").List(ctx, metav1.ListOptions{})
 	if len(list.Items) != 1 {
 		t.Errorf("got %d services, want 1", len(list.Items))
 	}
@@ -343,7 +343,7 @@ func TestUnexposePort_DeletesService(t *testing.T) {
 	if err := b.UnexposePort(ctx, "s1", 8080); err != nil {
 		t.Fatalf("UnexposePort: %v", err)
 	}
-	_, err := cs.CoreV1().Services("astonish-sandboxes").
+	_, err := cs.CoreV1().Services("troupe-sandboxes").
 		Get(ctx, "sess-s1-8080", metav1.GetOptions{})
 	if !apierrors.IsNotFound(err) {
 		t.Errorf("service still exists: err=%v", err)

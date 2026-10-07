@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"context"
@@ -55,7 +55,7 @@ func handleFlowsCommand(args []string) error {
 }
 
 func printFlowsUsage() {
-	fmt.Println("usage: astonish flows [-h] {run,list,show,edit,import,remove,store} ...")
+	fmt.Println("usage: troupe flows [-h] {run,list,show,edit,import,remove,store} ...")
 	fmt.Println("")
 	fmt.Println("Design and run AI flows - powerful automation workflows")
 	fmt.Println("powered by LLMs with visual design and CLI execution.")
@@ -180,7 +180,7 @@ func handleRunCommand(args []string) error {
 		if runCmd.NArg() > 0 {
 			agentName = runCmd.Arg(0)
 		} else {
-			fmt.Println("Usage: astonish flows run [flags] <flow_name>")
+			fmt.Println("Usage: troupe flows run [flags] <flow_name>")
 			runCmd.PrintDefaults()
 			return fmt.Errorf("no agent name provided")
 		}
@@ -241,7 +241,7 @@ func handleRunCommand(args []string) error {
 			// 7. Check in local dev path (fallback)
 			agentPath = fmt.Sprintf("agents/%s.yaml", agentName)
 			if _, err := os.Stat(agentPath); os.IsNotExist(err) {
-				return fmt.Errorf("flow not found: %s\nTip: Run 'astonish flows store list' to see available flows", agentName)
+				return fmt.Errorf("flow not found: %s\nTip: Run 'troupe flows store list' to see available flows", agentName)
 			}
 		}
 	}
@@ -437,7 +437,7 @@ func handleListCommand() error {
 
 	if totalCount == 0 {
 		fmt.Println("No flows found.")
-		fmt.Println("\nTip: Run 'astonish flows store list' to browse available flows")
+		fmt.Println("\nTip: Run 'troupe flows store list' to browse available flows")
 		return nil
 	}
 
@@ -465,7 +465,7 @@ func handleListCommand() error {
 
 func handleShowCommand(args []string) error {
 	if len(args) < 1 {
-		fmt.Println("Usage: astonish flows show <flow_name>")
+		fmt.Println("Usage: troupe flows show <flow_name>")
 		return fmt.Errorf("no flow name provided")
 	}
 
@@ -517,7 +517,7 @@ Found:
 
 func handleEditCommand(args []string) error {
 	if len(args) < 1 {
-		fmt.Println("Usage: astonish flows edit <flow_name>")
+		fmt.Println("Usage: troupe flows edit <flow_name>")
 		return fmt.Errorf("no agent name provided")
 	}
 
@@ -564,8 +564,8 @@ Found:
 
 func handleImportCommand(args []string) error {
 	if len(args) < 1 {
-		fmt.Println("usage: astonish flows import <file.yaml>")
-		fmt.Println("       astonish flows import <file.yaml> [--as <name>]")
+		fmt.Println("usage: troupe flows import <file.yaml>")
+		fmt.Println("       troupe flows import <file.yaml> [--as <name>]")
 		return fmt.Errorf("no file specified")
 	}
 
@@ -631,13 +631,13 @@ func handleImportCommand(args []string) error {
 
 	flowName := strings.TrimSuffix(destName, filepath.Ext(destName))
 	fmt.Printf("✓ Imported flow: %s\n", flowName)
-	fmt.Printf("  Run with: astonish flows run %s\n", flowName)
+	fmt.Printf("  Run with: troupe flows run %s\n", flowName)
 	return nil
 }
 
 func handleRemoveCommand(args []string) error {
 	if len(args) < 1 {
-		fmt.Println("usage: astonish flows remove <flow_name>")
+		fmt.Println("usage: troupe flows remove <flow_name>")
 		return fmt.Errorf("no flow name specified")
 	}
 
@@ -736,7 +736,7 @@ func handleStoreCommand(args []string) error {
 }
 
 func printStoreUsage() {
-	fmt.Println("usage: astonish flows store [-h] {list,install,uninstall,update,search} ...")
+	fmt.Println("usage: troupe flows store [-h] {list,install,uninstall,update,search} ...")
 	fmt.Println("")
 	fmt.Println("Browse and install flows from community repositories (taps).")
 	fmt.Println("")
@@ -750,7 +750,7 @@ func printStoreUsage() {
 	fmt.Println("options:")
 	fmt.Println("  -h, --help          Show this help message")
 	fmt.Println("")
-	fmt.Println("Tip: Use 'astonish tap add <repo>' to add repositories")
+	fmt.Println("Tip: Use 'troupe tap add <repo>' to add repositories")
 }
 
 func handleStoreListCommand(args []string) error {
@@ -866,7 +866,7 @@ func handleStoreListCommand(args []string) error {
 		}
 	}
 
-	fmt.Println("Tip: Run 'astonish flows run <flow>' for official or '<tap>/<flow>' for community")
+	fmt.Println("Tip: Run 'troupe flows run <flow>' for official or '<tap>/<flow>' for community")
 	fmt.Println("     Use --tag <tag> to filter by tag")
 	return nil
 }
@@ -885,8 +885,8 @@ func flowMatchesTags(f flowstore.Flow, tags []string) bool {
 
 func handleStoreInstallCommand(args []string) error {
 	if len(args) < 1 {
-		fmt.Println("usage: astonish flows store install <tap>/<flow>")
-		fmt.Println("       astonish flows store install <flow>  (from official store)")
+		fmt.Println("usage: troupe flows store install <tap>/<flow>")
+		fmt.Println("       troupe flows store install <flow>  (from official store)")
 		return fmt.Errorf("no flow specified")
 	}
 
@@ -909,13 +909,13 @@ func handleStoreInstallCommand(args []string) error {
 		runName = tapName + "/" + flowName
 	}
 	fmt.Printf("✓ Installed flow: %s\n", runName)
-	fmt.Printf("  Run with: astonish flows run %s\n", runName)
+	fmt.Printf("  Run with: troupe flows run %s\n", runName)
 	return nil
 }
 
 func handleStoreUninstallCommand(args []string) error {
 	if len(args) < 1 {
-		fmt.Println("usage: astonish flows store uninstall <tap>/<flow>")
+		fmt.Println("usage: troupe flows store uninstall <tap>/<flow>")
 		return fmt.Errorf("no flow specified")
 	}
 
@@ -952,7 +952,7 @@ func handleStoreUpdateCommand() error {
 
 func handleStoreSearchCommand(args []string) error {
 	if len(args) < 1 {
-		fmt.Println("usage: astonish flows store search <query>")
+		fmt.Println("usage: troupe flows store search <query>")
 		return fmt.Errorf("no search query specified")
 	}
 
@@ -1059,7 +1059,7 @@ func handleFlowsRemote(args []string) error {
 		return handleFlowsListRemote()
 	case "run":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish flows run <name>")
+			return fmt.Errorf("usage: troupe flows run <name>")
 		}
 		return handleFlowsRunRemote(args[1:])
 	case "show", "edit", "import", "remove", "store":

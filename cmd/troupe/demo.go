@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"flag"
@@ -94,7 +94,7 @@ width: 900
 height: 500
 events:
   - type: command
-    text: "astonish agents run my_flow"
+    text: "troupe agents run my_flow"
     delay: 500ms
   - type: output
     text: "✓ Processing..."
@@ -141,12 +141,12 @@ events:
 	}
 
 	fmt.Printf("✓ Template created: %s\n", output)
-	fmt.Println("  Edit the file, then run: astonish demo --script " + filepath.Base(output) + " --output demo.html")
+	fmt.Println("  Edit the file, then run: troupe demo --script " + filepath.Base(output) + " --output demo.html")
 	return nil
 }
 
 func printDemoUsage() {
-	fmt.Println(`Usage: astonish demo [options]
+	fmt.Println(`Usage: troupe demo [options]
 
 Generate animated HTML terminal demos (like the homepage terminal).
 
@@ -164,7 +164,7 @@ Script Format (YAML):
   height: 500
   events:
     - type: command
-      text: "astonish agents run my_flow"
+      text: "troupe agents run my_flow"
       delay: 500ms
     - type: output
       text: "Processing..."
@@ -184,6 +184,6 @@ Event Types:
   user_input  - Typed response (purple, slower)
 
 Examples:
-  astonish demo --template --output my-demo.yaml   # Create template
-  astonish demo --script my-demo.yaml              # Generate HTML`)
+  troupe demo --template --output my-demo.yaml   # Create template
+  troupe demo --script my-demo.yaml              # Generate HTML`)
 }

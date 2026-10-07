@@ -31,7 +31,7 @@ export default withMermaid(defineConfig({
       },
       {
         text: 'Community',
-        link: 'https://github.com/SAP/astonish/discussions',
+        link: 'https://github.com/zhu13818202655/troupe/discussions',
       },
     ],
     sidebar: {
@@ -140,9 +140,6 @@ export default withMermaid(defineConfig({
         {
           text: 'Deployment',
           items: [
-            { text: 'Overview', link: '/docs/deployment/' },
-            { text: 'Kubernetes', link: '/docs/deployment/kubernetes' },
-            { text: 'OpenShell', link: '/docs/deployment/openshell' },
             { text: 'Running as a Service', link: '/docs/deployment/running-as-service' },
           ]
         },
@@ -188,7 +185,7 @@ export default withMermaid(defineConfig({
       ]
     },
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/SAP/astonish' },
+      { icon: 'github', link: 'https://github.com/zhu13818202655/troupe' },
     ],
     search: {
       provider: 'local',

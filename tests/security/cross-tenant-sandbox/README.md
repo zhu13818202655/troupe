@@ -1,6 +1,6 @@
 # Cross-tenant sandbox takeover — reproduction kit
 
-Private repro for the report against SAP/astonish (commit
+Private repro for the report against zhu13818202655/troupe (commit
 `41f5b7b7589c276c61e2cef1e9450cf054a062bc` and current `main`).
 
 **Do not run this against production.** Point `BASE_URL` at a dedicated

@@ -1196,10 +1196,6 @@ func RunConsole(ctx context.Context, cfg *ConsoleConfig) error {
 				}
 				userMsg = agent.NewTimestampedUserContent(selection)
 				continue
-
-				// Reset state
-				waitingForApproval = false
-				approvalOptions = nil
 			} else {
 				// Regular input
 				// Default title if empty
@@ -1230,10 +1226,6 @@ func RunConsole(ctx context.Context, cfg *ConsoleConfig) error {
 					userMsg = agent.NewTimestampedUserContent(input)
 					continue
 				}
-
-				// Reset state
-				waitingForInput = false
-				inputOptions = nil
 			}
 		} else {
 			// Normal flush at end of turn

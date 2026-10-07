@@ -1,5 +1,5 @@
 services:
-  astonish:
+  troupe:
     build:
       context: .
       dockerfile: Dockerfile

@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"bufio"
@@ -44,7 +44,7 @@ func handleSessionsCommand(args []string) error {
 	if args[0] == "repair" {
 		if len(args) < 2 {
 			fmt.Println("Error: session ID required")
-			fmt.Println("Usage: astonish sessions repair <session-id> [--dry-run]")
+			fmt.Println("Usage: troupe sessions repair <session-id> [--dry-run]")
 			return fmt.Errorf("session ID required")
 		}
 		return handleSessionsRepair(args[1], args[2:])
@@ -62,14 +62,14 @@ func handleSessionsCommand(args []string) error {
 	case "show":
 		if len(args) < 2 {
 			fmt.Println("Error: session ID required")
-			fmt.Println("Usage: astonish sessions show <session-id> [flags]")
+			fmt.Println("Usage: troupe sessions show <session-id> [flags]")
 			return fmt.Errorf("session ID required")
 		}
 		return handleSessionsShow(args[1], args[2:])
 	case "delete", "rm":
 		if len(args) < 2 {
 			fmt.Println("Error: session ID required")
-			fmt.Println("Usage: astonish sessions delete <session-id>")
+			fmt.Println("Usage: troupe sessions delete <session-id>")
 			return fmt.Errorf("session ID required")
 		}
 		return handleSessionsDelete(args[1])
@@ -596,7 +596,7 @@ func formatAge(t time.Time) string {
 }
 
 func printSessionsUsage() {
-	fmt.Println("usage: astonish sessions <command> [args]")
+	fmt.Println("usage: troupe sessions <command> [args]")
 	fmt.Println("")
 	fmt.Println("Manage and inspect persistent chat sessions.")
 	fmt.Println("")
@@ -617,15 +617,15 @@ func printSessionsUsage() {
 	fmt.Println("Session IDs can be abbreviated (prefix match).")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish sessions list")
-	fmt.Println("  astonish sessions show abc123")
-	fmt.Println("  astonish sessions show abc123 -t")
-	fmt.Println("  astonish sessions show abc123 -r              # include sub-agent traces")
-	fmt.Println("  astonish sessions show abc123 -r -v           # recursive + verbose")
-	fmt.Println("  astonish sessions show telegram:direct:123 --tools-only --last 20")
-	fmt.Println("  astonish sessions show abc123 --json")
-	fmt.Println("  astonish sessions delete abc123")
-	fmt.Println("  astonish sessions clear")
+	fmt.Println("  troupe sessions list")
+	fmt.Println("  troupe sessions show abc123")
+	fmt.Println("  troupe sessions show abc123 -t")
+	fmt.Println("  troupe sessions show abc123 -r              # include sub-agent traces")
+	fmt.Println("  troupe sessions show abc123 -r -v           # recursive + verbose")
+	fmt.Println("  troupe sessions show telegram:direct:123 --tools-only --last 20")
+	fmt.Println("  troupe sessions show abc123 --json")
+	fmt.Println("  troupe sessions delete abc123")
+	fmt.Println("  troupe sessions clear")
 }
 
 // --- Remote mode session handlers ---

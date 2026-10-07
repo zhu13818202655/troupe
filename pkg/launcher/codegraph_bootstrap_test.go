@@ -57,10 +57,31 @@ func TestEnsureCodegraph_NpxFailsReturnsNotice(t *testing.T) {
 	}
 }
 
-// TestEnsureCodegraph_EmptyWorkingDirDefaultsToDot verifies the "" → "."
-// fallback does not panic.
+// TestEnsureCodegraph_EmptyWorkingDirDefaultsToDot verifies that an empty
+// workingDir falls back to "." (the process working directory) rather than
+// panicking or shelling out against an unintended path.
+//
+// The test runs inside a temp directory whose .codegraph/ already exists, so
+// the "." fallback resolves to a known index and the fast path is taken. This
+// keeps the assertion meaningful without spawning a real `npx`, which would
+// need the network and hang.
 func TestEnsureCodegraph_EmptyWorkingDirDefaultsToDot(t *testing.T) {
-	_ = EnsureCodegraph(context.Background(), "", nil)
+	dir := t.TempDir()
+	if err := os.Mkdir(filepath.Join(dir, ".codegraph"), 0o755); err != nil {
+		t.Fatalf("setup: %v", err)
+	}
+	t.Chdir(dir)
+
+	var messages []string
+	notice := EnsureCodegraph(context.Background(), "", func(msg string) {
+		messages = append(messages, msg)
+	})
+	if notice != "" {
+		t.Errorf(`expected "" to resolve to the working directory and find the index, got notice: %q`, notice)
+	}
+	if len(messages) != 0 {
+		t.Errorf("expected no progress messages when the index exists, got: %v", messages)
+	}
 }
 
 // TestEnsureCodegraph_NilCallbackDoesNotPanic verifies that passing nil for

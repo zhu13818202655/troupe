@@ -1,6 +1,6 @@
 // sandbox_k8s_smoke.go — end-to-end smoke probe for the k8s backend.
 //
-// `astonish sandbox k8s-smoke` exercises every primitive the Kubernetes
+// `troupe sandbox k8s-smoke` exercises every primitive the Kubernetes
 // sandbox backend has to get right on a real cluster:
 //
 //   1. BackendFromAppConfig → k8s.Backend with a real clientset.
@@ -9,31 +9,31 @@
 //   4. PushFile / PullFile roundtrip to verify tar-over-exec streaming.
 //   5. StopSession then DestroySession, cleaning up cluster state.
 //
-// The intent is that a cluster admin can run this once after installing
-// the Helm chart (deploy/helm/astonish) and confirm the plumbing end-to-end
+// The intent is that a cluster admin can run this once after the cluster
+// is provisioned and confirm the plumbing end-to-end
 // BEFORE wiring any real chat / fleet traffic to the new backend. Any
 // failure surfaces as a non-zero exit with a contextual message.
 //
 // The command is intentionally conservative: it never writes to the
 // user's config, never creates long-lived state, and uses a UUID-
-// prefixed session ID (astonish-smoke-<ts>) so repeat runs don't
+// prefixed session ID (troupe-smoke-<ts>) so repeat runs don't
 // collide and orphan runs are trivial to identify with
-// `kubectl -n astonish-sandbox get pods -l astonish.io/session-id`.
+// `kubectl -n troupe-sandbox get pods -l troupe.io/session-id`.
 //
 // Phase F — overlay-strategy flags. The smoke can override the
 // cluster's configured overlay mode / security path without editing
 // config.yaml first, which makes it the recommended probe for
 // "does my cluster support path X?" questions:
 //
-//   astonish sandbox k8s-smoke                                     # config.yaml defaults
-//   astonish sandbox k8s-smoke --overlay-mode fuse --privileged    # dev / LXC path
-//   astonish sandbox k8s-smoke --overlay-mode kernel --host-users=false  # K8s 1.33+ userns
-//   astonish sandbox k8s-smoke --overlay-mode fuse \
+//   troupe sandbox k8s-smoke                                     # config.yaml defaults
+//   troupe sandbox k8s-smoke --overlay-mode fuse --privileged    # dev / LXC path
+//   troupe sandbox k8s-smoke --overlay-mode kernel --host-users=false  # K8s 1.33+ userns
+//   troupe sandbox k8s-smoke --overlay-mode fuse \
 //     --fuse-device-resource smarter-devices/fuse                  # production device plugin
 //
 // See docs/deployment/kubernetes.md for the full path matrix.
 
-package astonish
+package troupe
 
 import (
 	"bytes"
@@ -48,14 +48,14 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/sandbox"
 )
 
-// handleSandboxK8sSmoke is the entry point for `astonish sandbox k8s-smoke`.
+// handleSandboxK8sSmoke is the entry point for `troupe sandbox k8s-smoke`.
 // It takes over stdout with step-by-step progress so operators can spot
 // which stage failed without spelunking logs.
 func handleSandboxK8sSmoke(args []string) error {
 	fs := flag.NewFlagSet("sandbox k8s-smoke", flag.ContinueOnError)
 	fs.SetOutput(io.Discard) // we format our own errors
 	templateID := fs.String("template", "@base", "layer chain anchor (template ID)")
-	sessionPrefix := fs.String("name", "astonish-smoke", "session-id prefix")
+	sessionPrefix := fs.String("name", "troupe-smoke", "session-id prefix")
 	timeout := fs.Duration("timeout", 2*time.Minute, "overall smoke-test timeout")
 	keep := fs.Bool("keep", false, "skip Stop/Destroy so the pod stays running for manual inspection")
 
@@ -193,7 +193,7 @@ func handleSandboxK8sSmoke(args []string) error {
 	cleanupSession := func() {
 		if *keep {
 			fmt.Printf("  [cleanup] skipped (--keep); destroy manually with:\n")
-			fmt.Printf("            astonish sandbox destroy %s\n", sessionID)
+			fmt.Printf("            troupe sandbox destroy %s\n", sessionID)
 			return
 		}
 		cctx, ccancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -231,7 +231,7 @@ func handleSandboxK8sSmoke(args []string) error {
 	}
 
 	// --- Step 3: PushFile / PullFile roundtrip ------------------------
-	const probePath = "/tmp/astonish-smoke-probe.txt"
+	const probePath = "/tmp/troupe-smoke-probe.txt"
 	probeBody := []byte("smoke-" + sessionID)
 
 	if err := step("PushFile", func() error {

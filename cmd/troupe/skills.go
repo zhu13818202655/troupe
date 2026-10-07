@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"fmt"
@@ -20,23 +20,23 @@ func handleSkillsCommand(args []string) error {
 		return handleSkillsList()
 	case "show":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish skills show <name>")
+			return fmt.Errorf("usage: troupe skills show <name>")
 		}
 		return handleSkillsShow(args[1])
 	case "check":
 		return handleSkillsCheck()
 	case "create":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish skills create <name>")
+			return fmt.Errorf("usage: troupe skills create <name>")
 		}
 		return handleSkillsCreate(args[1])
 	case "install":
 		if len(args) < 2 {
-			return fmt.Errorf("usage: astonish skills install <slug|url|clawhub:slug>")
+			return fmt.Errorf("usage: troupe skills install <slug|url|clawhub:slug>")
 		}
 		return handleSkillsInstall(args[1])
 	default:
-		fmt.Println("usage: astonish skills {list,show,check,create,install}")
+		fmt.Println("usage: troupe skills {list,show,check,create,install}")
 		fmt.Println("")
 		fmt.Println("  list              List all available skills (from platform)")
 		fmt.Println("  show <name>       Show full skill content from platform")

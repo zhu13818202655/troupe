@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"bufio"
@@ -140,7 +140,7 @@ func handlePlatformInit(args []string) error {
 				i++
 			}
 		default:
-			return fmt.Errorf("unknown flag: %s\nRun 'astonish platform init --help' for usage", args[i])
+			return fmt.Errorf("unknown flag: %s\nRun 'troupe platform init --help' for usage", args[i])
 		}
 	}
 
@@ -291,7 +291,7 @@ func handlePlatformInit(args []string) error {
 	fmt.Println("      postgres:")
 	fmt.Printf("        instanceSuffix: %q\n", suffix)
 	fmt.Println()
-	fmt.Println("For single-binary mode, add to ~/.config/astonish/config.yaml:")
+	fmt.Println("For single-binary mode, add to ~/.config/troupe/config.yaml:")
 	fmt.Println()
 	fmt.Println("  storage:")
 	fmt.Println("    backend: postgres")
@@ -309,7 +309,7 @@ func handlePlatformInit(args []string) error {
 }
 
 func printPlatformInitUsage() {
-	fmt.Println("usage: astonish platform init --host <host> --password <pass> [options]")
+	fmt.Println("usage: troupe platform init --host <host> --password <pass> [options]")
 	fmt.Println("")
 	fmt.Println("Initialize a new Astonish platform database.")
 	fmt.Println("Creates the database, required roles, and runs all platform migrations.")
@@ -325,15 +325,15 @@ func printPlatformInitUsage() {
 	fmt.Println("  --suffix <suffix>     Fixed instance suffix (default: auto-generated)")
 	fmt.Println("")
 	fmt.Println("The command generates a random 6-character suffix (unless --suffix is given),")
-	fmt.Println("creates database 'astonish_<suffix>_platform', and prints the configuration")
+	fmt.Println("creates database 'troupe_<suffix>_platform', and prints the configuration")
 	fmt.Println("values to add to your Helm values file or config.yaml.")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish platform init --host 10.0.0.5 --password secret")
-	fmt.Println("  astonish platform init --host pg.internal --user admin --password s3cr3t --suffix prod1")
+	fmt.Println("  troupe platform init --host 10.0.0.5 --password secret")
+	fmt.Println("  troupe platform init --host pg.internal --user admin --password s3cr3t --suffix prod1")
 	fmt.Println("")
 	fmt.Println("  # Using environment variables:")
-	fmt.Println("  PGHOST=10.0.0.5 PGPASSWORD=secret astonish platform init")
+	fmt.Println("  PGHOST=10.0.0.5 PGPASSWORD=secret troupe platform init")
 }
 
 // ---------------------------------------------------------------------------
@@ -342,7 +342,7 @@ func printPlatformInitUsage() {
 
 func handlePlatformStatus(args []string) error {
 	if len(args) > 0 && (args[0] == "-h" || args[0] == "--help") {
-		fmt.Println("usage: astonish platform status")
+		fmt.Println("usage: troupe platform status")
 		fmt.Println("")
 		fmt.Println("Show platform status including organization, team, and user counts.")
 		return nil
@@ -460,7 +460,7 @@ func handlePlatformOrgCommand(args []string) error {
 
 func handlePlatformOrgCreate(args []string) error {
 	if len(args) > 0 && (args[0] == "-h" || args[0] == "--help") {
-		fmt.Println("usage: astonish platform org create --name <name> --slug <slug> [--owner-email <email>]")
+		fmt.Println("usage: troupe platform org create --name <name> --slug <slug> [--owner-email <email>]")
 		fmt.Println("")
 		fmt.Println("Create a new organization with its database, default team, and schemas.")
 		fmt.Println("")
@@ -598,7 +598,7 @@ func handlePlatformOrgCreate(args []string) error {
 		fmt.Println("Organization created successfully.")
 		fmt.Println()
 		fmt.Println("Next steps:")
-		fmt.Printf("  Invite users:  astonish platform org invite --org %s --email user@example.com\n", slug)
+		fmt.Printf("  Invite users:  troupe platform org invite --org %s --email user@example.com\n", slug)
 
 		return nil
 	})
@@ -610,7 +610,7 @@ func handlePlatformOrgCreate(args []string) error {
 
 func handlePlatformOrgList(args []string) error {
 	if len(args) > 0 && (args[0] == "-h" || args[0] == "--help") {
-		fmt.Println("usage: astonish platform org list")
+		fmt.Println("usage: troupe platform org list")
 		fmt.Println("")
 		fmt.Println("List all organizations.")
 		return nil
@@ -624,7 +624,7 @@ func handlePlatformOrgList(args []string) error {
 
 		if len(orgs) == 0 {
 			fmt.Println("No organizations found.")
-			fmt.Println("Create one with: astonish platform org create --name 'My Org' --slug my-org")
+			fmt.Println("Create one with: troupe platform org create --name 'My Org' --slug my-org")
 			return nil
 		}
 
@@ -646,7 +646,7 @@ func handlePlatformOrgList(args []string) error {
 
 func handlePlatformOrgInvite(args []string) error {
 	if len(args) > 0 && (args[0] == "-h" || args[0] == "--help") {
-		fmt.Println("usage: astonish platform org invite --org <slug> --email <email> [--role <role>] [--name <name>]")
+		fmt.Println("usage: troupe platform org invite --org <slug> --email <email> [--role <role>] [--name <name>]")
 		fmt.Println("")
 		fmt.Println("Invite a user to an organization. If the user doesn't exist, they are created")
 		fmt.Println("with a temporary password that must be changed on first login.")
@@ -854,7 +854,7 @@ func handlePlatformUserCommand(args []string) error {
 
 func handlePlatformUserList(args []string) error {
 	if len(args) > 0 && (args[0] == "-h" || args[0] == "--help") {
-		fmt.Println("usage: astonish platform user list [--org <slug>]")
+		fmt.Println("usage: troupe platform user list [--org <slug>]")
 		fmt.Println("")
 		fmt.Println("List all users, optionally filtered by organization.")
 		fmt.Println("")
@@ -908,7 +908,7 @@ func handlePlatformUserList(args []string) error {
 
 		if len(users) == 0 {
 			fmt.Println("No users found.")
-			fmt.Println("Invite users with: astonish platform org invite --org <slug> --email <email>")
+			fmt.Println("Invite users with: troupe platform org invite --org <slug> --email <email>")
 			return nil
 		}
 
@@ -934,7 +934,7 @@ func handlePlatformUserList(args []string) error {
 
 func handlePlatformUserShow(args []string) error {
 	if len(args) == 0 || args[0] == "-h" || args[0] == "--help" {
-		fmt.Println("usage: astonish platform user show <email>")
+		fmt.Println("usage: troupe platform user show <email>")
 		fmt.Println("")
 		fmt.Println("Show details for a user by email address.")
 		return nil
@@ -989,7 +989,7 @@ func handlePlatformUserShow(args []string) error {
 
 func handlePlatformUserDelete(args []string) error {
 	if len(args) == 0 || args[0] == "-h" || args[0] == "--help" {
-		fmt.Println("usage: astonish platform user delete <email>")
+		fmt.Println("usage: troupe platform user delete <email>")
 		fmt.Println("")
 		fmt.Println("Delete a user by email address.")
 		fmt.Println("This removes the user from all organizations and teams.")
@@ -1019,7 +1019,7 @@ func handlePlatformUserDelete(args []string) error {
 
 func handlePlatformUserSetPassword(args []string) error {
 	if len(args) == 0 || args[0] == "-h" || args[0] == "--help" {
-		fmt.Println("usage: astonish platform user set-password <email>")
+		fmt.Println("usage: troupe platform user set-password <email>")
 		fmt.Println("")
 		fmt.Println("Interactively set a new password for a user.")
 		return nil
@@ -1064,7 +1064,7 @@ func handlePlatformUserSetStatus(args []string, status string) error {
 	}
 
 	if len(args) == 0 || args[0] == "-h" || args[0] == "--help" {
-		fmt.Printf("usage: astonish platform user %s <email>\n", verb)
+		fmt.Printf("usage: troupe platform user %s <email>\n", verb)
 		fmt.Println("")
 		fmt.Printf("%s a user account.\n", strings.ToUpper(verb[:1])+verb[1:])
 		return nil
@@ -1094,7 +1094,7 @@ func handlePlatformUserSetStatus(args []string, status string) error {
 
 func handlePlatformUserPromote(args []string) error {
 	if len(args) == 0 || args[0] == "-h" || args[0] == "--help" {
-		fmt.Println("usage: astonish platform user promote <email>")
+		fmt.Println("usage: troupe platform user promote <email>")
 		fmt.Println("")
 		fmt.Println("Promote a user to platform superadmin.")
 		fmt.Println("Superadmins have full access to manage all organizations and users.")
@@ -1129,7 +1129,7 @@ func handlePlatformUserPromote(args []string) error {
 
 func handlePlatformUserDemote(args []string) error {
 	if len(args) == 0 || args[0] == "-h" || args[0] == "--help" {
-		fmt.Println("usage: astonish platform user demote <email>")
+		fmt.Println("usage: troupe platform user demote <email>")
 		fmt.Println("")
 		fmt.Println("Demote a platform superadmin to regular user.")
 		fmt.Println("Cannot demote the last superadmin.")
@@ -1354,7 +1354,7 @@ func handlePlatformIssueToken(args []string) error {
 }
 
 func printPlatformIssueTokenUsage() {
-	fmt.Println("usage: astonish platform issue-token [options]")
+	fmt.Println("usage: troupe platform issue-token [options]")
 	fmt.Println("")
 	fmt.Println("Obtain an access token via browser-based authentication.")
 	fmt.Println("The token is printed to stdout; status messages go to stderr.")
@@ -1371,13 +1371,13 @@ func printPlatformIssueTokenUsage() {
 	fmt.Println("")
 	fmt.Println("examples:")
 	fmt.Println("  # SSO (auto-detected if server has SSO providers):")
-	fmt.Println("  astonish platform issue-token --server https://astonish.internal")
+	fmt.Println("  troupe platform issue-token --server https://troupe.internal")
 	fmt.Println("")
 	fmt.Println("  # Password auth:")
-	fmt.Println("  astonish platform issue-token --server https://astonish.internal --email admin@co.com")
+	fmt.Println("  troupe platform issue-token --server https://troupe.internal --email admin@co.com")
 	fmt.Println("")
 	fmt.Println("  # Use in scripts:")
-	fmt.Println("  export TROUPE_TEST_TOKEN=$(astonish platform issue-token --server $URL)")
+	fmt.Println("  export TROUPE_TEST_TOKEN=$(troupe platform issue-token --server $URL)")
 }
 
 // ---------------------------------------------------------------------------
@@ -1392,7 +1392,7 @@ func handlePlatformGenSecret() error {
 }
 
 func printPlatformUsage() {
-	fmt.Println("usage: astonish platform <command> [options]")
+	fmt.Println("usage: troupe platform <command> [options]")
 	fmt.Println("")
 	fmt.Println("Manage the Astonish multi-tenant platform.")
 	fmt.Println("")
@@ -1408,20 +1408,20 @@ func printPlatformUsage() {
 	fmt.Println("  user              Manage users")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish platform init --host 10.0.0.5 --password secret")
-	fmt.Println("  astonish platform status")
-	fmt.Println("  astonish platform issue-token --server https://astonish.internal")
-	fmt.Println("  astonish platform backup verify backup.troupe-backup")
-	fmt.Println("  astonish platform restore backup.troupe-backup --dry-run")
-	fmt.Println("  astonish platform org create --name 'Acme' --slug acme")
-	fmt.Println("  astonish platform org invite --org acme --email alice@acme.com")
-	fmt.Println("  astonish platform org list")
-	fmt.Println("  astonish platform user list")
-	fmt.Println("  astonish platform user show alice@acme.com")
+	fmt.Println("  troupe platform init --host 10.0.0.5 --password secret")
+	fmt.Println("  troupe platform status")
+	fmt.Println("  troupe platform issue-token --server https://troupe.internal")
+	fmt.Println("  troupe platform backup verify backup.troupe-backup")
+	fmt.Println("  troupe platform restore backup.troupe-backup --dry-run")
+	fmt.Println("  troupe platform org create --name 'Acme' --slug acme")
+	fmt.Println("  troupe platform org invite --org acme --email alice@acme.com")
+	fmt.Println("  troupe platform org list")
+	fmt.Println("  troupe platform user list")
+	fmt.Println("  troupe platform user show alice@acme.com")
 }
 
 func printPlatformOrgUsage() {
-	fmt.Println("usage: astonish platform org <command> [options]")
+	fmt.Println("usage: troupe platform org <command> [options]")
 	fmt.Println("")
 	fmt.Println("Manage platform organizations.")
 	fmt.Println("")
@@ -1431,13 +1431,13 @@ func printPlatformOrgUsage() {
 	fmt.Println("  invite            Invite a user to an organization")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish platform org create --name 'Acme Corp' --slug acme")
-	fmt.Println("  astonish platform org list")
-	fmt.Println("  astonish platform org invite --org acme --email alice@acme.com --role admin")
+	fmt.Println("  troupe platform org create --name 'Acme Corp' --slug acme")
+	fmt.Println("  troupe platform org list")
+	fmt.Println("  troupe platform org invite --org acme --email alice@acme.com --role admin")
 }
 
 func printPlatformUserUsage() {
-	fmt.Println("usage: astonish platform user <command> [options]")
+	fmt.Println("usage: troupe platform user <command> [options]")
 	fmt.Println("")
 	fmt.Println("Manage platform users.")
 	fmt.Println("")
@@ -1452,13 +1452,13 @@ func printPlatformUserUsage() {
 	fmt.Println("  demote            Demote a platform superadmin to regular user")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish platform user list")
-	fmt.Println("  astonish platform user list --org acme")
-	fmt.Println("  astonish platform user show alice@acme.com")
-	fmt.Println("  astonish platform user set-password alice@acme.com")
-	fmt.Println("  astonish platform user disable alice@acme.com")
-	fmt.Println("  astonish platform user enable alice@acme.com")
-	fmt.Println("  astonish platform user delete alice@acme.com")
-	fmt.Println("  astonish platform user promote alice@acme.com")
-	fmt.Println("  astonish platform user demote alice@acme.com")
+	fmt.Println("  troupe platform user list")
+	fmt.Println("  troupe platform user list --org acme")
+	fmt.Println("  troupe platform user show alice@acme.com")
+	fmt.Println("  troupe platform user set-password alice@acme.com")
+	fmt.Println("  troupe platform user disable alice@acme.com")
+	fmt.Println("  troupe platform user enable alice@acme.com")
+	fmt.Println("  troupe platform user delete alice@acme.com")
+	fmt.Println("  troupe platform user promote alice@acme.com")
+	fmt.Println("  troupe platform user demote alice@acme.com")
 }

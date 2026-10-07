@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/launcher"
 )
 
-// chatFlags holds the parsed CLI flag values for `astonish chat`.
+// chatFlags holds the parsed CLI flag values for `troupe chat`.
 type chatFlags struct {
 	Provider    string
 	Model       string
@@ -56,7 +56,7 @@ func handleChatCommand(args []string) error {
 		return nil
 	}
 
-	// Sub-command: `astonish chat model <provider>:<model>`
+	// Sub-command: `troupe chat model <provider>:<model>`
 	if len(args) > 0 && args[0] == "model" {
 		return handleChatModelCommand(args[1:])
 	}
@@ -64,7 +64,7 @@ func handleChatCommand(args []string) error {
 	// Chat always uses the authenticated platform client (Studio SSE).
 	// Local/in-process chat has been removed.
 	if !client.IsRemoteMode() {
-		return fmt.Errorf("not logged in to a platform\nRun: astonish login <url>\n\nChat requires an authenticated Astonish platform (local install or cloud)")
+		return fmt.Errorf("not logged in to a platform\nRun: troupe login <url>\n\nChat requires an authenticated Astonish platform (local install or cloud)")
 	}
 
 	flags, err := parseChatFlags(args)
@@ -125,7 +125,7 @@ func resolveLastRemoteSessionID(c *client.Client) (string, error) {
 		return "", fmt.Errorf("list sessions: %w", err)
 	}
 	if len(sessions) == 0 {
-		return "", fmt.Errorf("no sessions found; start one with 'astonish chat'")
+		return "", fmt.Errorf("no sessions found; start one with 'troupe chat'")
 	}
 	sort.Slice(sessions, func(i, j int) bool {
 		return sessions[i].UpdatedAt > sessions[j].UpdatedAt
@@ -133,11 +133,11 @@ func resolveLastRemoteSessionID(c *client.Client) (string, error) {
 	return sessions[0].ID, nil
 }
 
-// handleChatModelCommand implements `astonish chat model <provider>:<model>`.
+// handleChatModelCommand implements `troupe chat model <provider>:<model>`.
 // Always uses the platform API (requires login).
 func handleChatModelCommand(args []string) error {
 	if !client.IsRemoteMode() {
-		return fmt.Errorf("not logged in to a platform\nRun: astonish login <url>")
+		return fmt.Errorf("not logged in to a platform\nRun: troupe login <url>")
 	}
 
 	fs := flag.NewFlagSet("chat model", flag.ContinueOnError)
@@ -147,7 +147,7 @@ func handleChatModelCommand(args []string) error {
 	}
 	rest := fs.Args()
 	if len(rest) != 1 {
-		return fmt.Errorf("usage: astonish chat model [--session <id>] <provider>:<model>")
+		return fmt.Errorf("usage: troupe chat model [--session <id>] <provider>:<model>")
 	}
 	provider, model, err := parseModelPin(rest[0])
 	if err != nil {
@@ -188,10 +188,10 @@ func printModelResult(sessionID, pinnedProvider, pinnedModel, effectiveProvider,
 }
 
 func printChatUsage() {
-	fmt.Println("usage: astonish chat [options]")
+	fmt.Println("usage: troupe chat [options]")
 	fmt.Println("")
 	fmt.Println("Start an interactive chat session against your Astonish platform.")
-	fmt.Println("Requires authentication: astonish login <url>")
+	fmt.Println("Requires authentication: troupe login <url>")
 	fmt.Println("")
 	fmt.Println("options:")
 	fmt.Println("  -p, --provider      Pin provider on --resume session (or use: chat model)")
@@ -203,12 +203,12 @@ func printChatUsage() {
 	fmt.Println("  -h, --help          Show this help message")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish login https://astonish.example.com")
-	fmt.Println("  astonish chat")
-	fmt.Println("  astonish chat --auto-approve")
-	fmt.Println("  astonish chat --resume <session-id>")
-	fmt.Println("  astonish chat --resume <session-id> -p openai -m gpt-4o")
-	fmt.Println("  astonish chat --resume <session-id> --clear-model")
-	fmt.Println("  astonish chat model openai:gpt-4o")
-	fmt.Println("  astonish chat model \"\"                     # clear pin on latest session")
+	fmt.Println("  troupe login https://troupe.example.com")
+	fmt.Println("  troupe chat")
+	fmt.Println("  troupe chat --auto-approve")
+	fmt.Println("  troupe chat --resume <session-id>")
+	fmt.Println("  troupe chat --resume <session-id> -p openai -m gpt-4o")
+	fmt.Println("  troupe chat --resume <session-id> --clear-model")
+	fmt.Println("  troupe chat model openai:gpt-4o")
+	fmt.Println("  troupe chat model \"\"                     # clear pin on latest session")
 }

@@ -1,5 +1,11 @@
 # OpenShell Sandbox Backend
 
+> **Deployment assets removed (2026-10-07).** The Helm chart (`deploy/helm`) —
+> including this backend's `openshell/` templates and the cert-bundle / Istio /
+> NetworkPolicy manifests — was removed from the repository. The backend code
+> (`pkg/sandbox/openshell/`) and the generated gRPC stubs are unaffected;
+> deployment tooling is being rebuilt against our own requirements.
+>
 > **Status: Deployed and operational.**
 > NVIDIA OpenShell is integrated as a Helm subchart and deployed in the
 > same namespace as Astonish. Istio manages all service-to-service

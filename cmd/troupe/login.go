@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"bufio"
@@ -14,7 +14,7 @@ import (
 
 func handleLoginCommand(args []string) error {
 	if len(args) == 0 {
-		fmt.Println("Usage: astonish login <server-url> [flags]")
+		fmt.Println("Usage: troupe login <server-url> [flags]")
 		fmt.Println("")
 		fmt.Println("Flags:")
 		fmt.Println("  --sso           Open a browser for OAuth login (SSO or Studio password)")
@@ -22,9 +22,9 @@ func handleLoginCommand(args []string) error {
 		fmt.Println("  --team <slug>   Select team (skip prompt)")
 		fmt.Println("")
 		fmt.Println("Examples:")
-		fmt.Println("  astonish login https://astonish.mycompany.com")
-		fmt.Println("  astonish login https://astonish.mycompany.com --sso")
-		fmt.Println("  astonish login https://astonish.mycompany.com --org my-org --team backend")
+		fmt.Println("  troupe login https://troupe.mycompany.com")
+		fmt.Println("  troupe login https://troupe.mycompany.com --sso")
+		fmt.Println("  troupe login https://troupe.mycompany.com --org my-org --team backend")
 		return fmt.Errorf("server URL required")
 	}
 

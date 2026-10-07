@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"context"
@@ -672,7 +672,7 @@ func platformHasProviders(cfg *config.AppConfig) (bool, error) {
 		dataDir := cfg.Storage.SQLite.GetDataDir()
 		if dataDir == "" {
 			home, _ := os.UserHomeDir()
-			dataDir = filepath.Join(home, ".config", "astonish", "data")
+			dataDir = filepath.Join(home, ".config", "troupe", "data")
 		}
 		_, es, err := entstore.NewPlatformServices(ctx, entstore.Config{
 			DSN:     "file:" + filepath.Join(dataDir, "platform.db"),
@@ -723,7 +723,7 @@ func saveProviderToPlatformDB(cfg *config.AppConfig, instanceName string, pCfg c
 		dataDir := cfg.Storage.SQLite.GetDataDir()
 		if dataDir == "" {
 			home, _ := os.UserHomeDir()
-			dataDir = filepath.Join(home, ".config", "astonish", "data")
+			dataDir = filepath.Join(home, ".config", "troupe", "data")
 		}
 
 		_, es, err := entstore.NewPlatformServices(ctx, entstore.Config{

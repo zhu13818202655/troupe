@@ -37,7 +37,7 @@ import (
 // labelFleetKey records the caller-supplied FleetKey on the pod so
 // operators can reverse-lookup without consulting the registry:
 //
-//     kubectl -n astonish-sandboxes get pods \
+//     kubectl -n troupe-sandboxes get pods \
 //       -l astonish.io/type=fleet,astonish.io/fleet-key=<key>
 //
 // Distinct from labelSessionID so ListSessions selectors remain

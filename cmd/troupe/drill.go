@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"context"
@@ -43,7 +43,7 @@ func handleDrillCommand(args []string) error {
 }
 
 func printDrillUsage() {
-	fmt.Println("usage: astonish drill [-h] {run,list,report,remove} ...")
+	fmt.Println("usage: troupe drill [-h] {run,list,report,remove} ...")
 	fmt.Println("")
 	fmt.Println("Deterministic drill runner for AI-authored drill suites.")
 	fmt.Println("")
@@ -501,7 +501,7 @@ func handleDrillRunCommand(args []string) error {
 	runCmd := flag.NewFlagSet("test run", flag.ExitOnError)
 	tagFlag := runCmd.String("tag", "", "Filter tests by tag (comma-separated)")
 	verbose := runCmd.Bool("verbose", false, "Verbose output")
-	reportDir := runCmd.String("report-dir", "", "Directory to save report (default: ~/.config/astonish/reports)")
+	reportDir := runCmd.String("report-dir", "", "Directory to save report (default: ~/.config/troupe/reports)")
 	analyze := runCmd.Bool("analyze", false, "Enable AI triage analysis on failures (uses default LLM provider)")
 
 	// Extract positional argument (suite or test name) before flags
@@ -522,7 +522,7 @@ func handleDrillRunCommand(args []string) error {
 	}
 
 	if targetName == "" {
-		fmt.Println("usage: astonish drill run <suite_or_drill> [--tag tag1,tag2] [--verbose] [--analyze] [--report-dir dir]")
+		fmt.Println("usage: troupe drill run <suite_or_drill> [--tag tag1,tag2] [--verbose] [--analyze] [--report-dir dir]")
 		return fmt.Errorf("no suite or test name provided")
 	}
 
@@ -757,7 +757,7 @@ func initSandboxForTest(template string) (*drillSandboxRuntime, bool) {
 	if !isBaseTemplateName(template) {
 		if loadErr := tplRegistry.Load(); loadErr == nil && !tplRegistry.Exists(template) {
 			fmt.Printf("Warning: Sandbox template %q not found. Running locally.\n", template)
-			fmt.Println("Available templates can be listed with: astonish sandbox template list")
+			fmt.Println("Available templates can be listed with: troupe sandbox template list")
 			return nil, false
 		}
 	}
@@ -859,7 +859,7 @@ func setupTriageAgent(runner *adrill.SuiteRunner, executor adrill.ToolExecutor, 
 	modelName := appCfg.General.DefaultModel
 
 	if providerName == "" {
-		return fmt.Errorf("no default provider configured — set general.default_provider in astonish config")
+		return fmt.Errorf("no default provider configured — set general.default_provider in troupe config")
 	}
 
 	llm, err := provider.GetProvider(context.Background(), providerName, modelName, appCfg)
@@ -970,7 +970,7 @@ func handleDrillListCommand(args []string) error {
 
 func handleDrillReportCommand(args []string) error {
 	reportCmd := flag.NewFlagSet("test report", flag.ExitOnError)
-	reportDir := reportCmd.String("dir", "", "Report directory (default: ~/.config/astonish/reports)")
+	reportDir := reportCmd.String("dir", "", "Report directory (default: ~/.config/troupe/reports)")
 	if err := reportCmd.Parse(args); err != nil {
 		return err
 	}
@@ -1027,7 +1027,7 @@ func handleDrillReportCommand(args []string) error {
 
 	if !found {
 		fmt.Println("No reports found.")
-		fmt.Println("Run drills first with: astonish drill run <suite>")
+		fmt.Println("Run drills first with: troupe drill run <suite>")
 	}
 
 	return nil
@@ -1056,7 +1056,7 @@ func handleDrillRemoveCommand(args []string) error {
 	}
 
 	if targetName == "" {
-		fmt.Println("usage: astonish drill remove <suite_or_drill> [--force] [--keep-tests]")
+		fmt.Println("usage: troupe drill remove <suite_or_drill> [--force] [--keep-tests]")
 		fmt.Println("")
 		fmt.Println("Removes a test suite and all its test files, or a single test file.")
 		fmt.Println("When removing a suite, all associated test files are also deleted")

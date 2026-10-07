@@ -179,6 +179,4 @@ Options:
 
 ## See Also
 
-- [Deployment Overview](../deployment/index.md) — choosing between sandbox backends
-- [OpenShell](../deployment/openshell.md) — detailed OpenShell deployment guide
 - [Credential Security](./credential-security.md) — how secrets are injected into sandbox environments

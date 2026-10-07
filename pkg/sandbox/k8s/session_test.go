@@ -391,7 +391,7 @@ func TestCreateSession_CreatesPodAndPersistsRegistry(t *testing.T) {
 	}
 
 	// Pod must exist.
-	pod, err := cs.CoreV1().Pods("astonish-sandboxes").Get(ctx, podNameForSession("sess-create-1"), metav1.GetOptions{})
+	pod, err := cs.CoreV1().Pods("troupe-sandboxes").Get(ctx, podNameForSession("sess-create-1"), metav1.GetOptions{})
 	if err != nil {
 		t.Fatalf("pod not created: %v", err)
 	}
@@ -440,7 +440,7 @@ func TestCreateSession_IdempotentOnSessionID(t *testing.T) {
 	}
 
 	// Exactly one pod should exist.
-	list, _ := cs.CoreV1().Pods("astonish-sandboxes").List(ctx, metav1.ListOptions{})
+	list, _ := cs.CoreV1().Pods("troupe-sandboxes").List(ctx, metav1.ListOptions{})
 	if len(list.Items) != 1 {
 		t.Errorf("expected 1 pod, got %d", len(list.Items))
 	}
@@ -461,7 +461,7 @@ func TestCreateSession_ResumesAfterManualPodDelete(t *testing.T) {
 		t.Fatalf("first CreateSession: %v", err)
 	}
 	podName := podNameForSession("s-stale")
-	if _, getErr := cs.CoreV1().Pods("astonish-sandboxes").Get(ctx, podName, metav1.GetOptions{}); getErr != nil {
+	if _, getErr := cs.CoreV1().Pods("troupe-sandboxes").Get(ctx, podName, metav1.GetOptions{}); getErr != nil {
 		t.Fatalf("pod should exist after first create: %v", getErr)
 	}
 
@@ -475,11 +475,11 @@ func TestCreateSession_ResumesAfterManualPodDelete(t *testing.T) {
 	}
 
 	// Delete the pod out-of-band (simulates kubectl delete or node eviction).
-	if err := cs.CoreV1().Pods("astonish-sandboxes").Delete(ctx, podName, metav1.DeleteOptions{}); err != nil {
+	if err := cs.CoreV1().Pods("troupe-sandboxes").Delete(ctx, podName, metav1.DeleteOptions{}); err != nil {
 		t.Fatalf("delete pod: %v", err)
 	}
 	// Verify pod is gone from API server.
-	_, getErr := cs.CoreV1().Pods("astonish-sandboxes").Get(ctx, podName, metav1.GetOptions{})
+	_, getErr := cs.CoreV1().Pods("troupe-sandboxes").Get(ctx, podName, metav1.GetOptions{})
 	if !apierrors.IsNotFound(getErr) {
 		t.Fatalf("expected NotFound after delete, got: %v", getErr)
 	}
@@ -495,7 +495,7 @@ func TestCreateSession_ResumesAfterManualPodDelete(t *testing.T) {
 	}
 
 	// Pod must exist again.
-	pod, getErr := cs.CoreV1().Pods("astonish-sandboxes").Get(ctx, podName, metav1.GetOptions{})
+	pod, getErr := cs.CoreV1().Pods("troupe-sandboxes").Get(ctx, podName, metav1.GetOptions{})
 	if getErr != nil {
 		t.Fatalf("pod should be recreated: %v", getErr)
 	}
@@ -541,10 +541,10 @@ func TestSessionState_PodPhaseMapping(t *testing.T) {
 
 	// Patch the pod phase to Running+Ready and verify mapping.
 	name := podNameForSession("s1")
-	pod, _ := cs.CoreV1().Pods("astonish-sandboxes").Get(ctx, name, metav1.GetOptions{})
+	pod, _ := cs.CoreV1().Pods("troupe-sandboxes").Get(ctx, name, metav1.GetOptions{})
 	pod.Status.Phase = corev1.PodRunning
 	pod.Status.Conditions = []corev1.PodCondition{{Type: corev1.PodReady, Status: corev1.ConditionTrue}}
-	if _, err := cs.CoreV1().Pods("astonish-sandboxes").UpdateStatus(ctx, pod, metav1.UpdateOptions{}); err != nil {
+	if _, err := cs.CoreV1().Pods("troupe-sandboxes").UpdateStatus(ctx, pod, metav1.UpdateOptions{}); err != nil {
 		t.Fatalf("UpdateStatus: %v", err)
 	}
 	if st, _ := b.SessionState(ctx, "s1"); st != sandbox.SessionStateRunning {
@@ -552,10 +552,10 @@ func TestSessionState_PodPhaseMapping(t *testing.T) {
 	}
 
 	// Flip to Pending and verify it maps to creating.
-	pod, _ = cs.CoreV1().Pods("astonish-sandboxes").Get(ctx, name, metav1.GetOptions{})
+	pod, _ = cs.CoreV1().Pods("troupe-sandboxes").Get(ctx, name, metav1.GetOptions{})
 	pod.Status.Phase = corev1.PodPending
 	pod.Status.Conditions = nil
-	if _, err := cs.CoreV1().Pods("astonish-sandboxes").UpdateStatus(ctx, pod, metav1.UpdateOptions{}); err != nil {
+	if _, err := cs.CoreV1().Pods("troupe-sandboxes").UpdateStatus(ctx, pod, metav1.UpdateOptions{}); err != nil {
 		t.Fatalf("UpdateStatus: %v", err)
 	}
 	if st, _ := b.SessionState(ctx, "s1"); st != sandbox.SessionStateCreating {
@@ -724,7 +724,7 @@ func TestStopSession_DeletesPodAndMarksEvicted(t *testing.T) {
 	}
 
 	// Pod should be gone.
-	if _, err := cs.CoreV1().Pods("astonish-sandboxes").Get(ctx, podNameForSession("s1"), metav1.GetOptions{}); err == nil {
+	if _, err := cs.CoreV1().Pods("troupe-sandboxes").Get(ctx, podNameForSession("s1"), metav1.GetOptions{}); err == nil {
 		t.Error("pod should have been deleted")
 	} else if !apierrors.IsNotFound(err) {
 		t.Errorf("unexpected error checking deleted pod: %v", err)
@@ -843,7 +843,7 @@ func TestDestroySession_DeletesPodAndRegistry(t *testing.T) {
 		t.Fatalf("DestroySession: %v", err)
 	}
 
-	if _, err := cs.CoreV1().Pods("astonish-sandboxes").Get(ctx, podNameForSession("s1"), metav1.GetOptions{}); !apierrors.IsNotFound(err) {
+	if _, err := cs.CoreV1().Pods("troupe-sandboxes").Get(ctx, podNameForSession("s1"), metav1.GetOptions{}); !apierrors.IsNotFound(err) {
 		t.Errorf("pod not deleted: err=%v", err)
 	}
 	if rec, _ := b.sessions.GetSession("s1"); rec != nil {
@@ -936,12 +936,12 @@ func TestListSessions_FiltersByLabelAndState(t *testing.T) {
 		}); err != nil {
 			t.Fatalf("CreateSession %s: %v", id, err)
 		}
-		pod, _ := b.client.CoreV1().Pods("astonish-sandboxes").Get(ctx, podNameForSession(id), metav1.GetOptions{})
+		pod, _ := b.client.CoreV1().Pods("troupe-sandboxes").Get(ctx, podNameForSession(id), metav1.GetOptions{})
 		pod.Status.Phase = phase
 		if ready {
 			pod.Status.Conditions = []corev1.PodCondition{{Type: corev1.PodReady, Status: corev1.ConditionTrue}}
 		}
-		if _, err := b.client.CoreV1().Pods("astonish-sandboxes").UpdateStatus(ctx, pod, metav1.UpdateOptions{}); err != nil {
+		if _, err := b.client.CoreV1().Pods("troupe-sandboxes").UpdateStatus(ctx, pod, metav1.UpdateOptions{}); err != nil {
 			t.Fatalf("UpdateStatus %s: %v", id, err)
 		}
 	}

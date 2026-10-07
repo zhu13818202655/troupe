@@ -10,7 +10,7 @@ The Astonish Chrome extension brings Studio chat directly into any browser tab t
 
 ## Installation
 
-The extension is distributed as a zip file alongside each release binary on the [GitHub Releases page](https://github.com/SAP/astonish/releases). It is not published to the Chrome Web Store; you load it as an unpacked extension.
+The extension is distributed as a zip file alongside each release binary on the [GitHub Releases page](https://github.com/zhu13818202655/troupe/releases). It is not published to the Chrome Web Store; you load it as an unpacked extension.
 
 1. **Download** `astonish-extension.zip` from the latest release.
 2. **Unzip** it into a permanent folder (e.g. `~/astonish-extension`). Do not delete this folder — Chrome requires it to remain present while the extension is loaded.

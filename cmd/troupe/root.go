@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"encoding/json"
@@ -132,11 +132,11 @@ func bareCodeUnavailableHint(stdinTTY, stdoutTTY bool) string {
 	if stdinTTY && stdoutTTY {
 		return ""
 	}
-	return "hint: interactive code mode requires a terminal. Run 'astonish code' from an interactive TTY."
+	return "hint: interactive code mode requires a terminal. Run 'troupe code' from an interactive TTY."
 }
 
 func printUsage() {
-	fmt.Println("usage: astonish [-h] [-v] {code,chat,login,logout,status,org,team,sessions,flows,...} ...")
+	fmt.Println("usage: troupe [-h] [-v] {code,chat,login,logout,status,org,team,sessions,flows,...} ...")
 	fmt.Println("")
 	fmt.Println("positional arguments:")
 	fmt.Println("  {code,chat,sessions,flows,tap,daemon,channels,scheduler,fleet,credential,skills,sandbox,drill,config,setup,tools,memory,platform}")
@@ -183,7 +183,7 @@ func mustNotBeRemote(cmd string) {
 	}
 	fmt.Fprintf(os.Stderr, "Error: '%s' is not available in remote mode.\n", cmd)
 	fmt.Fprintf(os.Stderr, "You are connected to %s.\n", url)
-	fmt.Fprintf(os.Stderr, "Use 'astonish logout' to disconnect.\n")
+	fmt.Fprintf(os.Stderr, "Use 'troupe logout' to disconnect.\n")
 	os.Exit(1)
 }
 
@@ -196,7 +196,7 @@ func mustBeRemote(cmd string) {
 		return
 	}
 	fmt.Fprintf(os.Stderr, "Error: '%s' is only available when connected to a remote server.\n", cmd)
-	fmt.Fprintf(os.Stderr, "Run 'astonish login' first.\n")
+	fmt.Fprintf(os.Stderr, "Run 'troupe login' first.\n")
 	os.Exit(1)
 }
 
@@ -209,8 +209,8 @@ func checkForUpdates() {
 	if err != nil {
 		return
 	}
-	astonishDir := filepath.Join(configDir, "astonish")
-	updateFile := filepath.Join(astonishDir, "update_check.json")
+	troupeDir := filepath.Join(configDir, "troupe")
+	updateFile := filepath.Join(troupeDir, "update_check.json")
 
 	var lastCheck updateCheckData
 
@@ -225,7 +225,7 @@ func checkForUpdates() {
 	}
 
 	// Perform update check
-	resp, err := http.Get("https://api.github.com/repos/SAP/astonish/releases/latest")
+	resp, err := http.Get("https://api.github.com/repos/zhu13818202655/troupe/releases/latest")
 	if err != nil {
 		return
 	}
@@ -244,7 +244,7 @@ func checkForUpdates() {
 	}
 
 	// Update last check time
-	os.MkdirAll(astonishDir, 0755)
+	os.MkdirAll(troupeDir, 0755)
 	lastCheck.LastCheck = time.Now()
 	if data, err := json.Marshal(lastCheck); err == nil {
 		os.WriteFile(updateFile, data, 0644)
@@ -272,7 +272,7 @@ func checkForUpdates() {
 	if isNewerVersion(latest, current) {
 		fmt.Fprintln(os.Stderr)
 		fmt.Fprintf(os.Stderr, "\033[93mA new version of Astonish is available: %s\033[0m\n", result.TagName)
-		fmt.Fprintf(os.Stderr, "\033[93mRun \033[1mbrew upgrade SAP/astonish/astonish\033[0m\033[93m to update.\033[0m\n")
+		fmt.Fprintf(os.Stderr, "\033[93mRun \033[1mbrew upgrade zhu13818202655/troupe/troupe\033[0m\033[93m to update.\033[0m\n")
 		fmt.Fprintln(os.Stderr)
 	}
 }

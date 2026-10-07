@@ -1,5 +1,12 @@
 # Sandbox Backends (Docker OverlayFS, Kubernetes, OpenShell)
 
+> **Deployment assets removed (2026-10-07).** The Helm chart (`deploy/helm`) and
+> `deploy/k8s` were removed from the repository, along with the chart-validation
+> tests and the `make e2e-k8s-up` / `e2e-openshell-up` / `helm-deps` targets.
+> Deployment tooling is being rebuilt against our own requirements. Every chart
+> path, values-file name and `docs/deployment/*.md` reference below is historical,
+> not a current instruction.
+>
 > **Status (Incus removed).** Local sessions on macOS and Linux use Docker
 > OverlayFS (`pkg/sandbox/docker/`). `sandbox.backend: incus` is a legacy
 > alias for `docker`. There is no `astonish-incus` image. Kubernetes and
@@ -1371,9 +1378,9 @@ The prebuilt `astonish-sandbox-base` image MUST ship GNU tar with xattr/ACL supp
 
 ### Astonish ships
 
-- Helm chart at `deploy/helm/astonish` with templates for the sandbox namespace, RBAC, RWX PVCs, base-layer seed Job, and an optional FUSE device plugin DaemonSet — all driven by one per-environment values file (see `deploy/helm/astonish/values-dev-proxmox.yaml` for a complete example).
+- ~~Helm chart at `deploy/helm/astonish`~~ — **removed 2026-10-07**. It provided templates for the sandbox namespace, RBAC, RWX PVCs, base-layer seed Job, and an optional FUSE device plugin DaemonSet, driven by one per-environment values file. Being rebuilt.
 - Prebuilt base sandbox image: `ghcr.io/sap/astonish-sandbox-base:<version>` (GitHub Container Registry). Phase F: image bundles `fuse-overlayfs` and the overlay-mode dispatcher in the entrypoint.
-- ConfigMap/Secret templates for backend configuration.
+- ~~ConfigMap/Secret templates for backend configuration~~ — removed with the chart; being rebuilt.
 - Pre-rendered ServiceAccount + Role bindings for the API/Worker to manage the sandbox namespace.
 
 ### Astonish does NOT ship
@@ -1499,10 +1506,10 @@ artefacts:
 
 Deferred to Phase E (intentionally out of scope for Phase D):
 
-- Helm-chart integration — **done in Phase F**. The chart at
-  `deploy/helm/astonish` now covers both control plane and sandbox
+- Helm-chart integration — **done in Phase F; chart removed 2026-10-07**.
+  The chart at `deploy/helm/astonish` covered both control plane and sandbox
   (namespace, RBAC, PVCs, seed hook, FUSE device plugin), driven by
-  a single per-environment values file.
+  a single per-environment values file. Being rebuilt.
 - Operator-facing runbooks (`docs/deployment/kubernetes-sysbox.md`,
   `docs/operations/sandbox-backend-k8s.md`). The Phase-D smoke
   command is self-documenting for the "does it work?" question; the
@@ -1540,7 +1547,7 @@ Status: shipped on `feature/sandbox-k8s-backend` (commits `4fa7ed6`, `cee00c8`, 
 - Migration `platform/005_seed_base_template.sql` (seeds `@base` row).
 - Migration `platform/004_sandbox_ref_count_triggers.sql` (installed disabled-by-default).
 - Team-template editor lifecycle: Create / Save / Restore / Delete with synchronous reclamation, `astonish-shell` chroot wrapper, 1.5 s status polling up to 30 s (§5.17).
-- Single Helm chart at `deploy/helm/astonish` covering both control plane and sandbox; configurable hyphen-only DNS-1123 namespace prefix (§6.1).
+- ~~Single Helm chart at `deploy/helm/astonish` covering both control plane and sandbox~~ — removed 2026-10-07; the configurable hyphen-only DNS-1123 namespace prefix (§6.1) is to be carried over when the deployment assets are rebuilt.
 - `Makefile` fast targets: `push-dev-fast`, `push-sandbox-base-dev-fast`, `push-all-dev-fast` (auto-detect `DEV_ARCH`).
 - `apt` cosmetic-warning fix baked into the base image's `/etc/apt/apt.conf.d/00no-sandbox`; carried into `@base` deterministically by the seed Job.
 

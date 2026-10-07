@@ -15,7 +15,7 @@ Thank you for your interest in contributing to Astonish! This document provides 
 
 ```bash
 # Clone the repository
-git clone https://github.com/SAP/astonish.git
+git clone https://github.com/zhu13818202655/troupe.git
 cd astonish
 
 # Build everything (UI + Go binary) — also installs git hooks

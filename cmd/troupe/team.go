@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"fmt"
@@ -8,17 +8,17 @@ import (
 
 func handleTeamCommand(args []string) error {
 	if len(args) == 0 {
-		fmt.Println("Usage: astonish team <subcommand>")
+		fmt.Println("Usage: troupe team <subcommand>")
 		fmt.Println("")
 		fmt.Println("Subcommands:")
 		fmt.Println("  list          List available teams")
 		fmt.Println("")
-		fmt.Println("To switch teams, run 'astonish logout' then 'astonish login'")
+		fmt.Println("To switch teams, run 'troupe logout' then 'troupe login'")
 		return nil
 	}
 
 	if !client.IsRemoteMode() {
-		return fmt.Errorf("'team' command is only available in remote mode. Run 'astonish login' first")
+		return fmt.Errorf("'team' command is only available in remote mode. Run 'troupe login' first")
 	}
 
 	switch args[0] {

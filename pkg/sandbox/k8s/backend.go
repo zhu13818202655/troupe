@@ -96,7 +96,7 @@ type Config struct {
 	Templates store.SandboxTemplateStore
 
 	// Namespace is the Kubernetes namespace in which sandbox pods are
-	// created. Defaults to "astonish-sandboxes".
+	// created. Defaults to "troupe-sandboxes".
 	Namespace string
 
 	// ControlPlaneNamespace is the namespace where the Astonish API and
@@ -224,7 +224,7 @@ type TemplatePersistHints struct {
 
 func (c *Config) applyDefaults() {
 	if c.Namespace == "" {
-		c.Namespace = "astonish-sandboxes"
+		c.Namespace = "troupe-sandboxes"
 	}
 	if c.ControlPlaneNamespace == "" {
 		c.ControlPlaneNamespace = "astonish"

@@ -99,7 +99,7 @@ export default function TapsSettings({ teamSlug }: { teamSlug?: string }) {
               type="text"
               value={newTapUrl}
               onChange={(e) => setNewTapUrl(e.target.value)}
-              placeholder="SAP/astonish-flows"
+              placeholder="zhu13818202655/troupe-flows"
               className="bg-background"
             />
           </div>

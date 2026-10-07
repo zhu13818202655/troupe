@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/launcher"
 )
 
-// codeFlags holds the parsed CLI flag values for `astonish code`.
+// codeFlags holds the parsed CLI flag values for `troupe code`.
 type codeFlags struct {
 	Provider    string
 	Model       string
@@ -59,8 +59,8 @@ func parseCodeFlags(args []string) (codeFlags, error) {
 	return f, nil
 }
 
-// handleCodeCommand implements `astonish code`: a fully local, in-process
-// coding tool. Unlike `astonish chat`, it never contacts a platform — the
+// handleCodeCommand implements `troupe code`: a fully local, in-process
+// coding tool. Unlike `troupe chat`, it never contacts a platform — the
 // single binary runs the agent loop in-process and calls the compiled-in tools
 // directly against the host filesystem in the working directory. The sandbox
 // is forced off so tools execute with the user's own permissions.
@@ -87,7 +87,7 @@ func handleCodeCommand(args []string) error {
 }
 
 func printCodeUsage() {
-	fmt.Println("usage: astonish code [options]")
+	fmt.Println("usage: troupe code [options]")
 	fmt.Println("")
 	fmt.Println("Run Astonish as a local coding tool. The binary runs the agent loop")
 	fmt.Println("in-process and executes its built-in tools directly on your machine,")
@@ -100,7 +100,7 @@ func printCodeUsage() {
 	fmt.Println("grant access for the whole session. Use --auto-approve to skip all")
 	fmt.Println("prompts and folder scoping.")
 	fmt.Println("")
-	fmt.Println("When logged in to a platform (astonish login <url>), press Ctrl+\\")
+	fmt.Println("When logged in to a platform (troupe login <url>), press Ctrl+\\")
 	fmt.Println("inside the TUI to switch to the platform chat panel. The UI color")
 	fmt.Println("accent changes (orange=code, blue=platform) so you always know")
 	fmt.Println("which mode you're in.")
@@ -118,8 +118,8 @@ func printCodeUsage() {
 	fmt.Println("  -h, --help          Show this help message")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish code")
-	fmt.Println("  astonish code -m openai:gpt-4o")
-	fmt.Println("  astonish code -C ./my-project --auto-approve")
-	fmt.Println("  astonish code --resume <session-id>")
+	fmt.Println("  troupe code")
+	fmt.Println("  troupe code -m openai:gpt-4o")
+	fmt.Println("  troupe code -C ./my-project --auto-approve")
+	fmt.Println("  troupe code --resume <session-id>")
 }

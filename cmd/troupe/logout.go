@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"fmt"

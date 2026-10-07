@@ -55,9 +55,8 @@
 #
 # Publish:
 #   The image tag MUST match SandboxKubernetesConfig.SandboxImage's
-#   default (pkg/config/app_config.go) and the chart's sandbox.image.tag
-#   (deploy/helm/astonish/values.yaml). If that default changes, bump
-#   all three in lockstep.
+#   default (pkg/config/app_config.go). If that default changes, bump
+#   both in lockstep.
 #
 # Reference: docs/architecture/sandbox-backends.md §§5.3, 5.14.
 
@@ -96,7 +95,7 @@ FROM debian:bookworm-slim
 
 LABEL org.opencontainers.image.title="astonish-sandbox-base" \
       org.opencontainers.image.description="Minimal base image for Astonish K8s sandbox pods" \
-      org.opencontainers.image.source="https://github.com/SAP/astonish" \
+      org.opencontainers.image.source="https://github.com/zhu13818202655/troupe" \
       org.opencontainers.image.licenses="Apache-2.0"
 
 ENV DEBIAN_FRONTEND=noninteractive

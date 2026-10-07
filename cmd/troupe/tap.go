@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"fmt"
@@ -31,7 +31,7 @@ func handleTapCommand(args []string) error {
 }
 
 func printTapUsage() {
-	fmt.Println("usage: astonish tap <command> [arguments]")
+	fmt.Println("usage: troupe tap <command> [arguments]")
 	fmt.Println("")
 	fmt.Println("Manage extension repositories (taps) that provide flows and MCP servers.")
 	fmt.Println("")
@@ -42,21 +42,21 @@ func printTapUsage() {
 	fmt.Println("  update                      Update all tap manifests")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish tap add SAP/astonish-flows")
-	fmt.Println("  astonish tap add github.enterprise.com/team/extensions --as team")
-	fmt.Println("  astonish tap list")
-	fmt.Println("  astonish tap remove team")
+	fmt.Println("  troupe tap add zhu13818202655/troupe-flows")
+	fmt.Println("  troupe tap add github.enterprise.com/team/extensions --as team")
+	fmt.Println("  troupe tap list")
+	fmt.Println("  troupe tap remove team")
 }
 
 func handleTapAddCommand(args []string) error {
 	if len(args) == 0 {
-		fmt.Println("usage: astonish tap add <repo> [--as <alias>]")
+		fmt.Println("usage: troupe tap add <repo> [--as <alias>]")
 		fmt.Println("")
 		fmt.Println("examples:")
-		fmt.Println("  astonish tap add owner                           # adds owner/astonish-flows")
-		fmt.Println("  astonish tap add owner/custom-repo")
-		fmt.Println("  astonish tap add github.enterprise.com/owner     # enterprise GitHub")
-		fmt.Println("  astonish tap add github.enterprise.com/owner/repo --as myalias")
+		fmt.Println("  troupe tap add owner                           # adds owner/troupe-flows")
+		fmt.Println("  troupe tap add owner/custom-repo")
+		fmt.Println("  troupe tap add github.enterprise.com/owner     # enterprise GitHub")
+		fmt.Println("  troupe tap add github.enterprise.com/owner/repo --as myalias")
 		return nil
 	}
 
@@ -81,8 +81,8 @@ func handleTapAddCommand(args []string) error {
 	successStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("2"))
 	fmt.Println(successStyle.Render(fmt.Sprintf("✓ Added tap '%s' successfully", name)))
 	fmt.Println("")
-	fmt.Println("Tip: Run 'astonish flows store list' to see available flows from this tap")
-	fmt.Println("     Run 'astonish tools store list' to see available MCP servers from this tap")
+	fmt.Println("Tip: Run 'troupe flows store list' to see available flows from this tap")
+	fmt.Println("     Run 'troupe tools store list' to see available MCP servers from this tap")
 
 	return nil
 }
@@ -98,7 +98,7 @@ func handleTapListCommand() error {
 	if len(taps) == 0 {
 		fmt.Println("No taps configured.")
 		fmt.Println("")
-		fmt.Println("Add one with: astonish tap add <repo>")
+		fmt.Println("Add one with: troupe tap add <repo>")
 		return nil
 	}
 
@@ -128,7 +128,7 @@ func handleTapListCommand() error {
 
 func handleTapRemoveCommand(args []string) error {
 	if len(args) == 0 {
-		fmt.Println("usage: astonish tap remove <name>")
+		fmt.Println("usage: troupe tap remove <name>")
 		return nil
 	}
 

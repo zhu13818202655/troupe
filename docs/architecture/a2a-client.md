@@ -502,7 +502,7 @@ ent/team/schema/
 
 ## 14. Dependencies
 
-- **`github.com/SAP/astonish/pkg/a2a`** — A2A protocol types (AgentCard, Task, Message, Part, JSON-RPC types)
-- **`github.com/SAP/astonish/pkg/credentials`** — CredentialResolver interface and StoreAdapter
-- **`github.com/SAP/astonish/pkg/store`** — A2AAgentStore interface, Services struct
+- **`github.com/zhu13818202655/troupe/pkg/a2a`** — A2A protocol types (AgentCard, Task, Message, Part, JSON-RPC types)
+- **`github.com/zhu13818202655/troupe/pkg/credentials`** — CredentialResolver interface and StoreAdapter
+- **`github.com/zhu13818202655/troupe/pkg/store`** — A2AAgentStore interface, Services struct
 - **Standard library** — `net/http`, `encoding/json`, `bufio` (SSE parsing), `sync` (Manager concurrency)

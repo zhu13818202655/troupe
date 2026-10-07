@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"flag"
@@ -153,9 +153,9 @@ func handleDaemonInstall(args []string) error {
 	fmt.Printf("  Port: %d\n", installPort)
 	fmt.Printf("  Logs: %s\n", svc.LogPath())
 	if svc.IsSystem() {
-		fmt.Printf("\nRun 'astonish daemon start' to start the service.\n")
+		fmt.Printf("\nRun 'troupe daemon start' to start the service.\n")
 	} else {
-		fmt.Printf("\nRun 'astonish daemon start' to start the service.\n")
+		fmt.Printf("\nRun 'troupe daemon start' to start the service.\n")
 	}
 	return nil
 }
@@ -331,13 +331,13 @@ func requireSystemPrivileges(action string) error {
 		}
 		return fmt.Errorf(
 			"system-level service detected at /etc/systemd/system/.\n"+
-				"Run with sudo: sudo astonish daemon %s", action)
+				"Run with sudo: sudo troupe daemon %s", action)
 	}
 	return nil
 }
 
 func printDaemonUsage() {
-	fmt.Println("usage: astonish daemon <command> [options]")
+	fmt.Println("usage: troupe daemon <command> [options]")
 	fmt.Println("")
 	fmt.Println("Manage the Astonish background daemon service.")
 	fmt.Println("")
@@ -360,9 +360,9 @@ func printDaemonUsage() {
 	fmt.Println("prompt for your password via sudo.")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish daemon install")
-	fmt.Println("  astonish daemon start")
-	fmt.Println("  astonish daemon status")
-	fmt.Println("  astonish daemon logs -f")
-	fmt.Println("  astonish daemon run --port 9394")
+	fmt.Println("  troupe daemon install")
+	fmt.Println("  troupe daemon start")
+	fmt.Println("  troupe daemon status")
+	fmt.Println("  troupe daemon logs -f")
+	fmt.Println("  troupe daemon run --port 9394")
 }

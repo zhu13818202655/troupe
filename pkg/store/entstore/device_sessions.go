@@ -44,8 +44,8 @@ func (s *DeviceSessionStore) Create(ctx context.Context, sess *DeviceSessionRow)
 		SetProviderID(sess.ProviderID).
 		SetClientType(sess.ClientType).
 		SetStatus(devicesession.StatusPending).
-		SetCreatedAt(sess.CreatedAt).
-		SetExpiresAt(sess.ExpiresAt).
+		SetCreatedAt(sess.CreatedAt.UTC()).
+		SetExpiresAt(sess.ExpiresAt.UTC()).
 		Save(ctx)
 	return err
 }
@@ -56,7 +56,7 @@ func (s *DeviceSessionStore) GetByCode(ctx context.Context, code string) (*Devic
 	ent, err := s.client.DeviceSession.Query().
 		Where(
 			devicesession.ID(code),
-			devicesession.ExpiresAtGT(time.Now()),
+			devicesession.ExpiresAtGT(time.Now().UTC()),
 		).
 		Only(ctx)
 	if err != nil {
@@ -71,7 +71,7 @@ func (s *DeviceSessionStore) GetByState(ctx context.Context, state string) (*Dev
 	ent, err := s.client.DeviceSession.Query().
 		Where(
 			devicesession.StateEQ(state),
-			devicesession.ExpiresAtGT(time.Now()),
+			devicesession.ExpiresAtGT(time.Now().UTC()),
 		).
 		Only(ctx)
 	if err != nil {
@@ -99,7 +99,7 @@ func (s *DeviceSessionStore) Complete(ctx context.Context, code string, status s
 // Cleanup removes expired device sessions.
 func (s *DeviceSessionStore) Cleanup(ctx context.Context) error {
 	_, err := s.client.DeviceSession.Delete().
-		Where(devicesession.ExpiresAtLT(time.Now())).
+		Where(devicesession.ExpiresAtLT(time.Now().UTC())).
 		Exec(ctx)
 	return err
 }

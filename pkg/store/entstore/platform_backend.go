@@ -55,7 +55,12 @@ func (s *Store) MigrateAll(ctx context.Context) error {
 }
 
 func (s *Store) CleanupExpired(ctx context.Context) error {
-	now := time.Now()
+	// Every timestamp this method writes or compares is UTC (the OAuth server
+	// issues codes, tokens and consents with time.Now().UTC()). SQLite stores
+	// time columns as text and compares them lexically, so a local-time cutoff
+	// is off by the host's UTC offset: on a UTC+8 host it would purge records
+	// up to eight hours before they actually expire, breaking live OAuth flows.
+	now := time.Now().UTC()
 
 	// Delete expired login sessions.
 	if _, err := s.platformClient.LoginSession.Delete().

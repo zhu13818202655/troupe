@@ -28,8 +28,8 @@ func (ls *loginSessionStore) Create(ctx context.Context, session *store.LoginSes
 		SetID(session.TokenHash).
 		SetUserID(uid).
 		SetOrgID(oid).
-		SetCreatedAt(session.CreatedAt).
-		SetExpiresAt(session.ExpiresAt).
+		SetCreatedAt(session.CreatedAt.UTC()).
+		SetExpiresAt(session.ExpiresAt.UTC()).
 		SetNillableUserAgent(nilStrPtr(session.UserAgent)).
 		SetNillableIPAddress(nilStrPtr(session.IPAddress)).
 		Save(ctx)
@@ -40,7 +40,8 @@ func (ls *loginSessionStore) Validate(ctx context.Context, tokenHash string) (*s
 	ent, err := ls.client.LoginSession.Query().
 		Where(
 			loginsession.IDEQ(tokenHash),
-			loginsession.ExpiresAtGT(time.Now()),
+			// Stored as UTC text; keep the bound in UTC for a correct lexical comparison.
+			loginsession.ExpiresAtGT(time.Now().UTC()),
 		).
 		Only(ctx)
 	if err != nil {
@@ -58,7 +59,7 @@ func (ls *loginSessionStore) Delete(ctx context.Context, tokenHash string) error
 
 func (ls *loginSessionStore) DeleteExpired(ctx context.Context) error {
 	_, err := ls.client.LoginSession.Delete().
-		Where(loginsession.ExpiresAtLT(time.Now())).
+		Where(loginsession.ExpiresAtLT(time.Now().UTC())).
 		Exec(ctx)
 	return err
 }

@@ -1,4 +1,4 @@
-package astonish
+package troupe
 
 import (
 	"context"
@@ -245,7 +245,7 @@ func printRestorePlanSummary(plan backup.RestorePlan) {
 }
 
 func printPlatformRestoreUsage() {
-	fmt.Println("usage: astonish platform restore <archive> [--dry-run|--confirm] [options]")
+	fmt.Println("usage: troupe platform restore <archive> [--dry-run|--confirm] [options]")
 	fmt.Println("")
 	fmt.Println("Recover a clean platform installation from a logical backup archive.")
 	fmt.Println("")
@@ -264,6 +264,6 @@ func printPlatformRestoreUsage() {
 	fmt.Println("  --json                    Print JSON output")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish platform restore backup.troupe-backup --dry-run")
-	fmt.Println("  astonish platform restore backup.troupe-backup --confirm")
+	fmt.Println("  troupe platform restore backup.troupe-backup --dry-run")
+	fmt.Println("  troupe platform restore backup.troupe-backup --confirm")
 }

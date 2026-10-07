@@ -143,8 +143,8 @@ func TestK8sBackendConfigDefaults(t *testing.T) {
 	if err != nil {
 		t.Fatalf("k8s.New: %v", err)
 	}
-	if b.cfg.Namespace != "astonish-sandboxes" {
-		t.Errorf("default Namespace = %q, want %q", b.cfg.Namespace, "astonish-sandboxes")
+	if b.cfg.Namespace != "troupe-sandboxes" {
+		t.Errorf("default Namespace = %q, want %q", b.cfg.Namespace, "troupe-sandboxes")
 	}
 	if b.cfg.RuntimeClassName != "" {
 		t.Errorf("default RuntimeClassName = %q, want empty (cluster default)", b.cfg.RuntimeClassName)

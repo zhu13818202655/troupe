@@ -48,7 +48,7 @@ FROM ghcr.io/nvidia/openshell-community/sandboxes/base:latest
 
 LABEL org.opencontainers.image.title="astonish-sandbox-openshell" \
       org.opencontainers.image.description="Astonish agent sandbox image for NVIDIA OpenShell (full toolset)" \
-      org.opencontainers.image.source="https://github.com/SAP/astonish" \
+      org.opencontainers.image.source="https://github.com/zhu13818202655/troupe" \
       org.opencontainers.image.licenses="Apache-2.0"
 
 # All install steps run as root. The OpenShell supervisor demotes the agent
