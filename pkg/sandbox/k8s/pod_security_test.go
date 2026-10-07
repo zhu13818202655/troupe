@@ -89,17 +89,17 @@ func TestApplyPodSecurityHardening_Defaults(t *testing.T) {
 		t.Errorf("Privileged set despite cfg.Privileged=false")
 	}
 
-	mode, ok := findEnv(c.Env, "ASTONISH_OVERLAY_MODE")
+	mode, ok := findEnv(c.Env, "TROUPE_OVERLAY_MODE")
 	if !ok {
-		t.Fatalf("ASTONISH_OVERLAY_MODE env missing")
+		t.Fatalf("TROUPE_OVERLAY_MODE env missing")
 	}
 	if mode.Value != "fuse" {
 		t.Errorf("OVERLAY_MODE = %q, want fuse", mode.Value)
 	}
 
-	ensure, ok := findEnv(c.Env, "ASTONISH_ENSURE_FUSE_DEVICE")
+	ensure, ok := findEnv(c.Env, "TROUPE_ENSURE_FUSE_DEVICE")
 	if !ok {
-		t.Fatalf("ASTONISH_ENSURE_FUSE_DEVICE env missing")
+		t.Fatalf("TROUPE_ENSURE_FUSE_DEVICE env missing")
 	}
 	if ensure.Value != "0" {
 		t.Errorf("ENSURE_FUSE_DEVICE = %q, want 0 (no privileged, no device plugin)", ensure.Value)
@@ -120,7 +120,7 @@ func TestApplyPodSecurityHardening_PrivilegedDev(t *testing.T) {
 		t.Fatalf("SecurityContext.Privileged not set; got %+v", c.SecurityContext)
 	}
 
-	ensure, _ := findEnv(c.Env, "ASTONISH_ENSURE_FUSE_DEVICE")
+	ensure, _ := findEnv(c.Env, "TROUPE_ENSURE_FUSE_DEVICE")
 	if ensure.Value != "1" {
 		t.Errorf("ENSURE_FUSE_DEVICE = %q, want 1 (privileged + no device plugin)", ensure.Value)
 	}
@@ -150,7 +150,7 @@ func TestApplyPodSecurityHardening_DeviceResource(t *testing.T) {
 		t.Errorf("resource request %q missing or != 1: %+v", rn, c.Resources.Requests)
 	}
 
-	ensure, _ := findEnv(c.Env, "ASTONISH_ENSURE_FUSE_DEVICE")
+	ensure, _ := findEnv(c.Env, "TROUPE_ENSURE_FUSE_DEVICE")
 	if ensure.Value != "0" {
 		t.Errorf("ENSURE_FUSE_DEVICE = %q, want 0 (device plugin provides /dev/fuse)", ensure.Value)
 	}
@@ -199,7 +199,7 @@ func TestApplyPodSecurityHardening_OverlayModeOverride(t *testing.T) {
 		t.Run(string(m), func(t *testing.T) {
 			pod := buildHardenedPod(t, Config{OverlayMode: m})
 			c := pod.Spec.Containers[0]
-			mode, _ := findEnv(c.Env, "ASTONISH_OVERLAY_MODE")
+			mode, _ := findEnv(c.Env, "TROUPE_OVERLAY_MODE")
 			if mode.Value != string(m) {
 				t.Errorf("OVERLAY_MODE = %q, want %q", mode.Value, string(m))
 			}
@@ -293,7 +293,7 @@ func TestApplyPodSecurityHardening_AppliesToAllBuilders(t *testing.T) {
 			if c.SecurityContext == nil || c.SecurityContext.Privileged == nil || !*c.SecurityContext.Privileged {
 				t.Errorf("Privileged not applied to %s pod", tc.name)
 			}
-			if _, ok := findEnv(c.Env, "ASTONISH_OVERLAY_MODE"); !ok {
+			if _, ok := findEnv(c.Env, "TROUPE_OVERLAY_MODE"); !ok {
 				t.Errorf("OVERLAY_MODE env missing on %s pod", tc.name)
 			}
 		})

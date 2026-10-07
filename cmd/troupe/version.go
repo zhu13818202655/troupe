@@ -10,7 +10,7 @@ import (
 func init() {
 	// Register our version with pkg/version so the API can access it
 	// Only register if version is not "dev" (i.e., was set via ldflags)
-	// This allows both old CI (setting cmd/astonish.Version) and new CI (setting pkg/version.Version) to work
+	// This allows both old CI (setting cmd/troupe.Version) and new CI (setting pkg/version.Version) to work
 	if Version != "dev" {
 		version.SetCmdVersion(Version)
 	}

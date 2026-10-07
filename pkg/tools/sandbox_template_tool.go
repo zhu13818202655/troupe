@@ -22,7 +22,7 @@ type SaveSandboxTemplateArgs struct {
 	Description string `json:"description,omitempty" jsonschema:"Human-readable description of the template contents (e.g., 'Go 1.24 + node 22 + project dependencies')"`
 	// BootstrapFiles are non-secret scripts injected into every container from
 	// this template at session start (mount only — not auto-executed). Include
-	// .astonish/start-services.sh (and optionally stop-services.sh) with absolute paths.
+	// .troupe/start-services.sh (and optionally stop-services.sh) with absolute paths.
 	BootstrapFiles []BootstrapFileArg `json:"bootstrap_files,omitempty" jsonschema:"Non-secret bootstrap files to inject on every container launch (e.g. start-services.sh). Absolute paths required."`
 	// Overwrite replaces an existing template with the same name (delete then re-snapshot).
 	// Required to update a named template after fixing bootstrap scripts or rebuilding deps.
@@ -31,7 +31,7 @@ type SaveSandboxTemplateArgs struct {
 
 // BootstrapFileArg is one bootstrap file passed to save_sandbox_template.
 type BootstrapFileArg struct {
-	Path    string `json:"path" jsonschema:"Absolute path inside the container (e.g. /root/myapp/.astonish/start-services.sh)"`
+	Path    string `json:"path" jsonschema:"Absolute path inside the container (e.g. /root/myapp/.troupe/start-services.sh)"`
 	Content string `json:"content" jsonschema:"Full file contents"`
 	Mode    string `json:"mode,omitempty" jsonschema:"Optional octal mode (default 0755)"`
 }
@@ -75,7 +75,7 @@ func NewSaveSandboxTemplateTool(nodePool *sandbox.NodeClientPool, templateRegist
 			"Call this after cloning the project repo, installing dependencies, and configuring the " +
 			"development environment inside the container. The template captures the entire container " +
 			"state so future fleet sessions start with everything pre-installed. " +
-			"Pass bootstrap_files with absolute-path start/stop scripts (e.g. .astonish/start-services.sh) " +
+			"Pass bootstrap_files with absolute-path start/stop scripts (e.g. .troupe/start-services.sh) " +
 			"so every future container from this template gets those files injected (not auto-run). " +
 			"Pass overwrite=true to replace an existing template with the same name (e.g. after fixing " +
 			"start-services.sh). Self-overwrite (saving the template this session is based on) flattens " +
@@ -107,7 +107,7 @@ func NewSaveSandboxTemplateToolFromBackend(backend sandbox.Backend, templateRegi
 			"Call this after cloning the project repo, installing dependencies, and configuring the " +
 			"development environment inside the container. The template captures the writable overlay " +
 			"so future sessions start with everything pre-installed. " +
-			"Pass bootstrap_files with absolute-path start/stop scripts (e.g. .astonish/start-services.sh) " +
+			"Pass bootstrap_files with absolute-path start/stop scripts (e.g. .troupe/start-services.sh) " +
 			"so every future container from this template gets those files injected (not auto-run). " +
 			"Pass overwrite=true to replace an existing template with the same name. " +
 			"Cannot overwrite the reserved name 'base'. " +

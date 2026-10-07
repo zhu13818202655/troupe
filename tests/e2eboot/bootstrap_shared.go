@@ -17,7 +17,7 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/store/pgutil"
 )
 
-// bootstrapShared is invoked when ASTONISH_E2E_KEEP_ALIVE=1. Instead of
+// bootstrapShared is invoked when TROUPE_E2E_KEEP_ALIVE=1. Instead of
 // bootstrapping its own StudioServer + platform DB, it attaches to the
 // running inspector instance.
 //
@@ -34,10 +34,10 @@ func bootstrapShared(t *testing.T, baseDSN string) *Harness {
 	state, err := ReadInspectorState()
 	if err != nil {
 		if os.IsNotExist(err) {
-			t.Fatalf("[e2eboot] ASTONISH_E2E_KEEP_ALIVE=1 but inspector is not running.\n" +
+			t.Fatalf("[e2eboot] TROUPE_E2E_KEEP_ALIVE=1 but inspector is not running.\n" +
 				"  Start it first with:\n" +
 				"      make test-e2e-inspect\n" +
-				"  (or unset ASTONISH_E2E_KEEP_ALIVE to use isolated per-test bootstrap)")
+				"  (or unset TROUPE_E2E_KEEP_ALIVE to use isolated per-test bootstrap)")
 		}
 		t.Fatalf("[e2eboot] read inspector state: %v", err)
 	}

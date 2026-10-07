@@ -102,8 +102,8 @@ storage:
 daemon:
   port: 9393
   log_dir: ""                  # Default: ~/.config/astonish/logs/ when logging to files
-  # Log destination is selected by ASTONISH_LOG_DEST=file|stdout.
-  # Default: file in local/default mode, stdout in ASTONISH_MODE=api|worker.
+  # Log destination is selected by TROUPE_LOG_DEST=file|stdout.
+  # Default: file in local/default mode, stdout in TROUPE_MODE=api|worker.
   auth:
     disabled: false
     session_ttl_days: 90
@@ -264,7 +264,7 @@ Any value in `config.yaml` can reference environment variables using `${VAR_NAME
 ```yaml
 storage:
   postgres:
-    platform_dsn: "${ASTONISH_PLATFORM_DSN}"
+    platform_dsn: "${TROUPE_PLATFORM_DSN}"
 ```
 
 ## Initial Setup

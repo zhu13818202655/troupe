@@ -11,12 +11,12 @@
 #
 # Prerequisites:
 #   - kubectl configured with access to the target cluster
-#   - ASTONISH_TEST_TOKEN env var set to a valid Bearer token for the API
-#   - ASTONISH_API_URL env var (default: https://devastonish.local.muxpie.com)
-#   - ASTONISH_SANDBOX_NS env var (default: astonish-sandbox)
+#   - TROUPE_TEST_TOKEN env var set to a valid Bearer token for the API
+#   - TROUPE_API_URL env var (default: https://devastonish.local.muxpie.com)
+#   - TROUPE_SANDBOX_NS env var (default: astonish-sandbox)
 #
 # Usage:
-#   export ASTONISH_TEST_TOKEN=$(astonish platform issue-token --server $URL)
+#   export TROUPE_TEST_TOKEN=$(astonish platform issue-token --server $URL)
 #   ./scripts/smoke-layer-chain.sh
 #
 set -euo pipefail
@@ -25,13 +25,13 @@ set -euo pipefail
 # Configuration
 # ---------------------------------------------------------------------------
 
-API_URL="${ASTONISH_API_URL:-https://devastonish.local.muxpie.com}"
-SANDBOX_NS="${ASTONISH_SANDBOX_NS:-astonish-sandbox}"
-TOKEN="${ASTONISH_TEST_TOKEN:-}"
-TEAM_SLUG="${ASTONISH_TEST_TEAM:-general}"
+API_URL="${TROUPE_API_URL:-https://devastonish.local.muxpie.com}"
+SANDBOX_NS="${TROUPE_SANDBOX_NS:-astonish-sandbox}"
+TOKEN="${TROUPE_TEST_TOKEN:-}"
+TEAM_SLUG="${TROUPE_TEST_TEAM:-general}"
 
 if [ -z "$TOKEN" ]; then
-  echo "ERROR: ASTONISH_TEST_TOKEN is required." >&2
+  echo "ERROR: TROUPE_TEST_TOKEN is required." >&2
   echo "Obtain one with: astonish platform issue-token --server $API_URL" >&2
   exit 1
 fi
@@ -95,7 +95,7 @@ wait_pod_running() {
 
 # Get the layer-chain annotation from a pod.
 get_chain() {
-  kubectl get pod -n "$SANDBOX_NS" "$1" -o jsonpath='{.metadata.annotations.astonish\.io/layer-chain}' 2>/dev/null
+  kubectl get pod -n "$SANDBOX_NS" "$1" -o jsonpath='{.metadata.annotations.troupe\.io/layer-chain}' 2>/dev/null
 }
 
 # Check if a command is available inside the pod's sandbox rootfs (chroot).

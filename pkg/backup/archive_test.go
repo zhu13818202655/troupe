@@ -15,7 +15,7 @@ import (
 )
 
 func TestArchiveCreateInspectVerify(t *testing.T) {
-	archivePath := filepath.Join(t.TempDir(), "test.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "test.troupe-backup")
 	writer, err := Create(archivePath)
 	if err != nil {
 		t.Fatalf("Create() error = %v", err)
@@ -56,7 +56,7 @@ func TestArchiveCreateInspectVerify(t *testing.T) {
 }
 
 func TestArchiveCreateDefaultsToGzip(t *testing.T) {
-	archivePath := filepath.Join(t.TempDir(), "test.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "test.troupe-backup")
 	writer, err := Create(archivePath)
 	if err != nil {
 		t.Fatalf("Create() error = %v", err)
@@ -88,7 +88,7 @@ func TestArchiveCreateDefaultsToGzip(t *testing.T) {
 }
 
 func TestArchiveCreateSupportsUncompressedTar(t *testing.T) {
-	archivePath := filepath.Join(t.TempDir(), "test.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "test.troupe-backup")
 	writer, err := Create(archivePath, WriterOptions{Compression: CompressionNone})
 	if err != nil {
 		t.Fatalf("Create() error = %v", err)
@@ -115,7 +115,7 @@ func TestArchiveCreateSupportsUncompressedTar(t *testing.T) {
 }
 
 func TestEncryptedArchiveRequiresPassphrase(t *testing.T) {
-	archivePath := filepath.Join(t.TempDir(), "plain.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "plain.troupe-backup")
 	writer, err := Create(archivePath)
 	if err != nil {
 		t.Fatalf("Create() error = %v", err)
@@ -128,7 +128,7 @@ func TestEncryptedArchiveRequiresPassphrase(t *testing.T) {
 	if err := writer.CloseWithManifest(manifest); err != nil {
 		t.Fatalf("CloseWithManifest() error = %v", err)
 	}
-	encryptedPath := filepath.Join(t.TempDir(), "encrypted.astonish-backup")
+	encryptedPath := filepath.Join(t.TempDir(), "encrypted.troupe-backup")
 	if err := EncryptArchiveFile(archivePath, encryptedPath, "secret"); err != nil {
 		t.Fatalf("EncryptArchiveFile() error = %v", err)
 	}
@@ -145,7 +145,7 @@ func TestEncryptedArchiveRequiresPassphrase(t *testing.T) {
 
 func TestEncryptedArchiveMetadataIncludesKDFParameters(t *testing.T) {
 	archivePath := createSmallArchive(t)
-	encryptedPath := filepath.Join(t.TempDir(), "encrypted.astonish-backup")
+	encryptedPath := filepath.Join(t.TempDir(), "encrypted.troupe-backup")
 	if err := EncryptArchiveFile(archivePath, encryptedPath, "secret"); err != nil {
 		t.Fatalf("EncryptArchiveFile() error = %v", err)
 	}
@@ -195,7 +195,7 @@ func TestDecryptArchiveSupportsLegacyKDFMetadata(t *testing.T) {
 	out.Write(metadata)
 	out.WriteByte('\n')
 	out.Write(ciphertext)
-	encryptedPath := filepath.Join(t.TempDir(), "legacy-encrypted.astonish-backup")
+	encryptedPath := filepath.Join(t.TempDir(), "legacy-encrypted.troupe-backup")
 	if err := os.WriteFile(encryptedPath, out.Bytes(), 0o600); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
 	}
@@ -206,7 +206,7 @@ func TestDecryptArchiveSupportsLegacyKDFMetadata(t *testing.T) {
 
 func TestEncryptedArchiveTamperDetection(t *testing.T) {
 	archivePath := createSmallArchive(t)
-	encryptedPath := filepath.Join(t.TempDir(), "encrypted.astonish-backup")
+	encryptedPath := filepath.Join(t.TempDir(), "encrypted.troupe-backup")
 	if err := EncryptArchiveFile(archivePath, encryptedPath, "secret"); err != nil {
 		t.Fatalf("EncryptArchiveFile() error = %v", err)
 	}
@@ -215,7 +215,7 @@ func TestEncryptedArchiveTamperDetection(t *testing.T) {
 		t.Fatalf("ReadFile() error = %v", err)
 	}
 	data[len(data)-1] ^= 0xff
-	tamperedPath := filepath.Join(t.TempDir(), "tampered.astonish-backup")
+	tamperedPath := filepath.Join(t.TempDir(), "tampered.troupe-backup")
 	if err := os.WriteFile(tamperedPath, data, 0o600); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
 	}
@@ -226,7 +226,7 @@ func TestEncryptedArchiveTamperDetection(t *testing.T) {
 
 func TestEncryptedArchiveMetadataAuthentication(t *testing.T) {
 	archivePath := createSmallArchive(t)
-	encryptedPath := filepath.Join(t.TempDir(), "encrypted.astonish-backup")
+	encryptedPath := filepath.Join(t.TempDir(), "encrypted.troupe-backup")
 	if err := EncryptArchiveFile(archivePath, encryptedPath, "secret"); err != nil {
 		t.Fatalf("EncryptArchiveFile() error = %v", err)
 	}
@@ -240,7 +240,7 @@ func TestEncryptedArchiveMetadataAuthentication(t *testing.T) {
 	}
 	metadataStart := len(encryptedArchiveMagic)
 	data[metadataStart+idx/2] ^= 0x01
-	tamperedPath := filepath.Join(t.TempDir(), "tampered-metadata.astonish-backup")
+	tamperedPath := filepath.Join(t.TempDir(), "tampered-metadata.troupe-backup")
 	if err := os.WriteFile(tamperedPath, data, 0o600); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
 	}
@@ -250,7 +250,7 @@ func TestEncryptedArchiveMetadataAuthentication(t *testing.T) {
 }
 
 func TestArchiveReaderStreamsFiles(t *testing.T) {
-	archivePath := filepath.Join(t.TempDir(), "stream.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "stream.troupe-backup")
 	writer, err := Create(archivePath)
 	if err != nil {
 		t.Fatalf("Create() error = %v", err)
@@ -292,14 +292,14 @@ func TestArchiveReaderStreamsFiles(t *testing.T) {
 }
 
 func TestCreateRejectsUnknownCompression(t *testing.T) {
-	archivePath := filepath.Join(t.TempDir(), "test.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "test.troupe-backup")
 	if _, err := Create(archivePath, WriterOptions{Compression: "zip"}); err == nil {
 		t.Fatal("Create() error = nil, want unsupported compression error")
 	}
 }
 
 func TestVerifyDetectsCorruptGzipArchive(t *testing.T) {
-	archivePath := filepath.Join(t.TempDir(), "bad.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "bad.troupe-backup")
 	if err := os.WriteFile(archivePath, []byte{0x1f, 0x8b, 0x08, 0x00, 'b', 'a', 'd'}, 0o600); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
 	}
@@ -309,7 +309,7 @@ func TestVerifyDetectsCorruptGzipArchive(t *testing.T) {
 }
 
 func TestVerifyDetectsChecksumMismatch(t *testing.T) {
-	archivePath := filepath.Join(t.TempDir(), "bad.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "bad.troupe-backup")
 	f, err := os.Create(archivePath)
 	if err != nil {
 		t.Fatalf("Create file error = %v", err)
@@ -343,7 +343,7 @@ func TestVerifyDetectsChecksumMismatch(t *testing.T) {
 }
 
 func TestWriterRejectsReservedPath(t *testing.T) {
-	archivePath := filepath.Join(t.TempDir(), "test.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "test.troupe-backup")
 	writer, err := Create(archivePath)
 	if err != nil {
 		t.Fatalf("Create() error = %v", err)
@@ -357,7 +357,7 @@ func TestWriterRejectsReservedPath(t *testing.T) {
 
 func createSmallArchive(t *testing.T) string {
 	t.Helper()
-	archivePath := filepath.Join(t.TempDir(), "small.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "small.troupe-backup")
 	writer, err := Create(archivePath)
 	if err != nil {
 		t.Fatalf("Create() error = %v", err)

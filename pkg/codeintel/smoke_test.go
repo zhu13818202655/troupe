@@ -121,7 +121,7 @@ func requireTestLibrary(t *testing.T) string {
 	if libPath == "" {
 		t.Skip("tree-sitter library not available")
 	}
-	t.Setenv("ASTONISH_TREESITTER_LIB", libPath)
+	t.Setenv("TROUPE_TREESITTER_LIB", libPath)
 	// Ensure we load the resolved path even if an earlier test cached a miss.
 	treesitterResetForSmoke()
 	return libPath

@@ -394,12 +394,12 @@ func TestSubstituteShellCommand_DollarSign(t *testing.T) {
 	}
 
 	// The result should contain env var exports with single-quoted values.
-	if !strings.Contains(result, "export __ASTONISH_CRED_") {
+	if !strings.Contains(result, "export __TROUPE_CRED_") {
 		t.Errorf("expected env var exports in command, got:\n%s", result)
 	}
 
 	// The result should reference env vars in the command.
-	if !strings.Contains(commandPart, "${__ASTONISH_CRED_") {
+	if !strings.Contains(commandPart, "${__TROUPE_CRED_") {
 		t.Errorf("expected env var references in command, got:\n%s", commandPart)
 	}
 
@@ -503,12 +503,12 @@ func TestSubstituteAndRestore_ShellCommandField(t *testing.T) {
 	cmd := args["command"].(string)
 
 	// Should NOT contain raw $word (which shell would expand).
-	if strings.Contains(cmd, "$word") && !strings.Contains(cmd, "${__ASTONISH_CRED_") {
+	if strings.Contains(cmd, "$word") && !strings.Contains(cmd, "${__TROUPE_CRED_") {
 		t.Errorf("command field should use env var injection, got:\n%s", cmd)
 	}
 
 	// Should contain env var exports.
-	if !strings.Contains(cmd, "export __ASTONISH_CRED_") {
+	if !strings.Contains(cmd, "export __TROUPE_CRED_") {
 		t.Errorf("expected env var exports in command, got:\n%s", cmd)
 	}
 
@@ -641,7 +641,7 @@ func TestSubstituteShellCommand_ZeroWidthPlaceholder(t *testing.T) {
 	command := "curl -s -H \"X-Auth-Token: {\u200b{CREDENTIAL:openstack-keystone:token}}\" https://kubernikus.qa-de-1.cloud.sap/api/v1/clusters"
 	result := SubstituteShellCommand(command, store)
 
-	if !strings.Contains(result, "export __ASTONISH_CRED_") {
+	if !strings.Contains(result, "export __TROUPE_CRED_") {
 		t.Fatalf("expected env var exports, got:\n%s", result)
 	}
 	if strings.Contains(result, "CREDENTIAL:openstack-keystone:token") {

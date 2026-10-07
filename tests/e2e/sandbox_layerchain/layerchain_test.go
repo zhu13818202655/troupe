@@ -30,12 +30,12 @@ import (
 // COVERS: SANDBOX-001
 func TestE2E_SandboxLayerChain(t *testing.T) {
 	// NOT parallel — mutates shared cluster state.
-	// In shared/inspector mode (ASTONISH_E2E_KEEP_ALIVE=1) this test is
+	// In shared/inspector mode (TROUPE_E2E_KEEP_ALIVE=1) this test is
 	// incompatible with the rest of the suite because it mutates global
 	// sandbox_templates rows ("base", "team-general") in the platform DB
 	// and the global astonish-layers PVC. Skip cleanly so the developer
 	// can still browse all the chat data; run this test in isolated mode.
-	if os.Getenv("ASTONISH_E2E_KEEP_ALIVE") == "1" {
+	if os.Getenv("TROUPE_E2E_KEEP_ALIVE") == "1" {
 		t.Skip("SandboxLayerChain mutates global sandbox state; run with `make test-e2e` (isolated mode) instead.")
 	}
 	// This test exercises K8s-specific layer-chain PVC overlays which don't

@@ -88,7 +88,7 @@ This runs:
 - `go test -tags=integration -count=1 -timeout=10m ./...`
 
 **Required env vars:**
-- `ASTONISH_TEST_DSN` — Postgres admin connection string (e.g. `postgres://user:pass@localhost:5432/testdb`)
+- `TROUPE_TEST_DSN` — Postgres admin connection string (e.g. `postgres://user:pass@localhost:5432/testdb`)
 - For K8s sandbox tests: `kubectl` access to a cluster with sandbox namespace
 
 ### E2E Tests
@@ -106,11 +106,11 @@ The `-p 1` flag serializes package execution. This prevents Postgres role creati
 races (`astonish_app` is a shared role that `BootstrapPlatform` creates/alters).
 
 **Required env vars:**
-- `ASTONISH_TEST_DSN` — Postgres admin connection string
+- `TROUPE_TEST_DSN` — Postgres admin connection string
 - Provider API key (at least one of: `BIFROST_API_KEY`, `OPENAI_API_KEY`, `GOOGLE_API_KEY`, `ANTHROPIC_API_KEY`)
 - For sandbox tests: `kubectl` access to a cluster + provisioned e2e infra (see below)
-- `ASTONISH_E2E_CONTROL_PLANE_NAMESPACE` (default `astonish`) — control-plane namespace expected by `e2eboot`
-- `ASTONISH_E2E_SANDBOX_NAMESPACE` (default `astonish-sandbox`) — sandbox namespace expected by `e2eboot`
+- `TROUPE_E2E_CONTROL_PLANE_NAMESPACE` (default `astonish`) — control-plane namespace expected by `e2eboot`
+- `TROUPE_E2E_SANDBOX_NAMESPACE` (default `astonish-sandbox`) — sandbox namespace expected by `e2eboot`
 
 Tests that don't exercise sandboxes (e.g. `flow_assistant`) don't need kubectl — but the platform config still includes sandbox settings for consistency.
 
@@ -154,8 +154,8 @@ The seed Job tars the `astonish-sandbox-base:dev` rootfs into `astonish-layers/@
 **Test-time preflight.** `make test-e2e` will not blindly run against a missing or partial install. Before invoking `go test`, it verifies (Option A — fail loudly):
 
 1. `kubectl` is on `PATH`
-2. The control-plane namespace exists (`ASTONISH_E2E_CONTROL_PLANE_NAMESPACE`, default `astonish`)
-3. The sandbox namespace exists (`ASTONISH_E2E_SANDBOX_NAMESPACE`, default `astonish-sandbox`)
+2. The control-plane namespace exists (`TROUPE_E2E_CONTROL_PLANE_NAMESPACE`, default `astonish`)
+3. The sandbox namespace exists (`TROUPE_E2E_SANDBOX_NAMESPACE`, default `astonish-sandbox`)
 4. Both PVCs (`astonish-layers`, `astonish-uppers`) exist in the sandbox namespace
 
 On any miss it prints the exact command needed (`make e2e-k8s-up`) and exits non-zero — there are no silent skips and no auto-provision. Provisioning is always an explicit action by the developer or CI.
@@ -183,10 +183,10 @@ make test-e2e-inspect-stop     # stop inspector, drop databases, clean tmp files
 Architecture:
 
 - A separate binary `bin/e2e-inspector` (built from `tools/e2e-inspector`) boots a `StudioServer` on **port 9394** with `InstanceSuffix=e2einspect`. It writes `/tmp/astonish-e2e-inspect.json` (state) and `/tmp/astonish-e2e-inspect.pid` (PID), then blocks on `SIGINT`/`SIGTERM`.
-- The make target sets `ASTONISH_E2E_KEEP_ALIVE=1` for the test process. `e2eboot.Bootstrap(t)` detects this, reads the state file, and *attaches* to the running inspector instead of starting a new server.
+- The make target sets `TROUPE_E2E_KEEP_ALIVE=1` for the test process. `e2eboot.Bootstrap(t)` detects this, reads the state file, and *attaches* to the running inspector instead of starting a new server.
 - **Package-scoped seeding (Plan D)**: instead of one fresh world per test, all tests in the same Go package share one acme+globex pair. `Bootstrap()` uses `runtime.Callers` to derive a stable suffix from the test file path (e.g. `chatauth`, `chatcore`). The first test in the package provisions orgs/users/teams/data via `Seed()`; subsequent tests detect the existing world and reuse it. After a full suite run there are exactly 5 organisations: `default`, `acme-chatauth`, `globex-chatauth`, `acme-chatcore`, `globex-chatcore`.
 - In shared mode `provisionOrg` skips its `t.Cleanup(DecommissionOrg)` so all data persists for the developer to browse.
-- `TestE2E_SandboxLayerChain` is incompatible with shared seeding (mutates global `sandbox_templates` rows and the `astonish-layers` PVC) and skips itself when `ASTONISH_E2E_KEEP_ALIVE=1`. Run it via `make test-e2e` instead.
+- `TestE2E_SandboxLayerChain` is incompatible with shared seeding (mutates global `sandbox_templates` rows and the `astonish-layers` PVC) and skips itself when `TROUPE_E2E_KEEP_ALIVE=1`. Run it via `make test-e2e` instead.
 
 #### Logging in to browse data
 
@@ -213,7 +213,7 @@ The `make test-e2e-inspect` post-run footer prints this table dynamically by lis
 bin/e2e-inspector --info
 ```
 
-`flow_assistant` tests do not call `Seed()`; they exercise only the bootstrap user. `sandbox_layerchain` is skipped under `ASTONISH_E2E_KEEP_ALIVE=1`.
+`flow_assistant` tests do not call `Seed()`; they exercise only the bootstrap user. `sandbox_layerchain` is skipped under `TROUPE_E2E_KEEP_ALIVE=1`.
 
 What each login can see in the UI:
 
@@ -222,7 +222,7 @@ What each login can see in the UI:
 - **Eve (chatauth)**: `globex-chatauth` org and its `engineering` team — the adversarial perspective most boundary tests use to verify isolation.
 - Cross-org or cross-package switching is **not** possible — the `/api/orgs/switch` endpoint requires membership, and seeded users are members of exactly one org by design (matches what tests assert).
 
-Sessions are per-user. When `ASTONISH_E2E_KEEP_ALIVE=1` is set (which `make test-e2e-inspect` does automatically), tests skip their **hygienic** session DELETEs so the data they created remains browsable in the UI. The helper `e2eboot.RetainSessions()` gates this behavior. **Asserted** DELETEs — tests that explicitly verify deletion semantics (e.g. CHAT-026 "another user cannot delete", `TestE2E_Chat_SessionCreateListDelete`) — still run their delete unconditionally because the DELETE response itself is the subject of the assertion. Net effect: log in as Alice and you'll see sessions from `TestE2E_Chat_SendAndReceive`, `TestE2E_Chat_MultiTurnContext`, the artifact tests, etc.; you won't see sessions from tests where deletion is the test.
+Sessions are per-user. When `TROUPE_E2E_KEEP_ALIVE=1` is set (which `make test-e2e-inspect` does automatically), tests skip their **hygienic** session DELETEs so the data they created remains browsable in the UI. The helper `e2eboot.RetainSessions()` gates this behavior. **Asserted** DELETEs — tests that explicitly verify deletion semantics (e.g. CHAT-026 "another user cannot delete", `TestE2E_Chat_SessionCreateListDelete`) — still run their delete unconditionally because the DELETE response itself is the subject of the assertion. Net effect: log in as Alice and you'll see sessions from `TestE2E_Chat_SendAndReceive`, `TestE2E_Chat_MultiTurnContext`, the artifact tests, etc.; you won't see sessions from tests where deletion is the test.
 
 #### Resource sizing
 
@@ -352,9 +352,9 @@ Add `//go:build integration` at the top of the file. Use `t.Skip` with a helpful
 package mypackage
 
 func TestMyIntegration(t *testing.T) {
-    dsn := os.Getenv("ASTONISH_TEST_DSN")
+    dsn := os.Getenv("TROUPE_TEST_DSN")
     if dsn == "" {
-        t.Skip("ASTONISH_TEST_DSN not set; skipping integration test")
+        t.Skip("TROUPE_TEST_DSN not set; skipping integration test")
     }
     // ...
 }

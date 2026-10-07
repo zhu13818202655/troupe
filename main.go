@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/zhu13818202655/troupe/cmd/astonish"
+	"github.com/zhu13818202655/troupe/cmd/troupe"
 )
 
 func main() {

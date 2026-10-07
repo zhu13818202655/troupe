@@ -157,13 +157,13 @@ func evaluateRestoreCredentialState(state *restoreCredentialOrgState, masterKey 
 	}
 	if len(masterKey) == 0 {
 		check.Status = restoreCredentialStatusMissingKey
-		check.Message = fmt.Sprintf("org %s contains an encrypted credential key, but no ASTONISH_MASTER_KEY or ~/.config/astonish/.store_key is configured", state.orgSlug)
+		check.Message = fmt.Sprintf("org %s contains an encrypted credential key, but no TROUPE_MASTER_KEY or ~/.config/astonish/.store_key is configured", state.orgSlug)
 		return check
 	}
 	dek, err := credentials.Decrypt(state.keyData, masterKey)
 	if err != nil {
 		check.Status = restoreCredentialStatusWrongKey
-		check.Message = fmt.Sprintf("org %s contains encrypted credentials, but the current ASTONISH_MASTER_KEY or ~/.config/astonish/.store_key cannot decrypt its credential key", state.orgSlug)
+		check.Message = fmt.Sprintf("org %s contains encrypted credentials, but the current TROUPE_MASTER_KEY or ~/.config/astonish/.store_key cannot decrypt its credential key", state.orgSlug)
 		return check
 	}
 	return evaluateRestoreCredentialSample(state, dek, masterKey, check)
@@ -215,7 +215,7 @@ func evaluateRestoreCredentialSample(state *restoreCredentialOrgState, dek, mast
 	}
 	if len(masterKey) == 0 && len(dek) == 0 {
 		check.Status = restoreCredentialStatusMissingKey
-		check.Message = fmt.Sprintf("org %s contains encrypted credential rows, but no ASTONISH_MASTER_KEY or ~/.config/astonish/.store_key is configured", state.orgSlug)
+		check.Message = fmt.Sprintf("org %s contains encrypted credential rows, but no TROUPE_MASTER_KEY or ~/.config/astonish/.store_key is configured", state.orgSlug)
 		return check
 	}
 	check.Status = restoreCredentialStatusWrongKey

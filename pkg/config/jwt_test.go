@@ -67,8 +67,8 @@ func TestGetJWTSecret_FallbackToEnv(t *testing.T) {
 	cfg := &PlatformAuthConfig{JWTSecret: ""}
 
 	// Set env var
-	os.Setenv("ASTONISH_JWT_SECRET", "env-secret-value")
-	defer os.Unsetenv("ASTONISH_JWT_SECRET")
+	os.Setenv("TROUPE_JWT_SECRET", "env-secret-value")
+	defer os.Unsetenv("TROUPE_JWT_SECRET")
 
 	got := cfg.GetJWTSecret()
 	if got != "env-secret-value" {
@@ -79,8 +79,8 @@ func TestGetJWTSecret_FallbackToEnv(t *testing.T) {
 func TestGetJWTSecret_ConfigPrecedence(t *testing.T) {
 	cfg := &PlatformAuthConfig{JWTSecret: "from-config"}
 
-	os.Setenv("ASTONISH_JWT_SECRET", "from-env")
-	defer os.Unsetenv("ASTONISH_JWT_SECRET")
+	os.Setenv("TROUPE_JWT_SECRET", "from-env")
+	defer os.Unsetenv("TROUPE_JWT_SECRET")
 
 	got := cfg.GetJWTSecret()
 	if got != "from-config" {
@@ -90,7 +90,7 @@ func TestGetJWTSecret_ConfigPrecedence(t *testing.T) {
 
 func TestGetJWTSecret_Empty(t *testing.T) {
 	// Ensure no env var is set
-	os.Unsetenv("ASTONISH_JWT_SECRET")
+	os.Unsetenv("TROUPE_JWT_SECRET")
 
 	cfg := &PlatformAuthConfig{JWTSecret: ""}
 	got := cfg.GetJWTSecret()

@@ -21,8 +21,8 @@ func TestRun_EmitsCanonicalScript(t *testing.T) {
 		t.Fatalf("script missing shebang, got: %q", out[:min(40, len(out))])
 	}
 	for _, want := range []string{
-		"ASTONISH_SESSION_ID",
-		"ASTONISH_LAYER_CHAIN",
+		"TROUPE_SESSION_ID",
+		"TROUPE_LAYER_CHAIN",
 		"mount -t overlay overlay",
 		"exec chroot",
 	} {

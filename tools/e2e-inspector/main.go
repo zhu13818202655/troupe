@@ -17,9 +17,9 @@
 //	                             step that the inspector binary itself
 //	                             schedules at shutdown does not provide.
 //
-// Reads ASTONISH_TEST_DSN, BIFROST_API_KEY (or another provider key), and
-// optional BIFROST_BASE_URL, ASTONISH_E2E_SANDBOX_NAMESPACE,
-// ASTONISH_E2E_CONTROL_PLANE_NAMESPACE, KUBECONFIG. Writes its state to
+// Reads TROUPE_TEST_DSN, BIFROST_API_KEY (or another provider key), and
+// optional BIFROST_BASE_URL, TROUPE_E2E_SANDBOX_NAMESPACE,
+// TROUPE_E2E_CONTROL_PLANE_NAMESPACE, KUBECONFIG. Writes its state to
 // /tmp/astonish-e2e-inspect.json on startup; tests read this file to know
 // where to connect.
 //
@@ -82,9 +82,9 @@ func main() {
 }
 
 func runInspector() {
-	dsn := os.Getenv("ASTONISH_TEST_DSN")
+	dsn := os.Getenv("TROUPE_TEST_DSN")
 	if dsn == "" {
-		fail("ASTONISH_TEST_DSN is required")
+		fail("TROUPE_TEST_DSN is required")
 	}
 
 	apiKey := resolveAPIKey()
@@ -247,9 +247,9 @@ func (stdoutLogger) Logf(format string, args ...any) {
 // is detected — caller must stop the process first. Always idempotent:
 // finding nothing to do is a successful no-op.
 func runCleanup() {
-	dsn := os.Getenv("ASTONISH_TEST_DSN")
+	dsn := os.Getenv("TROUPE_TEST_DSN")
 	if dsn == "" {
-		fail("ASTONISH_TEST_DSN is required for --cleanup (it's the admin connection used to DROP DATABASE)")
+		fail("TROUPE_TEST_DSN is required for --cleanup (it's the admin connection used to DROP DATABASE)")
 	}
 
 	if state, alive := e2eboot.IsInspectorRunning(); alive {
@@ -297,9 +297,9 @@ func runCleanup() {
 	}
 
 	// Drain any sandbox pods left behind by retained sessions. This is the
-	// counterpart to ASTONISH_E2E_KEEP_ALIVE=1 keeping pods alive during
+	// counterpart to TROUPE_E2E_KEEP_ALIVE=1 keeping pods alive during
 	// the suite — at full cleanup time we want a clean cluster too.
-	ns := os.Getenv("ASTONISH_E2E_SANDBOX_NAMESPACE")
+	ns := os.Getenv("TROUPE_E2E_SANDBOX_NAMESPACE")
 	if ns == "" {
 		ns = "astonishe2e-sandbox"
 	}
@@ -315,7 +315,7 @@ func runCleanup() {
 // inspector's databases, tmp files, or state. Safe to run while the
 // inspector is alive (the inspector itself doesn't pin any pods).
 //
-// Reads the sandbox namespace from $ASTONISH_E2E_SANDBOX_NAMESPACE,
+// Reads the sandbox namespace from $TROUPE_E2E_SANDBOX_NAMESPACE,
 // defaulting to "astonishe2e-sandbox" (the value used by the e2e test
 // helm install — see Makefile E2E_K8S_SANDBOX_NS).
 //
@@ -323,7 +323,7 @@ func runCleanup() {
 // or unreachable cluster is reported but not fatal — sandbox infra may
 // legitimately be down between sessions.
 func runStopPods() {
-	ns := os.Getenv("ASTONISH_E2E_SANDBOX_NAMESPACE")
+	ns := os.Getenv("TROUPE_E2E_SANDBOX_NAMESPACE")
 	if ns == "" {
 		ns = "astonishe2e-sandbox"
 	}

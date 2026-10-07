@@ -6,9 +6,9 @@ package e2eboot
 import "os"
 
 // SandboxBackendName returns the active sandbox backend name from the
-// ASTONISH_E2E_SANDBOX_BACKEND environment variable. Defaults to "k8s".
+// TROUPE_E2E_SANDBOX_BACKEND environment variable. Defaults to "k8s".
 func SandboxBackendName() string {
-	if b := os.Getenv("ASTONISH_E2E_SANDBOX_BACKEND"); b != "" {
+	if b := os.Getenv("TROUPE_E2E_SANDBOX_BACKEND"); b != "" {
 		return b
 	}
 	return "k8s"

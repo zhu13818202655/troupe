@@ -26,7 +26,7 @@ The wizard walks you through:
 The wizard automatically initializes the platform database, sets up the encryption key hierarchy, and creates the first organization.
 
 ::: tip Environment Variable
-You can also set the DSN via the `ASTONISH_PLATFORM_DSN` environment variable or `platform_dsn` in the YAML config file. This is useful for Kubernetes deployments where secrets are injected via environment.
+You can also set the DSN via the `TROUPE_PLATFORM_DSN` environment variable or `platform_dsn` in the YAML config file. This is useful for Kubernetes deployments where secrets are injected via environment.
 :::
 
 ## 2. Start the Daemon

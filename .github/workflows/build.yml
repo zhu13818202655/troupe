@@ -65,7 +65,7 @@ jobs:
 
       - name: Run tests
         env:
-          ASTONISH_TREESITTER_LIB: ${{ github.workspace }}/pkg/codeintel/native/dist/libastonish-treesitter.so
+          TROUPE_TREESITTER_LIB: ${{ github.workspace }}/pkg/codeintel/native/dist/libastonish-treesitter.so
         run: go test -v -coverprofile=coverage.out ./...
 
       - name: Display coverage summary

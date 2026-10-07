@@ -286,7 +286,7 @@ func (ps *PlatformSecretsStore) RemoveSecret(key string) error {
 // Returns nil if no valid key is found (encryption disabled — values stored/read as-is).
 func loadMasterKey() []byte {
 	// Priority 1: environment variable
-	masterKeyHex := os.Getenv("ASTONISH_MASTER_KEY")
+	masterKeyHex := os.Getenv("TROUPE_MASTER_KEY")
 
 	// Priority 2: .store_key file
 	if masterKeyHex == "" {

@@ -693,7 +693,7 @@ scenarios:
       its env decrypted and equal to what was sent. Pins the fix for
       the SQLSTATE 22021 ("invalid byte sequence for encoding UTF8")
       regression that fired the first time a platform-tier MCP install
-      was attempted with a configured ASTONISH_MASTER_KEY and a non-empty
+      was attempted with a configured TROUPE_MASTER_KEY and a non-empty
       env map (e.g., TAVILY_API_KEY).
     priority: P0
     status: covered

@@ -85,7 +85,7 @@ func DefaultLibrary() (*library, error) {
 
 	// An explicit override pins the search to a single path so failures are
 	// obvious and reproducible.
-	override := os.Getenv("ASTONISH_TREESITTER_LIB")
+	override := os.Getenv("TROUPE_TREESITTER_LIB")
 	if override != "" {
 		if defaultLibErr != nil && defaultLibPath == override {
 			return nil, defaultLibErr
@@ -137,7 +137,7 @@ func resolveLibraryPath() (string, error) {
 	built, err := native.EnsureLibrary()
 	if err != nil {
 		if errors.Is(err, native.ErrNoCompiler) {
-			return "", fmt.Errorf("%w; install a C compiler (macOS: xcode-select --install) or set ASTONISH_TREESITTER_LIB, or use grep_search/find_files", err)
+			return "", fmt.Errorf("%w; install a C compiler (macOS: xcode-select --install) or set TROUPE_TREESITTER_LIB, or use grep_search/find_files", err)
 		}
 		return "", err
 	}
@@ -172,7 +172,7 @@ func candidateLibraryPaths() []string {
 }
 
 // ResetDefaultLibraryForTest clears the cached default library so tests can
-// exercise load failures or alternate ASTONISH_TREESITTER_LIB paths.
+// exercise load failures or alternate TROUPE_TREESITTER_LIB paths.
 func ResetDefaultLibraryForTest() {
 	defaultMu.Lock()
 	defer defaultMu.Unlock()

@@ -207,24 +207,24 @@ func TestBuildTemplateBuilderPodManifest_ContainerShape(t *testing.T) {
 	}
 	// Command must be empty — the builder uses the image's ENTRYPOINT
 	// (astonish-sandbox-entrypoint) which composes the overlay, then
-	// execs into ASTONISH_HANDOFF (/bin/sleep infinity).
+	// execs into TROUPE_HANDOFF (/bin/sleep infinity).
 	if len(c.Command) != 0 {
 		t.Errorf("container Command = %v, want empty (use image ENTRYPOINT)", c.Command)
 	}
-	// Verify ASTONISH_HANDOFF is set so the entrypoint sleeps after
+	// Verify TROUPE_HANDOFF is set so the entrypoint sleeps after
 	// overlay composition (same as session pods).
 	envMap := make(map[string]string)
 	for _, e := range c.Env {
 		envMap[e.Name] = e.Value
 	}
-	if envMap["ASTONISH_HANDOFF"] != "/bin/sleep" {
-		t.Errorf("ASTONISH_HANDOFF = %q, want /bin/sleep", envMap["ASTONISH_HANDOFF"])
+	if envMap["TROUPE_HANDOFF"] != "/bin/sleep" {
+		t.Errorf("TROUPE_HANDOFF = %q, want /bin/sleep", envMap["TROUPE_HANDOFF"])
 	}
-	if envMap["ASTONISH_HANDOFF_ARGS"] != "infinity" {
-		t.Errorf("ASTONISH_HANDOFF_ARGS = %q, want infinity", envMap["ASTONISH_HANDOFF_ARGS"])
+	if envMap["TROUPE_HANDOFF_ARGS"] != "infinity" {
+		t.Errorf("TROUPE_HANDOFF_ARGS = %q, want infinity", envMap["TROUPE_HANDOFF_ARGS"])
 	}
-	if !strings.HasPrefix(envMap["ASTONISH_SESSION_ID"], "build-") {
-		t.Errorf("ASTONISH_SESSION_ID = %q, want build-<podname> prefix", envMap["ASTONISH_SESSION_ID"])
+	if !strings.HasPrefix(envMap["TROUPE_SESSION_ID"], "build-") {
+		t.Errorf("TROUPE_SESSION_ID = %q, want build-<podname> prefix", envMap["TROUPE_SESSION_ID"])
 	}
 	// Phase F: default backend has empty RuntimeClassName → nil on the
 	// pod (cluster default applies).

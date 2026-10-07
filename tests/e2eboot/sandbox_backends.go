@@ -6,7 +6,7 @@
 // For the k8s backend factory to be available, pkg/sandbox/k8s must be
 // imported (its init() registers the factory with sandbox.NewBackend).
 //
-// This mirrors cmd/astonish/sandbox_backends.go which does the same for
+// This mirrors cmd/troupe/sandbox_backends.go which does the same for
 // the production binary.
 package e2eboot
 

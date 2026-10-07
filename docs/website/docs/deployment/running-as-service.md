@@ -11,7 +11,7 @@ astonish daemon install
 ```
 
 This creates:
-- **macOS**: A launchd plist at `~/Library/LaunchAgents/dev.astonish.daemon.plist`
+- **macOS**: A launchd plist at `~/Library/LaunchAgents/dev.troupe.daemon.plist`
 - **Linux**: A systemd user unit at `~/.config/systemd/user/astonish.service`
 
 ### Options
@@ -50,13 +50,13 @@ For debugging, run the daemon in the foreground instead of as a background servi
 astonish daemon run
 ```
 
-This starts the server in the current terminal session. Local/default daemon mode writes application logs to the daemon log file so `astonish daemon logs` behaves the same as an installed service. To force logs to the terminal, set `ASTONISH_LOG_DEST=stdout`:
+This starts the server in the current terminal session. Local/default daemon mode writes application logs to the daemon log file so `astonish daemon logs` behaves the same as an installed service. To force logs to the terminal, set `TROUPE_LOG_DEST=stdout`:
 
 ```bash
-ASTONISH_LOG_DEST=stdout astonish daemon run
+TROUPE_LOG_DEST=stdout astonish daemon run
 ```
 
-Container roles (`ASTONISH_MODE=api` or `ASTONISH_MODE=worker`) use stdout by default for Kubernetes and other orchestrators. Press `Ctrl+C` to stop a foreground run.
+Container roles (`TROUPE_MODE=api` or `TROUPE_MODE=worker`) use stdout by default for Kubernetes and other orchestrators. Press `Ctrl+C` to stop a foreground run.
 
 | Flag | Default | Description |
 |------|---------|-------------|
@@ -72,10 +72,10 @@ The plist includes `RunAtLoad: true`. To manually control:
 
 ```bash
 # Disable auto-start
-launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/dev.astonish.daemon.plist
+launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/dev.troupe.daemon.plist
 
 # Re-enable
-launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/dev.astonish.daemon.plist
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/dev.troupe.daemon.plist
 ```
 
 ### Linux (systemd)
@@ -107,7 +107,7 @@ astonish daemon logs -n 100
 
 ```bash
 # macOS: view via system log
-log show --predicate 'subsystem == "dev.astonish.daemon"' --last 1h
+log show --predicate 'subsystem == "dev.troupe.daemon"' --last 1h
 
 # Linux: view via journalctl
 journalctl --user -u astonish -f

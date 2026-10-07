@@ -770,7 +770,7 @@ Flow: Dev `@mention`s QA; QA reports to PO; PO sends E2E only after QA approval.
 
 ### 7.2 Integration (build tag `e2e`)
 
-Note: this repo uses `//go:build e2e` throughout `tests/e2e/`; there is no separate `integration` build tag. All backend-with-DB tests use the `e2e` tag and run under `make test-integration` (which sets `ASTONISH_TEST_DSN`) or `make test-e2e` (full stack).
+Note: this repo uses `//go:build e2e` throughout `tests/e2e/`; there is no separate `integration` build tag. All backend-with-DB tests use the `e2e` tag and run under `make test-integration` (which sets `TROUPE_TEST_DSN`) or `make test-e2e` (full stack).
 
 - `tests/e2e/fleet_parallel_test.go` (new) — starts a two-agent template with `max_parallel_agents: 2` and both agents `parallelizable: true`; verifies both activate concurrently (measured by overlapping `fleet_agent_started` / `fleet_agent_finished` timestamps in the SSE stream).
 - `tests/e2e/fleet_mailbox_test.go` (new) — round-trips a message through the mailbox store; verifies agent B only sees messages addressed to B.

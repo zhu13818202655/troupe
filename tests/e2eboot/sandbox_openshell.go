@@ -19,9 +19,9 @@ type openShellSandboxHelper struct {
 }
 
 // newOpenShellHelper creates a new OpenShell helper connected to the gateway.
-// It reads ASTONISH_E2E_OPENSHELL_GATEWAY for the gRPC address.
+// It reads TROUPE_E2E_OPENSHELL_GATEWAY for the gRPC address.
 func newOpenShellHelper() *openShellSandboxHelper {
-	addr := os.Getenv("ASTONISH_E2E_OPENSHELL_GATEWAY")
+	addr := os.Getenv("TROUPE_E2E_OPENSHELL_GATEWAY")
 	if addr == "" {
 		// Fallback — the Makefile should always set this via port-forward.
 		addr = "localhost:18080"

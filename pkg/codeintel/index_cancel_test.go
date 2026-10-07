@@ -14,7 +14,7 @@ func TestBuild_CancelledContextDoesNotPoisonCache(t *testing.T) {
 	if libPath == "" {
 		t.Skip("tree-sitter library not available")
 	}
-	t.Setenv("ASTONISH_TREESITTER_LIB", libPath)
+	t.Setenv("TROUPE_TREESITTER_LIB", libPath)
 
 	root := t.TempDir()
 	src := "package sample\n\nfunc Foo() {}\n"

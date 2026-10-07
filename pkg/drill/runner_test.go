@@ -843,7 +843,7 @@ func TestRunShellCommandStartServicesRunsForeground(t *testing.T) {
 	}, nil)
 
 	runner := NewSuiteRunner(mock, nil, false)
-	cmd := "bash /root/juicytrade/.astonish/start-services.sh"
+	cmd := "bash /root/juicytrade/.troupe/start-services.sh"
 	if _, err := runner.runShellCommand(context.Background(), cmd, 120); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

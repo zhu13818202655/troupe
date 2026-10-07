@@ -57,7 +57,7 @@ import (
 // node.go (nodeRequest / nodeResponse). backend_pool.go reuses them so
 // there is no drift between the Incus-bound *NodeClient path and the
 // backend-agnostic path below. Both talk to the same `astonish node`
-// server in cmd/astonish/node.go.
+// server in cmd/troupe/node.go.
 
 // backendExecTimeout caps an individual per-tool Exec. Tools that need longer
 // (e.g. npm install under shell_command) should pass their own ctx via the

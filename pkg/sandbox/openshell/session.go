@@ -101,7 +101,7 @@ func (b *OpenShellBackend) CreateSession(ctx context.Context, spec sandbox.Sessi
 
 	// Build env vars for the agent process inside the sandbox.
 	env := map[string]string{
-		"ASTONISH_SESSION_ID": spec.SessionID,
+		"TROUPE_SESSION_ID": spec.SessionID,
 	}
 	for k, v := range spec.Env {
 		env[k] = v
@@ -208,7 +208,7 @@ func (b *OpenShellBackend) StartSession(ctx context.Context, sessionID string) e
 	}
 
 	env := map[string]string{
-		"ASTONISH_SESSION_ID": sessionID,
+		"TROUPE_SESSION_ID": sessionID,
 	}
 	driverCfg, err := applyCertBundles(b.cfg.AppConfig, env)
 	if err != nil {

@@ -14,7 +14,7 @@ func atomicWrite(path string, data []byte, perm os.FileMode) error {
 		return fmt.Errorf("failed to create directory: %w", err)
 	}
 
-	tmp, err := os.CreateTemp(dir, ".astonish-*.tmp")
+	tmp, err := os.CreateTemp(dir, ".troupe-*.tmp")
 	if err != nil {
 		return fmt.Errorf("failed to create temp file: %w", err)
 	}

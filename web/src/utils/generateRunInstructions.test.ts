@@ -11,7 +11,7 @@ describe('generateRunInstructions', () => {
       credential_injection: {
         files: [{ credential: 'providers', path: '/root/juicytrade/config/providers.yaml', field: 'value' }],
       },
-      setup: ['bash /root/juicytrade/.astonish/start-services.sh'],
+      setup: ['bash /root/juicytrade/.troupe/start-services.sh'],
       ready_check: { type: 'http', url: 'http://localhost:8008/health', timeout: 60 },
     })
     const injectIdx = got.indexOf('inject_drill_credentials')

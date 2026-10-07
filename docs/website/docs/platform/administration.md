@@ -15,7 +15,7 @@ The wizard handles backend selection (SQLite or PostgreSQL), database initializa
 For PostgreSQL deployments, you can also set the DSN via environment variable before running setup:
 
 ```bash
-export ASTONISH_PLATFORM_DSN="postgres://admin:secret@db.acme.corp:5432/astonish_platform"
+export TROUPE_PLATFORM_DSN="postgres://admin:secret@db.acme.corp:5432/astonish_platform"
 astonish setup
 ```
 
@@ -27,7 +27,7 @@ If you need to re-initialize or bootstrap an existing database:
 astonish platform init
 ```
 
-This creates the platform database schema and runs migrations. The DSN is read from the config file or `ASTONISH_PLATFORM_DSN` environment variable.
+This creates the platform database schema and runs migrations. The DSN is read from the config file or `TROUPE_PLATFORM_DSN` environment variable.
 
 ## Starting the Platform
 
@@ -123,10 +123,10 @@ astonish platform issue-token --user <email> --org <slug>
 astonish platform sandbox-audit
 
 # Create, inspect, and verify compressed logical backup archives
-astonish platform backup create --output backup.astonish-backup
-astonish platform backup inspect backup.astonish-backup
-astonish platform backup verify backup.astonish-backup
-astonish platform restore backup.astonish-backup --dry-run
+astonish platform backup create --output backup.troupe-backup
+astonish platform backup inspect backup.troupe-backup
+astonish platform backup verify backup.troupe-backup
+astonish platform restore backup.troupe-backup --dry-run
 ```
 
 See [Backup & Recovery](./backup-recovery) for archive verification and the planned data portability workflow.

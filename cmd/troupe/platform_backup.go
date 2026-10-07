@@ -298,9 +298,9 @@ func printPlatformBackupUsage() {
 	fmt.Println("  verify <archive> [--json]    Validate archive manifest and checksums")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish platform backup create --output backup.astonish-backup")
-	fmt.Println("  astonish platform backup inspect backup.astonish-backup")
-	fmt.Println("  astonish platform backup verify backup.astonish-backup")
+	fmt.Println("  astonish platform backup create --output backup.troupe-backup")
+	fmt.Println("  astonish platform backup inspect backup.troupe-backup")
+	fmt.Println("  astonish platform backup verify backup.troupe-backup")
 }
 
 func printPlatformBackupCreateUsage() {

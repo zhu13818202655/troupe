@@ -14,7 +14,7 @@ import (
 
 // SessionEntry maps a session to its container. This is the legacy in-memory
 // view retained for backward compatibility with the many call sites that
-// consume it directly (cmd/astonish/sandbox.go, pkg/api/*, pkg/fleet/*,
+// consume it directly (cmd/troupe/sandbox.go, pkg/api/*, pkg/fleet/*,
 // pkg/tools/*). Internally the registry persists via store.SandboxSessionStore
 // which is populated from either a filestore (personal mode) or a pgstore
 // (platform mode). The SessionEntry.TemplateName field maps to

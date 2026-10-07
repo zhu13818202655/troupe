@@ -282,17 +282,17 @@ func (b *K8sBackend) buildPodManifest(spec sandbox.SessionSpec) (*corev1.Pod, er
 					Image:           b.cfg.SandboxImage,
 					ImagePullPolicy: imagePullPolicy(b.cfg.SandboxImage),
 					Env: []corev1.EnvVar{
-						{Name: "ASTONISH_SESSION_ID", Value: spec.SessionID},
-						{Name: "ASTONISH_LAYER_CHAIN", Value: strings.Join(spec.LayerChain, ",")},
-						{Name: "ASTONISH_UPPER_DIR", Value: mountUpper},
-						{Name: "ASTONISH_WORK_DIR", Value: mountWork},
-						{Name: "ASTONISH_LAYERS_DIR", Value: mountLayers},
-						{Name: "ASTONISH_UPPERS_DIR", Value: mountUppers},
+						{Name: "TROUPE_SESSION_ID", Value: spec.SessionID},
+						{Name: "TROUPE_LAYER_CHAIN", Value: strings.Join(spec.LayerChain, ",")},
+						{Name: "TROUPE_UPPER_DIR", Value: mountUpper},
+						{Name: "TROUPE_WORK_DIR", Value: mountWork},
+						{Name: "TROUPE_LAYERS_DIR", Value: mountLayers},
+						{Name: "TROUPE_UPPERS_DIR", Value: mountUppers},
 						// PID 1 sleeps after overlay composition; tool calls
 						// arrive via Backend.Exec ("kubectl exec -- astonish node")
 						// with proper stdin/stdout attachment per invocation.
-						{Name: "ASTONISH_HANDOFF", Value: "/bin/sleep"},
-						{Name: "ASTONISH_HANDOFF_ARGS", Value: "infinity"},
+						{Name: "TROUPE_HANDOFF", Value: "/bin/sleep"},
+						{Name: "TROUPE_HANDOFF_ARGS", Value: "infinity"},
 					},
 					Lifecycle: &corev1.Lifecycle{
 						PreStop: &corev1.LifecycleHandler{

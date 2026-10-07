@@ -48,7 +48,7 @@ const (
 )
 
 // BootstrapFile is a non-secret file injected into every sandbox container
-// created from a template (e.g. .astonish/start-services.sh). Content is
+// created from a template (e.g. .troupe/start-services.sh). Content is
 // stored on the template row and materialized at session start — never
 // auto-executed by the container entrypoint.
 type BootstrapFile struct {

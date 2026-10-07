@@ -14,10 +14,10 @@ import (
 const defaultSandboxNamespace = "astonish-sandbox"
 
 // SandboxNamespace returns the K8s namespace for sandbox pods. It honors
-// ASTONISH_E2E_SANDBOX_NAMESPACE so tests stay aligned with whatever
+// TROUPE_E2E_SANDBOX_NAMESPACE so tests stay aligned with whatever
 // e2eboot.Bootstrap wrote into the server's config.yaml.
 func SandboxNamespace() string {
-	if ns := os.Getenv("ASTONISH_E2E_SANDBOX_NAMESPACE"); ns != "" {
+	if ns := os.Getenv("TROUPE_E2E_SANDBOX_NAMESPACE"); ns != "" {
 		return ns
 	}
 	return defaultSandboxNamespace

@@ -24,7 +24,7 @@ Sandbox browser is **CloakBrowser**, not Debian ` + "`chromium`" + `:
 Through the same ` + "`shell_command`" + ` / ` + "`astonish-shell`" + ` the user has:
 
 1. Overlay: ` + "`findmnt /sandbox/rootfs`" + ` or ` + "`mount | grep overlay`" + `
-2. Layer chain: ` + "`echo $ASTONISH_LAYER_CHAIN`" + `
+2. Layer chain: ` + "`echo $TROUPE_LAYER_CHAIN`" + `
 3. Product binary exists and is executable
 4. Session record: container name **or** pod name (Docker records ` + "`container_name`" + `; Kubernetes records ` + "`pod_name`" + `)
 5. Process: is the session container actually running?

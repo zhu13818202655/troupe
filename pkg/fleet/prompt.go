@@ -259,9 +259,9 @@ func buildGenericOrchestrationPromptSection(sb *strings.Builder, agentCfg FleetA
 		sb.WriteString("Do not use the task board for normal conversation; use it for trackable work items.\n")
 
 		sb.WriteString("\n## Starting Project Services\n\n")
-		sb.WriteString("If the sandbox template provides `.astonish/start-services.sh`, use that script to bring up the stack\n")
+		sb.WriteString("If the sandbox template provides `.troupe/start-services.sh`, use that script to bring up the stack\n")
 		sb.WriteString("(after credentials are available). Prefer:\n")
-		sb.WriteString("`bash <workspace>/.astonish/stop-services.sh || true` then `bash <workspace>/.astonish/start-services.sh`.\n")
+		sb.WriteString("`bash <workspace>/.troupe/stop-services.sh || true` then `bash <workspace>/.troupe/start-services.sh`.\n")
 		sb.WriteString("Do not reinvent ad-hoc `&` / background one-liners when the script exists.\n")
 		sb.WriteString("The container entrypoint does **not** auto-run this script — you must call it when needed.\n")
 	}

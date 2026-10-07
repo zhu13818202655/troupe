@@ -635,7 +635,7 @@ func (c *SQLiteConfig) GetDataDir() string {
 	if c.DataDir != "" {
 		return c.DataDir
 	}
-	if envDir := os.Getenv("ASTONISH_DATA_DIR"); envDir != "" {
+	if envDir := os.Getenv("TROUPE_DATA_DIR"); envDir != "" {
 		return envDir
 	}
 	if xdg := os.Getenv("XDG_DATA_HOME"); xdg != "" {
@@ -696,14 +696,14 @@ func (c *StorageConfig) IsFile() bool {
 }
 
 // GetPlatformDSN returns the platform database connection string, falling back
-// to the ASTONISH_PLATFORM_DSN environment variable if the config field is empty.
+// to the TROUPE_PLATFORM_DSN environment variable if the config field is empty.
 // This allows K8s deployments to inject the DSN via a Secret without putting
 // credentials in the ConfigMap.
 func (c *PostgresConfig) GetPlatformDSN() string {
 	if c.PlatformDSN != "" {
 		return c.PlatformDSN
 	}
-	return os.Getenv("ASTONISH_PLATFORM_DSN")
+	return os.Getenv("TROUPE_PLATFORM_DSN")
 }
 
 // GetMaxOpenConns returns the max open connections with a sensible default.
@@ -797,7 +797,7 @@ type PlatformAuthConfig struct {
 	// JWTSecret is the HMAC-SHA256 signing key for access and refresh tokens.
 	// Required in platform mode. If empty, a random 32-byte key is generated
 	// at startup (tokens won't survive daemon restarts).
-	// Can be set via ASTONISH_JWT_SECRET environment variable.
+	// Can be set via TROUPE_JWT_SECRET environment variable.
 	JWTSecret string `yaml:"jwt_secret,omitempty" json:"jwt_secret,omitempty"`
 
 	// AccessTokenTTLMinutes controls the access token lifetime.
@@ -977,7 +977,7 @@ func (c *PlatformAuthConfig) GetJWTSecret() string {
 	if c.JWTSecret != "" {
 		return c.JWTSecret
 	}
-	return os.Getenv("ASTONISH_JWT_SECRET")
+	return os.Getenv("TROUPE_JWT_SECRET")
 }
 
 // GenerateJWTSecret creates a cryptographically secure random JWT signing key.
@@ -1325,7 +1325,7 @@ func (c *SchedulerConfig) IsSchedulerEnabled() bool {
 }
 
 // Daemon mode constants control the runtime role of the binary.
-// ASTONISH_MODE env var selects which subsystems are active.
+// TROUPE_MODE env var selects which subsystems are active.
 const (
 	// DaemonModeDefault runs everything: HTTP + scheduler + channels + fleet.
 	// This is the standard single-instance mode (personal or platform).
@@ -1342,11 +1342,11 @@ const (
 	DaemonModeWorker = "worker"
 )
 
-// GetDaemonMode returns the runtime mode from the ASTONISH_MODE env var.
+// GetDaemonMode returns the runtime mode from the TROUPE_MODE env var.
 // Returns DaemonModeDefault if unset or empty.
 // Valid values: "default", "api", "worker".
 func GetDaemonMode() string {
-	mode := os.Getenv("ASTONISH_MODE")
+	mode := os.Getenv("TROUPE_MODE")
 	switch mode {
 	case DaemonModeAPI, DaemonModeWorker:
 		return mode

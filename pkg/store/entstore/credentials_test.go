@@ -188,7 +188,7 @@ func TestPersonalCredential_SetRepairsMissingCredentialsTable(t *testing.T) {
 // TestPersonalCredential_SetGet_Encrypted verifies that Set() encrypts data
 // in the DB and Get() decrypts it correctly.
 func TestPersonalCredential_SetGet_Encrypted(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	cs, client := setupPersonalStore(t)
 	ctx := context.Background()
@@ -237,7 +237,7 @@ func TestPersonalCredential_SetGet_Encrypted(t *testing.T) {
 
 // TestTeamCredential_SetGet_Encrypted verifies the team store also encrypts.
 func TestTeamCredential_SetGet_Encrypted(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	cs, client := setupTeamStore(t)
 	ctx := context.Background()
@@ -278,7 +278,7 @@ func TestTeamCredential_SetGet_Encrypted(t *testing.T) {
 // TestCredential_Publish_PersonalToTeam verifies the publish flow:
 // set in personal → get from personal → set in team → get from team.
 func TestCredential_Publish_PersonalToTeam(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	personalCS, _ := setupPersonalStore(t)
 	teamCS, _ := setupTeamStore(t)
@@ -322,7 +322,7 @@ func TestCredential_Publish_PersonalToTeam(t *testing.T) {
 // as plain JSON (by the old entstore before encryption was added) are still
 // readable.
 func TestCredential_BackwardCompat_PlainJSON(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	cs, client := setupPersonalStore(t)
 	ctx := context.Background()
@@ -352,7 +352,7 @@ func TestCredential_BackwardCompat_PlainJSON(t *testing.T) {
 // stored by the old pgstore (AES-GCM encrypted with the master key) are
 // readable by the new entstore.
 func TestCredential_BackwardCompat_OldPgstoreEncrypted(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	cs, client := setupPersonalStore(t)
 	ctx := context.Background()
@@ -360,7 +360,7 @@ func TestCredential_BackwardCompat_OldPgstoreEncrypted(t *testing.T) {
 	// Produce encrypted bytes the same way the old pgstore did.
 	masterKey := loadMasterKey()
 	if masterKey == nil {
-		t.Fatal("loadMasterKey returned nil despite ASTONISH_MASTER_KEY being set")
+		t.Fatal("loadMasterKey returned nil despite TROUPE_MASTER_KEY being set")
 	}
 
 	originalJSON := []byte(`{"type":"bearer","token":"old_pgstore_token"}`)
@@ -420,7 +420,7 @@ func TestCredential_RawContentRoundTrip(t *testing.T) {
 
 func TestCredential_NoMasterKey(t *testing.T) {
 	// Ensure no master key is available via env or file.
-	t.Setenv("ASTONISH_MASTER_KEY", "")
+	t.Setenv("TROUPE_MASTER_KEY", "")
 	// Point config dir to a temp dir with no .store_key file.
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 
@@ -465,7 +465,7 @@ func TestCredential_NoMasterKey(t *testing.T) {
 // TestCredential_Secret_RoundTrip verifies SetSecret/GetSecret round-trip
 // through the encrypted store.
 func TestCredential_Secret_RoundTrip(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	cs, _ := setupPersonalStore(t)
 	ctx := context.Background()
@@ -483,7 +483,7 @@ func TestCredential_Secret_RoundTrip(t *testing.T) {
 // TestCredential_Secret_Encrypted verifies that secrets are actually encrypted
 // in the database.
 func TestCredential_Secret_Encrypted(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	cs, client := setupPersonalStore(t)
 	ctx := context.Background()
@@ -516,7 +516,7 @@ func TestCredential_Secret_Encrypted(t *testing.T) {
 // TestCredential_List verifies that List() works correctly (it reads name/type
 // columns, not the encrypted blob).
 func TestCredential_List(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	cs, _ := setupPersonalStore(t)
 	ctx := context.Background()
@@ -546,7 +546,7 @@ func TestCredential_List(t *testing.T) {
 // TestCredential_Update verifies that updating an existing credential
 // re-encrypts with fresh ciphertext.
 func TestCredential_Update(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	cs, client := setupPersonalStore(t)
 	ctx := context.Background()
@@ -587,7 +587,7 @@ func TestCredential_Update(t *testing.T) {
 // TestCredential_DEK_EnvelopeEncryption verifies the envelope encryption path:
 // data encrypted with a per-org DEK is decrypted correctly when credKey is set.
 func TestCredential_DEK_EnvelopeEncryption(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	cs, client := setupPersonalStore(t)
 	ctx := context.Background()
@@ -646,7 +646,7 @@ func TestCredential_DEK_EnvelopeEncryption(t *testing.T) {
 // the master key directly (not DEK) is still readable when credKey is set
 // (the DEK attempt fails, then master key fallback succeeds).
 func TestCredential_DEK_FallbackToMasterKey(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	cs, client := setupPersonalStore(t)
 	ctx := context.Background()
@@ -688,7 +688,7 @@ func TestCredential_DEK_FallbackToMasterKey(t *testing.T) {
 // TestCredential_DEK_OldPgstoreData verifies the exact production scenario:
 // data encrypted with a per-org DEK (by old pgstore) is decrypted correctly.
 func TestCredential_DEK_OldPgstoreData(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	cs, client := setupPersonalStore(t)
 	ctx := context.Background()
@@ -734,7 +734,7 @@ func TestCredential_DEK_OldPgstoreData(t *testing.T) {
 // passes a non-nil OAuthTokenFetcher for OAuth credential types (so they no
 // longer produce "requires a token fetcher" errors).
 func TestPersonalCredential_Resolve_OAuthFetcherNotNil(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	cs, _ := setupPersonalStore(t)
 	ctx := context.Background()
@@ -791,7 +791,7 @@ func TestPersonalCredential_Resolve_OAuthFetcherNotNil(t *testing.T) {
 
 // TestTeamCredential_Resolve_OAuthFetcherNotNil verifies the same for team store.
 func TestTeamCredential_Resolve_OAuthFetcherNotNil(t *testing.T) {
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 
 	cs, _ := setupTeamStore(t)
 	ctx := context.Background()

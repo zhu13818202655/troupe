@@ -85,14 +85,14 @@ cd web && npm run build           # typecheck + both Vite bundles
 External test tiers:
 
 ```bash
-make test-integration  # requires admin-capable ASTONISH_TEST_DSN; integration build tag
+make test-integration  # requires admin-capable TROUPE_TEST_DSN; integration build tag
 make test-e2e          # PostgreSQL + live LLM key + provisioned Kubernetes sandbox infra
 make test-e2e-sqlite   # SQLite, but still needs live LLM key and Kubernetes for sandbox tests
 make e2e-k8s-up        # provision E2E namespaces/PVCs
 make e2e-k8s-down
 ```
 
-E2E tests use the `e2e` build tag and run serially through the scenario reporter. Put shared DB/auth/provider/sandbox setup in `tests/e2eboot/`, not individual tests. Never point `ASTONISH_TEST_DSN` at production; the harness creates and drops databases.
+E2E tests use the `e2e` build tag and run serially through the scenario reporter. Put shared DB/auth/provider/sandbox setup in `tests/e2eboot/`, not individual tests. Never point `TROUPE_TEST_DSN` at production; the harness creates and drops databases.
 
 ## Code style
 

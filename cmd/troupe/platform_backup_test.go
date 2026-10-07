@@ -10,12 +10,12 @@ import (
 )
 
 func TestParseBackupReadArgs(t *testing.T) {
-	path, jsonOut, passphrase, err := parseBackupReadArgs([]string{"backup.astonish-backup", "--json", "--passphrase", "secret"})
+	path, jsonOut, passphrase, err := parseBackupReadArgs([]string{"backup.troupe-backup", "--json", "--passphrase", "secret"})
 	if err != nil {
 		t.Fatalf("parseBackupReadArgs() error = %v", err)
 	}
-	if path != "backup.astonish-backup" {
-		t.Fatalf("path = %q, want backup.astonish-backup", path)
+	if path != "backup.troupe-backup" {
+		t.Fatalf("path = %q, want backup.troupe-backup", path)
 	}
 	if !jsonOut {
 		t.Fatal("jsonOut = false, want true")
@@ -32,12 +32,12 @@ func TestParseBackupReadArgsRequiresArchive(t *testing.T) {
 }
 
 func TestParseBackupCreateArgs(t *testing.T) {
-	opts, err := parseBackupCreateArgs([]string{"--output", "backup.astonish-backup"})
+	opts, err := parseBackupCreateArgs([]string{"--output", "backup.troupe-backup"})
 	if err != nil {
 		t.Fatalf("parseBackupCreateArgs() error = %v", err)
 	}
-	if opts.output != "backup.astonish-backup" {
-		t.Fatalf("output = %q, want backup.astonish-backup", opts.output)
+	if opts.output != "backup.troupe-backup" {
+		t.Fatalf("output = %q, want backup.troupe-backup", opts.output)
 	}
 	if opts.compression != backup.CompressionGzip {
 		t.Fatalf("compression = %q, want gzip", opts.compression)
@@ -45,7 +45,7 @@ func TestParseBackupCreateArgs(t *testing.T) {
 }
 
 func TestParseBackupCreateArgsCompressionNone(t *testing.T) {
-	opts, err := parseBackupCreateArgs([]string{"--output", "backup.astonish-backup", "--compression", "none"})
+	opts, err := parseBackupCreateArgs([]string{"--output", "backup.troupe-backup", "--compression", "none"})
 	if err != nil {
 		t.Fatalf("parseBackupCreateArgs() error = %v", err)
 	}
@@ -55,7 +55,7 @@ func TestParseBackupCreateArgsCompressionNone(t *testing.T) {
 }
 
 func TestParseBackupCreateArgsRedactSecrets(t *testing.T) {
-	opts, err := parseBackupCreateArgs([]string{"--output", "backup.astonish-backup", "--redact-secrets", "--passphrase", "secret"})
+	opts, err := parseBackupCreateArgs([]string{"--output", "backup.troupe-backup", "--redact-secrets", "--passphrase", "secret"})
 	if err != nil {
 		t.Fatalf("parseBackupCreateArgs() error = %v", err)
 	}
@@ -68,13 +68,13 @@ func TestParseBackupCreateArgsRedactSecrets(t *testing.T) {
 }
 
 func TestParseBackupCreateArgsRejectsUnknownCompression(t *testing.T) {
-	if _, err := parseBackupCreateArgs([]string{"--output", "backup.astonish-backup", "--compression", "zip"}); err == nil {
+	if _, err := parseBackupCreateArgs([]string{"--output", "backup.troupe-backup", "--compression", "zip"}); err == nil {
 		t.Fatal("parseBackupCreateArgs() error = nil, want unsupported compression error")
 	}
 }
 
 func TestParseBackupCreateArgsScopedBackup(t *testing.T) {
-	opts, err := parseBackupCreateArgs([]string{"--org", "acme", "--team", "sre", "--output", "backup.astonish-backup"})
+	opts, err := parseBackupCreateArgs([]string{"--org", "acme", "--team", "sre", "--output", "backup.troupe-backup"})
 	if err != nil {
 		t.Fatalf("parseBackupCreateArgs() error = %v", err)
 	}
@@ -84,7 +84,7 @@ func TestParseBackupCreateArgsScopedBackup(t *testing.T) {
 }
 
 func TestParseBackupCreateArgsTeamRequiresOrg(t *testing.T) {
-	if _, err := parseBackupCreateArgs([]string{"--team", "sre", "--output", "backup.astonish-backup"}); err == nil {
+	if _, err := parseBackupCreateArgs([]string{"--team", "sre", "--output", "backup.troupe-backup"}); err == nil {
 		t.Fatal("parseBackupCreateArgs() error = nil, want --team requires --org")
 	}
 }
@@ -116,7 +116,7 @@ func TestBackupEntstoreConfigDefaultsFileBackendToSQLite(t *testing.T) {
 }
 
 func TestHandlePlatformBackupVerify(t *testing.T) {
-	archivePath := filepath.Join(t.TempDir(), "test.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "test.troupe-backup")
 	writer, err := backup.Create(archivePath)
 	if err != nil {
 		t.Fatalf("Create() error = %v", err)

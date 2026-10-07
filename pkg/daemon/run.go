@@ -72,7 +72,7 @@ func startupPhaseRecord(phase, outcome string, elapsed time.Duration) string {
 // writes a PID file, handles signals for graceful shutdown, and cleans up on exit.
 // This function blocks until a shutdown signal is received.
 func Run(cfg RunConfig) error {
-	// Determine runtime mode (default/api/worker) from ASTONISH_MODE env var.
+	// Determine runtime mode (default/api/worker) from TROUPE_MODE env var.
 	daemonMode := config.GetDaemonMode()
 
 	// Load app config for provider/MCP setup
@@ -149,9 +149,9 @@ func Run(cfg RunConfig) error {
 	isPlatformMode := appCfg.Storage.Backend == "postgres" || appCfg.Storage.Backend == "sqlite"
 
 	// In platform container modes (api/worker), skip the file-based credential store
-	// entirely when ASTONISH_MASTER_KEY is set. All secrets come from PG — the file
+	// entirely when TROUPE_MASTER_KEY is set. All secrets come from PG — the file
 	// store would only produce warnings about unwritable filesystem.
-	skipFileCredStore := isPlatformMode && daemonMode != config.DaemonModeDefault && os.Getenv("ASTONISH_MASTER_KEY") != ""
+	skipFileCredStore := isPlatformMode && daemonMode != config.DaemonModeDefault && os.Getenv("TROUPE_MASTER_KEY") != ""
 
 	if configDir != "" && !skipFileCredStore {
 		if cs, csErr := credentials.Open(configDir); csErr == nil {
@@ -315,7 +315,7 @@ func Run(cfg RunConfig) error {
 	// Wire up link code store for registration email verification
 	platformAuth.SetLinkCodeStoreForAuth(backend.NewLinkCodeStore())
 	if appCfg.Storage.Auth.GetJWTSecret() == "" {
-		logger.Printf("WARNING: No JWT secret configured (ASTONISH_JWT_SECRET env or storage.auth.jwt_secret config)")
+		logger.Printf("WARNING: No JWT secret configured (TROUPE_JWT_SECRET env or storage.auth.jwt_secret config)")
 		logger.Printf("A random key has been generated — tokens will not survive daemon restarts")
 	}
 	logger.Printf("Platform authentication enabled (mode: %s)", appCfg.Storage.Auth.Mode)
@@ -841,7 +841,7 @@ func Run(cfg RunConfig) error {
 
 	// --- Link code store for code-based channel linking (platform mode) ---
 	// Allows users to link their Telegram/Slack/Email via Studio or /link commands.
-	// API pods (ASTONISH_MODE=api) don't run channel adapters but still serve
+	// API pods (TROUPE_MODE=api) don't run channel adapters but still serve
 	// /api/user/channels/link-code — initialize the DB-backed store whenever we
 	// have a platform backend, not only when a ChannelManager is running locally.
 	if backend != nil {

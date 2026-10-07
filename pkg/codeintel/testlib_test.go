@@ -10,7 +10,7 @@ import (
 
 // resolveTestLibraryPath returns a usable libastonish-treesitter.so path, or "".
 func resolveTestLibraryPath() string {
-	if path := os.Getenv("ASTONISH_TREESITTER_LIB"); path != "" {
+	if path := os.Getenv("TROUPE_TREESITTER_LIB"); path != "" {
 		if st, err := os.Stat(path); err == nil && !st.IsDir() {
 			return path
 		}

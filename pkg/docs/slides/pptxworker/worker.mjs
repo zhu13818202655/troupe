@@ -18,8 +18,8 @@ try {
   // center (a centered title landed ~5% left of the slide center). Define a
   // custom layout that matches the canvas 1:1 so element geometry — and thus
   // centering — is identical to the HTML/PDF exports.
-  pptx.defineLayout({ name: 'ASTONISH_CANVAS', width: 1920 / 160, height: 1080 / 160 })
-  pptx.layout = 'ASTONISH_CANVAS'
+  pptx.defineLayout({ name: 'TROUPE_CANVAS', width: 1920 / 160, height: 1080 / 160 })
+  pptx.layout = 'TROUPE_CANVAS'
   pptx.author = scene.author || 'Astonish'
   pptx.subject = scene.subject || ''
   pptx.title = scene.title || ''

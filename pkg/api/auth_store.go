@@ -197,7 +197,7 @@ func atomicWriteFile(path string, data []byte, perm os.FileMode) error {
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return err
 	}
-	tmp, err := os.CreateTemp(dir, ".astonish-*.tmp")
+	tmp, err := os.CreateTemp(dir, ".troupe-*.tmp")
 	if err != nil {
 		return err
 	}

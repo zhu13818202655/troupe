@@ -5,7 +5,7 @@
 //
 // Two related scenarios live in this file:
 //
-//   - CHAT-069 pins the JSONB UTF-8 regression: when ASTONISH_MASTER_KEY is set,
+//   - CHAT-069 pins the JSONB UTF-8 regression: when TROUPE_MASTER_KEY is set,
 //     pgMCPServerStore.Save must wrap AES-GCM ciphertext in a base64 envelope
 //     ({"_encrypted":"..."}) before writing to the JSONB env column. Without
 //     the envelope, raw ciphertext bytes such as 0x8e violate JSONB's UTF-8

@@ -33,7 +33,7 @@ func TestGenerateRunInstructions_Auto(t *testing.T) {
 				{Credential: "providers", Path: "/root/juicytrade/config/providers.yaml", Field: "value"},
 			},
 		},
-		Setup: []string{`bash /root/juicytrade/.astonish/start-services.sh`},
+		Setup: []string{`bash /root/juicytrade/.troupe/start-services.sh`},
 		ReadyCheck: &config.ReadyCheck{
 			Type:    "http",
 			URL:     "http://localhost:8008/health",
@@ -45,7 +45,7 @@ func TestGenerateRunInstructions_Auto(t *testing.T) {
 		`use_sandbox_template(template_name: "juicytrade")`,
 		`cd /root/juicytrade && git fetch && git checkout main && git pull --ff-only`,
 		`inject_drill_credentials(suite_name: "juicytrade")`,
-		`bash /root/juicytrade/.astonish/start-services.sh`,
+		`bash /root/juicytrade/.troupe/start-services.sh`,
 		"http://localhost:8008/health",
 		`run_drill(suite_name: "juicytrade")`,
 		"does not switch templates",

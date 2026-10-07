@@ -77,7 +77,7 @@ sandbox:
     enabled: true
     ephemeralWorkspace: true  # Kyverno: strip workspace PVC, use emptyDir
     gateway:
-      addr: ""  # auto-derived: astonishe2eos-openshell.astonishe2eos.svc.cluster.local:8080
+      addr: ""  # auto-derived: astonishe2eos-openshell.troupee2eos.svc.cluster.local:8080
     image:
       repository: ghcr.io/sap/astonish-sandbox-openshell
       tag: dev

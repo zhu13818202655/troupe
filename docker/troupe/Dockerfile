@@ -92,7 +92,7 @@ WORKDIR /app
 COPY web/package.json web/package-lock.json /app/web/
 RUN cd /app/web && npm ci --omit=dev --ignore-scripts && npm cache clean --force
 COPY pkg/docs/slides/pptxworker/worker.mjs pkg/docs/slides/pptxworker/import_worker.mjs /app/pkg/docs/slides/pptxworker/
-ENV ASTONISH_ROOT=/app
+ENV TROUPE_ROOT=/app
 
 # Copy the pre-built Linux astonish binary for the target architecture.
 # TARGETARCH is set automatically by docker buildx (amd64 or arm64).

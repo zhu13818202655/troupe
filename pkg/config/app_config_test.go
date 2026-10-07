@@ -211,9 +211,9 @@ func TestGetDaemonMode(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.envValue != "" {
-				t.Setenv("ASTONISH_MODE", tt.envValue)
+				t.Setenv("TROUPE_MODE", tt.envValue)
 			} else {
-				t.Setenv("ASTONISH_MODE", "")
+				t.Setenv("TROUPE_MODE", "")
 			}
 			result := GetDaemonMode()
 			if result != tt.expected {
@@ -224,26 +224,26 @@ func TestGetDaemonMode(t *testing.T) {
 }
 
 func TestIsDaemonModeAPI(t *testing.T) {
-	t.Setenv("ASTONISH_MODE", "api")
+	t.Setenv("TROUPE_MODE", "api")
 	if !IsDaemonModeAPI() {
-		t.Error("IsDaemonModeAPI() should return true when ASTONISH_MODE=api")
+		t.Error("IsDaemonModeAPI() should return true when TROUPE_MODE=api")
 	}
 
-	t.Setenv("ASTONISH_MODE", "worker")
+	t.Setenv("TROUPE_MODE", "worker")
 	if IsDaemonModeAPI() {
-		t.Error("IsDaemonModeAPI() should return false when ASTONISH_MODE=worker")
+		t.Error("IsDaemonModeAPI() should return false when TROUPE_MODE=worker")
 	}
 }
 
 func TestIsDaemonModeWorker(t *testing.T) {
-	t.Setenv("ASTONISH_MODE", "worker")
+	t.Setenv("TROUPE_MODE", "worker")
 	if !IsDaemonModeWorker() {
-		t.Error("IsDaemonModeWorker() should return true when ASTONISH_MODE=worker")
+		t.Error("IsDaemonModeWorker() should return true when TROUPE_MODE=worker")
 	}
 
-	t.Setenv("ASTONISH_MODE", "api")
+	t.Setenv("TROUPE_MODE", "api")
 	if IsDaemonModeWorker() {
-		t.Error("IsDaemonModeWorker() should return false when ASTONISH_MODE=api")
+		t.Error("IsDaemonModeWorker() should return false when TROUPE_MODE=api")
 	}
 }
 
@@ -257,7 +257,7 @@ func TestGetPlatformDSN_FromConfig(t *testing.T) {
 
 func TestGetPlatformDSN_FallbackToEnv(t *testing.T) {
 	cfg := &PostgresConfig{PlatformDSN: ""}
-	t.Setenv("ASTONISH_PLATFORM_DSN", "postgres://env-host:5432/db")
+	t.Setenv("TROUPE_PLATFORM_DSN", "postgres://env-host:5432/db")
 	got := cfg.GetPlatformDSN()
 	if got != "postgres://env-host:5432/db" {
 		t.Errorf("GetPlatformDSN() = %q, want env value", got)
@@ -266,7 +266,7 @@ func TestGetPlatformDSN_FallbackToEnv(t *testing.T) {
 
 func TestGetPlatformDSN_ConfigPrecedence(t *testing.T) {
 	cfg := &PostgresConfig{PlatformDSN: "postgres://config-host:5432/db"}
-	t.Setenv("ASTONISH_PLATFORM_DSN", "postgres://env-host:5432/db")
+	t.Setenv("TROUPE_PLATFORM_DSN", "postgres://env-host:5432/db")
 	got := cfg.GetPlatformDSN()
 	if got != "postgres://config-host:5432/db" {
 		t.Errorf("GetPlatformDSN() = %q, want config value (should take precedence over env)", got)
@@ -274,7 +274,7 @@ func TestGetPlatformDSN_ConfigPrecedence(t *testing.T) {
 }
 
 func TestGetPlatformDSN_Empty(t *testing.T) {
-	t.Setenv("ASTONISH_PLATFORM_DSN", "")
+	t.Setenv("TROUPE_PLATFORM_DSN", "")
 	cfg := &PostgresConfig{PlatformDSN: ""}
 	got := cfg.GetPlatformDSN()
 	if got != "" {

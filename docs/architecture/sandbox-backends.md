@@ -387,7 +387,7 @@ The entrypoint runs as PID 1 with the privilege path selected at chart-install t
 2. **Pre-seed first-level directories.** Create the top-level FS layout (`/proc /sys /dev /mnt /sandbox /var/astonish` and friends) inside `/var/astonish/overlay/upper` so subsequent bind mounts have valid mount points after the overlay is composed. This is what makes `chroot /sandbox/rootfs` resolve `/proc`, `/sys`, `/dev`, the layer PVC mounts, and the persisted-uppers mount.
 3. **Compose the overlay.** Build `lowerdir` from the layer chain (top-most layer first, so the leaf wins on conflicts):
    ```sh
-   LOWER=$(echo "$ASTONISH_LAYER_CHAIN" | awk -F, '{
+   LOWER=$(echo "$TROUPE_LAYER_CHAIN" | awk -F, '{
        for (i = NF; i > 0; i--)
            printf "/mnt/astonish-layers/%s/rootfs%s", $i, (i > 1 ? ":" : "")
    }')
@@ -437,7 +437,7 @@ The entrypoint runs as PID 1 with the privilege path selected at chart-install t
     Only after that capture succeeds does it delete the pod. If capture fails, the pod stays running so data is not lost.
   - The same persistence script is installed as a Kubernetes container `preStop` hook with a 90-second termination grace period. This covers manual `kubectl delete pod` and normal Kubernetes termination paths that bypass the backend's `StopSession` method.
   - Row in `sandbox_sessions` stays; status updates `evicting` → `evicted` and clears the pod binding after deletion. At eviction time, the original resolved layer chain is retained in the registry so resume does not silently fall back to plain `@base` for configured base/team-template sessions.
-- On next tool interaction, `StartSession` recreates the pod with the same `ASTONISH_SESSION_ID`; the entrypoint resume step (above) streams `/mnt/astonish-uppers/upper.tar.zst` back into the local `emptyDir` before mounting the overlay. Resume latency: 1–5 s depending on upper-layer size.
+- On next tool interaction, `StartSession` recreates the pod with the same `TROUPE_SESSION_ID`; the entrypoint resume step (above) streams `/mnt/astonish-uppers/upper.tar.zst` back into the local `emptyDir` before mounting the overlay. Resume latency: 1–5 s depending on upper-layer size.
 - Isolation invariant: the persisted-upper path is derived only from the registry row's exact session ID. API callers never provide an upper path. Session IDs containing `/`, `.` or `..` are rejected before any pod/tar/cleanup script is built; other non-path-safe IDs are mapped through the deterministic hash described above, and cleanup deletes only that validated session subdirectory.
 
 This preserves Incus's "container exists but stopped, resume later" semantics while keeping each session's upper layer isolated under its own uppers-PVC directory.
@@ -703,7 +703,7 @@ The layer store is the content-addressed backing for every template and every ev
 
 - `psql -c "SELECT layer_id, parent_layer_id, scope, ref_count, size_bytes FROM platform.sandbox_layers ORDER BY created_at DESC LIMIT 50"`
 - `ls /mnt/astonish-layers/` shows every layer dir.
-- `kubectl -n astonish-sandbox get pods -o=jsonpath='{.items[*].metadata.annotations.astonish\.io/layer-chain}'` shows which chain each running session uses.
+- `kubectl -n astonish-sandbox get pods -o=jsonpath='{.items[*].metadata.annotations.troupe\.io/layer-chain}'` shows which chain each running session uses.
 
 **Orphan detection** (runs hourly inside the deferred GC reconciler when enabled; see §5.12):
 
@@ -1031,8 +1031,8 @@ The chart renders these into `config.yaml` (mounted as ConfigMap `astonish-confi
 
 ### 6.2 Environment variable overrides
 
-- `ASTONISH_SANDBOX_BACKEND` — overrides `sandbox.backend`.
-- `ASTONISH_K8S_NAMESPACE` — overrides the sandbox namespace.
+- `TROUPE_SANDBOX_BACKEND` — overrides `sandbox.backend`.
+- `TROUPE_K8S_NAMESPACE` — overrides the sandbox namespace.
 
 ### 6.3 Selection logic
 

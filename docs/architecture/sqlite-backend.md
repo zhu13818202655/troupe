@@ -1120,9 +1120,9 @@ astonish setup \
 Or via environment variables:
 
 ```bash
-ASTONISH_ADMIN_EMAIL=admin@company.com \
-ASTONISH_ADMIN_PASSWORD=secret \
-ASTONISH_ORG_NAME="My Company" \
+TROUPE_ADMIN_EMAIL=admin@company.com \
+TROUPE_ADMIN_PASSWORD=secret \
+TROUPE_ORG_NAME="My Company" \
 astonish setup --non-interactive
 ```
 

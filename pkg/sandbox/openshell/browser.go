@@ -483,7 +483,7 @@ exec sleep infinity
 // the shell prints a sentinel line after stty completes; DialSandboxPort reads
 // and discards all output until the sentinel, guaranteeing echo is disabled
 // before the connection is returned to the caller.
-const dialSentinel = "ASTONISH_TUNNEL_READY"
+const dialSentinel = "TROUPE_TUNNEL_READY"
 
 func DialSandboxPort(ctx context.Context, gateway GatewayClient, podName string, port int) (net.Conn, error) {
 	cmd := fmt.Sprintf(

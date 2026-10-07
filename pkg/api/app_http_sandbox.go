@@ -125,9 +125,9 @@ func newAppHTTPStatusMarker() string {
 	var b [8]byte
 	if _, err := rand.Read(b[:]); err != nil {
 		// Extremely unlikely; fall back to a fixed unique-enough prefix.
-		return "\nASTONISH_HTTP_STATUS_fallback:"
+		return "\nTROUPE_HTTP_STATUS_fallback:"
 	}
-	return fmt.Sprintf("\nASTONISH_HTTP_STATUS_%x:", b)
+	return fmt.Sprintf("\nTROUPE_HTTP_STATUS_%x:", b)
 }
 
 // validateCurlHeader rejects empty keys and CR/LF in keys or values so a

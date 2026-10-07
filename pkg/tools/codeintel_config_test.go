@@ -61,13 +61,13 @@ func TestGetInternalTools_LibraryPathSetsEnv(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(configDir, "config.yaml"), []byte(content), 0644); err != nil {
 		t.Fatal(err)
 	}
-	t.Setenv("ASTONISH_TREESITTER_LIB", "")
+	t.Setenv("TROUPE_TREESITTER_LIB", "")
 
 	if _, err := GetInternalTools(); err != nil {
 		t.Fatalf("GetInternalTools: %v", err)
 	}
-	if got := os.Getenv("ASTONISH_TREESITTER_LIB"); got != libPath {
-		t.Fatalf("ASTONISH_TREESITTER_LIB=%q, want %q", got, libPath)
+	if got := os.Getenv("TROUPE_TREESITTER_LIB"); got != libPath {
+		t.Fatalf("TROUPE_TREESITTER_LIB=%q, want %q", got, libPath)
 	}
 }
 

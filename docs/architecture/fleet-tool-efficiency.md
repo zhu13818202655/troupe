@@ -185,7 +185,7 @@ A file-persisted cache inside the container that deduplicates `read_file` calls 
 
 #### Design Constraint: K8s Per-Call Exec
 
-On K8s, each tool call spawns a fresh `astonish node` process. The cache must survive between process invocations. Solution: **persist the cache to a JSON file inside the container's filesystem** (`/tmp/.astonish_read_cache.json`). The container's filesystem (overlay/PVC) is persistent for the session lifetime.
+On K8s, each tool call spawns a fresh `astonish node` process. The cache must survive between process invocations. Solution: **persist the cache to a JSON file inside the container's filesystem** (`/tmp/.troupe_read_cache.json`). The container's filesystem (overlay/PVC) is persistent for the session lifetime.
 
 #### Cache File Format
 
@@ -224,7 +224,7 @@ Cache key: `"{path}:{offset}:{limit}"` (where 0 means "not specified").
 On `read_file` call inside `ExecuteTool` / `ReadFile`:
 
 ```
-1. Load cache from /tmp/.astonish_read_cache.json (if exists)
+1. Load cache from /tmp/.troupe_read_cache.json (if exists)
 2. Build cache key from path + offset + limit
 3. Look up entry:
    a. If entry exists AND entry.source == "read":
@@ -236,7 +236,7 @@ On `read_file` call inside `ExecuteTool` / `ReadFile`:
    b. If no entry or entry.source != "read":
       → Cache miss, proceed to full read, store new entry
 4. After read completes: update cache entry with current mtime
-5. Write cache back to /tmp/.astonish_read_cache.json
+5. Write cache back to /tmp/.troupe_read_cache.json
 ```
 
 On `edit_file` / `write_file` call:
@@ -410,7 +410,7 @@ Layers 1 and 2 are independent and can be implemented in parallel. Layer 3 depen
 
 - **Sandbox wrapping (NodeTool)** (`pkg/sandbox/node_tool.go`): Unchanged. All three layers are implemented inside the tool functions that run within the container via `ExecuteTool()`. The NodeTool proxy sees a smaller response payload on the wire — that's the only observable difference.
 
-- **K8s per-call Exec** (`pkg/sandbox/backend_pool.go`): The cache file adds ~2-5ms of file I/O per tool call (read + write `/tmp/.astonish_read_cache.json`). Negligible vs. the 200-500ms process spawn. The real win is the smaller response payload.
+- **K8s per-call Exec** (`pkg/sandbox/backend_pool.go`): The cache file adds ~2-5ms of file I/O per tool call (read + write `/tmp/.troupe_read_cache.json`). Negligible vs. the 200-500ms process spawn. The real win is the smaller response payload.
 
 - **Credential/secret callbacks**: No conflict. These operate at the ADK callback level on the host. The in-container tool functions are unaware of them.
 

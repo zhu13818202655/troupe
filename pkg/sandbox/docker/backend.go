@@ -85,7 +85,7 @@ type Config struct {
 
 func (c *Config) applyDefaults() {
 	if c.SandboxImage == "" {
-		if img := os.Getenv("ASTONISH_SANDBOX_IMAGE"); img != "" {
+		if img := os.Getenv("TROUPE_SANDBOX_IMAGE"); img != "" {
 			c.SandboxImage = img
 		} else {
 			c.SandboxImage = "ghcr.io/sap/astonish-sandbox-base:latest"

@@ -14,7 +14,7 @@ import (
 )
 
 // InspectorStateFile is the path written by the inspector binary on startup
-// and read by the e2e test harness when ASTONISH_E2E_KEEP_ALIVE=1.
+// and read by the e2e test harness when TROUPE_E2E_KEEP_ALIVE=1.
 const InspectorStateFile = "/tmp/astonish-e2e-inspect.json"
 
 // InspectorSecretFile holds a per-run shared secret used to gate any future
@@ -58,7 +58,7 @@ type InspectorState struct {
 	Hostname   string `json:"hostname"`
 	BaseURL    string `json:"base_url"`     // http://localhost:9394
 	Suffix     string `json:"suffix"`       // e2einspect
-	BaseDSN    string `json:"base_dsn"`     // ASTONISH_TEST_DSN at startup
+	BaseDSN    string `json:"base_dsn"`     // TROUPE_TEST_DSN at startup
 	StartedAt  string `json:"started_at"`   // RFC3339
 	UserEmail  string `json:"user_email"`
 	UserPasswd string `json:"user_passwd"`
@@ -92,14 +92,14 @@ func WriteInspectorState(s *InspectorState) error {
 }
 
 // RetainSessions returns true when the test run is part of a shared-inspect
-// session (env ASTONISH_E2E_KEEP_ALIVE=1). When true, hygienic per-test
+// session (env TROUPE_E2E_KEEP_ALIVE=1). When true, hygienic per-test
 // session DELETEs should be skipped so the inspector UI can browse the
 // data the tests created. Asserted DELETEs (where the DELETE response
 // itself is the subject of an assertion, e.g. "verify deletion works" or
 // "verify another user cannot delete") MUST still run regardless of this
 // flag.
 func RetainSessions() bool {
-	return os.Getenv("ASTONISH_E2E_KEEP_ALIVE") == "1"
+	return os.Getenv("TROUPE_E2E_KEEP_ALIVE") == "1"
 }
 
 // IsInspectorRunning probes whether an inspector process is alive at the

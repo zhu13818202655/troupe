@@ -254,7 +254,7 @@ func TestExposePort_CreatesServiceAndReturnsDNS(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ExposePort: %v", err)
 	}
-	wantHost := "sess-sess-001-8080.astonish-sandboxes.svc.cluster.local"
+	wantHost := "sess-sess-001-8080.troupe-sandboxes.svc.cluster.local"
 	if addr.Host != wantHost {
 		t.Errorf("Host = %q, want %q", addr.Host, wantHost)
 	}

@@ -432,21 +432,21 @@ func (b *K8sBackend) buildTemplateBuilderPodManifest(spec sandbox.TemplateBuildS
 					Image:           b.cfg.SandboxImage,
 					ImagePullPolicy: imagePullPolicy(b.cfg.SandboxImage),
 					// No Command: — uses the image's ENTRYPOINT which composes
-					// the overlay from ASTONISH_LAYER_CHAIN, then execs into
-					// ASTONISH_HANDOFF (sleep infinity). This is the same
+					// the overlay from TROUPE_LAYER_CHAIN, then execs into
+					// TROUPE_HANDOFF (sleep infinity). This is the same
 					// pattern as session pods (session.go buildPodManifest).
 					Env: []corev1.EnvVar{
-						{Name: "ASTONISH_TEMPLATE_ID", Value: spec.TemplateID},
-						{Name: "ASTONISH_SESSION_ID", Value: "build-" + name}, // synthetic; resume-tar never exists so [ -f ] guard skips it
-						{Name: "ASTONISH_LAYER_CHAIN", Value: strings.Join(spec.ParentLayers, ",")},
-						{Name: "ASTONISH_UPPER_DIR", Value: mountUpper},
-						{Name: "ASTONISH_WORK_DIR", Value: mountWork},
-						{Name: "ASTONISH_LAYERS_DIR", Value: mountLayers},
-						{Name: "ASTONISH_UPPERS_DIR", Value: mountUppers},
+						{Name: "TROUPE_TEMPLATE_ID", Value: spec.TemplateID},
+						{Name: "TROUPE_SESSION_ID", Value: "build-" + name}, // synthetic; resume-tar never exists so [ -f ] guard skips it
+						{Name: "TROUPE_LAYER_CHAIN", Value: strings.Join(spec.ParentLayers, ",")},
+						{Name: "TROUPE_UPPER_DIR", Value: mountUpper},
+						{Name: "TROUPE_WORK_DIR", Value: mountWork},
+						{Name: "TROUPE_LAYERS_DIR", Value: mountLayers},
+						{Name: "TROUPE_UPPERS_DIR", Value: mountUppers},
 						// PID 1 sleeps after overlay composition; build steps
 						// arrive via execInPod through the astonish-shell wrapper.
-						{Name: "ASTONISH_HANDOFF", Value: "/bin/sleep"},
-						{Name: "ASTONISH_HANDOFF_ARGS", Value: "infinity"},
+						{Name: "TROUPE_HANDOFF", Value: "/bin/sleep"},
+						{Name: "TROUPE_HANDOFF_ARGS", Value: "infinity"},
 					},
 					VolumeMounts: []corev1.VolumeMount{
 						{Name: volumeLayers, MountPath: mountLayers}, // RW for atomic rename

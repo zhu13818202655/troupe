@@ -8,8 +8,8 @@ Namespaces:
 {{- end }}
 
 Control plane:
-  API:    {{ .Values.api.replicaCount }} replica(s) (ASTONISH_MODE=api)
-  Worker: {{ .Values.worker.replicaCount }} replica(s) (ASTONISH_MODE=worker)
+  API:    {{ .Values.api.replicaCount }} replica(s) (TROUPE_MODE=api)
+  Worker: {{ .Values.worker.replicaCount }} replica(s) (TROUPE_MODE=worker)
   Image:  {{ .Values.image.repository }}:{{ .Values.image.tag }}
 {{- if .Values.sandbox.enabled }}
   ServiceAccount: {{ include "astonish.serviceAccountName" . }}

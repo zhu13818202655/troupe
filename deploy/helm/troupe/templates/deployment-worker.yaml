@@ -43,26 +43,26 @@ spec:
               containerPort: 9393
               protocol: TCP
           env:
-            - name: ASTONISH_MODE
+            - name: TROUPE_MODE
               value: "worker"
-            - name: ASTONISH_HOST
+            - name: TROUPE_HOST
               value: "0.0.0.0"
             {{- if or .Values.secrets.masterKey .Values.secrets.existingSecret }}
-            - name: ASTONISH_MASTER_KEY
+            - name: TROUPE_MASTER_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ include "astonish.secretName" . }}
                   key: master-key
             {{- end }}
             {{- if or .Values.secrets.jwtSecret .Values.secrets.existingSecret }}
-            - name: ASTONISH_JWT_SECRET
+            - name: TROUPE_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ include "astonish.secretName" . }}
                   key: jwt-secret
             {{- end }}
             {{- if or .Values.secrets.platformDSN .Values.secrets.existingSecret }}
-            - name: ASTONISH_PLATFORM_DSN
+            - name: TROUPE_PLATFORM_DSN
               valueFrom:
                 secretKeyRef:
                   name: {{ include "astonish.secretName" . }}

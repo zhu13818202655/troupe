@@ -42,15 +42,15 @@ type SandboxTestHelper interface {
 }
 
 // activeSandboxHelper is the globally-registered helper. Set during init
-// based on ASTONISH_E2E_SANDBOX_BACKEND.
+// based on TROUPE_E2E_SANDBOX_BACKEND.
 var activeSandboxHelper SandboxTestHelper
 
 // GetSandboxHelper returns the active SandboxTestHelper for the current
-// e2e run. Defaults to K8s if ASTONISH_E2E_SANDBOX_BACKEND is not set.
+// e2e run. Defaults to K8s if TROUPE_E2E_SANDBOX_BACKEND is not set.
 func GetSandboxHelper() SandboxTestHelper {
 	if activeSandboxHelper == nil {
 		// Lazy init based on env. Default to K8s.
-		backend := os.Getenv("ASTONISH_E2E_SANDBOX_BACKEND")
+		backend := os.Getenv("TROUPE_E2E_SANDBOX_BACKEND")
 		switch backend {
 		case "openshell":
 			activeSandboxHelper = newOpenShellHelper()

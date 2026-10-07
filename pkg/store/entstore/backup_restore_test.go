@@ -59,7 +59,7 @@ func TestRestorePlatformBackupSQLiteFreshTarget(t *testing.T) {
 	seedSessionBackupRows(t, filepath.Join(sourceDir, "orgs", "restore", "teams", "ops.db"))
 	seedScheduledJob(t, filepath.Join(sourceDir, "orgs", "restore", "teams", "ops.db"))
 
-	archivePath := filepath.Join(t.TempDir(), "restore.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "restore.troupe-backup")
 	if err := source.ExportPlatformBackup(ctx, archivePath, PlatformBackupExportOptions{Backend: "sqlite"}); err != nil {
 		t.Fatalf("ExportPlatformBackup() error = %v", err)
 	}
@@ -142,7 +142,7 @@ func TestRestorePlatformBackupSQLiteMappedOrgAndTeam(t *testing.T) {
 	}
 	seedTeamBackupRows(t, filepath.Join(sourceDir, "orgs", "oldorg", "teams", "ops.db"))
 
-	archivePath := filepath.Join(t.TempDir(), "mapped.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "mapped.troupe-backup")
 	if err := source.ExportPlatformBackup(ctx, archivePath, PlatformBackupExportOptions{Backend: "sqlite"}); err != nil {
 		t.Fatalf("ExportPlatformBackup() error = %v", err)
 	}
@@ -180,7 +180,7 @@ func TestRestorePlatformBackupSQLiteMappedOrgAndTeam(t *testing.T) {
 
 func TestRestorePlatformBackupSQLiteRestoreCredentialPreflightValidKey(t *testing.T) {
 	ctx := context.Background()
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 	archivePath := createSQLiteBackupWithPersonalCredential(t, ctx)
 
@@ -206,11 +206,11 @@ func TestRestorePlatformBackupSQLiteRestoreCredentialPreflightValidKey(t *testin
 
 func TestRestorePlatformBackupSQLiteRestoreCredentialPreflightWrongKey(t *testing.T) {
 	ctx := context.Background()
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 	archivePath := createSQLiteBackupWithPersonalCredential(t, ctx)
 
-	t.Setenv("ASTONISH_MASTER_KEY", "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789")
+	t.Setenv("TROUPE_MASTER_KEY", "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789")
 	targetDir := t.TempDir()
 	targetDSN := "file:" + filepath.Join(targetDir, "platform.db")
 	if err := BootstrapPlatform(ctx, Config{DSN: targetDSN, DataDir: targetDir}, nil); err != nil {
@@ -236,11 +236,11 @@ func TestRestorePlatformBackupSQLiteRestoreCredentialPreflightWrongKey(t *testin
 
 func TestRestorePlatformBackupSQLiteRestoreCredentialPreflightMissingKey(t *testing.T) {
 	ctx := context.Background()
-	t.Setenv("ASTONISH_MASTER_KEY", testMasterKeyHex)
+	t.Setenv("TROUPE_MASTER_KEY", testMasterKeyHex)
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 	archivePath := createSQLiteBackupWithPersonalCredential(t, ctx)
 
-	t.Setenv("ASTONISH_MASTER_KEY", "")
+	t.Setenv("TROUPE_MASTER_KEY", "")
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 	targetDir := t.TempDir()
 	targetDSN := "file:" + filepath.Join(targetDir, "platform.db")
@@ -257,7 +257,7 @@ func TestRestorePlatformBackupSQLiteRestoreCredentialPreflightMissingKey(t *test
 	if err != nil {
 		t.Fatalf("PlanPlatformRestore() error = %v", err)
 	}
-	if !restorePlanHasBlocker(plan, "no ASTONISH_MASTER_KEY or ~/.config/astonish/.store_key is configured") {
+	if !restorePlanHasBlocker(plan, "no TROUPE_MASTER_KEY or ~/.config/astonish/.store_key is configured") {
 		t.Fatalf("plan blockers = %v, want missing key blocker", plan.Blockers)
 	}
 }
@@ -316,7 +316,7 @@ func TestRestorePlatformBackupSQLiteResetTarget(t *testing.T) {
 		t.Fatalf("ProvisionOrg error = %v", err)
 	}
 
-	archivePath := filepath.Join(t.TempDir(), "reset-restore.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "reset-restore.troupe-backup")
 	if err := source.ExportPlatformBackup(ctx, archivePath, PlatformBackupExportOptions{Backend: "sqlite"}); err != nil {
 		t.Fatalf("ExportPlatformBackup() error = %v", err)
 	}
@@ -405,7 +405,7 @@ func createSQLiteBackupWithPersonalCredential(t *testing.T, ctx context.Context)
 		t.Fatalf("Set personal credential error = %v", err)
 	}
 
-	archivePath := filepath.Join(t.TempDir(), "credential-restore.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "credential-restore.troupe-backup")
 	if err := source.ExportPlatformBackup(ctx, archivePath, PlatformBackupExportOptions{Backend: "sqlite"}); err != nil {
 		t.Fatalf("ExportPlatformBackup() error = %v", err)
 	}

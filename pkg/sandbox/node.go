@@ -16,14 +16,14 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
-// nodeRequest mirrors cmd/astonish.NodeRequest for the host side.
+// nodeRequest mirrors cmd/troupe.NodeRequest for the host side.
 type nodeRequest struct {
 	ID   string                 `json:"id"`
 	Tool string                 `json:"tool"`
 	Args map[string]interface{} `json:"args"`
 }
 
-// nodeResponse mirrors cmd/astonish.NodeResponse for the host side.
+// nodeResponse mirrors cmd/troupe.NodeResponse for the host side.
 type nodeResponse struct {
 	ID     string          `json:"id"`
 	Result json.RawMessage `json:"result,omitempty"`

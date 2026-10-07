@@ -59,7 +59,7 @@ func TestBuildSuiteContext_InfraAndTutorialFlag(t *testing.T) {
 				Workspace: "/root/juicytrade",
 				Branch:    "main",
 				BaseURL:   "http://localhost:5173",
-				Setup:     []string{"bash /root/juicytrade/.astonish/start-services.sh"},
+				Setup:     []string{"bash /root/juicytrade/.troupe/start-services.sh"},
 				Configure: []string{"echo prep"},
 				ReadyCheck: &config.ReadyCheck{
 					Type: "http",

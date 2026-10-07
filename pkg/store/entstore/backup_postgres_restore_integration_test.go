@@ -94,7 +94,7 @@ func TestIntegrationPostgresBackupRestoreLogical(t *testing.T) {
 		t.Fatalf("close source org DB error = %v", err)
 	}
 
-	archivePath := filepath.Join(t.TempDir(), "postgres.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "postgres.troupe-backup")
 	if err := source.ExportPlatformBackup(ctx, archivePath, PlatformBackupExportOptions{Backend: "postgres"}); err != nil {
 		t.Fatalf("ExportPlatformBackup() error = %v", err)
 	}
@@ -119,9 +119,9 @@ func TestIntegrationPostgresBackupRestoreLogical(t *testing.T) {
 
 func setupPostgresBackupRestoreStore(t *testing.T, name string) *Store {
 	t.Helper()
-	baseDSN := os.Getenv("ASTONISH_TEST_DSN")
+	baseDSN := os.Getenv("TROUPE_TEST_DSN")
 	if baseDSN == "" {
-		t.Skip("ASTONISH_TEST_DSN not set; skipping PostgreSQL backup/restore integration test")
+		t.Skip("TROUPE_TEST_DSN not set; skipping PostgreSQL backup/restore integration test")
 	}
 	ctx := context.Background()
 	suffix := fmt.Sprintf("backup_%s_%s", sanitizePostgresBackupTestName(name), strings.ReplaceAll(uuid.NewString()[:8], "-", "_"))

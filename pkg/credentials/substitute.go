@@ -125,7 +125,7 @@ type shellResolvedCredential struct {
 // by the shell), this function:
 //
 //  1. Resolves each unique placeholder to its real value
-//  2. Assigns each to a numbered env var (__ASTONISH_CRED_0, __ASTONISH_CRED_1, ...)
+//  2. Assigns each to a numbered env var (__TROUPE_CRED_0, __TROUPE_CRED_1, ...)
 //  3. Replaces placeholders in the command with env var references
 //  4. Prepends the env var exports so the shell sets them before running the command
 //
@@ -157,7 +157,7 @@ func SubstituteShellCommand(command string, resolver CredentialResolver) string 
 			// Could not resolve — leave placeholder as-is.
 			continue
 		}
-		envName := fmt.Sprintf("__ASTONISH_CRED_%d", counter)
+		envName := fmt.Sprintf("__TROUPE_CRED_%d", counter)
 		counter++
 		rc := shellResolvedCredential{envVar: envName, value: value}
 		seen[match] = &rc

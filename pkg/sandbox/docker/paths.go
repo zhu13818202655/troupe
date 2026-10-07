@@ -13,14 +13,14 @@ const (
 
 	astonishShell = "/usr/local/bin/astonish-shell"
 
-	envSessionID  = "ASTONISH_SESSION_ID"
-	envLayerChain = "ASTONISH_LAYER_CHAIN"
-	envUpperDir   = "ASTONISH_UPPER_DIR"
-	envWorkDir    = "ASTONISH_WORK_DIR"
-	envLayersDir  = "ASTONISH_LAYERS_DIR"
-	envUppersDir  = "ASTONISH_UPPERS_DIR"
-	envHandoff    = "ASTONISH_HANDOFF"
-	envHandoffArg = "ASTONISH_HANDOFF_ARGS"
+	envSessionID  = "TROUPE_SESSION_ID"
+	envLayerChain = "TROUPE_LAYER_CHAIN"
+	envUpperDir   = "TROUPE_UPPER_DIR"
+	envWorkDir    = "TROUPE_WORK_DIR"
+	envLayersDir  = "TROUPE_LAYERS_DIR"
+	envUppersDir  = "TROUPE_UPPERS_DIR"
+	envHandoff    = "TROUPE_HANDOFF"
+	envHandoffArg = "TROUPE_HANDOFF_ARGS"
 
 	layerChainFile = "layer-chain.txt"
 )

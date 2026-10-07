@@ -76,7 +76,7 @@ Services are started in declaration order and stopped in reverse order. Each ser
 
 ### Canonical start script (template bootstrap)
 
-For multi-service apps, prefer a single start script stored on the **sandbox template** as `bootstrap_files` (e.g. `.astonish/start-services.sh`). Every container from that template gets the file injected at session start; it is **not** auto-executed.
+For multi-service apps, prefer a single start script stored on the **sandbox template** as `bootstrap_files` (e.g. `.troupe/start-services.sh`). Every container from that template gets the file injected at session start; it is **not** auto-executed.
 
 **`run_drill` is test-only.** It injects suite credentials (idempotent) and executes drills. It does **not** switch templates, git-pull, run `configure`/`setup`/`ready_check`/`teardown`.
 
@@ -106,7 +106,7 @@ suite_config:
   configure:
     - "test -f /root/myapp/config/providers.yaml"
   setup:
-    - "bash /root/myapp/.astonish/start-services.sh"
+    - "bash /root/myapp/.troupe/start-services.sh"
   ready_check:
     type: http
     # Prefer functional readiness over bare /health when the app has a setup gate:
@@ -115,7 +115,7 @@ suite_config:
     timeout: 60
     interval: 2
   teardown:
-    - "bash /root/myapp/.astonish/stop-services.sh || true"
+    - "bash /root/myapp/.troupe/stop-services.sh || true"
 ```
 
 Put offline / file / env configuration in `configure:` (agent prep, after inject). If an API must run **after** services are up, put it in `start-services.sh` after the ready poll.

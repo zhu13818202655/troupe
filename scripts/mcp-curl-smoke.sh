@@ -3,9 +3,9 @@
 # and tools/list without logging the client secret or access token.
 set -euo pipefail
 
-base_url="${ASTONISH_MCP_BASE_URL:-http://127.0.0.1:9393}"
-client_id="${ASTONISH_MCP_CLIENT_ID:?Set ASTONISH_MCP_CLIENT_ID}"
-client_secret="${ASTONISH_MCP_CLIENT_SECRET:?Set ASTONISH_MCP_CLIENT_SECRET}"
+base_url="${TROUPE_MCP_BASE_URL:-http://127.0.0.1:9393}"
+client_id="${TROUPE_MCP_CLIENT_ID:?Set TROUPE_MCP_CLIENT_ID}"
+client_secret="${TROUPE_MCP_CLIENT_SECRET:?Set TROUPE_MCP_CLIENT_SECRET}"
 resource="${base_url%/}/api/mcp"
 metadata_url="${base_url%/}/.well-known/oauth-protected-resource/api/mcp"
 

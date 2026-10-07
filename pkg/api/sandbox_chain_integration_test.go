@@ -19,15 +19,15 @@ import (
 // ---------------------------------------------------------------------------
 // Test infrastructure: real Postgres, isolated database per test.
 //
-// Env: ASTONISH_TEST_DSN must point to a Postgres instance. Example:
-//   export ASTONISH_TEST_DSN="postgres://postgres:554252@192.168.1.196:5432/astonish_dxmtlc_platform"
+// Env: TROUPE_TEST_DSN must point to a Postgres instance. Example:
+//   export TROUPE_TEST_DSN="postgres://postgres:554252@192.168.1.196:5432/astonish_dxmtlc_platform"
 // ---------------------------------------------------------------------------
 
 func mustTestDSN(t *testing.T) string {
 	t.Helper()
-	dsn := os.Getenv("ASTONISH_TEST_DSN")
+	dsn := os.Getenv("TROUPE_TEST_DSN")
 	if dsn == "" {
-		t.Skip("ASTONISH_TEST_DSN not set; skipping integration test")
+		t.Skip("TROUPE_TEST_DSN not set; skipping integration test")
 	}
 	return dsn
 }

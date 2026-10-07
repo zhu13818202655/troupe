@@ -81,7 +81,7 @@ func AIChatHandler(w http.ResponseWriter, r *http.Request) {
 	injectProviderSecrets(appCfg)
 
 	// Get default provider and model
-	// Note: Provider env vars are set up at studio startup in cmd/astonish/studio.go
+	// Note: Provider env vars are set up at studio startup in cmd/troupe/studio.go
 	providerName := appCfg.General.DefaultProvider
 	modelName := appCfg.General.DefaultModel
 

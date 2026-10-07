@@ -153,6 +153,6 @@ describe('extension-sessions', () => {
     expect(state.sessions[0].title).toBe('Legacy session');
     // Legacy key should be removed after migration
     const legacy = await chrome.storage.local.get('astonishExtensionChat');
-    expect(legacy.astonishExtensionChat).toBeUndefined();
+    expect(legacy.troupeExtensionChat).toBeUndefined();
   });
 });

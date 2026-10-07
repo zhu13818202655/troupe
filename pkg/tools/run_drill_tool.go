@@ -1297,7 +1297,7 @@ func decideDrillTemplateSwitch(current, required string, requiredExists, startSc
 	return drillSwitchReplace
 }
 
-var startServicesPathRE = regexp.MustCompile(`/[^\s;'"]+/\.astonish/start-services\.sh`)
+var startServicesPathRE = regexp.MustCompile(`/[^\s;'"]+/\.troupe/start-services\.sh`)
 
 // extractStartServicesPaths returns absolute paths to start-services.sh referenced
 // by suite setup (legacy) or services[].setup commands.
@@ -1507,7 +1507,7 @@ func preflightDrillStartServices(ctx tool.Context, deps *runDrillDeps, suiteName
 		}
 	}
 
-	hintPath := "<workspace>/.astonish/start-services.sh"
+	hintPath := "<workspace>/.troupe/start-services.sh"
 	if len(paths) > 0 {
 		hintPath = paths[0]
 	}

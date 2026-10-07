@@ -159,19 +159,19 @@ func TestBuildPodManifest_EnvAndMounts(t *testing.T) {
 	}
 	c := pod.Spec.Containers[0]
 
-	// ASTONISH_LAYER_CHAIN env var must match the annotation.
+	// TROUPE_LAYER_CHAIN env var must match the annotation.
 	env := map[string]string{}
 	for _, e := range c.Env {
 		env[e.Name] = e.Value
 	}
-	if env["ASTONISH_SESSION_ID"] != "s1" {
-		t.Errorf("env ASTONISH_SESSION_ID = %q, want s1", env["ASTONISH_SESSION_ID"])
+	if env["TROUPE_SESSION_ID"] != "s1" {
+		t.Errorf("env TROUPE_SESSION_ID = %q, want s1", env["TROUPE_SESSION_ID"])
 	}
-	if env["ASTONISH_LAYER_CHAIN"] != "a,b" {
-		t.Errorf("env ASTONISH_LAYER_CHAIN = %q", env["ASTONISH_LAYER_CHAIN"])
+	if env["TROUPE_LAYER_CHAIN"] != "a,b" {
+		t.Errorf("env TROUPE_LAYER_CHAIN = %q", env["TROUPE_LAYER_CHAIN"])
 	}
-	if env["ASTONISH_UPPER_DIR"] != mountUpper {
-		t.Errorf("env ASTONISH_UPPER_DIR = %q", env["ASTONISH_UPPER_DIR"])
+	if env["TROUPE_UPPER_DIR"] != mountUpper {
+		t.Errorf("env TROUPE_UPPER_DIR = %q", env["TROUPE_UPPER_DIR"])
 	}
 
 	// All four volume mounts must be present on the container.
@@ -219,13 +219,13 @@ func TestBuildPodManifest_Rejects(t *testing.T) {
 	// Verify the default was applied in the pod's env/labels.
 	found := false
 	for _, env := range pod.Spec.Containers[0].Env {
-		if env.Name == "ASTONISH_LAYER_CHAIN" && env.Value == sandbox.BaseTemplateID {
+		if env.Name == "TROUPE_LAYER_CHAIN" && env.Value == sandbox.BaseTemplateID {
 			found = true
 			break
 		}
 	}
 	if !found {
-		t.Errorf("expected ASTONISH_LAYER_CHAIN=%q in pod env", sandbox.BaseTemplateID)
+		t.Errorf("expected TROUPE_LAYER_CHAIN=%q in pod env", sandbox.BaseTemplateID)
 	}
 
 	// Chain depth exceeds MaxChainDepth (default 20).

@@ -3,7 +3,7 @@
 // Phase F replaces the hard Sysbox dependency with a portable overlay
 // strategy (fuse-overlayfs by default, kernel overlayfs where supported,
 // auto fallback). The strategy needs to be reflected on the pods the
-// backend submits: the entrypoint reads ASTONISH_OVERLAY_MODE / _ENSURE_
+// backend submits: the entrypoint reads TROUPE_OVERLAY_MODE / _ENSURE_
 // FUSE_DEVICE to pick a code path, and the pod itself needs the right
 // SecurityContext + resource shape so the chosen strategy actually works
 // at runtime.
@@ -42,8 +42,8 @@
 //     container. Mirrored into resource requests (K8s requires
 //     requests==limits for extended resources).
 //
-//   - Overlay env vars: surfaced as ASTONISH_OVERLAY_MODE and
-//     ASTONISH_ENSURE_FUSE_DEVICE. The entrypoint's script generator
+//   - Overlay env vars: surfaced as TROUPE_OVERLAY_MODE and
+//     TROUPE_ENSURE_FUSE_DEVICE. The entrypoint's script generator
 //     reads these into EntrypointScriptOptions at image-build time;
 //     emitting them on the pod makes the chosen mode observable to
 //     operators (kubectl describe / logs) and lets a future entrypoint
@@ -59,12 +59,12 @@ import (
 const (
 	// envOverlayMode selects the entrypoint's overlay strategy. One of
 	// "fuse", "kernel", "auto". See overlay_entrypoint.go OverlayMode.
-	envOverlayMode = "ASTONISH_OVERLAY_MODE"
+	envOverlayMode = "TROUPE_OVERLAY_MODE"
 
 	// envEnsureFuseDevice, when "1", instructs the fuse path to create
 	// /dev/fuse via mknod before launching fuse-overlayfs. Needed in
 	// privileged pods without a FUSE device plugin.
-	envEnsureFuseDevice = "ASTONISH_ENSURE_FUSE_DEVICE"
+	envEnsureFuseDevice = "TROUPE_ENSURE_FUSE_DEVICE"
 )
 
 // applyPodSecurityHardening mutates pod in place to reflect the

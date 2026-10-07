@@ -7,7 +7,7 @@ import (
 	"runtime"
 )
 
-const astonishRootEnv = "ASTONISH_ROOT"
+const astonishRootEnv = "TROUPE_ROOT"
 
 func slidesWorkerPaths(scriptName string) (workingDir, scriptPath string, err error) {
 	var roots []string

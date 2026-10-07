@@ -147,14 +147,14 @@ func TestBuildFleetPodManifest_ContainerShape(t *testing.T) {
 	var sawFleetKeyEnv, sawTemplateEnv bool
 	for _, e := range c.Env {
 		switch e.Name {
-		case "ASTONISH_FLEET_KEY":
+		case "TROUPE_FLEET_KEY":
 			if e.Value != "plan-agent-01" {
-				t.Errorf("ASTONISH_FLEET_KEY = %q, want plan-agent-01", e.Value)
+				t.Errorf("TROUPE_FLEET_KEY = %q, want plan-agent-01", e.Value)
 			}
 			sawFleetKeyEnv = true
-		case "ASTONISH_TEMPLATE_ID":
+		case "TROUPE_TEMPLATE_ID":
 			if e.Value != "golang-dev" {
-				t.Errorf("ASTONISH_TEMPLATE_ID = %q, want golang-dev", e.Value)
+				t.Errorf("TROUPE_TEMPLATE_ID = %q, want golang-dev", e.Value)
 			}
 			sawTemplateEnv = true
 		}

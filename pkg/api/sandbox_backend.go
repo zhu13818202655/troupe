@@ -327,7 +327,7 @@ func teamTemplateSessionID(teamSlug string) string {
 //
 // These helpers resolve the template DAG in the platform DB into concrete
 // layer chains consumed by the K8s backend (SessionSpec.LayerChain →
-// ASTONISH_LAYER_CHAIN env var → overlay entrypoint).
+// TROUPE_LAYER_CHAIN env var → overlay entrypoint).
 //
 // Chain semantics:
 //   - Oldest (bottom) first, youngest (top) last.
@@ -351,7 +351,7 @@ type baseTopLayerResolver interface {
 // to an ordered layer chain (oldest-first, e.g. ["@base", "<sha256>"]).
 //
 // On K8s, the returned chain is passed as SessionSpec.LayerChain to the
-// backend, which sets ASTONISH_LAYER_CHAIN in the pod env. Each element is
+// backend, which sets TROUPE_LAYER_CHAIN in the pod env. Each element is
 // a literal directory name under /mnt/astonish-layers/ on the PVC.
 //
 // Returns nil if:

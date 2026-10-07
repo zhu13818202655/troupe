@@ -11,8 +11,8 @@
 //	<LayersDir>/<layerID>/      → /mnt/astonish-layers/<layerID>/:ro
 //	<UppersDir>/<sessionID>/    → /mnt/astonish-uppers/<sessionID>/:rw
 //
-// The sandbox-base entrypoint reads ASTONISH_LAYER_CHAIN (comma-separated)
-// and ASTONISH_SESSION_ID to compose the overlay at start.
+// The sandbox-base entrypoint reads TROUPE_LAYER_CHAIN (comma-separated)
+// and TROUPE_SESSION_ID to compose the overlay at start.
 package docker
 
 import (
@@ -392,7 +392,7 @@ func parseDockerLabels(raw string) map[string]string {
 	return labels
 }
 
-// buildLayerChain produces the ASTONISH_LAYER_CHAIN value for the container
+// buildLayerChain produces the TROUPE_LAYER_CHAIN value for the container
 // entrypoint. Uses the pre-resolved chain if non-empty, otherwise falls back
 // to the template ID as a single-element chain.
 func buildLayerChain(resolved []string, templateID string) string {

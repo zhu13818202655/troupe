@@ -7,7 +7,7 @@
 #
 # Prerequisites:
 #   - atlas CLI installed (curl -sSf https://atlasgo.sh | sh)
-#   - ASTONISH_TEST_DSN or ATLAS_PG_DEV_URL set (for PG envs)
+#   - TROUPE_TEST_DSN or ATLAS_PG_DEV_URL set (for PG envs)
 #
 # Usage:
 #   ./scripts/atlas-baseline.sh

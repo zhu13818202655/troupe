@@ -44,7 +44,7 @@ astonish chat                               # Start chatting
 **Platform mode** — multi-tenant, PostgreSQL, teams:
 
 ```bash
-export ASTONISH_PLATFORM_DSN="postgres://user:pass@host:5432/astonish"
+export TROUPE_PLATFORM_DSN="postgres://user:pass@host:5432/astonish"
 astonish platform init                      # Initialize database, create first org
 astonish platform org invite admin@co.com   # Invite team members
 

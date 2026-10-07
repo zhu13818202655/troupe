@@ -20,7 +20,7 @@ const (
 	logDestinationFile   = "file"
 	logDestinationStdout = "stdout"
 
-	logDestinationEnv = "ASTONISH_LOG_DEST"
+	logDestinationEnv = "TROUPE_LOG_DEST"
 )
 
 // Logger provides file-based logging with size-based rotation.

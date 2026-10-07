@@ -351,15 +351,15 @@ func TestDecideDrillTemplateSwitch(t *testing.T) {
 func TestExtractStartServicesPaths(t *testing.T) {
 	sc := &config.DrillSuiteConfig{
 		Setup: []string{
-			"bash /root/juicytrade/.astonish/start-services.sh",
+			"bash /root/juicytrade/.troupe/start-services.sh",
 			"echo already started",
 		},
 		Services: []config.ServiceConfig{
-			{Name: "api", Setup: "bash /root/juicytrade/.astonish/start-services.sh"},
+			{Name: "api", Setup: "bash /root/juicytrade/.troupe/start-services.sh"},
 		},
 	}
 	paths := extractStartServicesPaths(sc)
-	if len(paths) != 1 || paths[0] != "/root/juicytrade/.astonish/start-services.sh" {
+	if len(paths) != 1 || paths[0] != "/root/juicytrade/.troupe/start-services.sh" {
 		t.Fatalf("paths = %#v, want single absolute start-services path", paths)
 	}
 	if !suiteReferencesStartServices(sc) {
@@ -368,7 +368,7 @@ func TestExtractStartServicesPaths(t *testing.T) {
 	if suiteReferencesStartServices(&config.DrillSuiteConfig{Setup: []string{"echo hi"}}) {
 		t.Fatal("expected false when no start-services reference")
 	}
-	if !suiteReferencesStartServices(&config.DrillSuiteConfig{Setup: []string{"bash .astonish/start-services.sh"}}) {
+	if !suiteReferencesStartServices(&config.DrillSuiteConfig{Setup: []string{"bash .troupe/start-services.sh"}}) {
 		t.Fatal("expected true for relative start-services reference")
 	}
 }
@@ -388,7 +388,7 @@ func TestPreflightDrillStartServices_MissingPathError(t *testing.T) {
 	// path checks return false and bootstrap inject is a no-op → clear error.
 	deps := &runDrillDeps{nodePool: &sandbox.NodeClientPool{}}
 	sc := &config.DrillSuiteConfig{
-		Setup: []string{"bash /root/myapp/.astonish/start-services.sh"},
+		Setup: []string{"bash /root/myapp/.troupe/start-services.sh"},
 	}
 	err := preflightDrillStartServices(nil, deps, "myapp", "myapp", sc)
 	if err == nil {
@@ -402,7 +402,7 @@ func TestPreflightDrillStartServices_MissingPathError(t *testing.T) {
 
 func TestPreflightDrillStartServices_NoSandboxSkips(t *testing.T) {
 	err := preflightDrillStartServices(nil, &runDrillDeps{}, "suite", "myapp", &config.DrillSuiteConfig{
-		Setup: []string{"bash /root/myapp/.astonish/start-services.sh"},
+		Setup: []string{"bash /root/myapp/.troupe/start-services.sh"},
 	})
 	if err != nil {
 		t.Fatalf("expected skip without sandbox deps, got %v", err)

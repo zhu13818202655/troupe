@@ -52,7 +52,7 @@ Authoritative reference: `docs/architecture/chat-rendering-pipeline.md`, "The Re
 
 ## Testing
 - Chat scenarios: `docs/architecture/testing-chat-scenarios.md`.
-- Integration tests use build tag `integration` and need `ASTONISH_TEST_DSN`.
+- Integration tests use build tag `integration` and need `TROUPE_TEST_DSN`.
 - Prompt contract tests defend the two-step artifact/report contract — keep them green.
 
 ## When editing

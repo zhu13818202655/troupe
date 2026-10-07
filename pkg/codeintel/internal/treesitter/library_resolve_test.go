@@ -28,7 +28,7 @@ func TestDefaultLibrary_AutoBuildsWhenAbsent(t *testing.T) {
 
 	// Isolate the build cache and ensure no override is set.
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
-	if err := os.Unsetenv("ASTONISH_TREESITTER_LIB"); err != nil {
+	if err := os.Unsetenv("TROUPE_TREESITTER_LIB"); err != nil {
 		t.Fatal(err)
 	}
 
@@ -42,12 +42,12 @@ func TestDefaultLibrary_AutoBuildsWhenAbsent(t *testing.T) {
 }
 
 // TestDefaultLibrary_OverrideMissingErrors keeps the explicit-override contract:
-// a bad ASTONISH_TREESITTER_LIB fails fast rather than silently auto-building.
+// a bad TROUPE_TREESITTER_LIB fails fast rather than silently auto-building.
 func TestDefaultLibrary_OverrideMissingErrors(t *testing.T) {
 	ResetDefaultLibraryForTest()
 	t.Cleanup(ResetDefaultLibraryForTest)
 
-	t.Setenv("ASTONISH_TREESITTER_LIB", "/no/such/libastonish-treesitter.so")
+	t.Setenv("TROUPE_TREESITTER_LIB", "/no/such/libastonish-treesitter.so")
 
 	_, err := DefaultLibrary()
 	if err == nil {

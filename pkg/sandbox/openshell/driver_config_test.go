@@ -242,7 +242,7 @@ func TestApplyCertBundles_MergesTrustEnv(t *testing.T) {
 			MountPath: "/etc/astonish-ca/ca-bundle.crt",
 		}},
 	}
-	env := map[string]string{"ASTONISH_SESSION_ID": "s1"}
+	env := map[string]string{"TROUPE_SESSION_ID": "s1"}
 	dc, err := applyCertBundles(cfg, env)
 	if err != nil {
 		t.Fatalf("applyCertBundles: %v", err)
@@ -253,7 +253,7 @@ func TestApplyCertBundles_MergesTrustEnv(t *testing.T) {
 	if env["SSL_CERT_FILE"] != "/etc/astonish-ca/ca-bundle.crt" {
 		t.Errorf("SSL_CERT_FILE = %q", env["SSL_CERT_FILE"])
 	}
-	if env["ASTONISH_SESSION_ID"] != "s1" {
+	if env["TROUPE_SESSION_ID"] != "s1" {
 		t.Error("session id env overwritten")
 	}
 }

@@ -160,7 +160,7 @@ func TestValidateAppHTTPURL(t *testing.T) {
 }
 
 func TestParseCurlHTTPOutput(t *testing.T) {
-	marker := "\nASTONISH_HTTP_STATUS_deadbeef:"
+	marker := "\nTROUPE_HTTP_STATUS_deadbeef:"
 	body, status, err := parseCurlHTTPOutput([]byte(`{"ok":true}`+marker+"200"), marker)
 	if err != nil {
 		t.Fatalf("parse: %v", err)

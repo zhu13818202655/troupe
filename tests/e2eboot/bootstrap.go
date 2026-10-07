@@ -47,7 +47,7 @@ type Harness struct {
 	BaseDSN     string
 
 	// PerTestSuffix is non-empty when running in shared-instance mode
-	// (ASTONISH_E2E_KEEP_ALIVE=1). Tests that seed orgs/teams/users in
+	// (TROUPE_E2E_KEEP_ALIVE=1). Tests that seed orgs/teams/users in
 	// shared mode MUST append this to slugs and email local-parts so
 	// 26 tests can coexist in a single platform DB.
 	//
@@ -78,21 +78,21 @@ func (h *Harness) IsSQLite() bool {
 // logs in. All resources are cleaned up via t.Cleanup.
 //
 // Prerequisites (env vars):
-//   - ASTONISH_TEST_DSN: admin Postgres connection string
+//   - TROUPE_TEST_DSN: admin Postgres connection string
 //   - BIFROST_API_KEY (or OPENAI_API_KEY, GOOGLE_API_KEY, ANTHROPIC_API_KEY)
 //
-// If ASTONISH_TEST_DSN is unset, the test is skipped.
+// If TROUPE_TEST_DSN is unset, the test is skipped.
 func Bootstrap(t *testing.T) *Harness {
 	t.Helper()
 
 	// SQLite backend: entirely different bootstrap path — no PG required.
-	if os.Getenv("ASTONISH_E2E_BACKEND") == "sqlite" {
+	if os.Getenv("TROUPE_E2E_BACKEND") == "sqlite" {
 		return bootstrapSQLite(t)
 	}
 
-	dsn := os.Getenv("ASTONISH_TEST_DSN")
+	dsn := os.Getenv("TROUPE_TEST_DSN")
 	if dsn == "" {
-		t.Skip("ASTONISH_TEST_DSN not set — skipping E2E test")
+		t.Skip("TROUPE_TEST_DSN not set — skipping E2E test")
 	}
 
 	apiKey := resolveAPIKey()
@@ -104,7 +104,7 @@ func Bootstrap(t *testing.T) *Harness {
 	// is the path taken by `make test-e2e-inspect`. All 26 tests share one
 	// StudioServer + one platform DB; per-test isolation is achieved via
 	// PerTestSuffix on slugs/emails.
-	if os.Getenv("ASTONISH_E2E_KEEP_ALIVE") == "1" {
+	if os.Getenv("TROUPE_E2E_KEEP_ALIVE") == "1" {
 		return bootstrapShared(t, dsn)
 	}
 
@@ -145,8 +145,8 @@ func Bootstrap(t *testing.T) *Harness {
 	// (e.g. CHAT-069's Save-into-JSONB envelope contract) tests the wrong
 	// branch. We use t.Setenv so the value is auto-restored at test end —
 	// keeps test isolation clean across the suite.
-	if os.Getenv("ASTONISH_MASTER_KEY") == "" {
-		t.Setenv("ASTONISH_MASTER_KEY", e2eFixedMasterKeyHex)
+	if os.Getenv("TROUPE_MASTER_KEY") == "" {
+		t.Setenv("TROUPE_MASTER_KEY", e2eFixedMasterKeyHex)
 	}
 
 	// Connect entstore
@@ -324,7 +324,7 @@ func writeConfig(t *testing.T, dir, platformDSN, suffix string) {
 	var sandboxBlock string
 	switch SandboxBackendName() {
 	case "openshell":
-		gatewayAddr := os.Getenv("ASTONISH_E2E_OPENSHELL_GATEWAY")
+		gatewayAddr := os.Getenv("TROUPE_E2E_OPENSHELL_GATEWAY")
 		if gatewayAddr == "" {
 			gatewayAddr = "localhost:18080"
 		}
@@ -344,11 +344,11 @@ func writeConfig(t *testing.T, dir, platformDSN, suffix string) {
         - default
 `, gatewayAddr)
 	default:
-		sandboxNS := os.Getenv("ASTONISH_E2E_SANDBOX_NAMESPACE")
+		sandboxNS := os.Getenv("TROUPE_E2E_SANDBOX_NAMESPACE")
 		if sandboxNS == "" {
 			sandboxNS = "astonish-sandbox"
 		}
-		controlPlaneNS := os.Getenv("ASTONISH_E2E_CONTROL_PLANE_NAMESPACE")
+		controlPlaneNS := os.Getenv("TROUPE_E2E_CONTROL_PLANE_NAMESPACE")
 		if controlPlaneNS == "" {
 			controlPlaneNS = "astonish"
 		}

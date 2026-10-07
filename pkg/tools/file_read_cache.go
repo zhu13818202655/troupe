@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	defaultCacheFilePath = "/tmp/.astonish_read_cache.json"
+	defaultCacheFilePath = "/tmp/.troupe_read_cache.json"
 	maxCacheSize         = 100
 )
 

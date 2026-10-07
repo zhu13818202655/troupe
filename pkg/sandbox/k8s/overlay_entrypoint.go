@@ -6,7 +6,7 @@
 //     when resuming a previously-evicted session. Session pods mount only
 //     their own uppers PVC subdirectory, so the live path is
 //     /mnt/astonish-uppers/upper.tar.zst.
-//  2. Composing the overlay chain encoded in $ASTONISH_LAYER_CHAIN as
+//  2. Composing the overlay chain encoded in $TROUPE_LAYER_CHAIN as
 //     lowerdirs (top-most first, per overlayfs syntax), with the
 //     emptyDir at /var/astonish/overlay/upper as upperdir and
 //     /var/astonish/overlay/work as workdir, mounted at /sandbox/rootfs.
@@ -23,7 +23,7 @@
 //
 // This file owns the **source of truth** for the entrypoint script.
 // Host builds emit it via `make sandbox-entrypoint` (wrapper around
-// `go run ./cmd/astonish-sandbox-entrypoint-script`); the
+// `go run ./cmd/troupe-sandbox-entrypoint-script`); the
 // docker/sandbox-base image then COPYs the file to
 // /usr/local/bin/astonish-sandbox-entrypoint. Keeping the generator in
 // Go lets us unit-test its shape without a CI shell harness and lets
@@ -39,7 +39,7 @@
 //   - Resume-tar extraction is SKIPPED if the tarball is absent (fresh
 //     session path). Absence is not an error.
 //   - Layer-chain composition reverses the comma-separated
-//     $ASTONISH_LAYER_CHAIN so the top-most (last element) becomes the
+//     $TROUPE_LAYER_CHAIN so the top-most (last element) becomes the
 //     first lowerdir — overlayfs expects the layer closest to upper
 //     first. This mirrors buildFleetPodManifest's / buildPodManifest's
 //     conventional oldest-first slice order.
@@ -245,9 +245,9 @@ func (o *EntrypointScriptOptions) applyDefaults() {
 //
 // Env vars consumed at runtime:
 //
-//   - ASTONISH_SESSION_ID (required): key used to locate the persisted
+//   - TROUPE_SESSION_ID (required): key used to locate the persisted
 //     upper tarball on the uppers PVC when resuming.
-//   - ASTONISH_LAYER_CHAIN (required): comma-separated list of layer
+//   - TROUPE_LAYER_CHAIN (required): comma-separated list of layer
 //     IDs, oldest → newest. The script reverses this for overlayfs.
 //
 // Failure modes:
@@ -278,8 +278,8 @@ if ( set -o pipefail ) 2>/dev/null; then
   set -o pipefail
 fi
 
-: "${ASTONISH_SESSION_ID:?ASTONISH_SESSION_ID must be set}"
-: "${ASTONISH_LAYER_CHAIN:?ASTONISH_LAYER_CHAIN must be set}"
+: "${TROUPE_SESSION_ID:?TROUPE_SESSION_ID must be set}"
+: "${TROUPE_LAYER_CHAIN:?TROUPE_LAYER_CHAIN must be set}"
 
 `)
 	// Emit path vars up top so the script reads top-down and the
@@ -314,8 +314,8 @@ fi
 # sessions resumable during rolling upgrades without exposing other sessions to
 # the chrooted sandbox.
 RESUME_TAR="$UPPERS_DIR/upper.tar.zst"
-if [ ! -f "$RESUME_TAR" ] && [ -f "$UPPERS_DIR/$ASTONISH_SESSION_ID/upper.tar.zst" ]; then
-  RESUME_TAR="$UPPERS_DIR/$ASTONISH_SESSION_ID/upper.tar.zst"
+if [ ! -f "$RESUME_TAR" ] && [ -f "$UPPERS_DIR/$TROUPE_SESSION_ID/upper.tar.zst" ]; then
+  RESUME_TAR="$UPPERS_DIR/$TROUPE_SESSION_ID/upper.tar.zst"
 fi
 if [ -f "$RESUME_TAR" ]; then
   echo "astonish-entrypoint: resuming upper from $RESUME_TAR" 1>&2
@@ -345,19 +345,19 @@ mkdir -p "$UPPER_DIR/dev" "$UPPER_DIR/proc" "$UPPER_DIR/sys"
 	}
 
 	b.WriteString(`# --- 2. Compose overlay from layer chain -------------------------------
-# $ASTONISH_LAYER_CHAIN is oldest-first (e.g., @base,org-layer,template).
+# $TROUPE_LAYER_CHAIN is oldest-first (e.g., @base,org-layer,template).
 # Overlayfs wants the top-most layer FIRST in its comma-separated
 # lowerdir list, so we reverse. We pass $LAYERS_DIR into awk via -v so
 # path substitution happens in awk (not a second eval pass), which
 # keeps the script robust against metacharacters in the mount path.
-LOWER=$(echo "$ASTONISH_LAYER_CHAIN" | awk -F, -v dir="$LAYERS_DIR" '
+LOWER=$(echo "$TROUPE_LAYER_CHAIN" | awk -F, -v dir="$LAYERS_DIR" '
   {
     for (i = NF; i > 0; i--) {
       printf "%s/%s/rootfs%s", dir, $i, (i > 1 ? ":" : "")
     }
   }')
 if [ -z "$LOWER" ]; then
-  echo "astonish-entrypoint: empty ASTONISH_LAYER_CHAIN" 1>&2
+  echo "astonish-entrypoint: empty TROUPE_LAYER_CHAIN" 1>&2
   exit 1
 fi
 
@@ -630,7 +630,7 @@ fi
 	}
 
 	b.WriteString(`# --- 3. Hand off to workload ------------------------------------------
-# ASTONISH_HANDOFF / ASTONISH_HANDOFF_ARGS allow the pod manifest to
+# TROUPE_HANDOFF / TROUPE_HANDOFF_ARGS allow the pod manifest to
 # override the PID-1 process after overlay composition WITHOUT
 # requiring an image rebuild. The baked-in defaults below keep the
 # image self-contained for docker-run diagnostics.
@@ -653,8 +653,8 @@ fi
 	}
 	b.WriteByte('\n')
 
-	b.WriteString(`HANDOFF="${ASTONISH_HANDOFF:-$_DEFAULT_HANDOFF}"
-HANDOFF_ARGS="${ASTONISH_HANDOFF_ARGS:-$_DEFAULT_HANDOFF_ARGS}"
+	b.WriteString(`HANDOFF="${TROUPE_HANDOFF:-$_DEFAULT_HANDOFF}"
+HANDOFF_ARGS="${TROUPE_HANDOFF_ARGS:-$_DEFAULT_HANDOFF_ARGS}"
 echo "astonish-entrypoint: handing off to $HANDOFF $HANDOFF_ARGS" 1>&2
 # shellcheck disable=SC2086
 exec chroot "$MOUNT_POINT" "$HANDOFF" $HANDOFF_ARGS

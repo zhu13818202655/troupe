@@ -171,7 +171,7 @@ The shared library is resolved lazily on the first structural-tool call by
 `treesitter.DefaultLibrary()` (`pkg/codeintel/internal/treesitter/bindings.go`),
 which tries, in order:
 
-1. `$ASTONISH_TREESITTER_LIB` (explicit override — fails fast if missing, never auto-builds).
+1. `$TROUPE_TREESITTER_LIB` (explicit override — fails fast if missing, never auto-builds).
 2. Next to the executable, then the current working directory (`libastonish-treesitter.{so,dylib}`).
 3. The previously auto-built cache under `<config-dir>/astonish/lib/<version>/`.
 4. The container/system install path `/usr/lib/astonish/libastonish-treesitter.so`.
@@ -481,7 +481,7 @@ Ripgrep and the tree-sitter library must live where tools execute (template/over
 | Flag | Default | Effect |
 |------|---------|--------|
 | `codeintel.enabled` | `true` | When false, `GetInternalTools` omits `repo_map`, `code_definition`, and `code_references` |
-| `codeintel.library_path` | _(empty)_ | If set, exported as `ASTONISH_TREESITTER_LIB` before tool registration (overrides the default `/usr/lib/astonish/libastonish-treesitter.so`) |
+| `codeintel.library_path` | _(empty)_ | If set, exported as `TROUPE_TREESITTER_LIB` before tool registration (overrides the default `/usr/lib/astonish/libastonish-treesitter.so`) |
 
 Auto-inject of a repo map into the system prompt at session start is not implemented yet; those knobs are intentionally omitted until that feature lands.
 

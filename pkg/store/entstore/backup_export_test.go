@@ -81,7 +81,7 @@ func TestExportPlatformBackup(t *testing.T) {
 		t.Fatalf("Create OIDC provider error = %v", err)
 	}
 
-	archivePath := filepath.Join(t.TempDir(), "platform.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "platform.troupe-backup")
 	if err := es.ExportPlatformBackup(ctx, archivePath, PlatformBackupExportOptions{Backend: "sqlite"}); err != nil {
 		t.Fatalf("ExportPlatformBackup() error = %v", err)
 	}
@@ -155,7 +155,7 @@ func TestExportPlatformBackupRedactSecrets(t *testing.T) {
 		t.Fatalf("Create OIDC provider error = %v", err)
 	}
 
-	archivePath := filepath.Join(t.TempDir(), "redacted.astonish-backup")
+	archivePath := filepath.Join(t.TempDir(), "redacted.troupe-backup")
 	if err := es.ExportPlatformBackup(ctx, archivePath, PlatformBackupExportOptions{Backend: "sqlite", RedactSecrets: true}); err != nil {
 		t.Fatalf("ExportPlatformBackup() error = %v", err)
 	}

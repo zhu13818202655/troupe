@@ -3,7 +3,7 @@
 // These tests exercise construction, factory registration, config validation,
 // and the pure-accessor methods (Kind, Capabilities, ServerArchitecture).
 // Tests that require a live Docker daemon are guarded with t.Skip and only
-// run when ASTONISH_TEST_DOCKER=1 is set.
+// run when TROUPE_TEST_DOCKER=1 is set.
 package docker_test
 
 import (
@@ -231,12 +231,12 @@ func TestCreateSession_RespectsContextCancel(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// applyDefaults — ASTONISH_SANDBOX_IMAGE env var override
+// applyDefaults — TROUPE_SANDBOX_IMAGE env var override
 // ---------------------------------------------------------------------------
 
 func TestApplyDefaults_SandboxImageEnvVar(t *testing.T) {
 	const customImage = "my.registry.io/custom-sandbox:v2"
-	t.Setenv("ASTONISH_SANDBOX_IMAGE", customImage)
+	t.Setenv("TROUPE_SANDBOX_IMAGE", customImage)
 
 	r := newTestRegistry(t)
 	// Pass empty SandboxImage so applyDefaults must fill it from the env var.
@@ -258,12 +258,12 @@ func TestApplyDefaults_SandboxImageEnvVar(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// Live Docker tests (require ASTONISH_TEST_DOCKER=1)
+// Live Docker tests (require TROUPE_TEST_DOCKER=1)
 // ---------------------------------------------------------------------------
 
 func TestHealth_LiveDocker(t *testing.T) {
-	if os.Getenv("ASTONISH_TEST_DOCKER") == "" {
-		t.Skip("set ASTONISH_TEST_DOCKER=1 to run live Docker tests")
+	if os.Getenv("TROUPE_TEST_DOCKER") == "" {
+		t.Skip("set TROUPE_TEST_DOCKER=1 to run live Docker tests")
 	}
 	r := newTestRegistry(t)
 	b, err := docker.New(newTestConfig(t, r))

@@ -30,7 +30,7 @@ Astonish uses a two-tier envelope encryption scheme to protect stored credential
 The master KEK is provided at startup via environment variable:
 
 ```bash
-export ASTONISH_MASTER_KEY="<64-hex-chars>"
+export TROUPE_MASTER_KEY="<64-hex-chars>"
 ```
 
 Generate a key:

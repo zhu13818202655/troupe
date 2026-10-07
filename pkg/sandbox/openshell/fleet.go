@@ -51,7 +51,7 @@ func (b *OpenShellBackend) EnsureFleetContainer(ctx context.Context, spec sandbo
 	name := fmt.Sprintf("astn-fleet-%s", truncateID(spec.FleetKey, 8))
 
 	env := map[string]string{
-		"ASTONISH_SESSION_ID": spec.FleetKey,
+		"TROUPE_SESSION_ID": spec.FleetKey,
 	}
 	driverCfg, err := applyCertBundles(b.cfg.AppConfig, env)
 	if err != nil {

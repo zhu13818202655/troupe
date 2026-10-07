@@ -209,7 +209,7 @@ func TestE2E_Session_CrossOrgDenied(t *testing.T) {
 	}
 	// Self-clean Alice's session so this test is safe under shared-seed
 	// (Plan D): tests in chat_auth share Alice's session list across runs.
-	// Skipped under shared-inspect mode (ASTONISH_E2E_KEEP_ALIVE=1) so the
+	// Skipped under shared-inspect mode (TROUPE_E2E_KEEP_ALIVE=1) so the
 	// session remains browsable in the inspector UI.
 	t.Cleanup(func() {
 		if e2eboot.RetainSessions() {

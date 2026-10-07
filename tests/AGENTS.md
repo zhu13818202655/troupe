@@ -15,14 +15,14 @@ Astonish's end-to-end and integration test infrastructure. Read this before addi
 
 ## How tests run
 - Build tag `e2e`. Makefile targets:
-  - `make test-e2e` — Postgres path (requires `ASTONISH_TEST_DSN`).
-  - `make test-e2e-sqlite` — SQLite path (no `ASTONISH_TEST_DSN`).
+  - `make test-e2e` — Postgres path (requires `TROUPE_TEST_DSN`).
+  - `make test-e2e-sqlite` — SQLite path (no `TROUPE_TEST_DSN`).
   - `make test-e2e-openshell` — OpenShell backend variant.
   - `make test-e2e-inspect` / `make test-e2e-inspect-stop` — leave an inspector server on `:9394`.
 - `go test -tags=e2e -count=1 -p 1 -timeout=…` is the underlying command. Output is piped through `tests/scenarios/stream.mjs` and then `parse-run.mjs` for reporting.
 
 ## Environment variables
-- **`ASTONISH_TEST_DSN`** (required for `test-e2e` and `test-integration`) — admin-capable Postgres DSN. The harness uses it to create/drop per-run DBs. `.env.integration.example` has a template.
+- **`TROUPE_TEST_DSN`** (required for `test-e2e` and `test-integration`) — admin-capable Postgres DSN. The harness uses it to create/drop per-run DBs. `.env.integration.example` has a template.
 - **Provider API key** (required for **all** e2e paths, including SQLite): at least one of
   - `BIFROST_API_KEY` (preferred),
   - `OPENAI_API_KEY`,
@@ -35,7 +35,7 @@ Astonish's end-to-end and integration test infrastructure. Read this before addi
 - `docker-compose.e2e.yml` powers `make e2e-env-up` / `make e2e-env-down` for a containerized smoke Astonish (not the full k8s sandbox path).
 
 ## e2eboot responsibilities
-- `bootstrap.go` / `bootstrap_sqlite.go` — set up DBs (Postgres via `ASTONISH_TEST_DSN`, or SQLite path), seed initial state.
+- `bootstrap.go` / `bootstrap_sqlite.go` — set up DBs (Postgres via `TROUPE_TEST_DSN`, or SQLite path), seed initial state.
 - `platform_core.go` — resolve API keys, initial platform state.
 - `seed.go` — DB seed data.
 - `client.go` / `http.go` / `sse.go` — HTTP + SSE test clients.
@@ -53,7 +53,7 @@ Astonish's end-to-end and integration test infrastructure. Read this before addi
 2. **All bootstrap logic belongs in `tests/e2eboot/`** — do not duplicate DB setup or auth in individual test files.
 3. **Provider keys**: if a test needs a specific provider, add the skip clause in the harness, not in individual tests.
 4. **Do not commit real API keys** — use `.env.integration.example` as the template.
-5. **`ASTONISH_TEST_DSN` needs privileges to drop/create DBs** — the inspector target relies on this. Do not point it at a production DB.
+5. **`TROUPE_TEST_DSN` needs privileges to drop/create DBs** — the inspector target relies on this. Do not point it at a production DB.
 
 ## References
 - `docs/architecture/testing-chat-scenarios.md` — scenario test infrastructure.

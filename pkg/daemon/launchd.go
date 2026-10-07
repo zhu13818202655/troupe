@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	launchdLabel    = "com.astonish.daemon"
+	launchdLabel    = "com.troupe.daemon"
 	launchdPlistDir = "Library/LaunchAgents"
 )
 

@@ -22,7 +22,7 @@ import (
 // It uses t.TempDir() for the data directory — perfect per-test isolation
 // with automatic cleanup.
 //
-// Unlike the PG path, this does NOT require ASTONISH_TEST_DSN. It still
+// Unlike the PG path, this does NOT require TROUPE_TEST_DSN. It still
 // requires a provider API key and K8s access for sandbox-dependent tests.
 func bootstrapSQLite(t *testing.T) *Harness {
 	t.Helper()
@@ -33,8 +33,8 @@ func bootstrapSQLite(t *testing.T) *Harness {
 	}
 
 	// Shared mode not supported for SQLite — always run isolated.
-	if os.Getenv("ASTONISH_E2E_KEEP_ALIVE") == "1" {
-		t.Log("[e2eboot] ASTONISH_E2E_KEEP_ALIVE ignored in SQLite mode (always isolated)")
+	if os.Getenv("TROUPE_E2E_KEEP_ALIVE") == "1" {
+		t.Log("[e2eboot] TROUPE_E2E_KEEP_ALIVE ignored in SQLite mode (always isolated)")
 	}
 
 	// Clean slate: remove any pods left behind by a previously crashed run.
@@ -71,8 +71,8 @@ func bootstrapSQLite(t *testing.T) *Harness {
 	t.Setenv("XDG_CONFIG_HOME", configDir)
 
 	// Master key for encryption path coverage (same as PG mode).
-	if os.Getenv("ASTONISH_MASTER_KEY") == "" {
-		t.Setenv("ASTONISH_MASTER_KEY", e2eFixedMasterKeyHex)
+	if os.Getenv("TROUPE_MASTER_KEY") == "" {
+		t.Setenv("TROUPE_MASTER_KEY", e2eFixedMasterKeyHex)
 	}
 
 	// Seed provider in platform settings.
@@ -145,12 +145,12 @@ func writeSQLiteConfig(t *testing.T, dir, dataDir string) {
 		bifrostURL = "https://bifrost.local.muxpie.com"
 	}
 
-	sandboxNS := os.Getenv("ASTONISH_E2E_SANDBOX_NAMESPACE")
+	sandboxNS := os.Getenv("TROUPE_E2E_SANDBOX_NAMESPACE")
 	if sandboxNS == "" {
 		sandboxNS = "astonish-sandbox"
 	}
 
-	controlPlaneNS := os.Getenv("ASTONISH_E2E_CONTROL_PLANE_NAMESPACE")
+	controlPlaneNS := os.Getenv("TROUPE_E2E_CONTROL_PLANE_NAMESPACE")
 	if controlPlaneNS == "" {
 		controlPlaneNS = "astonish"
 	}

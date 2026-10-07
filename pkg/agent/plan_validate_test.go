@@ -49,7 +49,7 @@ func TestPathTouchesRunningSurface(t *testing.T) {
 		{"pkg/sandbox/docker/backend.go", true},
 		{"./pkg/api/run_handler.go", true},
 		{"/Users/x/Projects/astonish/pkg/launcher/chat_factory.go", true},
-		{"cmd/astonish/sandbox.go", true},
+		{"cmd/troupe/sandbox.go", true},
 		{"web/src/App.tsx", true},
 		{"docs/architecture/sandbox.md", false},
 		{"", false},

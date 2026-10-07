@@ -16,7 +16,7 @@ func TestRepoMap_LibraryMissingReturnsUnavailable(t *testing.T) {
 	t.Cleanup(treesitter.ResetDefaultLibraryForTest)
 
 	missing := filepath.Join(t.TempDir(), "does-not-exist.so")
-	t.Setenv("ASTONISH_TREESITTER_LIB", missing)
+	t.Setenv("TROUPE_TREESITTER_LIB", missing)
 
 	root := t.TempDir()
 	if err := os.WriteFile(filepath.Join(root, "main.go"), []byte("package main\n"), 0644); err != nil {

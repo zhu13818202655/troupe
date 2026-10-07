@@ -264,6 +264,6 @@ func printPlatformRestoreUsage() {
 	fmt.Println("  --json                    Print JSON output")
 	fmt.Println("")
 	fmt.Println("examples:")
-	fmt.Println("  astonish platform restore backup.astonish-backup --dry-run")
-	fmt.Println("  astonish platform restore backup.astonish-backup --confirm")
+	fmt.Println("  astonish platform restore backup.troupe-backup --dry-run")
+	fmt.Println("  astonish platform restore backup.troupe-backup --confirm")
 }

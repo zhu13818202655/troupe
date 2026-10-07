@@ -25,7 +25,7 @@ type Service interface {
 	IsRunning() (bool, error)
 	// Status returns detailed status information.
 	Status() (*ServiceStatus, error)
-	// Label returns the service identifier (e.g., "com.astonish.daemon").
+	// Label returns the service identifier (e.g., "com.troupe.daemon").
 	Label() string
 	// LogPath returns the path to the daemon log file.
 	LogPath() string

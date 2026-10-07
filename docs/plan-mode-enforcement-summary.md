@@ -263,7 +263,7 @@ it out of `mcp_config.json`.
 
 `launcher.EnsureCodegraph` (`pkg/launcher/codegraph_bootstrap.go`) runs before each Graph-Plan turn:
 1. `exec.LookPath("codegraph")` — if missing, install **only on explicit consent**
-   (`ASTONISH_CODEGRAPH_AUTO_INSTALL=1`, since a single non-interactive turn can't round-trip a
+   (`TROUPE_CODEGRAPH_AUTO_INSTALL=1`, since a single non-interactive turn can't round-trip a
    prompt) via `npm i -g @colbymchenry/codegraph` (or the documented curl installer).
 2. If `<workingDir>/.codegraph/` is absent, run `codegraph init` to build the index.
 3. Returns `ready=true` once both exist.

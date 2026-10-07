@@ -33,7 +33,7 @@ help:
 	@echo "  make daemon-dev      - Run with live UI reload"
 	@echo "  make test            - Run all unit tests (Go + frontend)"
 	@echo "  make test-unit       - Same as 'make test'"
-	@echo "  make test-integration - Run integration tests (needs ASTONISH_TEST_DSN)"
+	@echo "  make test-integration - Run integration tests (needs TROUPE_TEST_DSN)"
 	@echo "  make test-e2e        - Run E2E tests (needs live LLM + DB + e2e k8s infra)"
 	@echo "  make test-e2e-sqlite - Run E2E tests with SQLite backend (no DB needed, needs k8s)"
 	@echo "  make test-e2e-inspect - Run E2E tests in shared mode (browse sessions in UI after run)"
@@ -166,10 +166,10 @@ test-unit:
 	cd $(WEB_DIR) && npm test -- --run
 	@echo "All unit tests passed!"
 
-# Integration tests — need Postgres (ASTONISH_TEST_DSN)
+# Integration tests — need Postgres (TROUPE_TEST_DSN)
 test-integration:
-	@if [ -z "$$ASTONISH_TEST_DSN" ]; then \
-		echo "ERROR: ASTONISH_TEST_DSN required. Example: export ASTONISH_TEST_DSN=postgres://user:pass@localhost:5432/testdb"; exit 1; fi
+	@if [ -z "$$TROUPE_TEST_DSN" ]; then \
+		echo "ERROR: TROUPE_TEST_DSN required. Example: export TROUPE_TEST_DSN=postgres://user:pass@localhost:5432/testdb"; exit 1; fi
 	@echo "Running integration tests..."
 	go test -tags=integration -count=1 -timeout=10m ./...
 	@echo "Integration tests passed!"
@@ -178,10 +178,10 @@ test-integration:
 # Each test bootstraps a full platform (fresh DB, real server, real auth).
 # -p 1 serializes packages to avoid Postgres role creation races.
 test-e2e:
-	@if [ -z "$$ASTONISH_TEST_DSN" ]; then echo "ERROR: ASTONISH_TEST_DSN required"; exit 1; fi
+	@if [ -z "$$TROUPE_TEST_DSN" ]; then echo "ERROR: TROUPE_TEST_DSN required"; exit 1; fi
 	@which kubectl >/dev/null 2>&1 || { echo "ERROR: kubectl not found in PATH (required for e2e sandbox preflight)"; exit 1; }
-	@CP_NS="$${ASTONISH_E2E_CONTROL_PLANE_NAMESPACE:-troupe}"; \
-	SB_NS="$${ASTONISH_E2E_SANDBOX_NAMESPACE:-troupe-sandbox}"; \
+	@CP_NS="$${TROUPE_E2E_CONTROL_PLANE_NAMESPACE:-troupe}"; \
+	SB_NS="$${TROUPE_E2E_SANDBOX_NAMESPACE:-troupe-sandbox}"; \
 	echo "Preflight: verifying e2e k8s infra ($$CP_NS + $$SB_NS)..."; \
 	for NS in "$$CP_NS" "$$SB_NS"; do \
 		if ! kubectl get ns "$$NS" >/dev/null 2>&1; then \
@@ -191,8 +191,8 @@ test-e2e:
 			echo "  Provision it with:    make e2e-k8s-up"; \
 			echo "  Tear it down with:    make e2e-k8s-down"; \
 			echo ""; \
-			echo "  Override namespaces by setting ASTONISH_E2E_CONTROL_PLANE_NAMESPACE"; \
-			echo "  and ASTONISH_E2E_SANDBOX_NAMESPACE in .env (defaults: troupe, troupe-sandbox)."; \
+			echo "  Override namespaces by setting TROUPE_E2E_CONTROL_PLANE_NAMESPACE"; \
+			echo "  and TROUPE_E2E_SANDBOX_NAMESPACE in .env (defaults: troupe, troupe-sandbox)."; \
 			echo ""; \
 			exit 1; \
 		fi; \
@@ -220,8 +220,8 @@ test-e2e:
 # Still requires K8s for sandbox-dependent tests.
 test-e2e-sqlite:
 	@which kubectl >/dev/null 2>&1 || { echo "ERROR: kubectl not found in PATH (required for e2e sandbox preflight)"; exit 1; }
-	@CP_NS="$${ASTONISH_E2E_CONTROL_PLANE_NAMESPACE:-troupe}"; \
-	SB_NS="$${ASTONISH_E2E_SANDBOX_NAMESPACE:-troupe-sandbox}"; \
+	@CP_NS="$${TROUPE_E2E_CONTROL_PLANE_NAMESPACE:-troupe}"; \
+	SB_NS="$${TROUPE_E2E_SANDBOX_NAMESPACE:-troupe-sandbox}"; \
 	echo "Preflight: verifying e2e k8s infra ($$CP_NS + $$SB_NS)..."; \
 	for NS in "$$CP_NS" "$$SB_NS"; do \
 		if ! kubectl get ns "$$NS" >/dev/null 2>&1; then \
@@ -244,7 +244,7 @@ test-e2e-sqlite:
 	echo "Preflight OK."
 	@echo ""
 	@echo "Running E2E tests with SQLite backend (~26 tests, typically 5-15 min)..."
-	@set -o pipefail; ASTONISH_E2E_BACKEND=sqlite go test -tags=e2e -count=1 -p 1 -timeout=15m \
+	@set -o pipefail; TROUPE_E2E_BACKEND=sqlite go test -tags=e2e -count=1 -p 1 -timeout=15m \
 		$(if $(RUN),-run $(RUN)) $(if $(VERBOSE),-v) -json ./tests/e2e/... \
 		| node tests/scenarios/stream.mjs /tmp/e2e-results-sqlite.json; \
 	RESULT=$$?; \
@@ -346,7 +346,7 @@ e2e-openshell-down:
 	@echo "OpenShell e2e infra removed."
 
 # Run E2E tests against the OpenShell backend.
-# Requires: ASTONISH_TEST_DSN, provider API key, OpenShell gateway Running.
+# Requires: TROUPE_TEST_DSN, provider API key, OpenShell gateway Running.
 #
 # The tests run on the host, so we port-forward the in-cluster gateway to
 # localhost:18080 for the duration of the run. This avoids requiring the host
@@ -354,7 +354,7 @@ e2e-openshell-down:
 E2E_OS_LOCAL_PORT := 18080
 
 test-e2e-openshell:
-	@if [ -z "$$ASTONISH_TEST_DSN" ]; then echo "ERROR: ASTONISH_TEST_DSN required"; exit 1; fi
+	@if [ -z "$$TROUPE_TEST_DSN" ]; then echo "ERROR: TROUPE_TEST_DSN required"; exit 1; fi
 	@which kubectl >/dev/null 2>&1 || { echo "ERROR: kubectl not found in PATH"; exit 1; }
 	@echo "Preflight: verifying OpenShell gateway is Running..."
 	@PHASE=$$(kubectl get pod -n $(E2E_OS_NS) -l app.kubernetes.io/name=openshell \
@@ -382,10 +382,10 @@ test-e2e-openshell:
 	echo ""; \
 	echo "Running E2E tests against OpenShell backend (~44 tests, typically 10-20 min)..."; \
 	set -o pipefail; \
-	ASTONISH_E2E_SANDBOX_BACKEND=openshell \
-	ASTONISH_E2E_SANDBOX_NAMESPACE=$(E2E_OS_SANDBOX_NS) \
-	ASTONISH_E2E_CONTROL_PLANE_NAMESPACE=$(E2E_OS_NS) \
-	ASTONISH_E2E_OPENSHELL_GATEWAY=localhost:$(E2E_OS_LOCAL_PORT) \
+	TROUPE_E2E_SANDBOX_BACKEND=openshell \
+	TROUPE_E2E_SANDBOX_NAMESPACE=$(E2E_OS_SANDBOX_NS) \
+	TROUPE_E2E_CONTROL_PLANE_NAMESPACE=$(E2E_OS_NS) \
+	TROUPE_E2E_OPENSHELL_GATEWAY=localhost:$(E2E_OS_LOCAL_PORT) \
 	go test -tags=e2e -count=1 -p 1 -timeout=20m \
 		$(if $(RUN),-run $(RUN)) $(if $(VERBOSE),-v) -json ./tests/e2e/... \
 		| node tests/scenarios/stream.mjs /tmp/e2e-openshell-results.json; \
@@ -421,10 +421,10 @@ $(E2E_INSPECT_BIN): $(E2E_INSPECT_DEPS)
 	go build -o $@ ./tools/e2e-inspector
 
 test-e2e-inspect: $(E2E_INSPECT_BIN)
-	@if [ -z "$$ASTONISH_TEST_DSN" ]; then echo "ERROR: ASTONISH_TEST_DSN required"; exit 1; fi
+	@if [ -z "$$TROUPE_TEST_DSN" ]; then echo "ERROR: TROUPE_TEST_DSN required"; exit 1; fi
 	@which kubectl >/dev/null 2>&1 || { echo "ERROR: kubectl not found in PATH (required for e2e sandbox preflight)"; exit 1; }
-	@CP_NS="$${ASTONISH_E2E_CONTROL_PLANE_NAMESPACE:-troupe}"; \
-	SB_NS="$${ASTONISH_E2E_SANDBOX_NAMESPACE:-troupe-sandbox}"; \
+	@CP_NS="$${TROUPE_E2E_CONTROL_PLANE_NAMESPACE:-troupe}"; \
+	SB_NS="$${TROUPE_E2E_SANDBOX_NAMESPACE:-troupe-sandbox}"; \
 	echo "Preflight: verifying e2e k8s infra ($$CP_NS + $$SB_NS)..."; \
 	for NS in "$$CP_NS" "$$SB_NS"; do \
 		kubectl get ns "$$NS" >/dev/null 2>&1 || { echo "ERROR: namespace $$NS missing — run 'make e2e-k8s-up' first"; exit 1; }; \
@@ -457,7 +457,7 @@ test-e2e-inspect: $(E2E_INSPECT_BIN)
 	@tail -10 $(E2E_INSPECT_LOG) | sed 's/^/  /'
 	@echo ""
 	@echo "Running E2E tests against shared inspector instance..."
-	@set -o pipefail; ASTONISH_E2E_KEEP_ALIVE=1 \
+	@set -o pipefail; TROUPE_E2E_KEEP_ALIVE=1 \
 		go test -tags=e2e -count=1 -p 1 -timeout=15m -json ./tests/e2e/... \
 		| node tests/scenarios/stream.mjs /tmp/e2e-results.json; \
 	RESULT=$$?; \
@@ -493,7 +493,7 @@ test-e2e-inspect: $(E2E_INSPECT_BIN)
 # fallback), then call `e2e-inspector --cleanup` which drops the DBs and
 # removes /tmp/troupe-e2e-inspect-* dirs and state files.
 test-e2e-inspect-stop: $(E2E_INSPECT_BIN)
-	@if [ -z "$$ASTONISH_TEST_DSN" ]; then echo "ERROR: ASTONISH_TEST_DSN required (used to drop databases)"; exit 1; fi
+	@if [ -z "$$TROUPE_TEST_DSN" ]; then echo "ERROR: TROUPE_TEST_DSN required (used to drop databases)"; exit 1; fi
 	@PIDS=""; \
 	if [ -f /tmp/troupe-e2e-inspect.pid ]; then \
 		FILE_PID=$$(cat /tmp/troupe-e2e-inspect.pid 2>/dev/null); \

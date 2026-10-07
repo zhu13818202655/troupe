@@ -86,13 +86,13 @@ secrets:
   # and platform-dsn keys. When set, the chart does NOT create its own Secret
   # and all three fields below are ignored.
   existingSecret: ""
-  # ASTONISH_MASTER_KEY: 64 hex characters (32 bytes AES-256 key)
+  # TROUPE_MASTER_KEY: 64 hex characters (32 bytes AES-256 key)
   # Used for encrypting credentials at rest in the platform database.
   masterKey: ""
-  # ASTONISH_JWT_SECRET: signing key for access/refresh tokens.
+  # TROUPE_JWT_SECRET: signing key for access/refresh tokens.
   # If empty, tokens won't survive pod restarts.
   jwtSecret: ""
-  # ASTONISH_PLATFORM_DSN: PostgreSQL connection string for the platform database.
+  # TROUPE_PLATFORM_DSN: PostgreSQL connection string for the platform database.
   # Format: postgres://user:pass@host:port/dbname?sslmode=disable
   platformDSN: ""
 

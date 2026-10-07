@@ -54,7 +54,7 @@ func TestCodeProviderTypes_CoversAllSupportedProviders(t *testing.T) {
 }
 
 // TestCodeProviderTypes_SAPAICoreFields verifies the SAP AI Core entry declares
-// the OAuth fields it needs, matching cmd/astonish/setup.go's runSAPAICoreForm.
+// the OAuth fields it needs, matching cmd/troupe/setup.go's runSAPAICoreForm.
 func TestCodeProviderTypes_SAPAICoreFields(t *testing.T) {
 	ti := findProviderType(t, "sap_ai_core")
 

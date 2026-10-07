@@ -1377,7 +1377,7 @@ func printPlatformIssueTokenUsage() {
 	fmt.Println("  astonish platform issue-token --server https://astonish.internal --email admin@co.com")
 	fmt.Println("")
 	fmt.Println("  # Use in scripts:")
-	fmt.Println("  export ASTONISH_TEST_TOKEN=$(astonish platform issue-token --server $URL)")
+	fmt.Println("  export TROUPE_TEST_TOKEN=$(astonish platform issue-token --server $URL)")
 }
 
 // ---------------------------------------------------------------------------
@@ -1411,8 +1411,8 @@ func printPlatformUsage() {
 	fmt.Println("  astonish platform init --host 10.0.0.5 --password secret")
 	fmt.Println("  astonish platform status")
 	fmt.Println("  astonish platform issue-token --server https://astonish.internal")
-	fmt.Println("  astonish platform backup verify backup.astonish-backup")
-	fmt.Println("  astonish platform restore backup.astonish-backup --dry-run")
+	fmt.Println("  astonish platform backup verify backup.troupe-backup")
+	fmt.Println("  astonish platform restore backup.troupe-backup --dry-run")
 	fmt.Println("  astonish platform org create --name 'Acme' --slug acme")
 	fmt.Println("  astonish platform org invite --org acme --email alice@acme.com")
 	fmt.Println("  astonish platform org list")

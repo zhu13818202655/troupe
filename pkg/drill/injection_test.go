@@ -34,7 +34,7 @@ suite_config:
   configure:
     - "test -f /root/myapp/config/providers.yaml"
   setup:
-    - "bash /root/myapp/.astonish/start-services.sh"
+    - "bash /root/myapp/.troupe/start-services.sh"
 `
 	var cfg config.AgentConfig
 	if err := yaml.Unmarshal([]byte(input), &cfg); err != nil {

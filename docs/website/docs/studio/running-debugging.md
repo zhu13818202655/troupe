@@ -62,10 +62,10 @@ astonish daemon logs -f
 Or run the daemon in foreground mode and force logs to stdout:
 
 ```bash
-ASTONISH_LOG_DEST=stdout astonish daemon run
+TROUPE_LOG_DEST=stdout astonish daemon run
 ```
 
-Local/default daemon mode remains file-based unless `ASTONISH_LOG_DEST=stdout` is set. Kubernetes API and worker pods use stdout by default.
+Local/default daemon mode remains file-based unless `TROUPE_LOG_DEST=stdout` is set. Kubernetes API and worker pods use stdout by default.
 
 ### Common Issues
 

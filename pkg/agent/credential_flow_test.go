@@ -317,7 +317,7 @@ curl -s -X POST "https://identity-3.qa-de-1.cloud.sap/v3/auth/tokens" -d @/tmp/a
 	result := credentials.SubstituteShellCommand(command, resolver)
 
 	// Should contain env var exports with the real values
-	if !strings.Contains(result, "export __ASTONISH_CRED_") {
+	if !strings.Contains(result, "export __TROUPE_CRED_") {
 		t.Fatalf("expected env var exports, got:\n%s", result)
 	}
 
@@ -468,7 +468,7 @@ func TestToolNodeCredentialResolution(t *testing.T) {
 	cmd := resolvedArgs["command"].(string)
 
 	// Should contain env var exports
-	if !strings.Contains(cmd, "export __ASTONISH_CRED_") {
+	if !strings.Contains(cmd, "export __TROUPE_CRED_") {
 		t.Fatalf("expected env var exports in command, got:\n%s", cmd)
 	}
 	// Should contain real values
@@ -501,7 +501,7 @@ func TestFlowShellCommandCredentialResolution_ZeroWidthOpenStackToken(t *testing
 	credentials.SubstituteAndRestore(resolvedArgs, resolver, "command")
 
 	cmd := resolvedArgs["command"].(string)
-	if !strings.Contains(cmd, "export __ASTONISH_CRED_") {
+	if !strings.Contains(cmd, "export __TROUPE_CRED_") {
 		t.Fatalf("expected env var exports in command, got:\n%s", cmd)
 	}
 	if strings.Contains(cmd, "CREDENTIAL:openstack-keystone:token") {

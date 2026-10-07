@@ -55,7 +55,7 @@ without any AI or human involvement at runtime. This means:
     "nohup cmd &" or "cmd &" without background=true — the process will die
     within seconds because the PTY closes when the shell exits. Use
     process_read to check output and process_kill to stop the process.
-    Exception: .astonish/start-services.sh uses detached restart supervisors
+    Exception: .troupe/start-services.sh uses detached restart supervisors
     (setsid+nohup + while-true restart loop + PID files) — see Step 1h-iv.
     That is not the interactive shell_command path.
 
@@ -207,7 +207,7 @@ cause the process to die when the PTY closes:
 The process manager's PTY closes when the shell exits, sending SIGHUP to all
 children. Only background=true keeps the PTY session alive.
 
-NOTE: Inside .astonish/start-services.sh the opposite is required — run each
+NOTE: Inside .troupe/start-services.sh the opposite is required — run each
 daemon under a detached restart supervisor (setsid+nohup, while-true restart,
 PID file), poll until ready + stable, then exit 0 (see 1h-iv). That script is
 a different launch path from interactive shell_command.
@@ -227,13 +227,13 @@ Ask the user: "I started <service> but I'm not sure how to verify it's
 working. What endpoint or port should I check?"
 
 **1h-iv. Record what you learned for this service (this becomes the suite YAML):**
-- Prefer writing/updating <workspace>/.astonish/start-services.sh and
+- Prefer writing/updating <workspace>/.troupe/start-services.sh and
   stop-services.sh once the recipe works — suite setup should call those scripts.
 - CRITICAL for start-services.sh (different from interactive shell_command):
   1. Do NOT start daemons with bare setsid/nohup alone — Vite/npm often exit
      seconds after the first successful curl. Wrap each command in a detached
      supervisor: setsid+nohup, stdin from /dev/null, while-true restart loop,
-     write supervisor PID to .astonish/*.supervisor.pid, then disown.
+     write supervisor PID to .troupe/*.supervisor.pid, then disown.
   2. Prefer "npx vite --host 0.0.0.0 --port <port>" over "npm run dev".
   3. Skip start when the service already answers (curl already-running guard).
   4. Poll until ready, sample stability a few times, then exit 0 — do NOT end
@@ -253,8 +253,8 @@ Example start-services.sh shape (restart supervisors):
     #!/usr/bin/env bash
     set -u
     WORKSPACE="/root/myapp"
-    LOG_DIR="$WORKSPACE/.astonish/logs"
-    PID_DIR="$WORKSPACE/.astonish"
+    LOG_DIR="$WORKSPACE/.troupe/logs"
+    PID_DIR="$WORKSPACE/.troupe"
     mkdir -p "$LOG_DIR"
     is_up() { curl -sf --max-time 2 "$1" >/dev/null 2>&1; }
     start_supervised() {
@@ -299,7 +299,7 @@ Example stop-services.sh shape:
 
     #!/usr/bin/env bash
     set -u
-    PID_DIR="/root/myapp/.astonish"
+    PID_DIR="/root/myapp/.troupe"
     for f in backend.supervisor.pid frontend.supervisor.pid; do
       if [ -f "$PID_DIR/$f" ]; then
         pid=$(cat "$PID_DIR/$f")
@@ -431,7 +431,7 @@ application, and how to verify it is ready.
       configure:                         # OPTIONAL — appendix after injection, before start
         - "test -f /root/myapp/config/providers.yaml"
       setup:
-        - "bash /root/myapp/.astonish/start-services.sh"  # supervised restart + poll + exit
+        - "bash /root/myapp/.troupe/start-services.sh"  # supervised restart + poll + exit
       ready_check:                       # OPTIONAL — only for servers/daemons
         type: http                       # "http", "port", or "output_contains"
         url: "http://localhost:8080/health"  # For http type
@@ -441,7 +441,7 @@ application, and how to verify it is ready.
         interval: 2
         # stable_count: 3                # consecutive successes required (default 3)
       teardown:
-        - "bash /root/myapp/.astonish/stop-services.sh || true"
+        - "bash /root/myapp/.troupe/stop-services.sh || true"
       environment:
         MY_ENV_VAR: "test-value"         # Optional shared env vars
 
@@ -593,7 +593,7 @@ Guidelines:
 - configure: is the appendix for offline/API/file/cmd steps that make the app
   usable (after secrets exist, before start). For APIs that need a live server,
   put them in start-services.sh after the ready poll (or a setup line after start).
-- Prefer bash <workspace>/.astonish/start-services.sh when that template
+- Prefer bash <workspace>/.troupe/start-services.sh when that template
   bootstrap script exists (detached restart supervisors + poll + exit 0).
   Suite setup runs it in the foreground and waits for exit. Otherwise, for
   single-service suites, use & to background long-running processes in setup

@@ -13,7 +13,7 @@ All logical export/import code must go through `pkg/store/entstore`. Backup code
 
 ## Archive Format
 
-The archive is a single user-facing `.astonish-backup` file. Internally it is a tar-compatible multi-file logical archive, gzip-compressed by default. Readers detect gzip by magic bytes and continue to accept uncompressed tar archives for compatibility. The archive contains these reserved metadata entries:
+The archive is a single user-facing `.troupe-backup` file. Internally it is a tar-compatible multi-file logical archive, gzip-compressed by default. Readers detect gzip by magic bytes and continue to accept uncompressed tar archives for compatibility. The archive contains these reserved metadata entries:
 
 ```text
 manifest.json
@@ -57,7 +57,7 @@ The scope identifiers in the manifest are security-relevant. Exporters must reso
 
 Credential payloads are encrypted at rest and must remain encrypted in archives. Logical export must never serialize plaintext secrets, OAuth access tokens, refresh tokens, or provider keys. The default restore behavior preserves encrypted blobs only when the target has compatible key material.
 
-Credentials use envelope encryption: each org has a `credential_key` row in `org_encryption_keys`, encrypted by the installation master key (`ASTONISH_MASTER_KEY` or `~/.config/astonish/.store_key`), and personal/team credential rows are encrypted with that org key. Restore planning inspects encrypted credential material before writing. If a backup contains credential rows and the current master key is missing or cannot decrypt the restored org credential key, restore reports a blocker instead of importing credentials that would appear in lists but fail at use time.
+Credentials use envelope encryption: each org has a `credential_key` row in `org_encryption_keys`, encrypted by the installation master key (`TROUPE_MASTER_KEY` or `~/.config/astonish/.store_key`), and personal/team credential rows are encrypted with that org key. Restore planning inspects encrypted credential material before writing. If a backup contains credential rows and the current master key is missing or cannot decrypt the restored org credential key, restore reports a blocker instead of importing credentials that would appear in lists but fail at use time.
 
 Portable non-secret exports use the explicit `--redact-secrets` option. Archive-level encryption is explicit via a passphrase and uses AES-256-GCM with an Argon2id-derived key. Archive passphrases protect the backup file in transit/storage; they do not replace the installation master key needed to decrypt restored credentials at runtime. Any future key export or re-key flow must be explicit, audited, and documented separately from normal backup creation.
 
@@ -84,7 +84,7 @@ Restore must validate before writing:
 4. Target is empty, unless SQLite destructive reset is explicitly requested.
 5. Encrypted credential payloads are usable with the current installation master key, or the backup is intentionally redacted/non-recovery.
 
-Credential validation is a preflight safety gate. It checks restored `org_encryption_keys.credential_key` rows and representative personal/team `credentials.encrypted` rows. Missing or wrong key material is a blocker with an operator-facing remediation: copy the source `~/.config/astonish/.store_key` or set the same `ASTONISH_MASTER_KEY` before restore. Legacy plaintext credential rows are allowed with a warning.
+Credential validation is a preflight safety gate. It checks restored `org_encryption_keys.credential_key` rows and representative personal/team `credentials.encrypted` rows. Missing or wrong key material is a blocker with an operator-facing remediation: copy the source `~/.config/astonish/.store_key` or set the same `TROUPE_MASTER_KEY` before restore. Legacy plaintext credential rows are allowed with a warning.
 
 Each logical scope import is wrapped in a database transaction and the SQLite path runs foreign-key checks before commit. PostgreSQL full-platform restore is not one global transaction because it provisions and writes multiple databases and schemas; failures can leave already-committed earlier scopes in place. This is acceptable only for the first fresh-target recovery workflow and is why PostgreSQL destructive reset remains outside the tool.
 
@@ -126,7 +126,7 @@ The current implementation provides the safe archive foundation, SQLite/PostgreS
 - `astonish platform restore <archive> --confirm` for SQLite or PostgreSQL fresh-target logical restore.
 - `astonish platform restore <archive> --confirm --reset-target` for destructive SQLite target reset followed by restore.
 - Restore-time scope mapping with `--map-org`, `--map-team`, and `--map-user`.
-- PostgreSQL integration scaffolding in `pkg/store/entstore/backup_postgres_restore_integration_test.go`, gated by `-tags=integration` and `ASTONISH_TEST_DSN`.
+- PostgreSQL integration scaffolding in `pkg/store/entstore/backup_postgres_restore_integration_test.go`, gated by `-tags=integration` and `TROUPE_TEST_DSN`.
 
 For SQLite and PostgreSQL, `backup create` discovers platform/org/team/personal scopes through the tenant metadata and exports every user table as JSONL records. This includes durable rows for flows, apps, app state, fleets, drills, sessions, memories, settings, MCP servers, credentials, and scheduled jobs when those rows exist. It does not include physical `.db` files. Recovery backups preserve stored values by default, including password hashes and encrypted credential blobs, because those values are required for full system recovery. Use `--redact-secrets` only for portable/support exports that intentionally cannot restore protected values. PostgreSQL destructive reset is intentionally blocked; operators should restore into a fresh PostgreSQL platform database or reset databases externally with site-specific safeguards. App-created SQL schemas and merge-style restore remain planned follow-up work.
 

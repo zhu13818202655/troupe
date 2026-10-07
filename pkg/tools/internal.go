@@ -866,8 +866,8 @@ func GetInternalTools() ([]tool.Tool, error) {
 		codeIntelEnabled = appCfg.CodeIntel.IsEnabled()
 		if appCfg.CodeIntel.LibraryPath != "" {
 			// Prefer configured path over the hard-coded default; the loader
-			// in pkg/codeintel reads ASTONISH_TREESITTER_LIB.
-			_ = os.Setenv("ASTONISH_TREESITTER_LIB", appCfg.CodeIntel.LibraryPath)
+			// in pkg/codeintel reads TROUPE_TREESITTER_LIB.
+			_ = os.Setenv("TROUPE_TREESITTER_LIB", appCfg.CodeIntel.LibraryPath)
 		}
 		// Honor security.allow_private_networks for personal/CLI mode (no sandbox).
 		// In sandbox mode this is set unconditionally by the node process.

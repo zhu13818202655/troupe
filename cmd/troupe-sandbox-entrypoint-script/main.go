@@ -12,7 +12,7 @@
 //	make sandbox-entrypoint
 //	# writes ./astonish-sandbox-entrypoint for COPY into docker/sandbox-base
 //
-//	go run ./cmd/astonish-sandbox-entrypoint-script > astonish-sandbox-entrypoint
+//	go run ./cmd/troupe-sandbox-entrypoint-script > astonish-sandbox-entrypoint
 //
 // The emitted script is parameterised ONLY by the defaults baked into
 // EntrypointScriptOptions.applyDefaults; re-running with a different

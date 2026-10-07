@@ -89,4 +89,4 @@ astonish fleet templates
 astonish fleet plan create --template full-stack-team --objective "Build user auth"
 ```
 
-Templates are stored in your Astonish config directory (`~/.config/astonish/fleet/`) or in the project's `.astonish/fleet/` directory.
+Templates are stored in your Astonish config directory (`~/.config/astonish/fleet/`) or in the project's `.troupe/fleet/` directory.

@@ -172,7 +172,7 @@ helm install astonish deploy/helm/astonish \
 # Check pod status
 kubectl get pods -n astonish
 
-# Check API logs. Kubernetes deployments run with ASTONISH_MODE=api/worker,
+# Check API logs. Kubernetes deployments run with TROUPE_MODE=api/worker,
 # so Astonish writes application logs to stdout for kubectl and log collectors.
 kubectl logs -n astonish -l app.kubernetes.io/component=api --tail=50
 

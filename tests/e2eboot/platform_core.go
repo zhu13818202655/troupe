@@ -40,7 +40,7 @@ func (stdoutLogger) Logf(format string, args ...any) {
 
 // CoreOptions configures BootstrapPlatformCore.
 type CoreOptions struct {
-	BaseDSN      string  // ASTONISH_TEST_DSN
+	BaseDSN      string  // TROUPE_TEST_DSN
 	APIKey       string  // resolved from BIFROST_API_KEY etc.
 	Suffix       string  // platform/org DB suffix
 	Port         int     // 0 = random, otherwise fixed
@@ -226,7 +226,7 @@ func BootstrapPlatformCore(ctx context.Context, opts CoreOptions) (*CoreHarness,
 	// masterKey set" (e.g. CHAT-069's Save-into-JSONB envelope contract) ends
 	// up testing the wrong code branch. We use a deterministic test key — its
 	// only role here is to flip on the encryption path. setEnvE2EMasterKey is
-	// a no-op when the caller has already exported ASTONISH_MASTER_KEY so that
+	// a no-op when the caller has already exported TROUPE_MASTER_KEY so that
 	// targeted suites can override.
 	setEnvE2EMasterKey(log)
 
@@ -358,7 +358,7 @@ func writeConfigFile(dir, platformDSN, suffix, bifrostURL, jwtSecret string) err
 	var sandboxBlock string
 	switch SandboxBackendName() {
 	case "openshell":
-		gatewayAddr := os.Getenv("ASTONISH_E2E_OPENSHELL_GATEWAY")
+		gatewayAddr := os.Getenv("TROUPE_E2E_OPENSHELL_GATEWAY")
 		if gatewayAddr == "" {
 			gatewayAddr = "localhost:18080"
 		}
@@ -378,11 +378,11 @@ func writeConfigFile(dir, platformDSN, suffix, bifrostURL, jwtSecret string) err
         - default
 `, gatewayAddr)
 	default:
-		sandboxNS := os.Getenv("ASTONISH_E2E_SANDBOX_NAMESPACE")
+		sandboxNS := os.Getenv("TROUPE_E2E_SANDBOX_NAMESPACE")
 		if sandboxNS == "" {
 			sandboxNS = "astonish-sandbox"
 		}
-		controlPlaneNS := os.Getenv("ASTONISH_E2E_CONTROL_PLANE_NAMESPACE")
+		controlPlaneNS := os.Getenv("TROUPE_E2E_CONTROL_PLANE_NAMESPACE")
 		if controlPlaneNS == "" {
 			controlPlaneNS = "astonish"
 		}
@@ -443,7 +443,7 @@ storage:
 // 32 bytes encoded as 64 hex chars. Decoding is validated below.
 const e2eFixedMasterKeyHex = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
 
-// setEnvE2EMasterKey ensures ASTONISH_MASTER_KEY is set before
+// setEnvE2EMasterKey ensures TROUPE_MASTER_KEY is set before
 // NewPlatformServices constructs PlatformSecretStore (whose loadMasterKey()
 // runs once at construction time). If the caller has already exported a
 // master key, leave it alone so targeted suites can pin their own.
@@ -451,13 +451,13 @@ const e2eFixedMasterKeyHex = "0123456789abcdef0123456789abcdef0123456789abcdef01
 // Safe to call multiple times. Logs whether a fresh value was applied so
 // inspector boot logs make the encryption-on contract auditable.
 func setEnvE2EMasterKey(log CoreLogger) {
-	if existing := os.Getenv("ASTONISH_MASTER_KEY"); existing != "" {
-		log.Logf("[e2eboot] ASTONISH_MASTER_KEY already set by caller — leaving as-is")
+	if existing := os.Getenv("TROUPE_MASTER_KEY"); existing != "" {
+		log.Logf("[e2eboot] TROUPE_MASTER_KEY already set by caller — leaving as-is")
 		return
 	}
-	if err := os.Setenv("ASTONISH_MASTER_KEY", e2eFixedMasterKeyHex); err != nil {
-		log.Logf("[e2eboot] WARN: setenv ASTONISH_MASTER_KEY: %v", err)
+	if err := os.Setenv("TROUPE_MASTER_KEY", e2eFixedMasterKeyHex); err != nil {
+		log.Logf("[e2eboot] WARN: setenv TROUPE_MASTER_KEY: %v", err)
 		return
 	}
-	log.Logf("[e2eboot] ASTONISH_MASTER_KEY set to deterministic e2e fixture (encryption enabled)")
+	log.Logf("[e2eboot] TROUPE_MASTER_KEY set to deterministic e2e fixture (encryption enabled)")
 }
