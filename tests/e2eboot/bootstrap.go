@@ -1,7 +1,7 @@
 //go:build e2e
 
 // Package e2eboot provides a shared test harness for all E2E tests.
-// It bootstraps a full Astonish platform (fresh DB, real StudioServer,
+// It bootstraps a full Troupe platform (fresh DB, real StudioServer,
 // real auth, real provider) and returns a Harness that tests use to
 // interact with the platform via HTTP.
 //
@@ -130,12 +130,12 @@ func Bootstrap(t *testing.T) *Harness {
 
 	// Write temp config.yaml
 	configDir := t.TempDir()
-	astonishDir := filepath.Join(configDir, "astonish")
-	if err := os.MkdirAll(astonishDir, 0755); err != nil {
+	troupeDir := filepath.Join(configDir, "troupe")
+	if err := os.MkdirAll(troupeDir, 0755); err != nil {
 		t.Fatalf("[e2eboot] mkdir config dir: %v", err)
 	}
 
-	writeConfig(t, astonishDir, platformDSN, suffix)
+	writeConfig(t, troupeDir, platformDSN, suffix)
 	t.Setenv("XDG_CONFIG_HOME", configDir)
 
 	// Mirror production by giving the platform a real master key BEFORE
@@ -338,7 +338,7 @@ func writeConfig(t *testing.T, dir, platformDSN, suffix string) {
   openshell:
     gateway_addr: %s
     gateway_tls: false
-    sandbox_image: ghcr.io/sap/astonish-sandbox-openshell:dev
+    sandbox_image: ghcr.io/sap/troupe-sandbox-openshell:dev
     network_policy:
       presets:
         - default
@@ -346,11 +346,11 @@ func writeConfig(t *testing.T, dir, platformDSN, suffix string) {
 	default:
 		sandboxNS := os.Getenv("TROUPE_E2E_SANDBOX_NAMESPACE")
 		if sandboxNS == "" {
-			sandboxNS = "astonish-sandbox"
+			sandboxNS = "troupe-sandbox"
 		}
 		controlPlaneNS := os.Getenv("TROUPE_E2E_CONTROL_PLANE_NAMESPACE")
 		if controlPlaneNS == "" {
-			controlPlaneNS = "astonish"
+			controlPlaneNS = "troupe"
 		}
 		kubeconfigPath := os.Getenv("KUBECONFIG")
 		if kubeconfigPath == "" {
@@ -372,9 +372,9 @@ func writeConfig(t *testing.T, dir, platformDSN, suffix string) {
     control_plane_namespace: %s
     overlay_mode: fuse
     privileged_pods: true
-    sandbox_image: ghcr.io/sap/astonish-sandbox-base:dev
-    layers_pvc_name: astonish-layers
-    uppers_pvc_name: astonish-uppers
+    sandbox_image: ghcr.io/sap/troupe-sandbox-base:dev
+    layers_pvc_name: troupe-layers
+    uppers_pvc_name: troupe-uppers
 `, kubeconfigPath, sandboxNS, controlPlaneNS)
 	}
 

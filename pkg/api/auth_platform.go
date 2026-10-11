@@ -35,12 +35,12 @@ type orgResolver interface {
 // It handles user registration, login, JWT token lifecycle, and automated
 // org/team provisioning for the first user.
 type PlatformAuth struct {
-	jwt          *JWTIssuer
-	authCfg      config.PlatformAuthConfig
-	pgStore      store.PlatformBackend
-	storeCfg     config.StorageConfig
-	orgResolver  orgResolver // defaults to pgStore; override in tests
-	linkCodes    store.LinkCodeStore
+	jwt         *JWTIssuer
+	authCfg     config.PlatformAuthConfig
+	pgStore     store.PlatformBackend
+	storeCfg    config.StorageConfig
+	orgResolver orgResolver // defaults to pgStore; override in tests
+	linkCodes   store.LinkCodeStore
 }
 
 // NewPlatformAuth creates a new platform auth manager.
@@ -87,14 +87,14 @@ type registerRequest struct {
 }
 
 type authResponse struct {
-	User           authUserResponse  `json:"user"`
-	Org            authOrgResponse   `json:"org"`
-	AccessToken    string            `json:"access_token,omitempty"`
-	RefreshToken   string            `json:"refresh_token,omitempty"`
-	ExpiresIn      int               `json:"expires_in"`
-	TeamSlug       string            `json:"team,omitempty"`
-	AvailableOrgs  []authOrgOption   `json:"available_orgs,omitempty"`
-	AvailableTeams []authTeamOption  `json:"available_teams,omitempty"`
+	User           authUserResponse `json:"user"`
+	Org            authOrgResponse  `json:"org"`
+	AccessToken    string           `json:"access_token,omitempty"`
+	RefreshToken   string           `json:"refresh_token,omitempty"`
+	ExpiresIn      int              `json:"expires_in"`
+	TeamSlug       string           `json:"team,omitempty"`
+	AvailableOrgs  []authOrgOption  `json:"available_orgs,omitempty"`
+	AvailableTeams []authTeamOption `json:"available_teams,omitempty"`
 }
 
 type authOrgOption struct {
@@ -277,9 +277,9 @@ func (pa *PlatformAuth) handleLogin(w http.ResponseWriter, r *http.Request) {
 	if user.Status == "pending_verification" {
 		respondJSON(w, http.StatusForbidden, map[string]any{
 			"error":                 "email_not_verified",
-			"message":              "Please verify your email address before logging in.",
+			"message":               "Please verify your email address before logging in.",
 			"requires_verification": true,
-			"email":                user.Email,
+			"email":                 user.Email,
 		})
 		return
 	}
@@ -402,12 +402,12 @@ func (pa *PlatformAuth) handleRefresh(w http.ResponseWriter, r *http.Request) {
 
 	// Fall back to cookie (browser clients)
 	if refreshTokenStr == "" {
-		cookie, err := r.Cookie("astonish_refresh")
-		if err != nil {
+		value, ok := readAuthCookie(r, refreshCookieName, legacyRefreshCookieName)
+		if !ok {
 			respondError(w, http.StatusUnauthorized, "no refresh token")
 			return
 		}
-		refreshTokenStr = cookie.Value
+		refreshTokenStr = value
 	}
 
 	// Validate the refresh token
@@ -576,8 +576,8 @@ func (pa *PlatformAuth) handleLogout(w http.ResponseWriter, r *http.Request) {
 		refreshTokenStr = bodyReq.RefreshToken
 	}
 	if refreshTokenStr == "" {
-		if cookie, err := r.Cookie("astonish_refresh"); err == nil {
-			refreshTokenStr = cookie.Value
+		if value, ok := readAuthCookie(r, refreshCookieName, legacyRefreshCookieName); ok {
+			refreshTokenStr = value
 		}
 	}
 
@@ -602,12 +602,12 @@ func (pa *PlatformAuth) handleMe(w http.ResponseWriter, r *http.Request) {
 	if authHeader := r.Header.Get("Authorization"); strings.HasPrefix(authHeader, "Bearer ") {
 		tokenStr = strings.TrimPrefix(authHeader, "Bearer ")
 	} else {
-		cookie, err := r.Cookie("astonish_access")
-		if err != nil {
+		value, ok := readAuthCookie(r, accessCookieName, legacyAccessCookieName)
+		if !ok {
 			respondError(w, http.StatusUnauthorized, "not authenticated")
 			return
 		}
-		tokenStr = cookie.Value
+		tokenStr = value
 	}
 
 	claims, err := pa.jwt.ValidateAccessToken(tokenStr)
@@ -986,9 +986,27 @@ func (pa *PlatformAuth) issueTokensAndRespond(w http.ResponseWriter, r *http.Req
 // --- Cookie helpers ---
 
 const (
-	accessCookieName  = "astonish_access"
-	refreshCookieName = "astonish_refresh"
+	accessCookieName  = "troupe_access"
+	refreshCookieName = "troupe_refresh"
+
+	// Legacy cookie names from before the Astonish→Troupe rebrand. They are
+	// only read (never written) so existing browser sessions survive the
+	// upgrade; clearAuthCookies expires them as well.
+	legacyAccessCookieName  = "astonish_access"
+	legacyRefreshCookieName = "astonish_refresh"
 )
+
+// readAuthCookie returns the value of the named auth cookie, falling back to
+// its legacy pre-rebrand name.
+func readAuthCookie(r *http.Request, name, legacyName string) (string, bool) {
+	for _, n := range []string{name, legacyName} {
+		c, err := r.Cookie(n)
+		if err == nil && c.Value != "" {
+			return c.Value, true
+		}
+	}
+	return "", false
+}
 
 func setAccessTokenCookie(w http.ResponseWriter, r *http.Request, token string, ttl time.Duration) {
 	http.SetCookie(w, &http.Cookie{
@@ -1024,24 +1042,30 @@ func isSecureRequest(r *http.Request) bool {
 }
 
 func clearAuthCookies(w http.ResponseWriter, r *http.Request) {
-	http.SetCookie(w, &http.Cookie{
-		Name:     accessCookieName,
-		Value:    "",
-		Path:     "/",
-		MaxAge:   -1,
-		HttpOnly: true,
-		Secure:   isSecureRequest(r),
-		SameSite: http.SameSiteStrictMode,
-	})
-	http.SetCookie(w, &http.Cookie{
-		Name:     refreshCookieName,
-		Value:    "",
-		Path:     "/api/auth/",
-		MaxAge:   -1,
-		HttpOnly: true,
-		Secure:   isSecureRequest(r),
-		SameSite: http.SameSiteStrictMode,
-	})
+	// Expire both the current and the legacy (pre-rebrand) cookie names so a
+	// stale troupe_access / troupe_refresh cannot linger in the browser.
+	for _, name := range []string{accessCookieName, legacyAccessCookieName} {
+		http.SetCookie(w, &http.Cookie{
+			Name:     name,
+			Value:    "",
+			Path:     "/",
+			MaxAge:   -1,
+			HttpOnly: true,
+			Secure:   isSecureRequest(r),
+			SameSite: http.SameSiteStrictMode,
+		})
+	}
+	for _, name := range []string{refreshCookieName, legacyRefreshCookieName} {
+		http.SetCookie(w, &http.Cookie{
+			Name:     name,
+			Value:    "",
+			Path:     "/api/auth/",
+			MaxAge:   -1,
+			HttpOnly: true,
+			Secure:   isSecureRequest(r),
+			SameSite: http.SameSiteStrictMode,
+		})
+	}
 }
 
 // --- Handler: POST /api/auth/verify-email ---

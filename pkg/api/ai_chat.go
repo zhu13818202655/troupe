@@ -105,7 +105,7 @@ Classify into ONE of these intents:
 - "browse_mcp_store": User wants to BROWSE, LIST, or SEE what tools are available
 - "search_mcp_internet": User wants to SEARCH the internet/web for MCP servers
 - "extract_mcp_url": User provides a GitHub/NPM URL to install/extract an MCP server from (e.g. "install from https://github.com/...")
-- "general_question": Questions about Astonish, flows, or how things work
+- "general_question": Questions about Troupe, flows, or how things work
 
 IMPORTANT DISTINCTION:
 - "create a flow that uses GitHub mcp" → create_flow (they want to CREATE a flow)

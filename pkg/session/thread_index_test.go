@@ -41,7 +41,7 @@ func TestThreadIndex_AssociateMultiple(t *testing.T) {
 	idx := NewThreadIndex(filepath.Join(dir, "thread_index.json"))
 
 	sessionKey := "email:direct:alice@example.com-a1b2c3d4"
-	ids := []string{"<msg001@ex.com>", "<msg002@ex.com>", "<reply001@astonish.com>"}
+	ids := []string{"<msg001@ex.com>", "<msg002@ex.com>", "<reply001@troupe.com>"}
 
 	if err := idx.Associate(ids, sessionKey); err != nil {
 		t.Fatalf("Associate failed: %v", err)

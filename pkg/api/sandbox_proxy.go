@@ -15,9 +15,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/sandbox"
-	"github.com/gorilla/mux"
 )
 
 type ipCacheEntry struct {
@@ -187,7 +187,7 @@ func SandboxProxyHandler(w http.ResponseWriter, r *http.Request) {
 	if !sessRegistry.IsPortExposed(containerName, port) && !sessRegistry.IsPortExposed(sessionID, port) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusForbidden)
-		fmt.Fprintf(w, `{"error":"port %d is not exposed on container %q. Use 'astonish sandbox expose %s %d' first."}`,
+		fmt.Fprintf(w, `{"error":"port %d is not exposed on container %q. Use 'troupe sandbox expose %s %d' first."}`,
 			port, containerName, containerName, port)
 		return
 	}

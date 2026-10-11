@@ -13,11 +13,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/agent"
 	"github.com/zhu13818202655/troupe/pkg/provider"
 	"github.com/zhu13818202655/troupe/pkg/skills"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 	"google.golang.org/adk/model"
 	"google.golang.org/adk/session"
 	"google.golang.org/genai"
@@ -338,8 +338,8 @@ func textEvent(invocationID, role, text string) *session.Event {
 }
 
 func TestEventsToMessages_HidesPersistedTurnContext(t *testing.T) {
-	contextEvent := textEvent("inv-1", "user", "[Astonish Per-Turn Context — not user-authored]\n\nsecret context")
-	contextEvent.Actions.StateDelta = map[string]any{"_astonish_turn_context": true}
+	contextEvent := textEvent("inv-1", "user", "[Troupe Per-Turn Context — not user-authored]\n\nsecret context")
+	contextEvent.Actions.StateDelta = map[string]any{"_troupe_turn_context": true}
 	events := testEvents{
 		textEvent("inv-1", "user", "[2026-03-20 14:30:05 UTC]\nhello"),
 		contextEvent,

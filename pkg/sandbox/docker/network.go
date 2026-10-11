@@ -24,7 +24,7 @@ func orgNetworkName(orgSlug string) string {
 		"@", "_",
 		" ", "_",
 	).Replace(orgSlug)
-	return "astonish-org-" + safe
+	return "troupe-org-" + safe
 }
 
 // EnsureOrgNetwork provisions the Docker bridge network for an org.
@@ -61,7 +61,7 @@ func (db *DockerBackend) EnsureOrgNetwork(ctx context.Context, orgSlug string) e
 	_, err := runDocker(ctx, db.cfg.ContainerRuntimePath,
 		"network", "create",
 		"--driver", "bridge",
-		"--label", fmt.Sprintf("astonish.org=%s", orgSlug),
+		"--label", fmt.Sprintf("troupe.org=%s", orgSlug),
 		netName,
 	)
 	if err != nil {

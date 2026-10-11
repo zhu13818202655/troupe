@@ -176,9 +176,9 @@ describe('dom-tools', () => {
     runPageTool('page_query', { text: 'edit' });
     const clicked = runPageTool('page_click', { ref: 'ref1' });
     // No open issue[body] editor: opening edit mode is the user's job, so the
-    // model must not click Edit — it should emit an astonish-page-edit fence.
+    // model must not click Edit — it should emit an troupe-page-edit fence.
     expect(clicked.ok).toBe(false);
-    expect(clicked.error).toMatch(/edit mode|astonish-page-edit/i);
+    expect(clicked.error).toMatch(/edit mode|troupe-page-edit/i);
     expect(clicks).toBe(0);
   });
 
@@ -210,7 +210,7 @@ describe('dom-tools', () => {
     const editClick = runPageTool('page_click', { ref: 'ref1' });
     expect(editClick.ok).toBe(false);
     expect(editClick.error).toMatch(/edit mode/i);
-    expect(editClick.error).toMatch(/astonish-page-edit/i);
+    expect(editClick.error).toMatch(/troupe-page-edit/i);
     const kebabClick = runPageTool('page_click', { ref: 'ref2' });
     expect(kebabClick.ok).toBe(false);
     expect(kebabClick.error).toMatch(/kebab|issue body actions/i);

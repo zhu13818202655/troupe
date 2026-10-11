@@ -1,5 +1,5 @@
 // Package sessioncreds materializes a tenant CredentialStore into a sandbox
-// session file so in-sandbox tools (astonish node → http_request) can Resolve
+// session file so in-sandbox tools (troupe node → http_request) can Resolve
 // credentials — including Keystone/OAuth token fetch — without host-side HTTP.
 package sessioncreds
 
@@ -18,7 +18,7 @@ import (
 
 // VaultPath is the fixed path inside the sandbox for the session credential vault.
 // Under /tmp so OpenShell's sandbox user can mkdir/write (unlike /run).
-const VaultPath = "/tmp/astonish/session-credentials.json"
+const VaultPath = "/tmp/troupe/session-credentials.json"
 
 // VaultFileMode is the permission applied when pushing the vault into a sandbox.
 const VaultFileMode = 0o600
@@ -174,12 +174,12 @@ func (s *Store) SetSecret(context.Context, string, string) error { return nil }
 func (s *Store) SetSecretBatch(context.Context, map[string]string) error {
 	return nil
 }
-func (s *Store) GetSecret(context.Context, string) string      { return "" }
-func (s *Store) RemoveSecret(context.Context, string) error    { return nil }
-func (s *Store) HasSecrets(context.Context) bool               { return false }
-func (s *Store) SecretCount(context.Context) int               { return 0 }
-func (s *Store) ListSecrets(context.Context) []string          { return nil }
-func (s *Store) Reload(context.Context) error                  { return nil }
+func (s *Store) GetSecret(context.Context, string) string   { return "" }
+func (s *Store) RemoveSecret(context.Context, string) error { return nil }
+func (s *Store) HasSecrets(context.Context) bool            { return false }
+func (s *Store) SecretCount(context.Context) int            { return 0 }
+func (s *Store) ListSecrets(context.Context) []string       { return nil }
+func (s *Store) Reload(context.Context) error               { return nil }
 
 func (s *Store) tokenFetcher(name string) store.OAuthTokenFetcher {
 	return func(cred *store.Credential) (string, error) {

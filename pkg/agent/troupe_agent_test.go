@@ -90,7 +90,7 @@ func TestReActFallbackDirect(t *testing.T) {
 		},
 	}
 
-	agent := &AstonishAgent{
+	agent := &TroupeAgent{
 		Config:    cfg,
 		LLM:       mockLLM,
 		DebugMode: true,
@@ -363,7 +363,7 @@ func TestReActFallbackTrigger(t *testing.T) {
 	// }
 	// tools := []tool.Tool{mockTool}
 
-	agent := &AstonishAgent{
+	agent := &TroupeAgent{
 		Config: cfg,
 		LLM:    mockLLM,
 		// Tools:     tools,
@@ -518,7 +518,7 @@ func TestDisplay_WithUserMessage(t *testing.T) {
 		},
 	}
 
-	agentInstance := &AstonishAgent{
+	agentInstance := &TroupeAgent{
 		Config:    cfg,
 		LLM:       mockLLM,
 		DebugMode: false,
@@ -621,7 +621,7 @@ func TestDisplay_NoUserMessage(t *testing.T) {
 		},
 	}
 
-	agentInstance := &AstonishAgent{
+	agentInstance := &TroupeAgent{
 		Config:    cfg,
 		LLM:       mockLLM,
 		DebugMode: false,
@@ -709,7 +709,7 @@ func TestOutputModel_StoresInState(t *testing.T) {
 		},
 	}
 
-	agentInstance := &AstonishAgent{
+	agentInstance := &TroupeAgent{
 		Config:    cfg,
 		LLM:       mockLLM,
 		DebugMode: false,
@@ -783,7 +783,7 @@ func TestUserMessageEvent_OnlyHasMarker(t *testing.T) {
 		},
 	}
 
-	agentInstance := &AstonishAgent{
+	agentInstance := &TroupeAgent{
 		Config:    cfg,
 		LLM:       mockLLM,
 		DebugMode: false,
@@ -1380,7 +1380,7 @@ func TestAutoApprove_ProtectedToolBypassesApproval(t *testing.T) {
 	}
 
 	// Create agent with AutoApprove enabled
-	agent := &AstonishAgent{
+	agent := &TroupeAgent{
 		AutoApprove: true,
 	}
 
@@ -1436,7 +1436,7 @@ func TestAutoApprove_DisabledRequiresApproval(t *testing.T) {
 	}
 
 	// Create agent with AutoApprove disabled
-	agent := &AstonishAgent{
+	agent := &TroupeAgent{
 		AutoApprove: false,
 	}
 
@@ -1490,10 +1490,10 @@ func TestAutoApprove_DisabledRequiresApproval(t *testing.T) {
 	}
 }
 
-// TestAutoApprove_StructFieldExists verifies that the AstonishAgent struct
+// TestAutoApprove_StructFieldExists verifies that the TroupeAgent struct
 // has the AutoApprove field and it can be set.
 func TestAutoApprove_StructFieldExists(t *testing.T) {
-	agent := &AstonishAgent{}
+	agent := &TroupeAgent{}
 
 	// Default should be false
 	if agent.AutoApprove != false {

@@ -10,8 +10,8 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/browser"
 )
 
-const recordingPIDFile = "/tmp/astonish-recording.pid"
-const recordingLogFile = "/tmp/astonish-recording.log"
+const recordingPIDFile = "/tmp/troupe-recording.pid"
+const recordingLogFile = "/tmp/troupe-recording.log"
 
 // StartRecordingInSandbox launches ffmpeg x11grab against the KasmVNC display
 // inside the OpenShell pod. The live X root size is probed via xdpyinfo so

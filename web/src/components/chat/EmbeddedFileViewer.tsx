@@ -173,7 +173,7 @@ export default function EmbeddedFileViewer({ artifact, sessionId, onOpenInPanel,
         </div>
 
         {/* Filename + type badge. When the artifact carries a reportTitle
-            (set by an `astonish-report` fence's frontmatter), display that as
+            (set by an `troupe-report` fence's frontmatter), display that as
             the human-readable label and demote the basename to a tooltip.
             Falls back to the basename when no title is available. */}
         <div className="flex items-center gap-2 min-w-0 flex-1">

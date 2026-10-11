@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/email"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 )
 
 // --- Channel Configuration Types ---

@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/oauthserver"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 )
 
-// NewOAuthSessionValidator adapts an existing Astonish platform session to the
+// NewOAuthSessionValidator adapts an existing Troupe platform session to the
 // OAuth authorization endpoint. It deliberately validates the local session
 // rather than accepting an upstream IdP token: federation has already happened
 // at the platform login boundary.

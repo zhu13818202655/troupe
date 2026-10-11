@@ -1,6 +1,6 @@
 # Credential Security
 
-Astonish provides a secure credential store that keeps API keys, tokens, and other secrets encrypted at rest and invisible to the LLM at runtime. A multi-layer redaction pipeline ensures that secrets never leak into model context, logs, or responses.
+Troupe provides a secure credential store that keeps API keys, tokens, and other secrets encrypted at rest and invisible to the LLM at runtime. A multi-layer redaction pipeline ensures that secrets never leak into model context, logs, or responses.
 
 ## Credential Store
 
@@ -28,7 +28,7 @@ Use `raw_content` when a fleet or drill needs to materialize a configuration fil
 
 ## Output Redaction
 
-Astonish applies multiple independent redaction layers to guarantee secrets never reach the LLM context:
+Troupe applies multiple independent redaction layers to guarantee secrets never reach the LLM context:
 
 | Layer | Stage | Mechanism |
 |-------|-------|-----------|
@@ -62,22 +62,22 @@ Studio provides a credential manager under **Settings → Credentials** where yo
 
 ```bash
 # Add a credential
-astonish credential add
+troupe credential add
 
 # List credentials (values are never displayed)
-astonish credential list
+troupe credential list
 
 # Show credential metadata
-astonish credential show <name>
+troupe credential show <name>
 
 # Test a credential (validates it works)
-astonish credential test <name>
+troupe credential test <name>
 
 # Remove a credential
-astonish credential remove <name>
+troupe credential remove <name>
 
 # Set or manage the master key
-astonish credential master-key
+troupe credential master-key
 ```
 
 Credential values are never echoed back in any command output. The `list` and `show` commands display names, types, scopes, and metadata only.

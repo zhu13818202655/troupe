@@ -189,13 +189,13 @@ func TestResolve_NoMatchErrorsOrFallback(t *testing.T) {
 
 	// No match, fallback → synthetic template with the fallback slug.
 	got, err := r.Resolve(context.Background(), DefaultTemplateRequest{
-		UserID: "u", Fallback: "astonish-base",
+		UserID: "u", Fallback: "troupe-base",
 	})
 	if err != nil {
 		t.Fatalf("Resolve with fallback: %v", err)
 	}
-	if got == nil || got.Slug != "astonish-base" {
-		t.Fatalf("got %+v; want slug=astonish-base", got)
+	if got == nil || got.Slug != "troupe-base" {
+		t.Fatalf("got %+v; want slug=troupe-base", got)
 	}
 }
 

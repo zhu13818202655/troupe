@@ -140,10 +140,10 @@ func printUsage() {
 	fmt.Println("")
 	fmt.Println("positional arguments:")
 	fmt.Println("  {code,chat,sessions,flows,tap,daemon,channels,scheduler,fleet,credential,skills,sandbox,drill,config,setup,tools,memory,platform}")
-	fmt.Println("                        Astonish CLI commands")
+	fmt.Println("                        Troupe CLI commands")
 	fmt.Println("    code                Local coding tool (in-process, host filesystem) [default]")
 	fmt.Println("    chat                Start an interactive chat session (requires login)")
-	fmt.Println("    login               Connect to a remote Astonish server")
+	fmt.Println("    login               Connect to a remote Troupe server")
 	fmt.Println("    logout              Disconnect from the remote server")
 	fmt.Println("    status              Show connection mode and status")
 	fmt.Println("    org                 Manage organizations (remote mode)")
@@ -271,7 +271,7 @@ func checkForUpdates() {
 	// Use semantic version comparison
 	if isNewerVersion(latest, current) {
 		fmt.Fprintln(os.Stderr)
-		fmt.Fprintf(os.Stderr, "\033[93mA new version of Astonish is available: %s\033[0m\n", result.TagName)
+		fmt.Fprintf(os.Stderr, "\033[93mA new version of Troupe is available: %s\033[0m\n", result.TagName)
 		fmt.Fprintf(os.Stderr, "\033[93mRun \033[1mbrew upgrade zhu13818202655/troupe/troupe\033[0m\033[93m to update.\033[0m\n")
 		fmt.Fprintln(os.Stderr)
 	}

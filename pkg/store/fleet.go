@@ -9,7 +9,7 @@ type FleetTemplateSummary struct {
 	Description string   `json:"description,omitempty"`
 	AgentCount  int      `json:"agent_count"`
 	AgentNames  []string `json:"agent_names"`
-	// Source is "bundled" for Astonish-shipped templates or "custom" for DB-backed ones.
+	// Source is "bundled" for Troupe-shipped templates or "custom" for DB-backed ones.
 	// Optional; set by ListFleets implementations that distinguish the two.
 	Source string `json:"source,omitempty"`
 }

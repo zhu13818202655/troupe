@@ -21,8 +21,8 @@ func TestServesA2AOnlyOnHTTPModes(t *testing.T) {
 
 func TestA2AServiceBaseURLUsesConfiguredIssuer(t *testing.T) {
 	cfg := &config.AppConfig{}
-	cfg.Storage.Auth.OAuthServer.Issuer = "https://astonish.example/"
-	if got := a2aServiceBaseURL(cfg, 9393); got != "https://astonish.example" {
+	cfg.Storage.Auth.OAuthServer.Issuer = "https://troupe.example/"
+	if got := a2aServiceBaseURL(cfg, 9393); got != "https://troupe.example" {
 		t.Fatalf("base URL = %q", got)
 	}
 }
@@ -52,15 +52,15 @@ func TestNewOAuthServerRuntimeConfigAppliesLoopbackDefaults(t *testing.T) {
 
 func TestNewOAuthServerRuntimeConfigPreservesExplicitHTTPS(t *testing.T) {
 	got := newOAuthServerRuntimeConfig(config.OAuthServerConfig{
-		Issuer:                "https://astonish.example/",
-		Resource:              "https://astonish.example/api/mcp",
+		Issuer:                "https://troupe.example/",
+		Resource:              "https://troupe.example/api/mcp",
 		AccessTokenTTLMinutes: 20,
 		RefreshTokenTTLDays:   7,
 	}, 1234, true)
-	if got.Issuer != "https://astonish.example/" {
+	if got.Issuer != "https://troupe.example/" {
 		t.Fatalf("issuer = %q", got.Issuer)
 	}
-	if got.Resource != "https://astonish.example/api/mcp" {
+	if got.Resource != "https://troupe.example/api/mcp" {
 		t.Fatalf("resource = %q", got.Resource)
 	}
 	if got.Development {
@@ -76,9 +76,9 @@ func TestNewOAuthServerRuntimeConfigPreservesExplicitHTTPS(t *testing.T) {
 
 func TestNewOAuthServerRuntimeConfigDerivesResourceFromIssuer(t *testing.T) {
 	got := newOAuthServerRuntimeConfig(config.OAuthServerConfig{
-		Issuer: "https://astonish.example",
+		Issuer: "https://troupe.example",
 	}, 9393, false)
-	if got.Resource != "https://astonish.example/api/mcp" {
+	if got.Resource != "https://troupe.example/api/mcp" {
 		t.Fatalf("resource = %q", got.Resource)
 	}
 	if got.Development {

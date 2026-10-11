@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Astonish daemon is a background service that orchestrates the entire runtime: configuration loading, credential store, provider setup, agent initialization, channels, scheduler, fleet plan activation, sandbox management, and the Studio HTTP server. It installs as a platform-native service (systemd on Linux, launchd on macOS, Windows service on Windows).
+The Troupe daemon is a background service that orchestrates the entire runtime: configuration loading, credential store, provider setup, agent initialization, channels, scheduler, fleet plan activation, sandbox management, and the Studio HTTP server. It installs as a platform-native service (systemd on Linux, launchd on macOS, Windows service on Windows).
 
 The scheduler provides cron-based job execution with three modes: routine (headless flow execution), adaptive (chat-based instruction execution), and fleet poll (GitHub issue monitoring).
 
@@ -10,7 +10,7 @@ The scheduler provides cron-based job execution with three modes: routine (headl
 
 ### Why a Daemon Instead of On-Demand Processes
 
-Astonish needs long-running capabilities:
+Troupe needs long-running capabilities:
 
 - **Channels**: Telegram long polling and IMAP email polling require persistent connections.
 - **Scheduler**: Cron jobs need a process to fire them.
@@ -21,13 +21,13 @@ A daemon provides all of these with a single process, proper service management 
 
 ### Why Platform-Native Service Installation
 
-Instead of requiring users to set up systemd units or launchd plists manually, `astonish daemon install` generates the correct service definition for the current platform:
+Instead of requiring users to set up systemd units or launchd plists manually, `troupe daemon install` generates the correct service definition for the current platform:
 
 - **Linux**: systemd service unit with auto-restart, journald logging.
 - **macOS**: launchd plist with keep-alive.
 - **Windows**: Windows service registration.
 
-`astonish daemon start/stop/status` abstract the platform-specific commands.
+`troupe daemon start/stop/status` abstract the platform-specific commands.
 
 ### Why Hot-Reload for Channels
 
@@ -85,7 +85,7 @@ The ADK session id stays stable (`scheduler-adaptive-{jobID}`) for transcript co
 
 ### Adaptive Delivery Is Last-Wins (Not Full Transcript)
 
-Adaptive job email/channel delivery must not concatenate every model turn. Mid-run narration (“I need to paginate…”) is dropped: only the **final** complete text turn is kept (same batch semantics as interactive email). When the job uses the report contract (`write_file` + `` ```astonish-report ``), delivery prefers the **written report markdown body** over a bare fence. Oversized messages truncate from the **end** (suffix kept) so the conclusion is preserved.
+Adaptive job email/channel delivery must not concatenate every model turn. Mid-run narration (“I need to paginate…”) is dropped: only the **final** complete text turn is kept (same batch semantics as interactive email). When the job uses the report contract (`write_file` + `` ```troupe-report ``), delivery prefers the **written report markdown body** over a bare fence. Oversized messages truncate from the **end** (suffix kept) so the conclusion is preserved.
 
 ### Why Exponential Backoff on Failures
 
@@ -100,7 +100,7 @@ When a scheduled job fails, the scheduler applies exponential backoff before ret
 ### Daemon Startup Sequence
 
 ```
-astonish daemon start
+troupe daemon start
     |
     v
 1. Load configuration (config.yaml)
@@ -163,7 +163,7 @@ Result delivery:
 
 The daemon writes a PID file on startup and removes it on clean shutdown. This enables:
 
-- `astonish daemon status` to check if the daemon is running.
+- `troupe daemon status` to check if the daemon is running.
 - Detection of stale daemons (PID file exists but process doesn't).
 - Prevention of multiple daemon instances.
 

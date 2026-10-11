@@ -45,7 +45,7 @@ function run(argv) {
 // clipboard when the user triggers paste. Returns false when the clipboard holds
 // no image.
 func readClipboardImagePlatform() (data []byte, mimeType string, ok bool) {
-	f, err := os.CreateTemp("", "astonish-clip-*.png")
+	f, err := os.CreateTemp("", "troupe-clip-*.png")
 	if err != nil {
 		return nil, "", false
 	}

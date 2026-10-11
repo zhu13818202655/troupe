@@ -424,7 +424,7 @@ func (c *Compactor) planFilePointer() string {
 	)
 }
 
-const turnContextPrefix = "[Astonish Per-Turn Context — not user-authored]\n"
+const turnContextPrefix = "[Troupe Per-Turn Context — not user-authored]\n"
 
 func isTurnContextContent(content *genai.Content) bool {
 	if content == nil {

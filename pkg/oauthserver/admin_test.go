@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/zhu13818202655/troupe/pkg/store"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -40,7 +40,7 @@ func TestDiscovery_UsesOAuthJSONFieldNames(t *testing.T) {
 		"scopes": []any{
 			map[string]any{"value": ScopeToolExecute, "label": "MCP access", "description": "Allows access to the protected MCP tool endpoint."},
 			map[string]any{"value": ScopeA2A, "label": "A2A access", "description": "Allows access to the inbound A2A protocol endpoint."},
-			map[string]any{"value": ScopeChat, "label": "Chat access", "description": "Allows conversational access to Astonish chat."},
+			map[string]any{"value": ScopeChat, "label": "Chat access", "description": "Allows conversational access to Troupe chat."},
 		},
 	}
 	if !reflect.DeepEqual(got, want) {

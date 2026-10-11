@@ -9,7 +9,7 @@ import (
 
 func TestIsTutorialSuite(t *testing.T) {
 	regular := &LoadedSuite{
-		Name: "juicytrade",
+		Name:   "juicytrade",
 		Config: &config.AgentConfig{Description: "regular"},
 		Tests: []LoadedTest{
 			{Name: "health", Config: &config.AgentConfig{
@@ -22,7 +22,7 @@ func TestIsTutorialSuite(t *testing.T) {
 	}
 
 	byMode := &LoadedSuite{
-		Name: "juicytrade-tutorial",
+		Name:   "juicytrade-tutorial",
 		Config: &config.AgentConfig{},
 		Tests: []LoadedTest{
 			{Name: "overview", Config: &config.AgentConfig{
@@ -35,7 +35,7 @@ func TestIsTutorialSuite(t *testing.T) {
 	}
 
 	byTag := &LoadedSuite{
-		Name: "legacy-tut",
+		Name:   "legacy-tut",
 		Config: &config.AgentConfig{},
 		Tests: []LoadedTest{
 			{Name: "walk", Config: &config.AgentConfig{

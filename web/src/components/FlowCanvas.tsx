@@ -161,12 +161,12 @@ function FlowCanvasInner({
       }
     }
     
-    window.addEventListener('astonish:edge-drag-start', onDragStart)
-    window.addEventListener('astonish:edge-drag-stop', onDragStop)
+    window.addEventListener('troupe:edge-drag-start', onDragStart)
+    window.addEventListener('troupe:edge-drag-stop', onDragStop)
     
     return () => {
-      window.removeEventListener('astonish:edge-drag-start', onDragStart)
-      window.removeEventListener('astonish:edge-drag-stop', onDragStop)
+      window.removeEventListener('troupe:edge-drag-start', onDragStart)
+      window.removeEventListener('troupe:edge-drag-stop', onDragStop)
     }
   }, [onLayoutSave, getNodes, getEdges])
 
@@ -181,8 +181,8 @@ function FlowCanvasInner({
       }
     }
     
-    window.addEventListener('astonish:add-node-click', handleAddNodeClick)
-    return () => window.removeEventListener('astonish:add-node-click', handleAddNodeClick)
+    window.addEventListener('troupe:add-node-click', handleAddNodeClick)
+    return () => window.removeEventListener('troupe:add-node-click', handleAddNodeClick)
   }, [readOnly])
 
   // Handle node type selection from popover
@@ -367,8 +367,8 @@ function FlowCanvasInner({
       }, 50) 
     }
 
-    window.addEventListener('astonish:edge-drag-stop', handleEdgeDragStop)
-    return () => window.removeEventListener('astonish:edge-drag-stop', handleEdgeDragStop)
+    window.addEventListener('troupe:edge-drag-stop', handleEdgeDragStop)
+    return () => window.removeEventListener('troupe:edge-drag-stop', handleEdgeDragStop)
   }, [storeNodes, storeEdges, onLayoutSave])
 
   // Get React Flow instance for coordinate conversion and viewport control

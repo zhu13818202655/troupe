@@ -135,11 +135,16 @@ func (s *teamSessionStore) Create(ctx context.Context, req *adksession.CreateReq
 	}
 
 	// Extract parent_id from state (mirrors FileStore behavior).
-	// Sub-agents pass "_astonish_parent_id" in state to link child sessions.
+	// Sub-agents pass "_troupe_parent_id" in state to link child sessions.
+	// The "_astonish_parent_id" key is the pre-rebrand spelling, still read
+	// for state persisted by older builds.
 	var parentID *string
-	if pid, ok := state["_astonish_parent_id"].(string); ok && pid != "" {
-		parentID = &pid
-		delete(state, "_astonish_parent_id")
+	for _, key := range []string{"_troupe_parent_id", "_astonish_parent_id"} {
+		if pid, ok := state[key].(string); ok && pid != "" {
+			parentID = &pid
+			delete(state, key)
+			break
+		}
 	}
 
 	meta := map[string]interface{}{

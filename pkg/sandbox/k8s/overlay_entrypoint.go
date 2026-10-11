@@ -5,11 +5,11 @@
 //  1. Streaming the persisted upper layer back onto the local emptyDir
 //     when resuming a previously-evicted session. Session pods mount only
 //     their own uppers PVC subdirectory, so the live path is
-//     /mnt/astonish-uppers/upper.tar.zst.
+//     /mnt/troupe-uppers/upper.tar.zst.
 //  2. Composing the overlay chain encoded in $TROUPE_LAYER_CHAIN as
 //     lowerdirs (top-most first, per overlayfs syntax), with the
-//     emptyDir at /var/astonish/overlay/upper as upperdir and
-//     /var/astonish/overlay/work as workdir, mounted at /sandbox/rootfs.
+//     emptyDir at /var/troupe/overlay/upper as upperdir and
+//     /var/troupe/overlay/work as workdir, mounted at /sandbox/rootfs.
 //     Both upper and work MUST reside under the same mount point to
 //     avoid cross-device renameat failures in fuse-overlayfs.
 //  3. Handing off to the workload via chroot into the composed rootfs.
@@ -25,9 +25,9 @@
 // Host builds emit it via `make sandbox-entrypoint` (wrapper around
 // `go run ./cmd/troupe-sandbox-entrypoint-script`); the
 // docker/sandbox-base image then COPYs the file to
-// /usr/local/bin/astonish-sandbox-entrypoint. Keeping the generator in
+// /usr/local/bin/troupe-sandbox-entrypoint. Keeping the generator in
 // Go lets us unit-test its shape without a CI shell harness and lets
-// Astonish evolve the runtime contract (env var names, mount paths,
+// Troupe evolve the runtime contract (env var names, mount paths,
 // resume semantics) in lockstep with the backend that produces those
 // inputs.
 //
@@ -35,7 +35,7 @@
 //
 //   - `set -euo pipefail` — fail fast; unset variables are errors.
 //   - Resume-tar extraction MUST happen before the overlay mount so
-//     the emptyDir at /var/astonish/overlay/upper is populated first.
+//     the emptyDir at /var/troupe/overlay/upper is populated first.
 //   - Resume-tar extraction is SKIPPED if the tarball is absent (fresh
 //     session path). Absence is not an error.
 //   - Layer-chain composition reverses the comma-separated
@@ -92,24 +92,24 @@ const (
 
 // EntrypointScriptOptions tunes the emitted script for non-default
 // deployments. The zero value produces the canonical script used by
-// the astonish-sandbox-base image.
+// the troupe-sandbox-base image.
 //
 // Fields are all optional; empty means "use the spec's default".
 type EntrypointScriptOptions struct {
 	// UppersMount is the in-container mount path of the uppers PVC.
-	// Default: /mnt/astonish-uppers (mountUppers).
+	// Default: /mnt/troupe-uppers (mountUppers).
 	UppersMount string
 
 	// LayersMount is the in-container mount path of the layers PVC.
-	// Default: /mnt/astonish-layers (mountLayers).
+	// Default: /mnt/troupe-layers (mountLayers).
 	LayersMount string
 
 	// UpperDir is the emptyDir path that overlayfs uses as its
-	// upperdir. Default: /var/astonish/overlay/upper (mountUpper).
+	// upperdir. Default: /var/troupe/overlay/upper (mountUpper).
 	UpperDir string
 
 	// WorkDir is the emptyDir path that overlayfs uses as its
-	// workdir. Default: /var/astonish/overlay/work (mountWork).
+	// workdir. Default: /var/troupe/overlay/work (mountWork).
 	WorkDir string
 
 	// MountPoint is where the composed overlay is mounted. Default:
@@ -118,7 +118,7 @@ type EntrypointScriptOptions struct {
 
 	// Handoff is the absolute path of the command to exec after the
 	// overlay is in place (PID 1 hands off via `exec chroot`).
-	// Default: /usr/local/bin/astonish (the daemon's node binary;
+	// Default: /usr/local/bin/troupe (the daemon's node binary;
 	// §5.3 step 3).
 	Handoff string
 
@@ -127,8 +127,8 @@ type EntrypointScriptOptions struct {
 	HandoffArgs []string
 
 	// HostBinaryPath, when non-empty, is the absolute path of a
-	// BASE-IMAGE astonish binary that the entrypoint will bind-mount
-	// over $MOUNT_POINT/usr/local/bin/astonish before the chroot
+	// BASE-IMAGE troupe binary that the entrypoint will bind-mount
+	// over $MOUNT_POINT/usr/local/bin/troupe before the chroot
 	// handoff. This lets the sandbox-base image ship a trusted binary
 	// that covers BOTH the PID-1 handoff AND backend-driven tool calls
 	// (Backend.Exec).
@@ -138,7 +138,7 @@ type EntrypointScriptOptions struct {
 	// pre-bind-mount behaviour and keeps the shape unchanged for
 	// tests that don't care about Backend.Exec.
 	//
-	// Default: /usr/local/bin/astonish-host (the path used by
+	// Default: /usr/local/bin/troupe-host (the path used by
 	// docker/sandbox-base/Dockerfile). Tests that want to assert on
 	// the pre-bind-mount handoff-only shape can set this to "-" to
 	// explicitly suppress the bind-mount.
@@ -147,14 +147,14 @@ type EntrypointScriptOptions struct {
 	// HostTreeSitterLibPath, when non-empty, is the absolute path of the
 	// BASE-IMAGE tree-sitter shared library that the entrypoint will
 	// bind-mount into the overlay at
-	// /usr/lib/astonish/libastonish-treesitter.so before the chroot
+	// /usr/lib/troupe/libtroupe-treesitter.so before the chroot
 	// handoff. Code intelligence tools (repo_map, code_definition,
-	// code_references) dlopen this path inside astonish node after
+	// code_references) dlopen this path inside troupe node after
 	// chroot; baking the library into the pod image alone is not
 	// enough because the overlay rootfs does not include the pod
 	// base-image filesystem.
 	//
-	// Default: /usr/lib/astonish/libastonish-treesitter.so (the path
+	// Default: /usr/lib/troupe/libtroupe-treesitter.so (the path
 	// used by docker/sandbox-base/Dockerfile and pkg/codeintel).
 	// Value "-" suppresses the bind-mount entirely.
 	HostTreeSitterLibPath string
@@ -219,10 +219,10 @@ func (o *EntrypointScriptOptions) applyDefaults() {
 		o.HandoffArgs = []string{"infinity"}
 	}
 	if o.HostBinaryPath == "" {
-		o.HostBinaryPath = "/usr/local/bin/astonish-host"
+		o.HostBinaryPath = "/usr/local/bin/troupe-host"
 	}
 	if o.HostTreeSitterLibPath == "" {
-		o.HostTreeSitterLibPath = "/usr/lib/astonish/libastonish-treesitter.so"
+		o.HostTreeSitterLibPath = "/usr/lib/troupe/libtroupe-treesitter.so"
 	}
 	if o.Mode == "" {
 		o.Mode = OverlayModeFuse
@@ -240,7 +240,7 @@ func (o *EntrypointScriptOptions) applyDefaults() {
 // EntrypointScript returns the POSIX-shell source of the sandbox-pod
 // entrypoint, parameterised by opts. The returned script is
 // self-contained (no external files required) and must be written to
-// the image at /usr/local/bin/astonish-sandbox-entrypoint with
+// the image at /usr/local/bin/troupe-sandbox-entrypoint with
 // executable mode.
 //
 // Env vars consumed at runtime:
@@ -262,7 +262,7 @@ func EntrypointScript(opts EntrypointScriptOptions) string {
 
 	var b strings.Builder
 	b.WriteString(`#!/bin/sh
-# astonish-sandbox-entrypoint — PID-1 overlay composer.
+# troupe-sandbox-entrypoint — PID-1 overlay composer.
 #
 # DO NOT EDIT BY HAND. Generated by pkg/sandbox/k8s.EntrypointScript.
 # See docs/architecture/sandbox-backends.md §5.3 step 3 for the
@@ -307,7 +307,7 @@ fi
 
 	// Resume path.
 	b.WriteString(`# --- 1. Resume from persisted upper (if present) -----------------------
-# When a previously-evicted session is restarted, Astonish mounts only that
+# When a previously-evicted session is restarted, Troupe mounts only that
 # session's uppers PVC subdirectory at $UPPERS_DIR. Stream the saved upper back
 # onto the local emptyDir before the overlay mount. Older pods mounted the PVC
 # root and used $UPPERS_DIR/<session>/upper.tar.zst; the fallback keeps those
@@ -318,7 +318,7 @@ if [ ! -f "$RESUME_TAR" ] && [ -f "$UPPERS_DIR/$TROUPE_SESSION_ID/upper.tar.zst"
   RESUME_TAR="$UPPERS_DIR/$TROUPE_SESSION_ID/upper.tar.zst"
 fi
 if [ -f "$RESUME_TAR" ]; then
-  echo "astonish-entrypoint: resuming upper from $RESUME_TAR" 1>&2
+  echo "troupe-entrypoint: resuming upper from $RESUME_TAR" 1>&2
   mkdir -p "$UPPER_DIR"
   tar --numeric-owner --xattrs --acls -I zstd -xf "$RESUME_TAR" -C "$UPPER_DIR"
 fi
@@ -357,7 +357,7 @@ LOWER=$(echo "$TROUPE_LAYER_CHAIN" | awk -F, -v dir="$LAYERS_DIR" '
     }
   }')
 if [ -z "$LOWER" ]; then
-  echo "astonish-entrypoint: empty TROUPE_LAYER_CHAIN" 1>&2
+  echo "troupe-entrypoint: empty TROUPE_LAYER_CHAIN" 1>&2
   exit 1
 fi
 
@@ -418,7 +418,7 @@ fi
 # strategy.
 
 mount_overlay_kernel() {
-  echo "astonish-entrypoint: trying kernel overlayfs at $MOUNT_POINT" 1>&2
+  echo "troupe-entrypoint: trying kernel overlayfs at $MOUNT_POINT" 1>&2
   # userxattr enables overlayfs to use user.overlay.* xattrs instead
   # of trusted.overlay.*; this is what makes the mount work in a
   # user namespace where CAP_SYS_ADMIN is namespaced (kernel 5.11+).
@@ -429,7 +429,7 @@ mount_overlay_kernel() {
 }
 
 mount_overlay_fuse() {
-  echo "astonish-entrypoint: trying fuse-overlayfs at $MOUNT_POINT" 1>&2
+  echo "troupe-entrypoint: trying fuse-overlayfs at $MOUNT_POINT" 1>&2
 `)
 	if opts.EnsureFuseDevice != nil && *opts.EnsureFuseDevice {
 		b.WriteString(`  # Some privileged-but-not-device-plugin environments don't expose
@@ -475,7 +475,7 @@ mount_overlay_fuse() {
     sleep 0.05
     i=$((i + 1))
   done
-  echo "astonish-entrypoint: fuse-overlayfs mount did not appear within 5s" 1>&2
+  echo "troupe-entrypoint: fuse-overlayfs mount did not appear within 5s" 1>&2
   return 1
 }
 
@@ -485,7 +485,7 @@ mount_overlay_fuse() {
 	switch opts.Mode {
 	case OverlayModeKernel:
 		b.WriteString(`mount_overlay_kernel || {
-  echo "astonish-entrypoint: kernel overlayfs mount failed (OVERLAY_MODE=kernel)" 1>&2
+  echo "troupe-entrypoint: kernel overlayfs mount failed (OVERLAY_MODE=kernel)" 1>&2
   exit 1
 }
 `)
@@ -494,17 +494,17 @@ mount_overlay_fuse() {
 # on any failure. The stderr lines emitted by each helper make the
 # chosen path observable in pod logs.
 if mount_overlay_kernel 2>&1; then
-  echo "astonish-entrypoint: overlay composed via kernel overlayfs" 1>&2
+  echo "troupe-entrypoint: overlay composed via kernel overlayfs" 1>&2
 elif mount_overlay_fuse; then
-  echo "astonish-entrypoint: overlay composed via fuse-overlayfs (kernel path failed)" 1>&2
+  echo "troupe-entrypoint: overlay composed via fuse-overlayfs (kernel path failed)" 1>&2
 else
-  echo "astonish-entrypoint: no overlay strategy succeeded (OVERLAY_MODE=auto)" 1>&2
+  echo "troupe-entrypoint: no overlay strategy succeeded (OVERLAY_MODE=auto)" 1>&2
   exit 1
 fi
 `)
 	default: // OverlayModeFuse
 		b.WriteString(`mount_overlay_fuse || {
-  echo "astonish-entrypoint: fuse-overlayfs mount failed (OVERLAY_MODE=fuse)" 1>&2
+  echo "troupe-entrypoint: fuse-overlayfs mount failed (OVERLAY_MODE=fuse)" 1>&2
   exit 1
 }
 `)
@@ -513,25 +513,25 @@ fi
 	b.WriteString("\n")
 
 	// Optional host-binary bind-mount. This is load-bearing for
-	// Backend.Exec: it installs a trusted astonish binary into the
-	// overlay at /usr/local/bin/astonish so BOTH the PID-1 handoff
+	// Backend.Exec: it installs a trusted troupe binary into the
+	// overlay at /usr/local/bin/troupe so BOTH the PID-1 handoff
 	// below AND later Backend.Exec tool calls (which chroot into the
 	// same overlay via the base image's wrapper) find the same
 	// binary. Value "-" is a sentinel meaning "skip the bind-mount
 	// entirely" — useful for backward-compat tests that pin the
 	// pre-bind-mount shape.
 	if opts.HostBinaryPath != "" && opts.HostBinaryPath != "-" {
-		b.WriteString(`# --- 2a. Overlay astonish binary from the base image ------------------
-# Bind-mount a trusted astonish binary from the base image on top of
+		b.WriteString(`# --- 2a. Overlay troupe binary from the base image ------------------
+# Bind-mount a trusted troupe binary from the base image on top of
 # whatever the @base layer provided (or didn't) at the canonical path.
 # This ensures both PID-1 handoff and Backend.Exec tool calls resolve
-# to the same build, so operators don't have to ship astonish in every
+# to the same build, so operators don't have to ship troupe in every
 # @base layer themselves.
 `)
 		b.WriteString("HOST_BIN=")
 		writeSingleQuoted(&b, opts.HostBinaryPath)
 		b.WriteByte('\n')
-		b.WriteString(`OVERLAY_BIN="$MOUNT_POINT/usr/local/bin/astonish"
+		b.WriteString(`OVERLAY_BIN="$MOUNT_POINT/usr/local/bin/troupe"
 if [ -x "$HOST_BIN" ]; then
   # Ensure the destination exists; on a minimal @base layer the
   # directory may be missing entirely.
@@ -547,7 +547,7 @@ if [ -x "$HOST_BIN" ]; then
   fi
   mount --bind "$HOST_BIN" "$OVERLAY_BIN"
 else
-  echo "astonish-entrypoint: HOST_BIN=$HOST_BIN missing or not executable; " \
+  echo "troupe-entrypoint: HOST_BIN=$HOST_BIN missing or not executable; " \
        "skipping bind-mount (PID-1 handoff will use overlay's binary)" 1>&2
 fi
 
@@ -567,16 +567,16 @@ fi
 		b.WriteString("HOST_TS_LIB=")
 		writeSingleQuoted(&b, opts.HostTreeSitterLibPath)
 		b.WriteByte('\n')
-		b.WriteString(`OVERLAY_TS_LIB="$MOUNT_POINT/usr/lib/astonish/libastonish-treesitter.so"
+		b.WriteString(`OVERLAY_TS_LIB="$MOUNT_POINT/usr/lib/troupe/libtroupe-treesitter.so"
 if [ -f "$HOST_TS_LIB" ]; then
-  mkdir -p "$MOUNT_POINT/usr/lib/astonish"
+  mkdir -p "$MOUNT_POINT/usr/lib/troupe"
   if [ ! -e "$OVERLAY_TS_LIB" ]; then
     : > "$OVERLAY_TS_LIB"
     chmod 0644 "$OVERLAY_TS_LIB"
   fi
   mount --bind "$HOST_TS_LIB" "$OVERLAY_TS_LIB"
 else
-  echo "astonish-entrypoint: HOST_TS_LIB=$HOST_TS_LIB missing; " \
+  echo "troupe-entrypoint: HOST_TS_LIB=$HOST_TS_LIB missing; " \
        "skipping tree-sitter library bind-mount (codeintel tools will degrade)" 1>&2
 fi
 
@@ -609,7 +609,7 @@ for _src in /dev /proc /sys; do
     if mount --rbind "$_src" "$_dst"; then
       mount --make-rslave "$_dst" 2>/dev/null || true
     else
-      echo "astonish-entrypoint: warning: failed to rbind $_src at $_dst" 1>&2
+      echo "troupe-entrypoint: warning: failed to rbind $_src at $_dst" 1>&2
     fi
   fi
 done
@@ -622,7 +622,7 @@ _RESOLV_DST="$MOUNT_POINT/etc/resolv.conf"
 if [ -f "$_RESOLV_SRC" ] && [ -e "$_RESOLV_DST" ]; then
   if ! grep -qE " $_RESOLV_DST " /proc/self/mountinfo 2>/dev/null; then
     mount --bind "$_RESOLV_SRC" "$_RESOLV_DST" 2>/dev/null || \
-      echo "astonish-entrypoint: warning: failed to bind resolv.conf" 1>&2
+      echo "troupe-entrypoint: warning: failed to bind resolv.conf" 1>&2
   fi
 fi
 
@@ -655,7 +655,7 @@ fi
 
 	b.WriteString(`HANDOFF="${TROUPE_HANDOFF:-$_DEFAULT_HANDOFF}"
 HANDOFF_ARGS="${TROUPE_HANDOFF_ARGS:-$_DEFAULT_HANDOFF_ARGS}"
-echo "astonish-entrypoint: handing off to $HANDOFF $HANDOFF_ARGS" 1>&2
+echo "troupe-entrypoint: handing off to $HANDOFF $HANDOFF_ARGS" 1>&2
 # shellcheck disable=SC2086
 exec chroot "$MOUNT_POINT" "$HANDOFF" $HANDOFF_ARGS
 `)

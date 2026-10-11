@@ -18,7 +18,7 @@ import (
 // buildApprovalCallback creates the BeforeToolCallback for approval-gated tools.
 // Events are buffered in cbBuf (not yielded directly) because ADK may invoke
 // this callback from a goroutine, and yield is not goroutine-safe.
-func (a *AstonishAgent) buildApprovalCallback(node *config.Node, state session.State, cbBuf *callbackEventBuffer) llmagent.BeforeToolCallback {
+func (a *TroupeAgent) buildApprovalCallback(node *config.Node, state session.State, cbBuf *callbackEventBuffer) llmagent.BeforeToolCallback {
 	return func(ctx tool.Context, t tool.Tool, args map[string]any) (map[string]any, error) {
 		toolName := t.Name()
 
@@ -164,7 +164,7 @@ func (a *AstonishAgent) buildApprovalCallback(node *config.Node, state session.S
 // buildAfterToolCallback creates the AfterToolCallback for debugging and raw_tool_output handling.
 // Events are buffered in cbBuf (not yielded directly) because ADK may invoke
 // this callback from a goroutine, and yield is not goroutine-safe.
-func (a *AstonishAgent) buildAfterToolCallback(node *config.Node, state session.State, cbBuf *callbackEventBuffer) llmagent.AfterToolCallback {
+func (a *TroupeAgent) buildAfterToolCallback(node *config.Node, state session.State, cbBuf *callbackEventBuffer) llmagent.AfterToolCallback {
 	return func(ctx tool.Context, t tool.Tool, args map[string]any, result map[string]any, err error) (map[string]any, error) {
 		// Redact credential values from all tool outputs before the LLM sees them.
 		// resolve_credential now returns {{CREDENTIAL:...}} placeholders instead

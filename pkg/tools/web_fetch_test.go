@@ -42,7 +42,7 @@ func TestCheckSSRF(t *testing.T) {
 		},
 		{
 			name:      "UnresolvableHost",
-			hostname:  "this-host-does-not-exist-astonish.invalid",
+			hostname:  "this-host-does-not-exist-troupe.invalid",
 			wantError: false, // unresolvable hosts are allowed (HTTP client will handle)
 		},
 	}

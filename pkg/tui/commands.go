@@ -28,7 +28,6 @@ var skillsSlashCommand = slashCommand{
 	Name: "skills", Description: "List local runtime skills",
 }
 
-
 // rollbackSlashCommand is offered only when the backend supports rollback
 // (code mode). It reverts chat and file changes to an earlier message.
 var rollbackSlashCommand = slashCommand{

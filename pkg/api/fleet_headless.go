@@ -33,7 +33,7 @@ func StartHeadlessFleetSession(ctx context.Context, cfg fleet.HeadlessFleetConfi
 
 	fleetCfg := &plan.FleetConfig
 
-	// Resolve the base workspace (~/astonish_projects/<repo-name>/) where
+	// Resolve the base workspace (~/troupe_projects/<repo-name>/) where
 	// the wizard cloned the repo and generated AGENTS.md.
 	baseDir := plan.ResolveWorkspaceDir()
 

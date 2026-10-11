@@ -498,7 +498,7 @@ flow:
 //
 // This is the ACTUAL endpoint used by:
 //   - The Flow View "Start Execution" button (web UI)
-//   - The remote CLI "astonish flows run" command
+//   - The remote CLI "troupe flows run" command
 //
 // Unlike the tests above (which use POST /api/agents/{name}/run — the FlowRunHandler),
 // this test exercises the HandleChat path in run_handler.go. This was the path that was

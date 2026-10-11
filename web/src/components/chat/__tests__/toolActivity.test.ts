@@ -244,6 +244,22 @@ describe('groupToolActivity', () => {
     expect(isAppProgressAgent(between[2])).toBe(true)
     expect(hasAppFence('plain text')).toBe(false)
   })
+
+  it('never absorbs troupe-app agent messages either (legacy fence stays compatible)', () => {
+    const messages: ChatMsg[] = [
+      { type: 'tool_call', toolName: 'search_tools', toolArgs: {} },
+      { type: 'tool_result', toolName: 'search_tools', toolResult: {} },
+      {
+        type: 'agent',
+        content: 'Building it now.\n\n```troupe-app\nfunction App() { return <div/> }\n',
+        _streaming: true,
+      },
+    ]
+    const live = groupToolActivity(messages)
+    expect(live.map(s => s.kind)).toEqual(['activity', 'passthrough'])
+    expect(isAppProgressAgent(messages[2])).toBe(true)
+    expect(hasAppFence('```troupe-app\nconst App = () => null\n```')).toBe(true)
+  })
 })
 
 describe('sticky agent bubble', () => {

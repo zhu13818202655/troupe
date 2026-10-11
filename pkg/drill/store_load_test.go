@@ -88,7 +88,7 @@ func (m *memFlowStore) AddTap(_ context.Context, _ string, _ string) (string, er
 	return "", fmt.Errorf("not implemented")
 }
 func (m *memFlowStore) RemoveTap(_ context.Context, _ string) error { return nil }
-func (m *memFlowStore) GetStoreDir(_ context.Context) string       { return "" }
+func (m *memFlowStore) GetStoreDir(_ context.Context) string        { return "" }
 
 func TestLoadSuiteFromStore(t *testing.T) {
 	fs := newMemFlowStore()

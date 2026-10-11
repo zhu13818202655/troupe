@@ -1,7 +1,7 @@
 import { AppWindow, FileText, Code, ChevronRight, ChevronDown, Loader } from 'lucide-react'
 
 interface FenceIndicatorProps {
-  /** The fence type extracted from the astonish-* fence (e.g. 'app', 'report') */
+  /** The fence type extracted from the troupe-* fence (e.g. 'app', 'report') */
   fenceType: string
   /** Whether the code is still being streamed */
   streaming: boolean
@@ -39,7 +39,7 @@ function fenceLabel(fenceType: string, streaming: boolean): string {
 }
 
 /**
- * Compact indicator that replaces a raw astonish-* code block in chat messages.
+ * Compact indicator that replaces a raw troupe-* code block in chat messages.
  * During streaming: shows a "Generating ..." spinner.
  * After streaming: shows a collapsed block with optional expand to view code.
  * Rendered outside ReactMarkdown to avoid remount jank during streaming.

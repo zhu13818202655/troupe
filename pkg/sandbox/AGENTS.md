@@ -13,7 +13,7 @@ Backend abstraction for sandboxed execution. Every tool that runs a shell comman
 ## Backend selection
 - Config `BackendKind` → factory in `backend_factory.go`.
 - Kinds: `BackendKindDocker` (default; empty and legacy `"incus"` alias to docker), `BackendKindK8s`, `BackendKindOpenShell`, `BackendKindMock`.
-- Backends are registered via `RegisterBackendFactory`. Blank imports in `cmd/astonish/sandbox_backends.go` guarantee the docker/k8s/openshell/mock packages link into the binary.
+- Backends are registered via `RegisterBackendFactory`. Blank imports in `cmd/troupe/sandbox_backends.go` guarantee the docker/k8s/openshell/mock packages link into the binary.
 - **Never call a backend implementation directly** from outside `pkg/sandbox` — always go through the `Backend` interface obtained from the factory. Otherwise you break the mock-based test story.
 
 ## Backend contract
@@ -49,27 +49,27 @@ If you add a backend, run the contract suite against it in CI. If you change the
 **Do not** add non-deterministic inputs (timestamps, build machine, current user) to the content hash — reproducibility across build machines relies on this.
 
 ## Session provisioning (per backend)
-- **Docker OverlayFS**: `pkg/sandbox/docker` creates `astonish-session-*` containers from `ghcr.io/sap/astonish-sandbox-base`. Layers live on the host (`LayersDir`); the live upper is a Docker volume; `fuse-overlayfs` (default) composes `/sandbox/rootfs`. Same overlay contract as K8s. Used for local Studio on macOS and Linux. Session `docker run` / seed `docker create` MUST be invoked as `docker container run|create` with `--flag=value` (never split `--name value`) so LXC AppArmor wrappers that rewrite top-level `run`/`create` cannot report `invalid reference format` or start the seed image. Host bind mounts whose source derives from a session ID MUST use structured `--mount` syntax because valid channel session IDs can contain colons (for example, `a2a:direct:...`).
+- **Docker OverlayFS**: `pkg/sandbox/docker` creates `troupe-session-*` containers from `ghcr.io/sap/troupe-sandbox-base`. Layers live on the host (`LayersDir`); the live upper is a Docker volume; `fuse-overlayfs` (default) composes `/sandbox/rootfs`. Same overlay contract as K8s. Used for local Studio on macOS and Linux. Session `docker run` / seed `docker create` MUST be invoked as `docker container run|create` with `--flag=value` (never split `--name value`) so LXC AppArmor wrappers that rewrite top-level `run`/`create` cannot report `invalid reference format` or start the seed image. Host bind mounts whose source derives from a session ID MUST use structured `--mount` syntax because valid channel session IDs can contain colons (for example, `a2a:direct:...`).
 - **OpenShell**: `Gateway.CreateSandbox` provisions a pod; the in-pod supervisor opens `ConnectSupervisor`; exec/push/pull go through `ExecSandbox` / `ExecSandboxInteractive`. Evicted sandboxes are auto-resumed by `ensureSessionRunning`. Platform `cert_bundles` set trust env and (for `source: pvc`) `SandboxTemplate.driver_config` PVC mounts; `source: configMap` omits PVC and relies on Kyverno inject — see `pkg/sandbox/openshell/driver_config.go`.
 - **K8s (direct, without OpenShell)**: `pkg/sandbox/k8s` — image pull policy is `Always` for mutable tags (`latest`, `dev`) and `IfNotPresent` for pinned digests. Enforces per-org/team labels and `NetworkPolicy`.
 - **Mock**: in-memory, used by unit tests; supports injection hooks.
 
 ## Entrypoint contract
 The Docker/K8s sandbox-base image and the OpenShell sandbox image (`docker/sandbox-base/Dockerfile`, `docker/sandbox-openshell/Dockerfile`) ship:
-- `/usr/local/bin/astonish-host` — the real binary copied into the base image.
-- `/usr/local/bin/astonish` — a wrapper that chroots into the composed overlay before exec'ing the real binary. **All Exec calls (from Astonish and kubectl exec both) rely on this wrapper.**
-- `/usr/local/bin/astonish-shell` — interactive wrapper for team-admin interactive shells.
-- The pod entrypoint (generated on the host via `make sandbox-entrypoint` / `cmd/astonish-sandbox-entrypoint-script`, then `COPY`ed into the image) composes the overlay (overlayfs / fuse-overlayfs / tar-resume depending on node capabilities) at `/sandbox/rootfs` and keeps PID 1 running.
+- `/usr/local/bin/troupe-host` — the real binary copied into the base image.
+- `/usr/local/bin/troupe` — a wrapper that chroots into the composed overlay before exec'ing the real binary. **All Exec calls (from Troupe and kubectl exec both) rely on this wrapper.**
+- `/usr/local/bin/troupe-shell` — interactive wrapper for team-admin interactive shells.
+- The pod entrypoint (generated on the host via `make sandbox-entrypoint` / `cmd/troupe-sandbox-entrypoint-script`, then `COPY`ed into the image) composes the overlay (overlayfs / fuse-overlayfs / tar-resume depending on node capabilities) at `/sandbox/rootfs` and keeps PID 1 running.
 
 **sandbox-base image build (cache contract):** Go is **not** compiled inside Docker. Prerequisites: `make build-linux` (and `build-linux-arm64` for multi-arch) + `make sandbox-entrypoint`. The Dockerfile keeps apt + treesitter + shell wrappers above the volatile `COPY` of entrypoint/binary so routine agent code changes only invalidate the last layers. Local rebuilds use BuildKit local cache under `.buildx-cache/sandbox-base`. Prefer `make push-sandbox-base-dev-fast` / `make docker-sandbox-base` for iteration.
 
-If you change the entrypoint, update the generator in `cmd/astonish-sandbox-entrypoint-script/` and the wrapper section of both Dockerfiles together.
+If you change the entrypoint, update the generator in `cmd/troupe-sandbox-entrypoint-script/` and the wrapper section of both Dockerfiles together.
 
 ## Isolation model (summary)
 - **Kernel**: Landlock + seccomp inside the sandbox (OpenShell supervisor). Optional user-namespace mapping via `SandboxTemplate.user_namespaces`.
 - **Network**:
   - K8s: `NetworkPolicy` per org/team labels; OpenShell adds L7 inspection driven by `SandboxPolicy.network_policies`.
-  - Docker OverlayFS: per-org Docker bridge networks (`astonish-org-<slug>`).
+  - Docker OverlayFS: per-org Docker bridge networks (`troupe-org-<slug>`).
 - **Filesystem**: per-session overlay; template layers are content-addressed directories (Docker/K8s) or image-tagged (OpenShell).
 - **Bootstrap files**: template `bootstrap_files` (e.g. `.troupe/start-services.sh`) are injected at session start and never auto-executed — drills/fleet/chat call them after credentials.
 - **Template overwrite**: `CreateTemplateFromContainer(..., overwrite=true)` when saving the **same** name the session is based on **flattens** (template upper ∪ session upper) onto the parent `BasedOn` (usually `base`). Never delete the source template before that flatten finishes — delete-first self-overwrite leaves the registry empty and breaks `ResolveLowerLayers`. Overwriting a *different* name may still delete-first.

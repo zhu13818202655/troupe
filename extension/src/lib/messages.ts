@@ -1,11 +1,11 @@
 import type { PageContext } from './page-context';
 
-export const MSG_GET_CONTEXT = 'astonish.getContext' as const;
-export const MSG_CONTEXT = 'astonish.context' as const;
-export const MSG_APPLY = 'astonish.apply' as const;
-export const MSG_APPLY_RESULT = 'astonish.applyResult' as const;
-export const MSG_PAGE_TOOL = 'astonish.pageTool' as const;
-export const MSG_PING = 'astonish.ping' as const;
+export const MSG_GET_CONTEXT = 'troupe.getContext' as const;
+export const MSG_CONTEXT = 'troupe.context' as const;
+export const MSG_APPLY = 'troupe.apply' as const;
+export const MSG_APPLY_RESULT = 'troupe.applyResult' as const;
+export const MSG_PAGE_TOOL = 'troupe.pageTool' as const;
+export const MSG_PING = 'troupe.ping' as const;
 
 export type ApplyMode = 'replace';
 
@@ -48,7 +48,7 @@ export type PageToolResult = {
 };
 
 /** Sent by the coordinator (top frame) to worker frames via chrome.tabs.sendMessage. */
-export const MSG_FRAME_TOOL = 'astonish.frameTool' as const;
+export const MSG_FRAME_TOOL = 'troupe.frameTool' as const;
 
 /**
  * Payload sent to a specific child frame to execute a page tool in that frame's

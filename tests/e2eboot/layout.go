@@ -151,7 +151,7 @@ func (s *SeedResult) Client(email string) *Client {
 }
 
 // ClientInTeam returns an authenticated HTTP client for the user but
-// with a different X-Astonish-Team header (for users in multiple teams).
+// with a different X-Troupe-Team header (for users in multiple teams).
 func (s *SeedResult) ClientInTeam(email, teamSlug string) *Client {
 	u, ok := s.Users[email]
 	if !ok {

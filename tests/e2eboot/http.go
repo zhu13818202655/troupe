@@ -98,7 +98,7 @@ func (h *Harness) do(t *testing.T, method, path string, body any, timeout time.D
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+h.Token)
-	req.Header.Set("X-Astonish-Team", "general")
+	req.Header.Set("X-Troupe-Team", "general")
 
 	client := &http.Client{Timeout: timeout}
  	resp, err := client.Do(req)
@@ -120,7 +120,7 @@ func (h *Harness) do(t *testing.T, method, path string, body any, timeout time.D
  	}
  	req.Header.Set("Content-Type", contentType)
  	req.Header.Set("Authorization", "Bearer "+h.Token)
- 	req.Header.Set("X-Astonish-Team", "general")
+ 	req.Header.Set("X-Troupe-Team", "general")
 
  	client := &http.Client{Timeout: 30 * time.Second}
  	resp, err := client.Do(req)

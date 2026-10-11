@@ -40,8 +40,8 @@ func maximalBuilder() *SystemPromptBuilder {
 		RelevantKnowledge:     "**infra/portainer.md** (53%)\nPortainer runs at 192.168.1.223:9000",
 		RelevantTools:         "**browser** group:\n  - `browser_take_screenshot` — Capture a screenshot\n",
 		Identity: &AgentIdentity{
-			Name:     "Astonish Bot",
-			Username: "astonish_ai",
+			Name:     "Troupe Bot",
+			Username: "troupe_ai",
 			Email:    "bot@example.com",
 			Bio:      "An AI assistant",
 			Website:  "https://example.com",
@@ -167,12 +167,12 @@ func TestSystemPromptContracts_GenerativeUI(t *testing.T) {
 	prompt := maximalBuilder().Build()
 
 	// The section header itself
-	assertContains(t, prompt, "## Visual Apps (Generative UI)", "Visual Apps section header — frontend AppPreviewCard relies on LLM producing astonish-app fences")
+	assertContains(t, prompt, "## Visual Apps (Generative UI)", "Visual Apps section header — frontend AppPreviewCard relies on LLM producing troupe-app fences")
 
-	// Contract 1: astonish-app code fence syntax
-	// Backend: chat_runner.go:533 appPreviewFenceRe matches ```astonish-app
+	// Contract 1: troupe-app code fence syntax
+	// Backend: chat_runner.go:533 appPreviewFenceRe matches ```troupe-app
 	// Frontend: StudioChat.tsx:681-703 + inline regex at :2204
-	assertContains(t, prompt, "astonish-app", "astonish-app fence name — backend regex appPreviewFenceRe and frontend regex both match this exact string")
+	assertContains(t, prompt, "troupe-app", "troupe-app fence name — backend regex appPreviewFenceRe and frontend regex both match this exact string")
 
 	// Contract: skill_lookup instruction — the model MUST be told to load the
 	// generative-ui skill before generating any visual app. This replaced the
@@ -196,19 +196,19 @@ func TestSystemPromptContracts_GenerativeUI(t *testing.T) {
 	// Contract 3: Mermaid diagrams for reports
 	assertContains(t, prompt, "mermaid", "mermaid blocks — MermaidBlock.tsx renders ```mermaid fences inside report markdown")
 
-	// Contract 20: Reports use a TWO-STEP contract — write_file PLUS astonish-report fence.
+	// Contract 20: Reports use a TWO-STEP contract — write_file PLUS troupe-report fence.
 	// Both signals are required for an artifact to be promoted to inline report
 	// rendering on the frontend (EmbeddedFileViewer). The prompt MUST teach the
 	// LLM both halves of the contract:
 	//   1. write_file creates the markdown file on disk;
-	//   2. an ```astonish-report fence with `path:` flips the IsReport gate so
+	//   2. an ```troupe-report fence with `path:` flips the IsReport gate so
 	//      the chat UI embeds the artifact inline instead of as a download card.
 	// These three assertions prevent silent regression where the prompt teaches
 	// only one side of the contract and the gate effectively goes back to "any
 	// last-turn markdown file is a report" (the b5310ae regression).
 	assertContains(t, prompt, "write_file", "write_file tool — Step 1 of the report contract: persist the markdown file on disk")
-	assertContains(t, prompt, "astonish-report", "astonish-report fence — Step 2 of the report contract: signal the file as a report so the frontend embeds it inline")
-	assertContains(t, prompt, "path:", "astonish-report fence requires `path:` — the path MUST match the absolute path passed to write_file or the marker is silently dropped")
+	assertContains(t, prompt, "troupe-report", "troupe-report fence — Step 2 of the report contract: signal the file as a report so the frontend embeds it inline")
+	assertContains(t, prompt, "path:", "troupe-report fence requires `path:` — the path MUST match the absolute path passed to write_file or the marker is silently dropped")
 }
 
 func TestSystemPromptContracts_Delegation(t *testing.T) {
@@ -292,8 +292,8 @@ func TestSystemPromptContracts_Identity(t *testing.T) {
 
 	// Identity fields rendered
 	assertContains(t, prompt, "## Agent Identity", "Agent Identity section header")
-	assertContains(t, prompt, "**Name:** Astonish Bot", "identity name rendered")
-	assertContains(t, prompt, "**Username:** astonish_ai", "identity username rendered")
+	assertContains(t, prompt, "**Name:** Troupe Bot", "identity name rendered")
+	assertContains(t, prompt, "**Username:** troupe_ai", "identity username rendered")
 	assertContains(t, prompt, "**Email:** bot@example.com", "identity email rendered")
 }
 
@@ -390,7 +390,7 @@ func TestSystemPromptContracts_Conditional_Minimal(t *testing.T) {
 	prompt := minimalBuilder().Build()
 
 	// Core sections should always be present
-	assertContains(t, prompt, "You are Astonish", "identity preamble always present")
+	assertContains(t, prompt, "You are Troupe", "identity preamble always present")
 	assertContains(t, prompt, "## Tool Use", "Tool Use always present")
 	assertContains(t, prompt, "## Live Evidence", "Live Evidence always present — Studio has no Work Policy; PATH probes must not skip this")
 	assertContains(t, prompt, "CloakBrowser", "CloakBrowser named in Live Evidence so which chromium is not treated as overlay failure")

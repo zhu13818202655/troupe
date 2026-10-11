@@ -15,7 +15,7 @@ import (
 // collecting the nearest instruction file at each level (AGENTS.md, falling
 // back to CLAUDE.md). Files are concatenated root-first so the nearest file
 // appears last and therefore takes precedence. A global file at
-// ~/.config/astonish/AGENTS.md is prepended (lowest precedence).
+// ~/.config/troupe/AGENTS.md is prepended (lowest precedence).
 
 const (
 	// projectContextFileName is the primary per-directory instruction file.
@@ -34,7 +34,7 @@ const (
 // LoadProjectContext discovers and concatenates AGENTS.md (fallback CLAUDE.md)
 // files for the given working directory, following the agents.md convention:
 // walk upward to the project root, nearest file wins (appears last), and
-// prepend a global ~/.config/astonish/AGENTS.md when present.
+// prepend a global ~/.config/troupe/AGENTS.md when present.
 //
 // It returns the merged Markdown (with per-file provenance headers) or an empty
 // string when nothing is found. It never returns an error: missing/unreadable
@@ -166,15 +166,15 @@ func readProjectContextFile(path string) (string, bool) {
 	return content, true
 }
 
-// globalProjectContextPath returns ~/.config/astonish/AGENTS.md when a home
+// globalProjectContextPath returns ~/.config/troupe/AGENTS.md when a home
 // directory is resolvable, honoring XDG_CONFIG_HOME.
 func globalProjectContextPath() string {
 	if xdg := os.Getenv("XDG_CONFIG_HOME"); xdg != "" {
-		return filepath.Join(xdg, "astonish", projectContextFileName)
+		return filepath.Join(xdg, "troupe", projectContextFileName)
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(home, ".config", "astonish", projectContextFileName)
+	return filepath.Join(home, ".config", "troupe", projectContextFileName)
 }

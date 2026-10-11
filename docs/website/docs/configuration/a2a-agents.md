@@ -1,6 +1,6 @@
 # A2A Agents — Connecting to External Agents
 
-Astonish can connect to external agents that implement the **A2A (Agent-to-Agent) protocol**. Once configured, the remote agent's capabilities appear as tools your Astonish agent can call — just like MCP server tools, but backed by a full autonomous agent on the other end.
+Troupe can connect to external agents that implement the **A2A (Agent-to-Agent) protocol**. Once configured, the remote agent's capabilities appear as tools your Troupe agent can call — just like MCP server tools, but backed by a full autonomous agent on the other end.
 
 ## What Is A2A?
 
@@ -11,20 +11,20 @@ The [Agent-to-Agent (A2A) protocol](https://github.com/google/A2A) is an open st
 - **Tasks** — units of work with lifecycle states (submitted → working → completed)
 - **Streaming** — real-time updates via Server-Sent Events (SSE)
 
-When you connect Astonish to an external A2A agent, Astonish acts as a **client** — it discovers the remote agent's skills and makes them available as tools.
+When you connect Troupe to an external A2A agent, Troupe acts as a **client** — it discovers the remote agent's skills and makes them available as tools.
 
 ## Why Connect to External Agents?
 
 - **Specialized expertise** — connect to agents trained for specific domains (code review, translation, data analysis)
 - **Organizational agents** — integrate with internal agents your team has built
-- **Distributed workflows** — let your Astonish agent delegate sub-tasks to specialized agents
+- **Distributed workflows** — let your Troupe agent delegate sub-tasks to specialized agents
 - **Vendor integrations** — use third-party AI services that expose an A2A endpoint
 
 ## Configuration
 
 ### Personal Mode (a2a_agents.json)
 
-Create or edit `~/.config/astonish/a2a_agents.json`:
+Create or edit `~/.config/troupe/a2a_agents.json`:
 
 ```json
 {
@@ -66,7 +66,7 @@ Each tier can define agents. When names collide, the closest tier to the user wi
 
 ## Authentication Setup
 
-A2A agents typically require authentication. Astonish uses the **credential store** to manage secrets securely.
+A2A agents typically require authentication. Troupe uses the **credential store** to manage secrets securely.
 
 ### Step 1: Add a Credential
 
@@ -74,10 +74,10 @@ Using the CLI:
 
 ```bash
 # Bearer token
-astonish credentials set code-review-token --type bearer_token --value "your-api-token"
+troupe credentials set code-review-token --type bearer_token --value "your-api-token"
 
 # API key
-astonish credentials set translate-api-key --type api_key --value "sk-your-key"
+troupe credentials set translate-api-key --type api_key --value "sk-your-key"
 ```
 
 Or via Studio Settings → Credentials.
@@ -122,7 +122,7 @@ You should see a JSON response with the agent's name, description, and skills.
 
 ### 2. Configure the Connection
 
-Add to `~/.config/astonish/a2a_agents.json`:
+Add to `~/.config/troupe/a2a_agents.json`:
 
 ```json
 {
@@ -140,7 +140,7 @@ Add to `~/.config/astonish/a2a_agents.json`:
 ### 3. Add the Credential
 
 ```bash
-astonish credentials set code-review-token --type bearer_token --value "your-token-here"
+troupe credentials set code-review-token --type bearer_token --value "your-token-here"
 ```
 
 ### 4. Test the Connection
@@ -169,7 +169,7 @@ Once configured, the agent's skills appear as tools. In a chat:
 
 > "Use the code review agent to review the changes in PR #42"
 
-Astonish will call the appropriate `a2a_code_review_*` tool automatically.
+Troupe will call the appropriate `a2a_code_review_*` tool automatically.
 
 ## API Reference
 
@@ -227,12 +227,12 @@ All endpoints are under `/api/a2a-agents`. Use `?scope=platform|org|team` to tar
 
 1. **Check enabled status** — ensure `"enabled": true` (or omit the field, which defaults to true)
 2. **Refresh the card** — POST to `/api/a2a-agents/{name}/refresh` to re-fetch the agent card
-3. **Verify URL** — the URL must be reachable from the Astonish server
+3. **Verify URL** — the URL must be reachable from the Troupe server
 4. **Check logs** — look for `a2aclient: warning: failed to fetch agent card` messages
 
 ### Authentication failures
 
-1. **Verify credential exists** — `astonish credentials list` should show the credential
+1. **Verify credential exists** — `troupe credentials list` should show the credential
 2. **Check credential name matches** — the `credential_name` in agent config must exactly match the credential store entry
 3. **Test connectivity** — POST to `/api/a2a-agents/{name}/test` to check if the agent responds
 4. **Check auth_type** — ensure it matches what the remote agent expects
@@ -245,7 +245,7 @@ All endpoints are under `/api/a2a-agents`. Use `?scope=platform|org|team` to tar
 
 ### Connection refused / DNS errors
 
-- Verify the agent URL is correct and reachable from the Astonish server
+- Verify the agent URL is correct and reachable from the Troupe server
 - Check network policies / firewalls
 - Ensure the remote agent is running
 
@@ -259,4 +259,4 @@ All endpoints are under `/api/a2a-agents`. Use `?scope=platform|org|team` to tar
 
 - [MCP Servers](../configuration/mcp-servers.md) — similar pattern for connecting to MCP tool servers
 - [Credential Security](../security/credential-security.md) — how credentials are stored and protected
-- [Inbound A2A Server](../channels/a2a.md) — OAuth-protected endpoint for external agents calling Astonish
+- [Inbound A2A Server](../channels/a2a.md) — OAuth-protected endpoint for external agents calling Troupe

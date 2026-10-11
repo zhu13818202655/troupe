@@ -19,7 +19,7 @@ func TestSlidesWorkerPathsUsesRuntimeRoot(t *testing.T) {
 	if err := os.WriteFile(scriptPath, []byte("export {}"), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	t.Setenv(astonishRootEnv, root)
+	t.Setenv(troupeRootEnv, root)
 
 	gotWorkingDir, gotScriptPath, err := slidesWorkerPaths("worker.mjs")
 	if err != nil {
@@ -32,7 +32,7 @@ func TestSlidesWorkerPathsUsesRuntimeRoot(t *testing.T) {
 
 func TestSlidesWorkerPathsRejectsIncompleteRuntimeRoot(t *testing.T) {
 	root := t.TempDir()
-	t.Setenv(astonishRootEnv, root)
+	t.Setenv(troupeRootEnv, root)
 
 	_, _, err := slidesWorkerPaths("missing-worker.mjs")
 	if err == nil {

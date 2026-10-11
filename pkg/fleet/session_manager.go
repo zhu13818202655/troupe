@@ -60,10 +60,10 @@ type FleetSession struct {
 
 	// State
 	state            SessionState
-	activeAgent      string // which agent is currently processing (or last processed)
+	activeAgent      string              // which agent is currently processing (or last processed)
 	activeAgents     map[string]struct{} // agents currently activated (parallel dispatcher)
-	waitingAgent     string // which agent is waiting for human input
-	ballWithCustomer bool   // true when ball was moved to customer (used for state tracking)
+	waitingAgent     string              // which agent is waiting for human input
+	ballWithCustomer bool                // true when ball was moved to customer (used for state tracking)
 	mu               sync.RWMutex
 	runStateStore    store.FleetRunStateStore
 

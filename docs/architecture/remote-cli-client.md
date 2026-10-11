@@ -1,19 +1,19 @@
 # Remote CLI Client Architecture
 
-This document describes the architecture for making the Astonish CLI a thin client to an Astonish platform server (local install or cloud). User-facing commands that need a running platform require `astonish login`.
+This document describes the architecture for making the Troupe CLI a thin client to an Troupe platform server (local install or cloud). User-facing commands that need a running platform require `troupe login`.
 
 ## Overview
 
-Single binary (`astonish`):
+Single binary (`troupe`):
 
-- **Platform client mode** (after `astonish login`): CLI is an HTTP client to the platform, using the same REST/SSE APIs as Studio. **Chat always requires this mode** — there is no in-process personal chat.
+- **Platform client mode** (after `troupe login`): CLI is an HTTP client to the platform, using the same REST/SSE APIs as Studio. **Chat always requires this mode** — there is no in-process personal chat.
 - **Infrastructure mode** (no login / after logout): Commands such as `daemon`, `platform`, `sandbox` run against local machine/config. These error if used while logged into a remote platform where they do not apply.
 
-When `~/.config/astonish/remote.yaml` exists and has a URL configured, user-facing commands route through the platform HTTP client.
+When `~/.config/troupe/remote.yaml` exists and has a URL configured, user-facing commands route through the platform HTTP client.
 
 ## Design Principles
 
-- **Chat is platform-only**: `astonish chat` requires login; agent execution happens on the platform, not inside the CLI process.
+- **Chat is platform-only**: `troupe chat` requires login; agent execution happens on the platform, not inside the CLI process.
 - **Same UX for local install and cloud**: both are “the platform” behind `login <url>`.
 - **No local daemon in remote-client mode**: The CLI talks to the logged-in server. Running `daemon start` while pointed at a remote platform is an error.
 - **Encrypted credential storage**: JWT tokens are stored locally using the same AES-256-GCM mechanism as the credential store.
@@ -52,26 +52,26 @@ When `~/.config/astonish/remote.yaml` exists and has a URL configured, user-faci
 
 | Command | Purpose |
 |---------|---------|
-| `astonish login <url>` | Authenticate (email/password or `--sso`) |
-| `astonish logout` | Clear tokens, remove remote config |
-| `astonish status` | Show mode (local/remote), server URL, org, team, user |
-| `astonish org use <slug>` | Switch active org |
-| `astonish org list` | List available orgs |
-| `astonish team use <slug>` | Switch active team |
-| `astonish team list` | List available teams |
+| `troupe login <url>` | Authenticate (email/password or `--sso`) |
+| `troupe logout` | Clear tokens, remove remote config |
+| `troupe status` | Show mode (local/remote), server URL, org, team, user |
+| `troupe org use <slug>` | Switch active org |
+| `troupe org list` | List available orgs |
+| `troupe team use <slug>` | Switch active team |
+| `troupe team list` | List available teams |
 
 ## Configuration
 
-### Remote Config: `~/.config/astonish/remote.yaml`
+### Remote Config: `~/.config/troupe/remote.yaml`
 
 ```yaml
-url: https://astonish.mycompany.com
+url: https://troupe.mycompany.com
 org: my-org
 team: general
 user_email: alice@example.com
 ```
 
-### Encrypted Token Storage: `~/.config/astonish/remote_tokens.enc`
+### Encrypted Token Storage: `~/.config/troupe/remote_tokens.enc`
 
 Same format as `credentials.enc` — AES-256-GCM using the existing `.store_key` file.
 
@@ -97,7 +97,7 @@ CLI Command
     +-- Yes --> pkg/client.Client
                    |
                    +-- Auth: Authorization: Bearer <access_token>
-                   +-- Headers: X-Astonish-Team: <team-slug>
+                   +-- Headers: X-Troupe-Team: <team-slug>
                    +-- Auto-refresh on 401
                    +-- Org from JWT claims (set at login time)
                    |
@@ -117,19 +117,19 @@ pkg/client/
 +-- chat.go            # Chat-specific SSE client (event parsing)
 +-- api.go             # Typed API methods (sessions, flows, drills, etc.)
 
-cmd/astonish/
-+-- login.go           # astonish login
-+-- logout.go          # astonish logout
-+-- remote_status.go   # astonish status
-+-- org.go             # astonish org use/list
-+-- team.go            # astonish team use/list
+cmd/troupe/
++-- login.go           # troupe login
++-- logout.go          # troupe logout
++-- remote_status.go   # troupe status
++-- org.go             # troupe org use/list
++-- team.go            # troupe team use/list
 ```
 
 ## Server-Side Changes Required
 
 ### 1. Bearer Token Support in Auth Middleware
 
-Currently the platform auth middleware reads JWT exclusively from the `astonish_access` cookie. Add fallback to `Authorization: Bearer <token>` header:
+Currently the platform auth middleware reads JWT exclusively from the `troupe_access` cookie. Add fallback to `Authorization: Bearer <token>` header:
 
 ```go
 // Try Authorization header first (for CLI clients)
@@ -181,11 +181,11 @@ Response:
 ### Password Login
 
 ```
-astonish login https://astonish.company.com
+troupe login https://troupe.company.com
 > Email: alice@example.com
 > Password: ********
 
-POST https://astonish.company.com/api/auth/login
+POST https://troupe.company.com/api/auth/login
 {"email": "alice@example.com", "password": "...", "client_type": "cli"}
 
 Response: {access_token, refresh_token, user, org}
@@ -198,10 +198,10 @@ Response: {access_token, refresh_token, user, org}
 ### SSO Login
 
 ```
-astonish login https://astonish.company.com --sso
+troupe login https://troupe.company.com --sso
 
 1. CLI starts localhost HTTP server on random port
-2. Opens browser: https://astonish.company.com/api/auth/oidc/authorize?
+2. Opens browser: https://troupe.company.com/api/auth/oidc/authorize?
      redirect_uri=http://localhost:<port>/callback&
      cli=true
 3. User authenticates with IdP (SAP IAS, Azure AD, Okta)
@@ -221,7 +221,7 @@ Any API call returns 401
 --> Original request retried with new access token
 
 If refresh also fails (expired):
---> "Session expired. Run 'astonish login' to re-authenticate."
+--> "Session expired. Run 'troupe login' to re-authenticate."
 --> Exit with error code
 ```
 
@@ -298,11 +298,11 @@ If the CLI disconnects mid-stream (network issue):
 - `sse.go` — Generic SSE stream reader
 
 ### Phase 3: Login, Logout, Status Commands
-- `astonish login <url>` — interactive auth flow
-- `astonish logout` — clear tokens + remote.yaml
-- `astonish status` — show current mode/connection
-- `astonish org use/list` — org switching
-- `astonish team use/list` — team switching
+- `troupe login <url>` — interactive auth flow
+- `troupe logout` — clear tokens + remote.yaml
+- `troupe status` — show current mode/connection
+- `troupe org use/list` — org switching
+- `troupe team use/list` — team switching
 - Guard `daemon`/`studio` commands in remote mode
 
 ### Phase 4: Remote Sessions
@@ -329,24 +329,24 @@ If the CLI disconnects mid-stream (network issue):
 ```
 # daemon start in remote mode
 Error: 'daemon start' is not available in remote mode.
-You are connected to https://astonish.company.com
-Use 'astonish logout' to disconnect and return to personal mode.
+You are connected to https://troupe.company.com
+Use 'troupe logout' to disconnect and return to personal mode.
 
 # studio in remote mode
 Error: 'studio' is not available in remote mode.
-Open https://astonish.company.com in your browser instead.
-Use 'astonish logout' to disconnect and return to personal mode.
+Open https://troupe.company.com in your browser instead.
+Use 'troupe logout' to disconnect and return to personal mode.
 
 # expired refresh token
-Error: Session expired. Run 'astonish login' to re-authenticate.
+Error: Session expired. Run 'troupe login' to re-authenticate.
 
 # server unreachable
-Error: Cannot reach https://astonish.company.com
-Check your network connection or use 'astonish logout' to switch to personal mode.
+Error: Cannot reach https://troupe.company.com
+Check your network connection or use 'troupe logout' to switch to personal mode.
 
 # 403 on team access
 Error: Access denied. You are not a member of team 'engineering'.
-Use 'astonish team list' to see available teams.
+Use 'troupe team list' to see available teams.
 ```
 
 ## Security Considerations
@@ -355,6 +355,6 @@ Use 'astonish team list' to see available teams.
 - Access tokens are short-lived (15 min) — limits exposure if leaked
 - Refresh tokens are long-lived (90 days) but revocable server-side
 - No tokens are ever printed to stdout or logged
-- `astonish logout` cryptographically erases stored tokens (overwrites file)
+- `troupe logout` cryptographically erases stored tokens (overwrites file)
 - The CLI never stores the user's password — only the issued tokens
 - SSO flow uses a localhost callback (no tokens in URL history after redirect)

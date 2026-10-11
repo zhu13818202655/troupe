@@ -15,6 +15,9 @@ import (
 	"golang.org/x/crypto/argon2"
 )
 
+// The magic bytes are written at the head of every encrypted archive and
+// checked on restore. Kept as-is across the rebrand so pre-rebrand
+// backups remain readable.
 const encryptedArchiveMagic = "ASTONISH-BACKUP-ENC-v1\n"
 
 var defaultArgon2idParameters = Argon2idParameters{

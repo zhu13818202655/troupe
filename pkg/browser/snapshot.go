@@ -354,7 +354,7 @@ type domSnapshotRef struct {
 // takeDOMSnapshot uses JavaScript to walk the visible DOM and produce a
 // structured text representation. This is the fallback when Chrome's AX tree
 // is too sparse (common on sites with non-semantic div-heavy DOMs).
-// Interactive elements are tagged with data-astonish-ref attributes so they
+// Interactive elements are tagged with data-troupe-ref attributes so they
 // can be resolved later via CSS selector.
 func takeDOMSnapshot(pg *rod.Page, refs *RefMap, opts SnapshotOptions) (*SnapshotResult, error) {
 	maxChars := opts.MaxChars
@@ -369,7 +369,7 @@ func takeDOMSnapshot(pg *rod.Page, refs *RefMap, opts SnapshotOptions) (*Snapsho
 	compact := opts.Compact
 
 	// The JS walker produces a text tree and a list of interactive refs.
-	// Each interactive element gets a data-astonish-ref attribute for later resolution.
+	// Each interactive element gets a data-troupe-ref attribute for later resolution.
 	jsCode := fmt.Sprintf(`() => {
 		const MAX_DEPTH = %d;
 		const INTERACTIVE_ONLY = %t;
@@ -442,7 +442,7 @@ func takeDOMSnapshot(pg *rod.Page, refs *RefMap, opts SnapshotOptions) (*Snapsho
 				refCounter++;
 				const refId = 'ref' + refCounter;
 				refTag = '[' + refId + '] ';
-				el.setAttribute('data-astonish-ref', refId);
+				el.setAttribute('data-troupe-ref', refId);
 				refList.push({ref: refId, tag: el.tagName, role: role || el.tagName.toLowerCase(), name: name});
 			}
 
@@ -498,7 +498,7 @@ func takeDOMSnapshot(pg *rod.Page, refs *RefMap, opts SnapshotOptions) (*Snapsho
 		refs.Add(RefEntry{
 			Role:        r.Role,
 			Name:        r.Name,
-			CSSSelector: fmt.Sprintf("[data-astonish-ref=%q]", r.Ref),
+			CSSSelector: fmt.Sprintf("[data-troupe-ref=%q]", r.Ref),
 		})
 	}
 

@@ -8,9 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/a2aclient"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 )
 
 func TestAgentCardURLSharedContract(t *testing.T) {

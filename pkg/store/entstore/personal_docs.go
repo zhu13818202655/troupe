@@ -5,12 +5,12 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/google/uuid"
 	personalent "github.com/zhu13818202655/troupe/ent/personal"
 	personaldeck "github.com/zhu13818202655/troupe/ent/personal/deck"
 	personaldeckversion "github.com/zhu13818202655/troupe/ent/personal/deckversion"
 	personalslide "github.com/zhu13818202655/troupe/ent/personal/slide"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/google/uuid"
 )
 
 type personalDocsStore struct{ client *personalent.Client }

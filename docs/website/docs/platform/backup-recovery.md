@@ -1,6 +1,6 @@
 # Backup & Recovery
 
-Astonish backup archives are designed for two jobs:
+Troupe backup archives are designed for two jobs:
 
 1. Recover platform data after an operator error or infrastructure failure.
 2. Port data from one deployment location or backend to another.
@@ -20,13 +20,13 @@ Archive verification checks the manifest, checksum file, compressed stream, and 
 ## Create a Logical Backup Archive
 
 ```bash
-astonish platform backup create --output backup.troupe-backup
+troupe platform backup create --output backup.troupe-backup
 ```
 
 The default archive is gzip-compressed. To create an uncompressed tar-compatible archive for debugging, use:
 
 ```bash
-astonish platform backup create --output backup.troupe-backup --compression none
+troupe platform backup create --output backup.troupe-backup --compression none
 ```
 
 For SQLite and PostgreSQL deployments, the current `create` command exports logical JSONL rows across platform, org, team, and personal scopes. This includes durable rows for:
@@ -46,14 +46,14 @@ The archive does not contain physical `.db` files. Recovery backups preserve sto
 ## Inspect an Archive
 
 ```bash
-astonish platform backup inspect backup.troupe-backup
+troupe platform backup inspect backup.troupe-backup
 ```
 
 Use JSON output for scripts:
 
 ```bash
-astonish platform backup inspect backup.troupe-backup --json
-astonish platform backup inspect encrypted.troupe-backup --passphrase "$BACKUP_PASSPHRASE"
+troupe platform backup inspect backup.troupe-backup --json
+troupe platform backup inspect encrypted.troupe-backup --passphrase "$BACKUP_PASSPHRASE"
 ```
 
 Inspection reads the manifest and checksum metadata. It also shows whether the archive is passphrase-encrypted. It does not prove payload integrity; use `verify` for that.
@@ -61,7 +61,7 @@ Inspection reads the manifest and checksum metadata. It also shows whether the a
 ## Verify an Archive
 
 ```bash
-astonish platform backup verify backup.troupe-backup
+troupe platform backup verify backup.troupe-backup
 ```
 
 Verification fails if:
@@ -77,8 +77,8 @@ Verification fails if:
 For automation:
 
 ```bash
-astonish platform backup verify backup.troupe-backup --json
-astonish platform backup verify encrypted.troupe-backup --passphrase "$BACKUP_PASSPHRASE"
+troupe platform backup verify backup.troupe-backup --json
+troupe platform backup verify encrypted.troupe-backup --passphrase "$BACKUP_PASSPHRASE"
 ```
 
 ## Recover a Fresh Installation
@@ -86,22 +86,22 @@ astonish platform backup verify encrypted.troupe-backup --passphrase "$BACKUP_PA
 Restore targets a clean SQLite or PostgreSQL platform installation. Configure the new installation's storage first, stop the daemon if it is running, then verify and dry-run the archive:
 
 ```bash
-astonish daemon stop
-astonish platform backup verify backup.troupe-backup
-astonish platform restore backup.troupe-backup --dry-run
+troupe daemon stop
+troupe platform backup verify backup.troupe-backup
+troupe platform restore backup.troupe-backup --dry-run
 ```
 
 If the dry-run has no blockers, restore the archive:
 
 ```bash
-astonish platform restore backup.troupe-backup --confirm
-astonish daemon start
+troupe platform restore backup.troupe-backup --confirm
+troupe daemon start
 ```
 
-The safest target is an empty data directory. If `astonish setup` already created throwaway users, orgs, or teams, either create a fresh data directory or explicitly reset the SQLite target during restore:
+The safest target is an empty data directory. If `troupe setup` already created throwaway users, orgs, or teams, either create a fresh data directory or explicitly reset the SQLite target during restore:
 
 ```bash
-astonish platform restore backup.troupe-backup --confirm --reset-target
+troupe platform restore backup.troupe-backup --confirm --reset-target
 ```
 
 `--reset-target` is destructive: it deletes the target SQLite platform database, tenant database tree, and legacy file-backed runtime directories under the configured data directory before bootstrapping a new empty target and importing the archive. The command still requires `--confirm` for writes.
@@ -111,9 +111,9 @@ Scheduled jobs are restored paused by default to avoid duplicate automation afte
 For full credential recovery, copy the source encryption key to the new installation before restore and before starting the restored system:
 
 ```bash
-mkdir -p ~/.config/astonish
-cp /secure/source/.store_key ~/.config/astonish/.store_key
-chmod 600 ~/.config/astonish/.store_key
+mkdir -p ~/.config/troupe
+cp /secure/source/.store_key ~/.config/troupe/.store_key
+chmod 600 ~/.config/troupe/.store_key
 # or export the same TROUPE_MASTER_KEY used by the source deployment
 export TROUPE_MASTER_KEY='...'
 ```
@@ -123,7 +123,7 @@ Restore dry-runs now check encrypted credential material. If the backup contains
 Recovery backups preserve stored values by default, including password hashes and encrypted credential blobs, because those values are required for a working restored system. Use `--redact-secrets` only for portable/support exports that intentionally cannot restore protected values:
 
 ```bash
-astonish platform backup create --output portable.troupe-backup --redact-secrets
+troupe platform backup create --output portable.troupe-backup --redact-secrets
 ```
 
 Redacted fields cannot be recovered and must be reconfigured manually.
@@ -133,26 +133,26 @@ Redacted fields cannot be recovered and must be reconfigured manually.
 Backup creation can narrow the export scope:
 
 ```bash
-astonish platform backup create --org acme --output acme.troupe-backup
-astonish platform backup create --org acme --team sre --output acme-sre.troupe-backup
-astonish platform backup create --org acme --user alice@example.com --output alice.troupe-backup
+troupe platform backup create --org acme --output acme.troupe-backup
+troupe platform backup create --org acme --team sre --output acme-sre.troupe-backup
+troupe platform backup create --org acme --user alice@example.com --output alice.troupe-backup
 ```
 
-The restore flow validates archive integrity, schema compatibility, target emptiness, and encrypted credential key compatibility before writing data. Schema mismatch errors usually mean the target needs migrations, a matching Astonish binary, or a backup created from a compatible schema. Use restore-time mapping when you need to port data into renamed scopes:
+The restore flow validates archive integrity, schema compatibility, target emptiness, and encrypted credential key compatibility before writing data. Schema mismatch errors usually mean the target needs migrations, a matching Troupe binary, or a backup created from a compatible schema. Use restore-time mapping when you need to port data into renamed scopes:
 
 ```bash
-astonish platform restore acme.troupe-backup --dry-run --map-org acme:acme-prod
-astonish platform restore acme-sre.troupe-backup --confirm --map-org acme:acme-prod --map-team acme/sre:acme-prod/platform
-astonish platform restore alice.troupe-backup --confirm --map-user acme/alice@example.com:acme-prod/alice@example.com
+troupe platform restore acme.troupe-backup --dry-run --map-org acme:acme-prod
+troupe platform restore acme-sre.troupe-backup --confirm --map-org acme:acme-prod --map-team acme/sre:acme-prod/platform
+troupe platform restore alice.troupe-backup --confirm --map-user acme/alice@example.com:acme-prod/alice@example.com
 ```
 
 `--map-org` uses `old:new`. `--map-team` and `--map-user` use `old-org/old-id:new-org/new-id`. Mapping is for fresh-target portability; it is not a merge tool for combining conflicting existing tenants.
 
 ## Credentials and Secrets
 
-Credential values remain encrypted in backups. Astonish backup tooling must not export plaintext API keys, OAuth tokens, passwords, or provider secrets.
+Credential values remain encrypted in backups. Troupe backup tooling must not export plaintext API keys, OAuth tokens, passwords, or provider secrets.
 
-The logical exporter preserves stored protected values in recovery backups. When `--redact-secrets` is used, it redacts sensitive-looking columns and nested JSON keys such as password, token, secret, API key, JWT, and encrypted-value fields. Restoring encrypted credential payloads into a different deployment requires compatible key material or a future explicit re-key workflow. If the source used `~/.config/astonish/.store_key`, copy that file securely to the target. If the source used `TROUPE_MASTER_KEY`, configure the same value on the target before restore.
+The logical exporter preserves stored protected values in recovery backups. When `--redact-secrets` is used, it redacts sensitive-looking columns and nested JSON keys such as password, token, secret, API key, JWT, and encrypted-value fields. Restoring encrypted credential payloads into a different deployment requires compatible key material or a future explicit re-key workflow. If the source used `~/.config/troupe/.store_key`, copy that file securely to the target. If the source used `TROUPE_MASTER_KEY`, configure the same value on the target before restore.
 
 ## Operational Guidance
 

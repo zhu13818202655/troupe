@@ -54,12 +54,12 @@ func limitForPath(path, method string) int64 {
 
 	// Large-payload endpoints (file uploads, app saves, sandbox templates).
 	largeEndpoints := []string{
-		"/api/studio/apps",        // Visual app YAML can be large
-		"/api/sandbox/templates",  // Sandbox template creation
-		"/api/ai/chat",            // Chat messages with images/attachments
-		"/api/studio/chat",        // Studio chat with file attachments
-		"/api/fleet/sessions",     // Fleet session payloads
-		"/api/studio/sessions",    // Session import
+		"/api/studio/apps",       // Visual app YAML can be large
+		"/api/sandbox/templates", // Sandbox template creation
+		"/api/ai/chat",           // Chat messages with images/attachments
+		"/api/studio/chat",       // Studio chat with file attachments
+		"/api/fleet/sessions",    // Fleet session payloads
+		"/api/studio/sessions",   // Session import
 	}
 	for _, ep := range largeEndpoints {
 		if strings.HasPrefix(path, ep) {

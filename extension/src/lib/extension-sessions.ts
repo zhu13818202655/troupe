@@ -12,7 +12,10 @@ export type ExtensionChatState = {
 // Session storage is shared across all extension contexts, so we key by tabId.
 // The tabId is embedded in the side panel URL by the service worker when it opens
 // the panel, so it is always available synchronously from location.search.
-const STORAGE_KEY = 'astonishExtensionChatByTab';
+const STORAGE_KEY = 'troupeExtensionChatByTab';
+// Pre-rebrand per-tab key; read for backwards compatibility, then migrated.
+const LEGACY_BY_TAB_KEY = 'astonishExtensionChatByTab';
+// Pre-per-tab key (single-tab local storage); migrated in loadExtensionChat.
 const LEGACY_STORAGE_KEY = 'astonishExtensionChat';
 
 type TabStateMap = Record<number, ExtensionChatState>;
@@ -48,11 +51,24 @@ async function loadTabMap(): Promise<TabStateMap> {
     if (typeof chrome === 'undefined' || !chrome.storage?.local) return {};
     const result = await chrome.storage.local.get(STORAGE_KEY);
     const raw = result[STORAGE_KEY];
-    return (!raw || typeof raw !== 'object') ? {} : raw as TabStateMap;
+    if (raw && typeof raw === 'object') return raw as TabStateMap;
+    return migrateLegacyByTabMap('local');
   }
   const result = await chrome.storage.session.get(STORAGE_KEY);
   const raw = result[STORAGE_KEY];
-  return (!raw || typeof raw !== 'object') ? {} : raw as TabStateMap;
+  if (raw && typeof raw === 'object') return raw as TabStateMap;
+  return migrateLegacyByTabMap('session');
+}
+
+/** Read the pre-rebrand per-tab map, migrate it to the new key, then drop the old entry. */
+async function migrateLegacyByTabMap(area: 'session' | 'local'): Promise<TabStateMap> {
+  if (typeof chrome === 'undefined' || !chrome.storage?.[area]) return {};
+  const legacyResult = await chrome.storage[area].get(LEGACY_BY_TAB_KEY);
+  const legacy = legacyResult[LEGACY_BY_TAB_KEY];
+  if (!legacy || typeof legacy !== 'object') return {};
+  await chrome.storage[area].set({ [STORAGE_KEY]: legacy });
+  await chrome.storage[area].remove(LEGACY_BY_TAB_KEY);
+  return legacy as TabStateMap;
 }
 
 async function saveTabMap(map: TabStateMap): Promise<void> {
@@ -179,10 +195,10 @@ export async function deleteExtensionSession(
 export async function clearExtensionChat(): Promise<void> {
   if (typeof chrome === 'undefined') return;
   if (chrome.storage?.session) {
-    await chrome.storage.session.remove(STORAGE_KEY);
+    await chrome.storage.session.remove([STORAGE_KEY, LEGACY_BY_TAB_KEY]);
   }
   if (chrome.storage?.local) {
-    await chrome.storage.local.remove([STORAGE_KEY, LEGACY_STORAGE_KEY]);
+    await chrome.storage.local.remove([STORAGE_KEY, LEGACY_BY_TAB_KEY, LEGACY_STORAGE_KEY]);
   }
 }
 

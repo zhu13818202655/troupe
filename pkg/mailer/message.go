@@ -11,13 +11,13 @@ type Message interface {
 	HTMLBody() string
 }
 
-// logoURL is the hosted Astonish logo used in the email header.
-const logoURL = "https://sap.github.io/astonish/astonish-logo.png"
+// logoURL is the hosted Troupe logo used in the email header.
+const logoURL = "https://sap.github.io/troupe/troupe-logo.png"
 
-// wrapHTML wraps inner HTML content in the shared Astonish email layout.
+// wrapHTML wraps inner HTML content in the shared Troupe email layout.
 // Provides consistent branding: logo, card container, purple accent, footer.
 func wrapHTML(innerHTML string) string {
-	return wrapHTMLWithFooter(innerHTML, "Astonish")
+	return wrapHTMLWithFooter(innerHTML, "Troupe")
 }
 
 // wrapHTMLWithFooter is like wrapHTML but allows a custom footer sign-off.
@@ -30,7 +30,7 @@ func wrapHTMLWithFooter(innerHTML, signoff string) string {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Astonish</title>
+  <title>Troupe</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased;">
   <table width="100%%" cellpadding="0" cellspacing="0" border="0">
@@ -43,7 +43,7 @@ func wrapHTMLWithFooter(innerHTML, signoff string) string {
           </tr>
           <tr>
             <td align="center" style="padding: 32px 0 8px;">
-              <img src="%s" alt="Astonish" width="150" style="display: block; width: 150px; height: auto; border: 0;">
+              <img src="%s" alt="Troupe" width="150" style="display: block; width: 150px; height: auto; border: 0;">
             </td>
           </tr>
           <tr>

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Sessions persist the conversation state between the user and the agent across turns, daemon restarts, and UI transitions. Astonish implements ADK's `session.Service` interface with a file-based store that uses JSONL transcript files and a JSON metadata index.
+Sessions persist the conversation state between the user and the agent across turns, daemon restarts, and UI transitions. Troupe implements ADK's `session.Service` interface with a file-based store that uses JSONL transcript files and a JSON metadata index.
 
 Sessions are the backbone of continuity -- they store the full conversation history (user messages, LLM responses, tool calls, tool results) that gets replayed to the LLM on each turn to maintain context.
 
@@ -62,7 +62,7 @@ Fallback: if summarization fails, truncation removes the oldest messages until u
 ### Storage Layout
 
 ```
-~/.config/astonish/sessions/
+~/.config/troupe/sessions/
   <app-name>/
     <user-id>/
       index.json              # Metadata: session ID, title, creation time, last activity
@@ -166,7 +166,7 @@ guard this makes an entire session unreadable.
   empty body.
 - **Prevention.** `read_file` caps output by bytes (`readFileSoftCapBytes`) in
   addition to lines, so no new transcript line can approach the reader limit.
-- **Recovery.** `astonish sessions repair <id> [--dry-run]` walks the whole
+- **Recovery.** `troupe sessions repair <id> [--dry-run]` walks the whole
   compaction chain (the poisoned file is usually the tip, not the ID typed),
   reports oversized lines per session, writes a `.bak`, and atomically rewrites
   the transcript with the oversized lines removed. Retained lines are copied
@@ -183,7 +183,7 @@ guard this makes an entire session unreadable.
 
 ## Interactions
 
-- **Agent Engine**: ChatAgent and AstonishAgent use `SessionService` for conversation persistence. The Compactor's `BeforeModelCallback` is wired into the agent's callback chain.
+- **Agent Engine**: ChatAgent and TroupeAgent use `SessionService` for conversation persistence. The Compactor's `BeforeModelCallback` is wired into the agent's callback chain.
 - **Credentials**: `RedactSession()` is called after `save_credential` for retroactive scrubbing. All events are redacted on persist.
 - **Sandbox**: Session IDs map to containers via `SessionRegistry`. Session deletion triggers container cleanup.
 - **Fleet**: Child sessions are linked to fleet parent sessions. Cascade deletion cleans up the full tree.

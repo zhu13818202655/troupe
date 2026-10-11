@@ -1,11 +1,11 @@
 # Platform Commands
 
-The `astonish platform` command manages multi-tenant platform operations — database initialization, organization management, and user administration.
+The `troupe platform` command manages multi-tenant platform operations — database initialization, organization management, and user administration.
 
 ## Usage
 
 ```bash
-astonish platform <subcommand> [flags]
+troupe platform <subcommand> [flags]
 ```
 
 ## Subcommands
@@ -13,7 +13,7 @@ astonish platform <subcommand> [flags]
 ### Initialize Platform Database
 
 ```bash
-astonish platform init \
+troupe platform init \
   --host <postgres-host> \
   --password <postgres-admin-password>
 ```
@@ -32,7 +32,7 @@ This creates the platform database and runs migrations. It prints the connection
 ### Generate Secret
 
 ```bash
-astonish platform gen-secret
+troupe platform gen-secret
 ```
 
 Generates a cryptographically secure random secret (64-character hex string) suitable for use as `masterKey` or `jwtSecret`.
@@ -40,7 +40,7 @@ Generates a cryptographically secure random secret (64-character hex string) sui
 ### Platform Status
 
 ```bash
-astonish platform status
+troupe platform status
 ```
 
 Displays organization count, user count, lists organizations with team counts, and shows the PostgreSQL version.
@@ -49,22 +49,22 @@ Displays organization count, user count, lists organizations with team counts, a
 
 ```bash
 # Create a new organization
-astonish platform org create --name "Acme Corp" --slug acme-corp
+troupe platform org create --name "Acme Corp" --slug acme-corp
 
 # Create with an existing user as owner
-astonish platform org create --name "Acme Corp" --slug acme-corp --owner-email admin@acme.com
+troupe platform org create --name "Acme Corp" --slug acme-corp --owner-email admin@acme.com
 
 # List all organizations
-astonish platform org list
+troupe platform org list
 
 # Invite a user to an organization
-astonish platform org invite \
+troupe platform org invite \
   --org acme-corp \
   --email user@acme.com \
   --role member
 
 # Invite with password prompt (instead of generated password)
-astonish platform org invite \
+troupe platform org invite \
   --org acme-corp \
   --email admin@acme.com \
   --role owner \
@@ -94,46 +94,46 @@ astonish platform org invite \
 
 ```bash
 # List all users (optionally filter by org)
-astonish platform user list [--org <slug>]
+troupe platform user list [--org <slug>]
 
 # Show user details
-astonish platform user show <email>
+troupe platform user show <email>
 
 # Delete a user
-astonish platform user delete <email>
+troupe platform user delete <email>
 
 # Set a user's password interactively
-astonish platform user set-password <email>
+troupe platform user set-password <email>
 
 # Disable/enable a user account
-astonish platform user disable <email>
-astonish platform user enable <email>
+troupe platform user disable <email>
+troupe platform user enable <email>
 
 # Promote/demote platform superadmin
-astonish platform user promote <email>
-astonish platform user demote <email>
+troupe platform user promote <email>
+troupe platform user demote <email>
 ```
 
 ### Issue Access Token
 
 ```bash
 # Interactive browser-based login
-astonish platform issue-token --server https://astonish.example.com --sso
+troupe platform issue-token --server https://troupe.example.com --sso
 
 # Direct password authentication
-astonish platform issue-token \
-  --server https://astonish.example.com \
+troupe platform issue-token \
+  --server https://troupe.example.com \
   --email admin@example.com \
   --password
 
 # Output as JSON
-astonish platform issue-token --server https://astonish.example.com --json
+troupe platform issue-token --server https://troupe.example.com --json
 ```
 
 ### Sandbox Audit
 
 ```bash
-astonish platform sandbox-audit
+troupe platform sandbox-audit
 ```
 
 Audits sandbox PVCs for orphaned data.

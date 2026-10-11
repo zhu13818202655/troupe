@@ -16,18 +16,18 @@
 # Prerequisites:
 #   test-integration:
 #     - TROUPE_TEST_DSN pointing to a Postgres instance
-#       Example: postgres://postgres:554252@192.168.1.196:5432/astonish_dxmtlc_platform
+#       Example: postgres://postgres:554252@192.168.1.196:5432/troupe_dxmtlc_platform
 #     - Tests create/drop temporary schemas — safe for shared dev DBs
 #
 #   smoke:
 #     - kubectl configured with cluster access
 #     - TROUPE_TEST_TOKEN set to a valid Bearer JWT
-#     - TROUPE_API_URL (default: https://devastonish.local.muxpie.com)
-#     - TROUPE_SANDBOX_NS (default: astonish-sandbox)
+#     - TROUPE_API_URL (default: https://devtroupe.local.muxpie.com)
+#     - TROUPE_SANDBOX_NS (default: troupe-sandbox)
 #
 # Token generation (for TROUPE_TEST_TOKEN):
 #   Option A (recommended): Use the built-in command — opens a browser, outputs token:
-#     astonish platform issue-token --server $TROUPE_API_URL
+#     troupe platform issue-token --server $TROUPE_API_URL
 #
 #   Option B: Use the login API:
 #     curl -s -X POST $TROUPE_API_URL/api/auth/login \
@@ -60,8 +60,8 @@ help:
 	@echo ""
 	@echo "Optional (for smoke-quick only):"
 	@echo "  TROUPE_TEST_TOKEN  Bearer JWT token"
-	@echo "  TROUPE_API_URL     API base URL (default: https://devastonish.local.muxpie.com)"
-	@echo "  TROUPE_SANDBOX_NS  K8s namespace for sandbox pods (default: astonish-sandbox)"
+	@echo "  TROUPE_API_URL     API base URL (default: https://devtroupe.local.muxpie.com)"
+	@echo "  TROUPE_SANDBOX_NS  K8s namespace for sandbox pods (default: troupe-sandbox)"
 	@echo "  TROUPE_TEST_TEAM   Team slug to test (default: general)"
 
 # ---------------------------------------------------------------------------
@@ -74,7 +74,7 @@ test-integration:
 		echo "ERROR: TROUPE_TEST_DSN is not set."; \
 		echo ""; \
 		echo "Set it to a Postgres connection string, e.g.:"; \
-		echo "  export TROUPE_TEST_DSN='postgres://postgres:554252@192.168.1.196:5432/astonish_dxmtlc_platform'"; \
+		echo "  export TROUPE_TEST_DSN='postgres://postgres:554252@192.168.1.196:5432/troupe_dxmtlc_platform'"; \
 		echo ""; \
 		exit 1; \
 	fi

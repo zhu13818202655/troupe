@@ -1,22 +1,22 @@
 # Choose Your Interface
 
-Astonish provides multiple interfaces for different workflows and environments. Platform-based interfaces connect to the same platform and share sessions, memory, and flows. **Astonish Code** stands alone as a fully local coding tool that requires no platform.
+Troupe provides multiple interfaces for different workflows and environments. Platform-based interfaces connect to the same platform and share sessions, memory, and flows. **Troupe Code** stands alone as a fully local coding tool that requires no platform.
 
 ## Interfaces
 
 ::: tip Recommended Starting Point
-New to Astonish? Start with **Studio** for the full visual experience, or **Astonish Code** if you want a local AI pair programmer in the terminal right now — no setup beyond an API key.
+New to Troupe? Start with **Studio** for the full visual experience, or **Troupe Code** if you want a local AI pair programmer in the terminal right now — no setup beyond an API key.
 :::
 
-### Astonish Code (Local Coding Tool)
+### Troupe Code (Local Coding Tool)
 
 A fully local, in-process coding agent — like Claude Code, Codex, or OpenCode. Runs directly in your project directory with no daemon, no platform, and no login required. Tools execute with your own permissions on the host filesystem.
 
 ```bash
-astonish code                          # Start coding in current directory
-astonish code -m anthropic:claude-4    # Pin a specific model
-astonish code -C ./my-project          # Operate in a different directory
-astonish code --auto-approve           # Bypass authorization prompts
+troupe code                          # Start coding in current directory
+troupe code -m anthropic:claude-4    # Pin a specific model
+troupe code -C ./my-project          # Operate in a different directory
+troupe code --auto-approve           # Bypass authorization prompts
 ```
 
 Features unique to code mode:
@@ -41,13 +41,13 @@ Best for: creating and presenting slide decks, flow design, generative UI, manag
 
 ### CLI (Platform Chat)
 
-A rich terminal chat interface with colors, markdown rendering, and interactive elements. Supports all agent capabilities including tool use, memory, and flow execution. Requires authentication via `astonish login` before use.
+A rich terminal chat interface with colors, markdown rendering, and interactive elements. Supports all agent capabilities including tool use, memory, and flow execution. Requires authentication via `troupe login` before use.
 
 ```bash
-astonish login http://localhost:9393    # Authenticate against the platform
-astonish chat                           # New session
-astonish chat -p openai -m gpt-4o      # Specific provider/model
-astonish chat --resume                  # Resume last session
+troupe login http://localhost:9393    # Authenticate against the platform
+troupe chat                           # New session
+troupe chat -p openai -m gpt-4o      # Specific provider/model
+troupe chat --resume                  # Resume last session
 ```
 
 Best for: platform-backed interactions, team memory, sandboxed execution, developers who prefer the terminal.
@@ -57,10 +57,10 @@ Best for: platform-backed interactions, team memory, sandboxed execution, develo
 The same CLI used for local access, pointed at a remote server. Authenticates via password or SSO, then provides the full CLI experience against the remote platform.
 
 ```bash
-astonish login https://platform.yourcompany.com
-astonish chat
-astonish flows list
-astonish status
+troupe login https://platform.yourcompany.com
+troupe chat
+troupe flows list
+troupe status
 ```
 
 Best for: team members accessing the shared platform remotely, CI/CD integration.
@@ -99,6 +99,6 @@ Best for: team collaboration, integrating agent responses into existing Slack wo
 
 Interfaces are not mutually exclusive. You can run Studio for visual work while using the CLI for quick tasks, and have Telegram configured for mobile access. All platform-based interfaces share the same sessions, memory, and platform context.
 
-**Astonish Code** is standalone — it does not require the daemon and can run alongside any other interface. When logged in to a platform, press `Ctrl+\` inside code mode to switch to the platform chat panel without leaving the TUI.
+**Troupe Code** is standalone — it does not require the daemon and can run alongside any other interface. When logged in to a platform, press `Ctrl+\` inside code mode to switch to the platform chat panel without leaving the TUI.
 
-The daemon (`astonish daemon start`) must be running for platform-based interfaces (Studio, CLI, Remote CLI, Channels). The CLI authenticates against the daemon via `astonish login`.
+The daemon (`troupe daemon start`) must be running for platform-based interfaces (Studio, CLI, Remote CLI, Channels). The CLI authenticates against the daemon via `troupe login`.

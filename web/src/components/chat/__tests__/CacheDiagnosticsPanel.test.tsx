@@ -42,7 +42,7 @@ describe('CacheDiagnosticsPanel', () => {
     expect(await screen.findByText('Provider round 1')).toBeInTheDocument()
     expect(screen.getByText('Provider cache hit')).toBeInTheDocument()
     expect(screen.getByText('Memory Embedding')).toBeInTheDocument()
-    expect(screen.getByText('Astonish preparation')).toBeInTheDocument()
+    expect(screen.getByText('Troupe preparation')).toBeInTheDocument()
     expect(screen.getByText('embedding unavailable')).toBeInTheDocument()
     const stages = screen.getAllByRole('heading', { level: 4 })
     expect(stages.map(stage => stage.textContent)).toEqual(['Memory Embedding', 'Provider round 1'])

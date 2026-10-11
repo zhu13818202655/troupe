@@ -13,7 +13,7 @@ import (
 // session. The workspace path should be obtained from ResolveSessionWorkspaceDir.
 //
 // For git_repo sources, it uses "git clone --local" from the base workspace
-// (~/astonish_projects/<repo-name>/) which hardlinks the object store and is
+// (~/troupe_projects/<repo-name>/) which hardlinks the object store and is
 // near-instant. If the base workspace doesn't exist or isn't a git repo, it
 // falls back to a full "git clone" from the remote URL.
 //
@@ -23,7 +23,7 @@ import (
 // If the workspace directory already exists (e.g., from a previous run or
 // a recovered session), it is left as-is and no clone/copy is performed.
 //
-// baseDir is the permanent base workspace (~/astonish_projects/<repo-name>/)
+// baseDir is the permanent base workspace (~/troupe_projects/<repo-name>/)
 // where the wizard cloned the repo and generated AGENTS.md. It may be empty
 // if no base workspace exists.
 func SetupSessionWorkspace(workspaceDir string, source *ProjectSourceConfig, baseDir string) error {
@@ -57,7 +57,7 @@ func SetupSessionWorkspace(workspaceDir string, source *ProjectSourceConfig, bas
 
 // CleanupSessionWorkspace removes the per-session workspace directory.
 // It is a no-op if the path is empty or does not exist.
-// The base workspace (~/astonish_projects/<repo-name>/) is never touched.
+// The base workspace (~/troupe_projects/<repo-name>/) is never touched.
 //
 // Safety: refuses to delete paths that don't look like session workspaces.
 // Legitimate workspace paths are always under a "workspaces/" subdirectory
@@ -75,7 +75,7 @@ func CleanupSessionWorkspace(workspaceDir string) error {
 	// Safety guard: only allow deletion of paths under a "workspaces/" directory.
 	// ResolveSessionWorkspaceDir always produces paths like:
 	//   <baseDir>/workspaces/<sessionID>
-	// Container-internal paths (e.g., "/root/astonish", "/root") never contain
+	// Container-internal paths (e.g., "/root/troupe", "/root") never contain
 	// this component and must NOT be deleted on the host.
 	absPath, err := filepath.Abs(workspaceDir)
 	if err != nil {
@@ -95,8 +95,8 @@ func CleanupSessionWorkspace(workspaceDir string) error {
 // ResolveSessionWorkspaceDir (which places them under .../workspaces/<id>).
 func isUnderWorkspacesDir(absPath string) bool {
 	// Walk up the path looking for a "workspaces" component that is a proper ancestor.
-	// E.g., "/root/.config/astonish/sessions/workspaces/abc123" → true
-	//        "/root/astonish" → false
+	// E.g., "/root/.config/troupe/sessions/workspaces/abc123" → true
+	//        "/root/troupe" → false
 	//        "/root/workspaces" → false (is the workspaces dir itself, not a child)
 	parts := strings.Split(filepath.Clean(absPath), string(filepath.Separator))
 	for i, part := range parts {

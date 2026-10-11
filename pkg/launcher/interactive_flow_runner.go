@@ -273,17 +273,17 @@ func (ifr *InteractiveFlowRunner) startFlowWithConfig(
 	// Session service
 	sessionService := session.InMemoryService()
 
-	// Create AstonishAgent with auto-approve (the user's decision to run the flow is the approval)
-	astonishAgent := agent.NewAstonishAgentWithToolsets(agentCfg, llm, internalTools, mcpToolsets)
-	astonishAgent.DebugMode = ifr.DebugMode
-	astonishAgent.AutoApprove = true
-	astonishAgent.SessionService = sessionService
+	// Create TroupeAgent with auto-approve (the user's decision to run the flow is the approval)
+	troupeAgent := agent.NewTroupeAgentWithToolsets(agentCfg, llm, internalTools, mcpToolsets)
+	troupeAgent.DebugMode = ifr.DebugMode
+	troupeAgent.AutoApprove = true
+	troupeAgent.SessionService = sessionService
 
 	// Wire credential redactor and store for placeholder substitution
 	if cs := tools.GetCredentialStore(); cs != nil {
-		astonishAgent.Redactor = cs.Redactor()
-		astonishAgent.CredentialStore = cs
-		astonishAgent.PendingSecrets = credentials.NewPendingVault(cs.Redactor())
+		troupeAgent.Redactor = cs.Redactor()
+		troupeAgent.CredentialStore = cs
+		troupeAgent.PendingSecrets = credentials.NewPendingVault(cs.Redactor())
 		// Inject Redactor into context so memory_save can Placeholderize()
 		ctx = credentials.WithRedactor(ctx, cs.Redactor())
 		// Attach proactive secret scanner
@@ -298,15 +298,15 @@ func (ifr *InteractiveFlowRunner) startFlowWithConfig(
 					scanner.MinTokenLength = sc.MinTokenLength
 				}
 			}
-			astonishAgent.PendingSecrets.Scanner = scanner
+			troupeAgent.PendingSecrets.Scanner = scanner
 		}
 	}
 
 	// Create ADK agent
 	adkAgent, err := adkagent.New(adkagent.Config{
-		Name:        "astonish_interactive_flow",
+		Name:        "troupe_interactive_flow",
 		Description: agentCfg.Description,
-		Run:         astonishAgent.Run,
+		Run:         troupeAgent.Run,
 	})
 	if err != nil {
 		for _, c := range cleanups {
@@ -316,7 +316,7 @@ func (ifr *InteractiveFlowRunner) startFlowWithConfig(
 	}
 
 	// Create session
-	userID, appName := "flow_runner", "astonish"
+	userID, appName := "flow_runner", "troupe"
 	resp, err := sessionService.Create(ctx, &session.CreateRequest{
 		AppName: appName,
 		UserID:  userID,

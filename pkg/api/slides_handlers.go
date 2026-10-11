@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/browser"
 	"github.com/zhu13818202655/troupe/pkg/docs/slides"
 	"github.com/zhu13818202655/troupe/pkg/docs/slides/components"
@@ -23,7 +24,6 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/sandbox"
 	"github.com/zhu13818202655/troupe/pkg/store"
 	webassets "github.com/zhu13818202655/troupe/web"
-	"github.com/gorilla/mux"
 )
 
 // slidesDeckDTO is the slim per-deck payload returned by the deck-detail

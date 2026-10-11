@@ -85,7 +85,7 @@ describe('TemplateDetail', () => {
       />,
     )
 
-    expect(await screen.findByText('Astonish template')).toBeInTheDocument()
+    expect(await screen.findByText('Troupe template')).toBeInTheDocument()
     expect(screen.getByText(/cannot be edited/i)).toBeInTheDocument()
     expect(screen.getByText('Clone to edit')).toBeInTheDocument()
 

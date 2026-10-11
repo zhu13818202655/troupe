@@ -1,4 +1,4 @@
-# Astonish Docker image (API / Studio daemon)
+# Troupe Docker image (API / Studio daemon)
 #
 # Go binaries are cross-compiled on the host (or CI runner) and copied in.
 # This avoids Go 1.26 segfaults when running `go mod download` under QEMU
@@ -17,7 +17,7 @@
 # Layer order (stable → volatile) so code-only rebuilds cache deps:
 #   1. minimal apt
 #   2. node + uv binaries
-#   3. COPY astonish-linux-${TARGETARCH}
+#   3. COPY troupe-linux-${TARGETARCH}
 #
 # Pins — bump intentionally; changing them invalidates the deps layers.
 #   NODE_IMAGE  node:22-bookworm-slim
@@ -94,15 +94,15 @@ RUN cd /app/web && npm ci --omit=dev --ignore-scripts && npm cache clean --force
 COPY pkg/docs/slides/pptxworker/worker.mjs pkg/docs/slides/pptxworker/import_worker.mjs /app/pkg/docs/slides/pptxworker/
 ENV TROUPE_ROOT=/app
 
-# Copy the pre-built Linux astonish binary for the target architecture.
+# Copy the pre-built Linux troupe binary for the target architecture.
 # TARGETARCH is set automatically by docker buildx (amd64 or arm64).
 # Do not give TARGETARCH a default — BuildKit overrides are ignored when a
 # default is set, which previously shipped an amd64 binary in the arm64 image.
 ARG TARGETARCH
-COPY astonish-linux-${TARGETARCH} /usr/local/bin/astonish
-RUN chmod +x /usr/local/bin/astonish
+COPY troupe-linux-${TARGETARCH} /usr/local/bin/troupe
+RUN chmod +x /usr/local/bin/troupe
 
 EXPOSE 9393
 
-ENTRYPOINT ["astonish"]
+ENTRYPOINT ["troupe"]
 CMD ["daemon", "run"]

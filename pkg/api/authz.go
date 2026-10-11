@@ -1,4 +1,4 @@
-// Package api — authz.go provides unified authorization helpers for the Astonish platform.
+// Package api — authz.go provides unified authorization helpers for the Troupe platform.
 //
 // Three tiers of access control:
 //

@@ -36,11 +36,11 @@ func fetchModels(ctx context.Context, apiKey string) ([]ModelInfo, error) {
 	var result []ModelInfo
 	for _, m := range models.Models {
 		// Filter for chat models (gpt-*, o1-*, o3-*, o4-*, chatgpt-*)
-		if strings.HasPrefix(m.ID, "gpt") || 
-		   strings.HasPrefix(m.ID, "o1") || 
-		   strings.HasPrefix(m.ID, "o3") || 
-		   strings.HasPrefix(m.ID, "o4") ||
-		   strings.HasPrefix(m.ID, "chatgpt") {
+		if strings.HasPrefix(m.ID, "gpt") ||
+			strings.HasPrefix(m.ID, "o1") ||
+			strings.HasPrefix(m.ID, "o3") ||
+			strings.HasPrefix(m.ID, "o4") ||
+			strings.HasPrefix(m.ID, "chatgpt") {
 			result = append(result, ModelInfo{
 				ID:        m.ID,
 				Name:      m.ID, // OpenAI uses ID as display name

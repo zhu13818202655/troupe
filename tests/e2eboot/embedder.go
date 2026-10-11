@@ -12,7 +12,7 @@ import (
 // the platform backend. This enables hybrid vector+keyword memory search in
 // E2E tests, matching production behavior.
 //
-// The model directory is resolved from the real user home (~/.config/astonish/models/)
+// The model directory is resolved from the real user home (~/.config/troupe/models/)
 // rather than the test's temporary XDG_CONFIG_HOME, so the ~23 MB model file is
 // downloaded once and cached across test runs.
 //

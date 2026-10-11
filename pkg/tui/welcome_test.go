@@ -13,7 +13,7 @@ import (
 
 func TestNewModelShowsWelcomeInsteadOfGreetingTranscript(t *testing.T) {
 	m := newModel(context.Background(), Config{
-		Backend: staticBackend{info: backend.Info{ServerURL: "https://astonish.example.com", User: "user@example.com"}},
+		Backend: staticBackend{info: backend.Info{ServerURL: "https://troupe.example.com", User: "user@example.com"}},
 		Width:   100,
 		Height:  30,
 	})
@@ -25,8 +25,8 @@ func TestNewModelShowsWelcomeInsteadOfGreetingTranscript(t *testing.T) {
 		t.Fatalf("new chat should not add a greeting transcript item: %#v", m.tr.Items)
 	}
 	out := stripANSI(m.View().Content)
-	if !strings.Contains(out, "✦ Astonish") {
-		t.Fatalf("welcome card missing Astonish title:\n%s", out)
+	if !strings.Contains(out, "✦ Troupe") {
+		t.Fatalf("welcome card missing Troupe title:\n%s", out)
 	}
 	if !strings.Contains(out, "Build, investigate, and operate") {
 		t.Fatalf("welcome card missing meaningful description:\n%s", out)
@@ -50,13 +50,13 @@ func TestWelcomeCodeModeShowsCodeCard(t *testing.T) {
 	out := stripANSI(m.View().Content)
 	// Normalize non-breaking hyphens (U+2011) back to ASCII hyphens for assertions.
 	out = strings.ReplaceAll(out, "\u2011", "-")
-	if !strings.Contains(out, "✦ Astonish Code") {
-		t.Fatalf("code-mode welcome card missing 'Astonish Code' title:\n%s", out)
+	if !strings.Contains(out, "✦ Troupe Code") {
+		t.Fatalf("code-mode welcome card missing 'Troupe Code' title:\n%s", out)
 	}
 	if !strings.Contains(out, "local AI coding tool") {
 		t.Fatalf("code-mode welcome card missing code-focused description:\n%s", out)
 	}
-	if !strings.Contains(out, "Astonish intelligence") {
+	if !strings.Contains(out, "Troupe intelligence") {
 		t.Fatalf("code-mode welcome card missing approval notice:\n%s", out)
 	}
 	if strings.Contains(out, "no prompts") {
@@ -117,14 +117,14 @@ func TestWelcomeDisappearsAfterFirstMessage(t *testing.T) {
 	m.ready = true
 	m.layout()
 	m.refreshViewport()
-	if !strings.Contains(stripANSI(m.View().Content), "✦ Astonish") {
+	if !strings.Contains(stripANSI(m.View().Content), "✦ Troupe") {
 		t.Fatal("expected welcome before conversation starts")
 	}
 
 	m.tr.Apply(events.NewUser("hello"))
 	m.refreshViewport()
 	out := stripANSI(m.View().Content)
-	if strings.Contains(out, "✦ Astonish") {
+	if strings.Contains(out, "✦ Troupe") {
 		t.Fatalf("welcome should disappear once transcript starts:\n%s", out)
 	}
 	if !strings.Contains(out, "hello") {
@@ -143,7 +143,7 @@ func TestStartNewSessionReturnsToWelcome(t *testing.T) {
 	next, _ := m.startNewSession()
 	m = next.(model)
 	out := stripANSI(m.View().Content)
-	if !strings.Contains(out, "✦ Astonish") {
+	if !strings.Contains(out, "✦ Troupe") {
 		t.Fatalf("new session should return to welcome:\n%s", out)
 	}
 	if strings.Contains(out, "old conversation") {

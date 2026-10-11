@@ -4,11 +4,11 @@
 
 **Originally drafted:** 2026-05-29
 
-**Author:** Astonish Team
+**Author:** Troupe Team
 
 ## Overview
 
-Astonish supports the standard multi-file skill layout used by ClawHub and OpenClaw:
+Troupe supports the standard multi-file skill layout used by ClawHub and OpenClaw:
 
 ```text
 my-skill/

@@ -7,7 +7,7 @@ import {
 } from '../page-tools';
 
 describe('page-tools', () => {
-  it('extracts a single astonish-page-tool fence', () => {
+  it('extracts a single troupe-page-tool fence', () => {
     const text = [
       'I will snapshot the tab.',
       '```' + PAGE_TOOL_FENCE,
@@ -60,9 +60,18 @@ describe('page-tools', () => {
     expect(extractPageTools(text)).toEqual([{ name: 'page_click', args: { ref: 'ref3' } }]);
   });
 
-  it('ignores astonish-page-edit fences and invalid JSON', () => {
+  it('extracts a legacy astonish-page-tool fence', () => {
     const text = [
-      '```astonish-page-edit',
+      '```astonish-page-tool',
+      '{"name":"page_snapshot"}',
+      '```',
+    ].join('\n');
+    expect(extractPageTools(text)).toEqual([{ name: 'page_snapshot', args: {} }]);
+  });
+
+  it('ignores page-edit fences and invalid JSON', () => {
+    const text = [
+      '```troupe-page-edit',
       'rewrite',
       '```',
       '```' + PAGE_TOOL_FENCE,
@@ -90,7 +99,7 @@ describe('page-tools', () => {
     expect(markdown).toContain('page_click (error)');
     expect(markdown).toContain('Unknown ref ref9');
     expect(markdown).toContain('THIS browser tab');
-    expect(markdown).toContain('normal Astonish skill and tool-discovery loop');
+    expect(markdown).toContain('normal Troupe skill and tool-discovery loop');
     expect(markdown).toContain('page_snapshot / page_query / page_click / page_fill');
     expect(markdown).toContain('original page document remains in ### Main content');
     expect(markdown).toContain('Do not page_navigate to the current URL');

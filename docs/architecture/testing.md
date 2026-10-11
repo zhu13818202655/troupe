@@ -5,7 +5,7 @@
 > the control-plane and sandbox namespaces plus the sandbox PVCs yourself before
 > running `make test-e2e` or `make test-e2e-sqlite`.
 
-This document defines the three-tier testing structure for Astonish.
+This document defines the three-tier testing structure for Troupe.
 
 `docs/TESTING.md` is the comprehensive reference for the unit / SSE-scenario / backend-integration / prompt-contract layers (vocabulary: "Layer 0–3"). This document is authoritative for the **build-tag taxonomy** (`unit` / `integration` / `e2e`) and for the e2e harness, K8s sandbox infra, and inspector mode. The two are complementary: the layers describe **what kind of bug a test catches**; the build tags describe **what infrastructure a test needs to run**.
 
@@ -98,7 +98,7 @@ This runs:
 
 ### E2E Tests
 
-Full end-to-end tests that bootstrap a complete Astonish platform: fresh database, real `StudioServer`, real auth flow, real LLM provider (via platform settings). Every E2E test uses the same framework (`tests/e2eboot`).
+Full end-to-end tests that bootstrap a complete Troupe platform: fresh database, real `StudioServer`, real auth flow, real LLM provider (via platform settings). Every E2E test uses the same framework (`tests/e2eboot`).
 
 ```bash
 make test-e2e
@@ -108,20 +108,20 @@ This runs:
 - `go test -tags=e2e -count=1 -p 1 -timeout=15m ./tests/e2e/...`
 
 The `-p 1` flag serializes package execution. This prevents Postgres role creation
-races (`astonish_app` is a shared role that `BootstrapPlatform` creates/alters).
+races (`troupe_app` is a shared role that `BootstrapPlatform` creates/alters).
 
 **Required env vars:**
 - `TROUPE_TEST_DSN` — Postgres admin connection string
 - Provider API key (at least one of: `BIFROST_API_KEY`, `OPENAI_API_KEY`, `GOOGLE_API_KEY`, `ANTHROPIC_API_KEY`)
 - For sandbox tests: `kubectl` access to a cluster + provisioned e2e infra (see below)
-- `TROUPE_E2E_CONTROL_PLANE_NAMESPACE` (default `astonish`) — control-plane namespace expected by `e2eboot`
-- `TROUPE_E2E_SANDBOX_NAMESPACE` (default `astonish-sandbox`) — sandbox namespace expected by `e2eboot`
+- `TROUPE_E2E_CONTROL_PLANE_NAMESPACE` (default `troupe`) — control-plane namespace expected by `e2eboot`
+- `TROUPE_E2E_SANDBOX_NAMESPACE` (default `troupe-sandbox`) — sandbox namespace expected by `e2eboot`
 
 Tests that don't exercise sandboxes (e.g. `flow_assistant`) don't need kubectl — but the platform config still includes sandbox settings for consistency.
 
 ### E2E K8s Sandbox Infrastructure
 
-Sandbox-aware E2E tests (any test that exercises `write_file`, `edit_file`, `shell_command`, or any other tool routed through the sandbox runtime) require an isolated set of K8s namespaces, PVCs, and a seeded `@base` layer. **The e2e suite MUST own this infrastructure exclusively** — never reuse a live install (e.g. `astonishdev`, production), or you destroy both isolation and the test's value.
+Sandbox-aware E2E tests (any test that exercises `write_file`, `edit_file`, `shell_command`, or any other tool routed through the sandbox runtime) require an isolated set of K8s namespaces, PVCs, and a seeded `@base` layer. **The e2e suite MUST own this infrastructure exclusively** — never reuse a live install (e.g. `troupedev`, production), or you destroy both isolation and the test's value.
 
 The repo ships everything needed:
 
@@ -142,24 +142,24 @@ Namespaces created:
 
 | Resource | Name |
 |----------|------|
-| Control plane | `astonishe2e` |
-| Sandbox | `astonishe2e-sandbox` |
-| Layers PVC | `astonish-layers` (in `astonishe2e-sandbox`) |
-| Uppers PVC | `astonish-uppers` (in `astonishe2e-sandbox`) |
-| Helm release | `astonishe2e` |
+| Control plane | `troupee2e` |
+| Sandbox | `troupee2e-sandbox` |
+| Layers PVC | `troupe-layers` (in `troupee2e-sandbox`) |
+| Uppers PVC | `troupe-uppers` (in `troupee2e-sandbox`) |
+| Helm release | `troupee2e` |
 
-These names MUST NOT collide with any live install. If your dev install uses `astonishdev`/`astonishdev-sandbox` (per `values-dev-proxmox.yaml`) the e2e suite stays disjoint by default.
+These names MUST NOT collide with any live install. If your dev install uses `troupedev`/`troupedev-sandbox` (per `values-dev-proxmox.yaml`) the e2e suite stays disjoint by default.
 
-The seed Job tars the `astonish-sandbox-base:dev` rootfs into `astonish-layers/@base/rootfs`. First `make e2e-k8s-up` is slow (image pull + tar onto NFS); subsequent runs reuse the seeded `@base`.
+The seed Job tars the `troupe-sandbox-base:dev` rootfs into `troupe-layers/@base/rootfs`. First `make e2e-k8s-up` is slow (image pull + tar onto NFS); subsequent runs reuse the seeded `@base`.
 
 **Seed verification.** The seed Job uses `helm.sh/hook-delete-policy: hook-succeeded`, so the Job and its pod are garbage-collected immediately after success — there is nothing left to `kubectl wait` on. Instead, `make e2e-k8s-up` invokes `scripts/verify-e2e-seed.sh`, which spins up a short-lived busybox pod, mounts the layers PVC read-only, and asserts that `/@base/rootfs/usr/bin` exists and is non-empty. This is a positive end-to-end check (the bytes are really on disk) rather than a process-level proxy.
 
 **Test-time preflight.** `make test-e2e` will not blindly run against a missing or partial install. Before invoking `go test`, it verifies (Option A — fail loudly):
 
 1. `kubectl` is on `PATH`
-2. The control-plane namespace exists (`TROUPE_E2E_CONTROL_PLANE_NAMESPACE`, default `astonish`)
-3. The sandbox namespace exists (`TROUPE_E2E_SANDBOX_NAMESPACE`, default `astonish-sandbox`)
-4. Both PVCs (`astonish-layers`, `astonish-uppers`) exist in the sandbox namespace
+2. The control-plane namespace exists (`TROUPE_E2E_CONTROL_PLANE_NAMESPACE`, default `troupe`)
+3. The sandbox namespace exists (`TROUPE_E2E_SANDBOX_NAMESPACE`, default `troupe-sandbox`)
+4. Both PVCs (`troupe-layers`, `troupe-uppers`) exist in the sandbox namespace
 
 On any miss it prints the exact command needed (`make e2e-k8s-up`) and exits non-zero — there are no silent skips and no auto-provision. Provisioning is always an explicit action by the developer or CI.
 
@@ -181,15 +181,15 @@ make test-e2e-inspect          # boot inspector, run suite, leave inspector runn
 make test-e2e-inspect-stop     # stop inspector, drop databases, clean tmp files
 ```
 
-`make test-e2e-inspect-stop` is fully idempotent: it kills any running inspector (using the PID file or `pgrep` as fallback), then runs `e2e-inspector --cleanup` which drops every `astonish_e2einspect_*` database and removes `/tmp/astonish-e2e-inspect-*` directories and state files. Safe to run multiple times, on a clean system, or when only orphaned databases remain (e.g. from a process that was killed without going through the make target).
+`make test-e2e-inspect-stop` is fully idempotent: it kills any running inspector (using the PID file or `pgrep` as fallback), then runs `e2e-inspector --cleanup` which drops every `troupe_e2einspect_*` database and removes `/tmp/troupe-e2e-inspect-*` directories and state files. Safe to run multiple times, on a clean system, or when only orphaned databases remain (e.g. from a process that was killed without going through the make target).
 
 Architecture:
 
-- A separate binary `bin/e2e-inspector` (built from `tools/e2e-inspector`) boots a `StudioServer` on **port 9394** with `InstanceSuffix=e2einspect`. It writes `/tmp/astonish-e2e-inspect.json` (state) and `/tmp/astonish-e2e-inspect.pid` (PID), then blocks on `SIGINT`/`SIGTERM`.
+- A separate binary `bin/e2e-inspector` (built from `tools/e2e-inspector`) boots a `StudioServer` on **port 9394** with `InstanceSuffix=e2einspect`. It writes `/tmp/troupe-e2e-inspect.json` (state) and `/tmp/troupe-e2e-inspect.pid` (PID), then blocks on `SIGINT`/`SIGTERM`.
 - The make target sets `TROUPE_E2E_KEEP_ALIVE=1` for the test process. `e2eboot.Bootstrap(t)` detects this, reads the state file, and *attaches* to the running inspector instead of starting a new server.
 - **Package-scoped seeding (Plan D)**: instead of one fresh world per test, all tests in the same Go package share one acme+globex pair. `Bootstrap()` uses `runtime.Callers` to derive a stable suffix from the test file path (e.g. `chatauth`, `chatcore`). The first test in the package provisions orgs/users/teams/data via `Seed()`; subsequent tests detect the existing world and reuse it. After a full suite run there are exactly 5 organisations: `default`, `acme-chatauth`, `globex-chatauth`, `acme-chatcore`, `globex-chatcore`.
 - In shared mode `provisionOrg` skips its `t.Cleanup(DecommissionOrg)` so all data persists for the developer to browse.
-- `TestE2E_SandboxLayerChain` is incompatible with shared seeding (mutates global `sandbox_templates` rows and the `astonish-layers` PVC) and skips itself when `TROUPE_E2E_KEEP_ALIVE=1`. Run it via `make test-e2e` instead.
+- `TestE2E_SandboxLayerChain` is incompatible with shared seeding (mutates global `sandbox_templates` rows and the `troupe-layers` PVC) and skips itself when `TROUPE_E2E_KEEP_ALIVE=1`. Run it via `make test-e2e` instead.
 
 #### Logging in to browse data
 
@@ -233,11 +233,11 @@ Postgres pools are deliberately small in inspect mode (`MaxOpenConns=2`, `MinCon
 
 Each `make test-e2e-inspect` always starts with a fresh inspector platform DB (`DropExisting=true`). Re-running individual tests against the running inspector also works: `Seed()` is idempotent in shared mode and detects existing data, so re-runs cost milliseconds rather than seconds.
 
-If you see `FATAL: sorry, too many clients already`, drop any orphaned `astonish_<old-suffix>_*` databases left behind by killed runs (they hold idle connections):
+If you see `FATAL: sorry, too many clients already`, drop any orphaned `troupe_<old-suffix>_*` databases left behind by killed runs (they hold idle connections):
 
 ```sql
 SELECT datname, count(*) FROM pg_stat_activity GROUP BY datname ORDER BY count(*) DESC;
-DROP DATABASE astonish_<old-suffix>_<orgname>;
+DROP DATABASE troupe_<old-suffix>_<orgname>;
 ```
 
 ### Using `.env` Files

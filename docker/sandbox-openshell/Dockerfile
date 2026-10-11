@@ -1,6 +1,6 @@
-# Dockerfile — astonish-sandbox-openshell image.
+# Dockerfile — troupe-sandbox-openshell image.
 #
-# Fully-featured sandbox image for Astonish sessions running on the OpenShell
+# Fully-featured sandbox image for Troupe sessions running on the OpenShell
 # backend. Includes all standard tools baked in:
 #   - Core dev tools (docker.io, jq, unzip, socat, etc.)
 #   - CloakBrowser (anti-detection stealth Chromium) + KasmVNC (VNC/web access)
@@ -22,7 +22,7 @@
 #
 # Configure in OpenShell gateway values:
 #   server:
-#     sandboxImage: ghcr.io/sap/astonish-sandbox-openshell:latest
+#     sandboxImage: ghcr.io/sap/troupe-sandbox-openshell:latest
 
 # ---------------------------------------------------------------------------
 # Native tree-sitter shared library used by pkg/codeintel.
@@ -42,12 +42,12 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 COPY pkg/codeintel/native ./pkg/codeintel/native
-RUN make -C pkg/codeintel/native OUT=/tmp/libastonish-treesitter.so
+RUN make -C pkg/codeintel/native OUT=/tmp/libtroupe-treesitter.so
 
 FROM ghcr.io/nvidia/openshell-community/sandboxes/base:latest
 
-LABEL org.opencontainers.image.title="astonish-sandbox-openshell" \
-      org.opencontainers.image.description="Astonish agent sandbox image for NVIDIA OpenShell (full toolset)" \
+LABEL org.opencontainers.image.title="troupe-sandbox-openshell" \
+      org.opencontainers.image.description="Troupe agent sandbox image for NVIDIA OpenShell (full toolset)" \
       org.opencontainers.image.source="https://github.com/zhu13818202655/troupe" \
       org.opencontainers.image.licenses="Apache-2.0"
 
@@ -55,15 +55,15 @@ LABEL org.opencontainers.image.title="astonish-sandbox-openshell" \
 # process to user "sandbox" at runtime via Landlock/seccomp.
 USER root
 
-# --- Astonish agent binary (cross-compiled on host, see Makefile build-linux) ---
+# --- Troupe agent binary (cross-compiled on host, see Makefile build-linux) ---
 # Do not give TARGETARCH a default — BuildKit ignores platform injection when
 # a default is set, which ships the wrong-arch binary in multi-arch images.
 ARG TARGETARCH
-COPY astonish-linux-${TARGETARCH} /usr/local/bin/astonish
-RUN chmod +x /usr/local/bin/astonish
+COPY troupe-linux-${TARGETARCH} /usr/local/bin/troupe
+RUN chmod +x /usr/local/bin/troupe
 
-RUN mkdir -p /usr/lib/astonish
-COPY --from=treesitter-builder /tmp/libastonish-treesitter.so /usr/lib/astonish/libastonish-treesitter.so
+RUN mkdir -p /usr/lib/troupe
+COPY --from=treesitter-builder /tmp/libtroupe-treesitter.so /usr/lib/troupe/libtroupe-treesitter.so
 
 # ===========================================================================
 # System Packages (single layer)
@@ -73,7 +73,7 @@ COPY --from=treesitter-builder /tmp/libastonish-treesitter.so /usr/lib/astonish/
 #   git, gh, vim, nano, build-essential, curl, ca-certificates, gnupg,
 #   openssl, uv, passwd
 #
-# We install only what's missing for full Astonish parity + CloakBrowser/KasmVNC.
+# We install only what's missing for full Troupe parity + CloakBrowser/KasmVNC.
 
 # Ensure apt lists directory exists (NVIDIA base cleans it aggressively)
 RUN mkdir -p /var/lib/apt/lists/partial

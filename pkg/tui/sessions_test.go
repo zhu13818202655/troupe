@@ -281,7 +281,7 @@ func TestApplyHistorySetsTitleFromBackendInfo(t *testing.T) {
 	b := &modelAwareBackend{
 		staticBackend: staticBackend{info: backend.Info{Provider: "openai", Model: "gpt-4o"}},
 		bySession: map[string]backend.Info{
-			"sess-titled": {Provider: "openai", Model: "gpt-4o", Title: "Fix broken tests"},
+			"sess-titled":  {Provider: "openai", Model: "gpt-4o", Title: "Fix broken tests"},
 			"sess-notitle": {Provider: "anthropic", Model: "claude-sonnet-4"},
 		},
 	}

@@ -88,7 +88,7 @@ export default function DaemonSettings({ config, onSaved }: { config: Record<str
               className="max-w-40 bg-background"
             />
             <p className="text-xs text-muted-foreground">
-              Port for the Astonish daemon HTTP server. Requires restart to take effect.
+              Port for the Troupe daemon HTTP server. Requires restart to take effect.
             </p>
           </div>
 
@@ -99,7 +99,7 @@ export default function DaemonSettings({ config, onSaved }: { config: Record<str
               type="text"
               value={form.log_dir}
               onChange={(e) => setForm({ ...form, log_dir: e.target.value })}
-              placeholder="~/.config/astonish/logs/ (default)"
+              placeholder="~/.config/troupe/logs/ (default)"
               className="bg-background font-mono"
             />
           </div>

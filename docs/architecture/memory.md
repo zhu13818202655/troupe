@@ -2,7 +2,7 @@
 
 ## Overview
 
-Astonish provides persistent, searchable memory for the AI agent. The memory system stores knowledge as markdown files, indexes them with a hybrid vector + keyword search engine, and automatically retrieves relevant knowledge before each LLM turn. This gives the agent the ability to learn from past interactions, remember project-specific details, and improve over time.
+Troupe provides persistent, searchable memory for the AI agent. The memory system stores knowledge as markdown files, indexes them with a hybrid vector + keyword search engine, and automatically retrieves relevant knowledge before each LLM turn. This gives the agent the ability to learn from past interactions, remember project-specific details, and improve over time.
 
 The system runs entirely locally by default -- embeddings are computed in-process using a pure Go implementation, with no external API calls required.
 
@@ -24,7 +24,7 @@ The default embedding model is **all-MiniLM-L6-v2** (384 dimensions) running in-
 
 - **No API dependency**: Works offline, no API key needed, no rate limits, no cost.
 - **Privacy**: Document content never leaves the machine.
-- **Speed**: In-process computation avoids network round-trips. Good enough for the index sizes Astonish handles (hundreds of documents, not millions).
+- **Speed**: In-process computation avoids network round-trips. Good enough for the index sizes Troupe handles (hundreds of documents, not millions).
 - **Pure Go**: GoMLX provides a Go-native ML runtime, avoiding CGo and Python dependencies.
 
 A patch (`patchGoMLXBackendForLowCPU`) fixes a deadlock in GoMLX on systems with 1-2 CPUs by reducing the internal worker pool size.
@@ -54,7 +54,7 @@ Three auto-managed markdown files serve specific purposes:
 
 ## Architecture
 
-Astonish currently has two persistence shapes:
+Troupe currently has two persistence shapes:
 
 - **Personal / local mode** uses the file-backed markdown knowledge base described below.
 - **Platform mode** stores personal, team, and org memories in tenant-scoped database stores behind `entstore`, while still using the same agent-facing `MemoryStore` and `ThreeTierSearcher` interfaces. Platform code must resolve stores through request context and the tenant router; it must not open raw tenant connections.
@@ -93,7 +93,7 @@ The `_knowledge_injection` event is persisted but not sent to the LLM or rendere
 ### Indexing Pipeline
 
 ```
-Memory directory (e.g., ~/.config/astonish/memory/)
+Memory directory (e.g., ~/.config/troupe/memory/)
   ├── guidance/          # Capability how-to docs (Tier 2)
   ├── skills/            # Skill documentation
   ├── flows/             # Flow knowledge docs
@@ -199,7 +199,7 @@ Implementation details:
 - Promotion is upsert-based. Personal → team and team → org promotion draft a scenario card in the target scope and merge it with any existing card that resolves to the same scenario; after a successful upsert, the source raw memory is deleted.
 - Retrieval asks the underlying search for extra candidates, runs query-aware scenario-card filtering, prefers scenario cards, suppresses any transitional raw memories that are explicitly listed as `source_memory_ids`, de-duplicates equivalent scenario cards as a safety net, and drops scenario cards that share only generic words with the query. This same filtering is used by automatic knowledge injection, the direct `memory_search` tool, and the Studio memory search endpoint so manual and automatic searches are consistent.
 
-The key invariant is that Astonish should save **how to do the thing efficiently**, not a transcript of exploratory dead ends. Temporary outages, timeouts, rate limits, and “X did not work” observations may appear only as conditional cautions that require re-verification before they change behavior. If a raw memory cannot produce a usable recommended path, it is not durable memory; the system can learn it again later and create a proper card. The card frontmatter `scope` must match the store tier where the row is written (`personal`, `team`, or `org`); this prevents confusing diagnostics where a personal row contains team metadata.
+The key invariant is that Troupe should save **how to do the thing efficiently**, not a transcript of exploratory dead ends. Temporary outages, timeouts, rate limits, and “X did not work” observations may appear only as conditional cautions that require re-verification before they change behavior. If a raw memory cannot produce a usable recommended path, it is not durable memory; the system can learn it again later and create a proper card. The card frontmatter `scope` must match the store tier where the row is written (`personal`, `team`, or `org`); this prevents confusing diagnostics where a personal row contains team metadata.
 
 ### Memory Health Recommendations and Advanced Map
 

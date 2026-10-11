@@ -1,11 +1,11 @@
 # Flow Commands
 
-The `astonish flows` command manages agent flow pipelines from the command line.
+The `troupe flows` command manages agent flow pipelines from the command line.
 
 ## Usage
 
 ```bash
-astonish flows <subcommand> [flags]
+troupe flows <subcommand> [flags]
 ```
 
 ## Subcommands
@@ -13,50 +13,50 @@ astonish flows <subcommand> [flags]
 ### List Flows
 
 ```bash
-astonish flows list
+troupe flows list
 ```
 
 ### Run a Flow
 
 ```bash
 # Run a flow by name
-astonish flows run <flow-name>
+troupe flows run <flow-name>
 
 # Run with parameters
-astonish flows run my-flow -p file=data.csv -p format=json
+troupe flows run my-flow -p file=data.csv -p format=json
 
 # Run with a specific model
-astonish flows run my-flow --provider openai --model gpt-4o
+troupe flows run my-flow --provider openai --model gpt-4o
 
 # Auto-approve all tool calls
-astonish flows run my-flow --auto-approve
+troupe flows run my-flow --auto-approve
 ```
 
 ### Show Flow Structure
 
 ```bash
 # Visualize a flow's node structure
-astonish flows show <flow-name>
+troupe flows show <flow-name>
 ```
 
 ### Edit a Flow
 
 ```bash
 # Open flow YAML file for editing
-astonish flows edit <flow-name>
+troupe flows edit <flow-name>
 ```
 
 ### Import a Flow
 
 ```bash
 # Import a flow from a local YAML file
-astonish flows import <path-to-flow.yaml>
+troupe flows import <path-to-flow.yaml>
 ```
 
 ### Remove a Flow
 
 ```bash
-astonish flows remove <flow-name>
+troupe flows remove <flow-name>
 ```
 
 ### Flow Store
@@ -65,19 +65,19 @@ Browse and install flows from configured taps:
 
 ```bash
 # List available flows from all taps
-astonish flows store list
+troupe flows store list
 
 # Search for flows
-astonish flows store search <query>
+troupe flows store search <query>
 
 # Install a flow from a tap
-astonish flows store install <tap-name>/<flow-name>
+troupe flows store install <tap-name>/<flow-name>
 
 # Uninstall a tap flow
-astonish flows store uninstall <tap-name>/<flow-name>
+troupe flows store uninstall <tap-name>/<flow-name>
 
 # Update all tap manifests
-astonish flows store update
+troupe flows store update
 ```
 
 ## Flags for `run`

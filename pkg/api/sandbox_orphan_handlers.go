@@ -164,7 +164,7 @@ func PlatformAdminListOrphanSandboxesHandler(w http.ResponseWriter, r *http.Requ
 	var orphans []orphanInfo
 	for _, sb := range sandboxes {
 		// Check by session-id label (same logic as ReconcileOrphans)
-		sessionID := sb.Labels["astonish.io/session-id"]
+		sessionID := sb.Labels["troupe.io/session-id"]
 		if sessionID != "" && knownIDs[sessionID] {
 			continue
 		}

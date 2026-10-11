@@ -29,7 +29,7 @@ func TestParseNodeResponse_CleanOutput(t *testing.T) {
 func TestParseNodeResponse_ANSIBannerPrefix(t *testing.T) {
 	// Exact reproduction of what the sandbox-base binary emitted.
 	stdout := []byte(
-		"\x1b[93mA new version of Astonish is available: v2.9.1\x1b[0m\n" +
+		"\x1b[93mA new version of Troupe is available: v2.9.1\x1b[0m\n" +
 			"\x1b[93mRun \x1b[1mbrew upgrade zhu13818202655/troupe/troupe\x1b[0m\x1b[93m to update.\x1b[0m\n" +
 			"\n" +
 			"{\"ready\":true}\n" +

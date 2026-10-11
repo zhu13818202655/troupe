@@ -112,14 +112,14 @@ func TestPlanState_ExplicitPlanStep_MultipleTasksSameStep(t *testing.T) {
 func TestPlanState_FallbackPrefixMatch(t *testing.T) {
 	// When plan_step is empty, fall back to prefix matching on task name
 	ps := NewPlanState("test", PlanDocumentInfo{}, []PlanStepInfo{
-		{Name: "analyze-astonish", Description: "Analyze Astonish"},
+		{Name: "analyze-troupe", Description: "Analyze Troupe"},
 		{Name: "analyze-openclaw", Description: "Analyze OpenClaw"},
 	})
 
 	// Resolve with empty plan_step → prefix match
-	step := ps.ResolveStepName("", "analyze-astonish-core")
-	if step != "analyze-astonish" {
-		t.Errorf("ResolveStepName fallback = %q, want %q", step, "analyze-astonish")
+	step := ps.ResolveStepName("", "analyze-troupe-core")
+	if step != "analyze-troupe" {
+		t.Errorf("ResolveStepName fallback = %q, want %q", step, "analyze-troupe")
 	}
 
 	step2 := ps.ResolveStepName("", "analyze-openclaw-core")
@@ -137,12 +137,12 @@ func TestPlanState_FallbackPrefixMatch(t *testing.T) {
 func TestPlanState_PrefixMatch_LongestWins(t *testing.T) {
 	ps := NewPlanState("test", PlanDocumentInfo{}, []PlanStepInfo{
 		{Name: "analyze", Description: "Generic"},
-		{Name: "analyze-astonish", Description: "Specific"},
+		{Name: "analyze-troupe", Description: "Specific"},
 	})
 
-	step := ps.ResolveStepName("", "analyze-astonish-core")
-	if step != "analyze-astonish" {
-		t.Errorf("longest prefix should win: got %q, want %q", step, "analyze-astonish")
+	step := ps.ResolveStepName("", "analyze-troupe-core")
+	if step != "analyze-troupe" {
+		t.Errorf("longest prefix should win: got %q, want %q", step, "analyze-troupe")
 	}
 }
 
@@ -252,12 +252,12 @@ func TestPlanState_MixedExplicitAndFallback(t *testing.T) {
 	ps.SetStepStatus("explore", "complete")
 
 	// Task without plan_step (fallback to prefix match)
-	step2 := ps.ResolveStepName("", "analyze-code-astonish")
+	step2 := ps.ResolveStepName("", "analyze-code-troupe")
 	if step2 != "analyze-code" {
 		t.Fatalf("fallback resolve: got %q, want 'analyze-code'", step2)
 	}
-	ps.StartStep(step2, "analyze-code-astonish")
-	if got := ps.CompleteTask(step2, "analyze-code-astonish"); got != "analyze-code" {
+	ps.StartStep(step2, "analyze-code-troupe")
+	if got := ps.CompleteTask(step2, "analyze-code-troupe"); got != "analyze-code" {
 		t.Errorf("single task completion: got %q, want 'analyze-code'", got)
 	}
 	_, info := ps.SnapshotInfo()

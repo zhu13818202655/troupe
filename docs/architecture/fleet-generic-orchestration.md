@@ -354,7 +354,7 @@ func (FleetMailboxMessage) Annotations() []schema.Annotation {
 
 ### 2.4 Migrations
 
-Astonish at HEAD **does NOT use Atlas migrations**. There is no `schema/*.sql`, no `pkg/store/team/migrations/`, no `make migrate-diff` target, no Atlas hook logic in `.githooks/pre-commit`. The only remaining Atlas artifact is `scripts/atlas-baseline.sh` (legacy). Every ent client auto-migrates via `client.Schema.Create(ctx)` inside `pkg/store/entstore/tenant_router.go` at boot. Non-standard changes (renames, custom indexes, backfills, non-unique-to-unique flips) are handled by hand-written Go fixups following `pkg/store/entstore/pg_legacy_migrate.go` and `pkg/store/entstore/sqlite_legacy_migrate.go`.
+Troupe at HEAD **does NOT use Atlas migrations**. There is no `schema/*.sql`, no `pkg/store/team/migrations/`, no `make migrate-diff` target, no Atlas hook logic in `.githooks/pre-commit`. The only remaining Atlas artifact is `scripts/atlas-baseline.sh` (legacy). Every ent client auto-migrates via `client.Schema.Create(ctx)` inside `pkg/store/entstore/tenant_router.go` at boot. Non-standard changes (renames, custom indexes, backfills, non-unique-to-unique flips) are handled by hand-written Go fixups following `pkg/store/entstore/pg_legacy_migrate.go` and `pkg/store/entstore/sqlite_legacy_migrate.go`.
 
 Flow for the three new entities:
 
@@ -841,7 +841,7 @@ Each milestone must:
 
 1. **Multi-tenant data boundary** (root `AGENTS.md`): every new durable table lives in `ent/team/` and is accessed only through `pkg/store/entstore` via the `Store → .ForOrg(slug) → .ForTeam(slug)` router. No raw connections; no cross-scope reads. New store interfaces live in `pkg/store/`, impls in `pkg/store/entstore/team_fleet_runtime.go`, exposed to handlers through `FleetStores`.
 2. **Sandbox contract** (`pkg/sandbox/AGENTS.md`): fleet sessions with `Execution.Workspace == "isolated"` still route filesystem access through the sandbox `Backend`; the workspace field only changes *which* directory the agent sees, not *how* it is accessed.
-3. **Inline Report Rendering Contract** (root `AGENTS.md`): new SSE events do not overlap `report_marker`; `` ```astonish-report `` semantics are frozen. New events fire on the fleet stream (`fleet_*` prefix), not the chat stream.
+3. **Inline Report Rendering Contract** (root `AGENTS.md`): new SSE events do not overlap `report_marker`; `` ```troupe-report `` semantics are frozen. New events fire on the fleet stream (`fleet_*` prefix), not the chat stream.
 4. **`pkg/fleet/AGENTS.md` "When editing" rules**: schema changes are followed by validation + `pkg/daemon/run.go` update; no channel-specific code lands in `pkg/fleet`; `PlanActivator` changes coordinate with `pkg/scheduler`.
 5. **Ent regeneration discipline** (`ent/AGENTS.md`): schema-only hand-edits, `go generate ./ent/team/...` (or `cd ent/team && go run generate.go`), single commit. **No Atlas migration files** — auto-migrate via `client.Schema.Create`.
 6. **Serial-path regression floor**: when `MaxParallelAgents ≤ 1`, activation is serial; mailbox + task board remain always on.

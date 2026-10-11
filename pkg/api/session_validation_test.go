@@ -29,11 +29,11 @@ func TestValidSessionID(t *testing.T) {
 		{"all allowed chars", "A0._:@-z", true},
 
 		// Invalid: path traversal
-		{"path traversal unix", "../../../etc/passwd", false},     // starts with .
-		{"path traversal slash", "id/../../etc/passwd", false},    // contains /
-		{"path traversal backslash", "id\\..\\secret", false},     // contains backslash
-		{"just slashes", "a/b", false},                            // contains /
-		{"relative path", "sessions/../secrets", false},           // contains /
+		{"path traversal unix", "../../../etc/passwd", false},  // starts with .
+		{"path traversal slash", "id/../../etc/passwd", false}, // contains /
+		{"path traversal backslash", "id\\..\\secret", false},  // contains backslash
+		{"just slashes", "a/b", false},                         // contains /
+		{"relative path", "sessions/../secrets", false},        // contains /
 
 		// Invalid: shell metacharacters
 		{"space", "id with space", false},

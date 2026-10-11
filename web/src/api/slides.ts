@@ -332,7 +332,7 @@ export async function listSlidesTemplates(scope?: DocsScope): Promise<{ template
  * NOTE: the body is a FormData, so we intentionally pass NO Content-Type
  * header — the browser sets the correct multipart/form-data boundary
  * automatically. teamFetch only adds headers we explicitly provide (plus
- * X-Requested-With / X-Astonish-Team), so this stays multipart.
+ * X-Requested-With / X-Troupe-Team), so this stays multipart.
  */
 export async function importSlidesTemplate(
   file: File,

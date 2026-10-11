@@ -4,11 +4,13 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"log/slog"
 	"math/big"
 	"os"
 	"os/user"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"gopkg.in/yaml.v3"
@@ -176,7 +178,7 @@ type SandboxConfig struct {
 
 // SandboxOpenShellConfig captures operator-tunable knobs for the OpenShell
 // backend. The gateway is deployed separately (NVIDIA's Helm chart) and this
-// config tells Astonish how to connect to it.
+// config tells Troupe how to connect to it.
 type SandboxOpenShellConfig struct {
 	// GatewayAddr is the gRPC endpoint of the OpenShell gateway.
 	// Example: "openshell.openshell.svc.cluster.local:8080"
@@ -205,9 +207,9 @@ type SandboxOpenShellConfig struct {
 	AuthToken string `yaml:"auth_token,omitempty" json:"auth_token,omitempty"`
 
 	// SandboxImage is the container image for sandbox pods. This image
-	// should contain Astonish agent tooling. The OpenShell supervisor is
+	// should contain Troupe agent tooling. The OpenShell supervisor is
 	// sideloaded by the gateway automatically.
-	// Default: "ghcr.io/sap/astonish-sandbox-openshell:latest".
+	// Default: "ghcr.io/sap/troupe-sandbox-openshell:latest".
 	SandboxImage string `yaml:"sandbox_image,omitempty" json:"sandbox_image,omitempty"`
 
 	// Registry configures the OCI registry for custom-built sandbox images.
@@ -274,7 +276,7 @@ type CertBundleConfig struct {
 	ConfigMapName string `yaml:"config_map_name,omitempty" json:"config_map_name,omitempty"`
 
 	// MountPath is the absolute path inside the sandbox where the bundle
-	// is mounted, e.g. "/etc/astonish-ca/ca-bundle.crt".
+	// is mounted, e.g. "/etc/troupe-ca/ca-bundle.crt".
 	MountPath string `yaml:"mount_path" json:"mount_path"`
 
 	// SubPath is an optional relative file key within the PVC or ConfigMap
@@ -299,7 +301,7 @@ type CertBundleConfig struct {
 // custom-built sandbox images.
 type RegistryConfig struct {
 	// URL is the registry URL prefix. Images are pushed as:
-	//   <URL>/astonish-sandbox-<scope>:<content-hash>
+	//   <URL>/troupe-sandbox-<scope>:<content-hash>
 	// Examples: "ghcr.io/sap", "ghcr.io/org", "harbor.local:5000/proj"
 	URL string `yaml:"url,omitempty" json:"url,omitempty"`
 
@@ -375,15 +377,15 @@ type SandboxKubernetesConfig struct {
 	Context string `yaml:"context,omitempty" json:"context,omitempty"`
 
 	// InCluster forces the in-cluster config loader. Set this when
-	// Astonish is deployed as a Pod in the same cluster it is
+	// Troupe is deployed as a Pod in the same cluster it is
 	// managing.
 	InCluster bool `yaml:"in_cluster,omitempty" json:"in_cluster,omitempty"`
 
 	// Namespace for sandbox pods. Default: "troupe-sandboxes".
 	Namespace string `yaml:"namespace,omitempty" json:"namespace,omitempty"`
 
-	// ControlPlaneNamespace is the namespace running the Astonish API
-	// and worker pods. Default: "astonish". Used by EnsureOrgNetwork
+	// ControlPlaneNamespace is the namespace running the Troupe API
+	// and worker pods. Default: "troupe". Used by EnsureOrgNetwork
 	// so sandbox pods accept ingress from the control plane.
 	ControlPlaneNamespace string `yaml:"control_plane_namespace,omitempty" json:"control_plane_namespace,omitempty"`
 
@@ -424,13 +426,13 @@ type SandboxKubernetesConfig struct {
 	FuseDeviceResource string `yaml:"fuse_device_resource,omitempty" json:"fuse_device_resource,omitempty"`
 
 	// SandboxImage is the container image for sandbox pods. Must ship
-	// the overlay entrypoint and the astonish node binary. Default:
-	// "ghcr.io/sap/astonish-sandbox-base:latest".
+	// the overlay entrypoint and the troupe node binary. Default:
+	// "ghcr.io/sap/troupe-sandbox-base:latest".
 	SandboxImage string `yaml:"sandbox_image,omitempty" json:"sandbox_image,omitempty"`
 
 	// LayersPVCName / UppersPVCName name the RWX PVCs backing the
 	// layer store and per-session uppers. Defaults:
-	// "astonish-layers" / "astonish-uppers".
+	// "troupe-layers" / "troupe-uppers".
 	LayersPVCName string `yaml:"layers_pvc_name,omitempty" json:"layers_pvc_name,omitempty"`
 	UppersPVCName string `yaml:"uppers_pvc_name,omitempty" json:"uppers_pvc_name,omitempty"`
 
@@ -625,12 +627,12 @@ type StorageConfig struct {
 // SQLiteConfig holds settings for SQLite-backed platform mode.
 type SQLiteConfig struct {
 	// DataDir is the directory where all SQLite database files are stored.
-	// Defaults to ~/.local/share/astonish/ if empty.
+	// Defaults to ~/.local/share/troupe/ if empty.
 	DataDir string `yaml:"data_dir,omitempty" json:"data_dir,omitempty"`
 }
 
 // GetDataDir returns the SQLite data directory, falling back to
-// $XDG_DATA_HOME/astonish/ or ~/.local/share/astonish/.
+// $XDG_DATA_HOME/troupe/ or ~/.local/share/troupe/.
 func (c *SQLiteConfig) GetDataDir() string {
 	if c.DataDir != "" {
 		return c.DataDir
@@ -639,10 +641,10 @@ func (c *SQLiteConfig) GetDataDir() string {
 		return envDir
 	}
 	if xdg := os.Getenv("XDG_DATA_HOME"); xdg != "" {
-		return xdg + "/astonish"
+		return xdg + "/troupe"
 	}
 	home, _ := os.UserHomeDir()
-	return home + "/.local/share/astonish"
+	return home + "/.local/share/troupe"
 }
 
 // PostgresConfig holds PostgreSQL connection parameters for platform mode.
@@ -654,15 +656,15 @@ type PostgresConfig struct {
 	// The user in this DSN must have CREATEDB privilege to provision
 	// per-org databases, or org databases must be pre-created.
 	//
-	// Format: "postgres://user:pass@host:port/astonish_{suffix}_platform?sslmode=require"
+	// Format: "postgres://user:pass@host:port/troupe_{suffix}_platform?sslmode=require"
 	PlatformDSN string `yaml:"platform_dsn,omitempty" json:"platform_dsn,omitempty"`
 
 	// InstanceSuffix is a unique 6-character alphanumeric identifier for this
-	// Astonish instance. It namespaces all databases on the PostgreSQL host:
-	//   - Platform DB: astonish_{suffix}_platform
-	//   - Org DBs:     astonish_{suffix}_{org_slug}
+	// Troupe instance. It namespaces all databases on the PostgreSQL host:
+	//   - Platform DB: troupe_{suffix}_platform
+	//   - Org DBs:     troupe_{suffix}_{org_slug}
 	//
-	// Generated automatically on first setup. Multiple Astonish instances can
+	// Generated automatically on first setup. Multiple Troupe instances can
 	// share the same PostgreSQL host by having different suffixes.
 	// Empty string means legacy naming (astonish_platform, astonish_org_{slug}).
 	InstanceSuffix string `yaml:"instance_suffix,omitempty" json:"instance_suffix,omitempty"`
@@ -731,7 +733,7 @@ func (c *PostgresConfig) GetConnMaxLifetime() time.Duration {
 }
 
 // GenerateInstanceSuffix creates a random 6-character lowercase alphanumeric
-// suffix used to namespace all databases for this Astonish instance.
+// suffix used to namespace all databases for this Troupe instance.
 func GenerateInstanceSuffix() string {
 	const charset = "abcdefghijklmnopqrstuvwxyz0123456789"
 	b := make([]byte, 6)
@@ -743,24 +745,29 @@ func GenerateInstanceSuffix() string {
 }
 
 // PlatformDBName returns the database name for the platform database.
-// If suffix is empty (legacy), returns "astonish_platform".
-// Otherwise returns "astonish_{suffix}_platform".
+// If suffix is empty (legacy), returns "troupe_platform".
+// Otherwise returns "troupe_{suffix}_platform".
 func PlatformDBName(suffix string) string {
 	if suffix == "" {
-		return "astonish_platform"
+		return "troupe_platform"
 	}
-	return "astonish_" + suffix + "_platform"
+	return "troupe_" + suffix + "_platform"
 }
 
 // OrgDBName returns the database name for an organization.
-// If suffix is empty (legacy), returns "astonish_org_{slug}".
-// Otherwise returns "astonish_{suffix}_{slug}".
+// If suffix is empty (legacy), returns "troupe_org_{slug}".
+// Otherwise returns "troupe_{suffix}_{slug}".
+//
+// This is the single source of truth for org database naming: entstore's
+// tenant router must route through this function (see entstore.OrgDBName),
+// otherwise a deployment without an instance suffix writes one database name
+// and later tries to connect to a different one.
 func OrgDBName(suffix, orgSlug string) string {
 	slug := sanitizeDBSlug(orgSlug)
 	if suffix == "" {
-		return "astonish_org_" + slug
+		return "troupe_org_" + slug
 	}
-	return "astonish_" + suffix + "_" + slug
+	return "troupe_" + suffix + "_" + slug
 }
 
 // sanitizeDBSlug removes any characters that aren't lowercase alphanumeric or underscore.
@@ -788,7 +795,7 @@ func sanitizeDBSlug(s string) string {
 //     Team memberships can be auto-mapped from OIDC group claims.
 //
 // Both modes use JWT for session management. The JWT contains user ID, org slug,
-// and default team slug as claims. A separate X-Astonish-Team header allows
+// and default team slug as claims. A separate X-Troupe-Team header allows
 // switching team context within the same org.
 type PlatformAuthConfig struct {
 	// Mode selects the authentication strategy: "builtin" (default) or "oidc".
@@ -829,7 +836,7 @@ type PlatformAuthConfig struct {
 	// OIDC holds OpenID Connect provider settings. Only used when mode is "oidc".
 	OIDC OIDCConfig `yaml:"oidc,omitempty" json:"oidc,omitempty"`
 
-	// OAuthServer configures Astonish as an OAuth/OIDC authorization server for
+	// OAuthServer configures Troupe as an OAuth/OIDC authorization server for
 	// MCP hosts and other relying parties. It authenticates users through the
 	// configured built-in or external identity flow; it never forwards IdP tokens.
 	OAuthServer OAuthServerConfig `yaml:"oauth_server,omitempty" json:"oauth_server,omitempty"`
@@ -843,12 +850,12 @@ type PlatformAuthConfig struct {
 	LoopbackBypass string `yaml:"loopback_bypass,omitempty" json:"loopback_bypass,omitempty"`
 }
 
-// OAuthServerConfig configures Astonish-issued OAuth/OIDC tokens. The issuer
-// must be the stable public URL of this Astonish instance; upstream OIDC/SAML
+// OAuthServerConfig configures Troupe-issued OAuth/OIDC tokens. The issuer
+// must be the stable public URL of this Troupe instance; upstream OIDC/SAML
 // systems remain authentication providers and are not token issuers here.
 type OAuthServerConfig struct {
 	// Enabled defaults to true. Set explicitly to false to remove the built-in
-	// Astonish authorization server and its administration/protocol routes.
+	// Troupe authorization server and its administration/protocol routes.
 	Enabled               *bool  `yaml:"enabled,omitempty" json:"enabled,omitempty"`
 	Issuer                string `yaml:"issuer,omitempty" json:"issuer,omitempty"`
 	Resource              string `yaml:"resource,omitempty" json:"resource,omitempty"`
@@ -856,7 +863,7 @@ type OAuthServerConfig struct {
 	RefreshTokenTTLDays   int    `yaml:"refresh_token_ttl_days,omitempty" json:"refresh_token_ttl_days,omitempty"`
 }
 
-// IsEnabled reports whether Astonish's built-in OAuth authorization server is
+// IsEnabled reports whether Troupe's built-in OAuth authorization server is
 // enabled. It is available by default so its superadmin Settings destination
 // always has a matching backend; deployments can explicitly opt out.
 func (c OAuthServerConfig) IsEnabled() bool {
@@ -906,7 +913,7 @@ type OIDCConfig struct {
 	// If empty, no automatic team mapping is performed.
 	GroupsClaim string `yaml:"groups_claim,omitempty" json:"groups_claim,omitempty"`
 
-	// TeamMapping maps OIDC group names to Astonish team slugs.
+	// TeamMapping maps OIDC group names to Troupe team slugs.
 	// Example: {"engineering": "eng-team", "product": "product-team"}
 	// Groups not in this map are ignored.
 	TeamMapping map[string]string `yaml:"team_mapping,omitempty" json:"team_mapping,omitempty"`
@@ -1102,7 +1109,7 @@ func (c *MemoryConfig) IsWatchEnabled() bool {
 	return *c.Sync.Watch
 }
 
-// GetMemoryDir returns the memory directory, defaulting to ~/.config/astonish/memory/.
+// GetMemoryDir returns the memory directory, defaulting to ~/.config/troupe/memory/.
 func GetMemoryDir(cfg *MemoryConfig) (string, error) {
 	if cfg != nil && cfg.MemoryDir != "" {
 		return cfg.MemoryDir, nil
@@ -1114,7 +1121,7 @@ func GetMemoryDir(cfg *MemoryConfig) (string, error) {
 	return filepath.Join(configDir, "memory"), nil
 }
 
-// GetVectorDir returns the vector storage directory, defaulting to ~/.config/astonish/memory/vectors/.
+// GetVectorDir returns the vector storage directory, defaulting to ~/.config/troupe/memory/vectors/.
 func GetVectorDir(cfg *MemoryConfig) (string, error) {
 	if cfg != nil && cfg.VectorDir != "" {
 		return cfg.VectorDir, nil
@@ -1149,7 +1156,7 @@ type SessionConfig struct {
 	// Storage type: "memory" (default) or "file"
 	Storage string `yaml:"storage,omitempty" json:"storage,omitempty"`
 	// BaseDir overrides the default session storage directory.
-	// Empty means ~/.config/astonish/sessions/
+	// Empty means ~/.config/troupe/sessions/
 	BaseDir string `yaml:"base_dir,omitempty" json:"base_dir,omitempty"`
 	// Compaction controls automatic context window compaction.
 	Compaction CompactionConfig `yaml:"compaction,omitempty" json:"compaction,omitempty"`
@@ -1245,7 +1252,7 @@ type DaemonConfig struct {
 	// Port for the HTTP server. Default: 9393.
 	Port int `yaml:"port,omitempty" json:"port,omitempty"`
 	// LogDir overrides the default log directory.
-	// Empty means ~/.config/astonish/logs/
+	// Empty means ~/.config/troupe/logs/
 	LogDir string `yaml:"log_dir,omitempty" json:"log_dir,omitempty"`
 	// Auth controls device-based authentication for the Studio web UI.
 	// Auth is enabled by default in daemon mode.
@@ -1260,7 +1267,7 @@ func (c *DaemonConfig) GetPort() int {
 	return c.Port
 }
 
-// GetLogDir returns the log directory, defaulting to ~/.config/astonish/logs/.
+// GetLogDir returns the log directory, defaulting to ~/.config/troupe/logs/.
 func (c *DaemonConfig) GetLogDir() string {
 	if c.LogDir != "" {
 		return c.LogDir
@@ -1371,7 +1378,7 @@ type BrowserAppConfig struct {
 	// Headless controls whether the browser runs in headless mode.
 	// Default: false (headed mode with Xvfb on Linux servers for better stealth).
 	// Headed mode produces a more realistic browser fingerprint that avoids
-	// detection by strict anti-bot systems. If Xvfb is not available, Astonish
+	// detection by strict anti-bot systems. If Xvfb is not available, Troupe
 	// falls back to headless mode automatically.
 	Headless *bool `yaml:"headless,omitempty" json:"headless,omitempty"`
 	// ViewportWidth is the default viewport width in pixels. Default: 1920.
@@ -1383,7 +1390,7 @@ type BrowserAppConfig struct {
 	// ChromePath overrides the Chromium binary path. Empty = auto-download via rod.
 	ChromePath string `yaml:"chrome_path,omitempty" json:"chrome_path,omitempty"`
 	// UserDataDir overrides the persistent browser profile directory.
-	// Empty = ~/.config/astonish/browser/ (persistent profile).
+	// Empty = ~/.config/troupe/browser/ (persistent profile).
 	UserDataDir string `yaml:"user_data_dir,omitempty" json:"user_data_dir,omitempty"`
 	// NavigationTimeout is the max seconds to wait for page loads. Default: 30.
 	NavigationTimeout int `yaml:"navigation_timeout,omitempty" json:"navigation_timeout,omitempty"`
@@ -1482,7 +1489,7 @@ func (c *SubAgentAppConfig) TaskTimeout() time.Duration {
 type SkillsConfig struct {
 	// Enabled controls whether skills are loaded. Default: true (nil means true).
 	Enabled *bool `yaml:"enabled,omitempty" json:"enabled,omitempty"`
-	// UserDir is the directory for user-defined skills. Default: ~/.config/astonish/skills/
+	// UserDir is the directory for user-defined skills. Default: ~/.config/troupe/skills/
 	UserDir string `yaml:"user_dir,omitempty" json:"user_dir,omitempty"`
 	// ExtraDirs are additional directories to search for skills.
 	ExtraDirs []string `yaml:"extra_dirs,omitempty" json:"extra_dirs,omitempty"`
@@ -1499,7 +1506,7 @@ func (c *SkillsConfig) IsSkillsEnabled() bool {
 	return *c.Enabled
 }
 
-// GetUserSkillsDir returns the user skills directory, defaulting to ~/.config/astonish/skills/
+// GetUserSkillsDir returns the user skills directory, defaulting to ~/.config/troupe/skills/
 func (c *SkillsConfig) GetUserSkillsDir() string {
 	if c.UserDir != "" {
 		return c.UserDir
@@ -1508,7 +1515,7 @@ func (c *SkillsConfig) GetUserSkillsDir() string {
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(configDir, "astonish", "skills")
+	return filepath.Join(configDir, "troupe", "skills")
 }
 
 // TelegramConfig holds configuration for the Telegram channel adapter.
@@ -1665,7 +1672,57 @@ func GetProviderType(instanceName string, instance ProviderConfig) string {
 	return ""
 }
 
-// GetConfigDir returns the Astonish configuration directory.
+// Directory name used under XDG_CONFIG_HOME / ~/.config. Renamed from
+// "astonish" to "troupe" as part of the rebrand; resolveConfigDir keeps
+// reading the old directory when only that one exists so existing installs do
+// not silently lose their config, credentials and keys.
+const (
+	configDirName       = "troupe"
+	legacyConfigDirName = "astonish"
+)
+
+var legacyConfigDirWarnOnce sync.Once
+
+// configDirStateMarkers are the files that prove a directory is a real, in-use
+// config directory rather than an empty one created by `mkdir -p` or a Docker
+// bind mount.
+var configDirStateMarkers = []string{"config.yaml", ".store_key", "credentials.enc"}
+
+func configDirHasState(dir string) bool {
+	for _, name := range configDirStateMarkers {
+		if _, err := os.Stat(filepath.Join(dir, name)); err == nil {
+			return true
+		}
+	}
+	return false
+}
+
+// resolveConfigDir picks the troupe directory under base, falling back to the
+// legacy astonish directory for installs that predate the rename.
+//
+// The fallback deliberately keys off *state*, not mere existence: an empty
+// troupe directory (created by a bind mount or mkdir) must not shadow a legacy
+// directory that holds config.yaml, .store_key or credentials.enc — doing so
+// would silently orphan the credential store, since a new .store_key cannot
+// decrypt the old credentials.enc.
+func resolveConfigDir(base string) string {
+	current := filepath.Join(base, configDirName)
+	legacy := filepath.Join(base, legacyConfigDirName)
+
+	if configDirHasState(current) {
+		return current
+	}
+	if configDirHasState(legacy) {
+		legacyConfigDirWarnOnce.Do(func() {
+			slog.Warn("using legacy config directory; move it to complete the troupe rebrand",
+				"legacy", legacy, "expected", current)
+		})
+		return legacy
+	}
+	return current
+}
+
+// GetConfigDir returns the Troupe configuration directory.
 // When running under sudo, it resolves the real (non-root) user's home
 // directory via SUDO_USER so that config, sessions, and other data files
 // are consistent regardless of whether the command was escalated.
@@ -1675,19 +1732,39 @@ func GetConfigDir() (string, error) {
 	if os.Getuid() == 0 {
 		if sudoUser := os.Getenv("SUDO_USER"); sudoUser != "" {
 			if u, err := user.Lookup(sudoUser); err == nil {
-				return filepath.Join(u.HomeDir, ".config", "astonish"), nil
+				return resolveConfigDir(filepath.Join(u.HomeDir, ".config")), nil
 			}
 		}
 	}
 	// Honor XDG_CONFIG_HOME on all platforms for portability and test isolation.
 	if xdg := os.Getenv("XDG_CONFIG_HOME"); xdg != "" {
-		return filepath.Join(xdg, "astonish"), nil
+		return resolveConfigDir(xdg), nil
 	}
 	configDir, err := os.UserConfigDir()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(configDir, "astonish"), nil
+	return resolveConfigDir(configDir), nil
+}
+
+// ensureConfigDir returns the resolved config directory, creating it (and any
+// missing parents) when it does not exist yet.
+//
+// Writers that target a fixed filename inside the config directory
+// (mcp_config.json, a2a_agents.json, ...) called os.WriteFile directly, which
+// fails with ENOENT on a fresh install where nothing has populated the
+// directory yet. SaveConfig already created its parent inline; this helper
+// makes that behaviour consistent for every writer. It resolves first and only
+// then creates, so it can never influence resolveConfigDir's legacy fallback.
+func ensureConfigDir() (string, error) {
+	dir, err := GetConfigDir()
+	if err != nil {
+		return "", err
+	}
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return "", fmt.Errorf("failed to create config directory %q: %w", dir, err)
+	}
+	return dir, nil
 }
 
 func GetConfigPath() (string, error) {
@@ -1707,7 +1784,7 @@ func GetAgentsDir() (string, error) {
 }
 
 // GetModelsDir returns the directory for locally downloaded ML models (e.g., embedding models).
-// Defaults to ~/.config/astonish/models/.
+// Defaults to ~/.config/troupe/models/.
 func GetModelsDir() (string, error) {
 	configDir, err := GetConfigDir()
 	if err != nil {
@@ -1717,7 +1794,7 @@ func GetModelsDir() (string, error) {
 }
 
 // GetFleetsDir returns the directory for fleet YAML definitions.
-// Defaults to ~/.config/astonish/fleets/.
+// Defaults to ~/.config/troupe/fleets/.
 func GetFleetsDir() (string, error) {
 	configDir, err := GetConfigDir()
 	if err != nil {
@@ -1727,7 +1804,7 @@ func GetFleetsDir() (string, error) {
 }
 
 // GetFleetPlansDir returns the directory for custom fleet plan YAML definitions.
-// Defaults to ~/.config/astonish/fleet_plans/.
+// Defaults to ~/.config/troupe/fleet_plans/.
 func GetFleetPlansDir() (string, error) {
 	configDir, err := GetConfigDir()
 	if err != nil {
@@ -1737,7 +1814,7 @@ func GetFleetPlansDir() (string, error) {
 }
 
 // GetReportsDir returns the directory for drill/test report artifacts.
-// Defaults to ~/.config/astonish/reports/.
+// Defaults to ~/.config/troupe/reports/.
 func GetReportsDir() (string, error) {
 	configDir, err := GetConfigDir()
 	if err != nil {
@@ -1748,7 +1825,7 @@ func GetReportsDir() (string, error) {
 
 // GetSessionsDir returns the session storage directory.
 // If the config specifies a custom base_dir, that is used; otherwise
-// it defaults to ~/.config/astonish/sessions/.
+// it defaults to ~/.config/troupe/sessions/.
 func GetSessionsDir(cfg *SessionConfig) (string, error) {
 	if cfg != nil && cfg.BaseDir != "" {
 		return cfg.BaseDir, nil
@@ -1762,7 +1839,7 @@ func GetSessionsDir(cfg *SessionConfig) (string, error) {
 
 // GetWorkspacesDir returns the directory for per-session fleet workspaces.
 // Fleet sessions create isolated git clones here (one per session).
-// Defaults to ~/.config/astonish/workspaces/.
+// Defaults to ~/.config/troupe/workspaces/.
 func GetWorkspacesDir() (string, error) {
 	configDir, err := GetConfigDir()
 	if err != nil {

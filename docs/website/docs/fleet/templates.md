@@ -83,10 +83,10 @@ The template defines implicit communication patterns:
 
 ```bash
 # List available templates
-astonish fleet templates
+troupe fleet templates
 
 # Create a plan from a template
-astonish fleet plan create --template full-stack-team --objective "Build user auth"
+troupe fleet plan create --template full-stack-team --objective "Build user auth"
 ```
 
-Templates are stored in your Astonish config directory (`~/.config/astonish/fleet/`) or in the project's `.troupe/fleet/` directory.
+Templates are stored in your Troupe config directory (`~/.config/troupe/fleet/`) or in the project's `.troupe/fleet/` directory.

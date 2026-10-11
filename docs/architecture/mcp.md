@@ -1,16 +1,16 @@
 # MCP Integration
 
-> The public inbound MCP contract is documented in [MCP Public Tool Loop](mcp-public-loop.md). It intentionally exposes only `get_agent_context`, `search_tools`, `describe_tools`, and `execute_tool`; `astonish_chat` is removed with no compatibility alias. External clients must treat skills and tool names returned by this endpoint as Astonish capabilities: they load matching skills and invoke the tools those skills recommend through Astonish's discovery and execution operations rather than probing or substituting tools in the client environment.
+> The public inbound MCP contract is documented in [MCP Public Tool Loop](mcp-public-loop.md). It intentionally exposes only `get_agent_context`, `search_tools`, `describe_tools`, and `execute_tool`; `troupe_chat` is removed with no compatibility alias. External clients must treat skills and tool names returned by this endpoint as Troupe capabilities: they load matching skills and invoke the tools those skills recommend through Troupe's discovery and execution operations rather than probing or substituting tools in the client environment.
 
 ## Overview
 
-Astonish integrates with the Model Context Protocol (MCP) to extend the agent's capabilities with external tool servers. MCP servers are standalone processes that expose tools via a JSON-RPC protocol over stdio. Astonish manages the lifecycle of these servers, caches their tool definitions, and optionally runs them inside sandbox containers for security.
+Troupe integrates with the Model Context Protocol (MCP) to extend the agent's capabilities with external tool servers. MCP servers are standalone processes that expose tools via a JSON-RPC protocol over stdio. Troupe manages the lifecycle of these servers, caches their tool definitions, and optionally runs them inside sandbox containers for security.
 
 ## Key Design Decisions
 
 ### Why MCP
 
-MCP provides a standardized way to extend AI agents with new tools without modifying the agent itself. The ecosystem of MCP servers is growing rapidly, covering GitHub, databases, APIs, file systems, and more. By supporting MCP, Astonish gains access to this ecosystem.
+MCP provides a standardized way to extend AI agents with new tools without modifying the agent itself. The ecosystem of MCP servers is growing rapidly, covering GitHub, databases, APIs, file systems, and more. By supporting MCP, Troupe gains access to this ecosystem.
 
 ### Why Sandboxed MCP Transport
 
@@ -32,7 +32,7 @@ MCP startup and discovery failures must be logged with enough context to diagnos
 
 Querying MCP servers for their tool definitions involves starting the server process, performing the JSON-RPC handshake, and listing tools. This can take seconds. The tool cache:
 
-- Persists tool definitions to disk (`~/.config/astonish/tools_cache.json`).
+- Persists tool definitions to disk (`~/.config/troupe/tools_cache.json`).
 - Refreshes in the background so the agent always has a warm cache.
 - Allows the agent to know what MCP tools are available without waiting for server startup.
 
@@ -105,7 +105,7 @@ The `LazyMCPToolset` defers MCP server startup until tools are actually needed:
 
 ### Tool Surfacing Through the Fixed Bridge
 
-MCP tools are catalog entries in every runtime, including Astonish Code. Each
+MCP tools are catalog entries in every runtime, including Troupe Code. Each
 server is registered as an `mcp:<server>` tool group. The model finds tools via
 catalog-only `search_tools`, inspects schemas with `describe_tools`, and invokes
 them through the fixed `execute_tool` bridge, or delegates parallel work with the
@@ -116,8 +116,8 @@ corresponding group. MCP discovery never adds provider-visible declarations.
 MCP server resolution mirrors provider resolution: servers declared in the local
 config file are the **base layer**, and the platform database cascades on top.
 
-- **Personal mode / Astonish Code**: `config.LoadMCPConfig()` reads
-  `~/.config/astonish/mcp_config.json` and merges the standard web/model servers
+- **Personal mode / Troupe Code**: `config.LoadMCPConfig()` reads
+  `~/.config/troupe/mcp_config.json` and merges the standard web/model servers
   (Tavily, Brave, Firecrawl, Perplexity) declared under `web_servers` in
   `config.yaml`. No platform login is required — a config-file MCP server is
   immediately available to the agent.
@@ -146,7 +146,7 @@ layered separately by `MergeStandardServersWithConfig` using the effective
 
 **Tool discovery for file servers.** File-declared servers have no per-tenant
 `cached_tools` DB column, so their tool declarations live in the shared on-disk
-tools cache (`~/.config/astonish/tools_cache.json`), the same cache standard
+tools cache (`~/.config/troupe/tools_cache.json`), the same cache standard
 servers use. Discovery happens automatically — no manual "refresh" step is
 required:
 
@@ -159,7 +159,7 @@ required:
   `api.DiscoverUncachedFileMCPServers`, which kicks off background discovery for
   every enabled config-file server that is not yet cached (respecting sandbox /
   network policy via `discoverMCPToolsForPlatform`). This is why config-file MCP
-  servers "just work" after `astonish daemon restart`.
+  servers "just work" after `troupe daemon restart`.
 - **Manual refresh**: `RefreshMCPServerHandler` also handles a file server that
   is not in any DB store (via `asyncDiscoverAndCacheFileTools`), so Settings →
   MCP → Refresh works for config-file servers too.
@@ -203,11 +203,11 @@ Studio provides an MCP Inspector that allows:
 - Testing individual tools with custom inputs.
 - Viewing server logs and errors.
 
-For stdio servers, the inspector uses the same sandbox rule as chat and app data: the server process never runs on the Astonish host. Tool listing uses a disposable `mcp-discover-*` sandbox; tool invocation uses the per-user app sandbox. Before a stdio package manager such as `npx` or `uvx` starts, persisted Astonish Network Policy allow rules are pre-seeded into the OpenShell sandbox policy.
+For stdio servers, the inspector uses the same sandbox rule as chat and app data: the server process never runs on the Troupe host. Tool listing uses a disposable `mcp-discover-*` sandbox; tool invocation uses the per-user app sandbox. Before a stdio package manager such as `npx` or `uvx` starts, persisted Troupe Network Policy allow rules are pre-seeded into the OpenShell sandbox policy.
 
 The same pre-seeding requirement applies to background MCP discovery after install, refresh, standard-server install, and MCP Store install. Those jobs intentionally detach from the HTTP request context so they can continue after the response, but they must carry a detached runtime context containing the Network Policy stores and OpenShell gateway config. Without that detached runtime context, a Settings allow rule can exist in the database but never reach the disposable `mcp-discover-*` sandbox.
 
-If sandboxed MCP startup fails with network-looking diagnostics, the inspector response includes `network_authorization`. The payload contains parsed denied endpoints from the MCP process output and package-manager preflight hints such as `registry.npmjs.org:443` for npm-based servers. The Studio UI shows these endpoints and lets an admin explicitly approve a durable network policy rule for the selected MCP scope. The retry then creates or reuses a fresh sandbox with the persisted allow rule pre-seeded. Astonish does not silently whitelist hosts.
+If sandboxed MCP startup fails with network-looking diagnostics, the inspector response includes `network_authorization`. The payload contains parsed denied endpoints from the MCP process output and package-manager preflight hints such as `registry.npmjs.org:443` for npm-based servers. The Studio UI shows these endpoints and lets an admin explicitly approve a durable network policy rule for the selected MCP scope. The retry then creates or reuses a fresh sandbox with the persisted allow rule pre-seeded. Troupe does not silently whitelist hosts.
 
 ## Key Files
 

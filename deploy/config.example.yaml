@@ -1,0 +1,124 @@
+# Troupe app config template for the local Docker Compose deployment.
+#
+#   mkdir -p state/config state/data
+#   cp config.example.yaml state/config/config.yaml
+#   $EDITOR state/config/config.yaml     # fill in base_url + model ids
+#
+# Mounted into the container at /root/.config/troupe/config.yaml.
+#
+# IMPORTANT — config.yaml does NOT support ${VAR} interpolation (LoadAppConfig
+# is a bare yaml.Unmarshal). Edit literal values here, or configure providers
+# through Settings → Providers in the UI (stored in the database, and DB values
+# win on a name collision).
+
+general:
+  # default_provider / default_model ARE honoured from config.yaml: the HTTP
+  # path only overrides them when the platform DB holds an explicit value
+  # (pkg/api/request_helpers.go). Leave them empty and Pool.Get fails with
+  # "no provider configured".
+  default_provider: local-llm
+  default_model: REPLACE_WITH_YOUR_MODEL_ID
+
+  # MUST be set explicitly for self-hosted models. Context-window detection has
+  # no openai_compat branch (pkg/provider/context_window.go), so unknown models
+  # fall back to 200,000 tokens — compaction then never triggers and long chats
+  # overflow the server. Set this to the model's real max_model_len.
+  # It is also the default cap for max_completion_tokens when max_output_tokens
+  # (below) is not set.
+  context_length: 32768
+
+providers:
+  # Instance name is arbitrary; `type` dispatches the adapter.
+  # openai_compat is NOT in the legacy instance-name whitelist, so `type:` is
+  # required (it cannot be inferred from the instance name).
+  local-llm:
+    type: openai_compat
+
+    # REQUIRED and must be NON-EMPTY (factory.go rejects "").
+    # Local inference servers without auth ignore this bearer token, so use a
+    # placeholder: vLLM / LMDeploy / Ollama -> "EMPTY"
+    api_key: "EMPTY"
+
+    # Base URL rules (pkg/provider/openai_compat.NormalizeBaseURL):
+    #   - "/v1" is appended when missing
+    #   - trailing slashes are stripped (so "/v1/" does NOT become "/v1/v1")
+    #   - a pasted "/chat/completions" or "/models" suffix is trimmed back
+    #   - empty is now a hard error instead of silently targeting OpenAI
+    #
+    # From inside a container on macOS, the HOST machine is:
+    #   http://host.docker.internal:<PORT>/v1
+    # Another container on this compose network: http://<service>:<PORT>/v1
+    # A machine on your LAN:                     http://<lan-ip>:<PORT>/v1
+    base_url: "http://host.docker.internal:11434/v1"
+
+    # Cap on `max_completion_tokens`. Without it the value falls back to
+    # general.context_length (previously a hard-coded 64000, which made every
+    # request fail with HTTP 400 on models with a smaller max_model_len).
+    # Set it explicitly when context_length exceeds what the server accepts for
+    # one completion.
+    # max_output_tokens: 4096
+
+storage:
+  # "" and "file" are coerced to sqlite at startup (pkg/daemon/run.go).
+  # postgres also unlocks sandbox GC / OpenShell coordination, which is skipped
+  # entirely on sqlite.
+  backend: postgres
+  postgres:
+    # Keeps database names namespaced on a shared server.
+    #   config.PlatformDBName("local")      -> troupe_local_platform
+    #   config.OrgDBName("local", <slug>)   -> troupe_local_<slug>
+    instance_suffix: "local"
+    # The DSN comes from TROUPE_PLATFORM_DSN (deploy/.env). If you set it here
+    # instead, config wins over the env var (app_config.go:698-707).
+    # platform_dsn: "postgres://troupe:troupe@postgres:5432/troupe_local_platform?sslmode=disable"
+  auth:
+    # "builtin" = email + password, no external IdP needed.
+    mode: builtin
+    # The FIRST registered user skips verification and becomes org owner +
+    # platform superadmin. Later users need an emailed code, which requires
+    # SMTP; for a local single-user deployment keep this false.
+    require_email_verification: false
+    allow_registration: true
+
+daemon:
+  port: 9393
+
+# Sandbox is ON. This deployment mounts /var/run/docker.sock so the Docker
+# backend can create session containers; they run unprivileged
+# (pkg/sandbox/config.go). Session containers use TROUPE_SANDBOX_IMAGE — build
+# it first with `make docker-sandbox-base`, otherwise sessions cannot start
+# (normal chat is unaffected).
+# Set enabled: false if you do not want container isolation.
+sandbox:
+  enabled: true
+  limits:
+    memory: "2GB"
+    cpu: 2
+    processes: 500
+  network: bridged
+
+memory:
+  # Semantic search initialisation is unconditional and FATAL on failure
+  # (pkg/daemon/run.go:246-263).
+  #
+  # Default (comment out this block): downloads all-MiniLM-L6-v2 (~23 MB) from
+  # HuggingFace into <configDir>/models on first boot. Needs egress once.
+  #
+  # Self-hosted alternative below: reuse your inference server's
+  # /v1/embeddings endpoint. This is a SEPARATE model from the chat model — if
+  # your server does not serve embeddings you get a fatal startup error, in
+  # which case delete this block and use the default local embedder.
+  embedding:
+    provider: openai-compat
+    # Appends "/embeddings" to this value (pkg/memory/embedder.go).
+    base_url: "http://host.docker.internal:11434/v1"
+    model: REPLACE_WITH_YOUR_EMBEDDING_MODEL_ID
+    api_key: "EMPTY"
+    timeout_seconds: 30
+
+scheduler:
+  enabled: true
+
+# Channels (Telegram / Email / Slack) stay off — they need real credentials.
+channels:
+  enabled: false

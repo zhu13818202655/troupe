@@ -18,7 +18,7 @@ import (
 )
 
 // ChatConfig configures the platform-backed interactive chat TUI.
-// Chat always talks to an authenticated Astonish platform (Studio REST/SSE) —
+// Chat always talks to an authenticated Troupe platform (Studio REST/SSE) —
 // there is no in-process / "personal" chat path.
 type ChatConfig struct {
 	AutoApprove bool
@@ -27,7 +27,7 @@ type ChatConfig struct {
 }
 
 // RunChatTUI launches the fullscreen terminal chat app against the logged-in
-// Astonish platform (local install or cloud — same client, requires auth).
+// Troupe platform (local install or cloud — same client, requires auth).
 func RunChatTUI(ctx context.Context, cfg *ChatConfig) error {
 	if cfg == nil {
 		cfg = &ChatConfig{}
@@ -96,7 +96,7 @@ func newPlatformBackend() backend.Backend {
 
 // newLazyCodeBackend returns a backend that lazily initializes the full local
 // code-mode agent on first Open(). Returns nil if code mode cannot be set up
-// (e.g. missing config). This allows `astonish chat` to offer Ctrl+\ switching
+// (e.g. missing config). This allows `troupe chat` to offer Ctrl+\ switching
 // to code mode without paying the startup cost unless the user actually switches.
 func newLazyCodeBackend() backend.Backend {
 	return &lazyCodeBackend{}
@@ -279,7 +279,7 @@ func (b *platformBackend) Info() backend.Info {
 func (b *platformBackend) Open(ctx context.Context) error {
 	// Connectivity check — fail fast if the platform is unreachable / auth expired.
 	if err := b.client.Ping(); err != nil {
-		return fmt.Errorf("platform unreachable (%s): %w\nRun: astonish login <url>", b.serverURL, err)
+		return fmt.Errorf("platform unreachable (%s): %w\nRun: troupe login <url>", b.serverURL, err)
 	}
 	b.loadInitialModelStatus(ctx)
 	return nil

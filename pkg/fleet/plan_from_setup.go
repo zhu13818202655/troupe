@@ -66,14 +66,14 @@ func BuildFleetPlanFromSetup(baseCfg *FleetConfig, build *SetupPlanBuild, opts P
 
 	now := time.Now()
 	plan := &FleetPlan{
-		Name:                  build.Name,
-		Key:                   build.Key,
-		Description:           build.Description,
-		CreatedFrom:           build.BaseFleetKey,
-		SetupProfileKey:       build.SetupProfileKey,
-		FleetConfig:           snapshotCfg,
-		Credentials:           build.Credentials,
-		CredentialInjection:   NormalizeCredentialInjection(build.Credentials, build.CredentialInjection),
+		Name:                build.Name,
+		Key:                 build.Key,
+		Description:         build.Description,
+		CreatedFrom:         build.BaseFleetKey,
+		SetupProfileKey:     build.SetupProfileKey,
+		FleetConfig:         snapshotCfg,
+		Credentials:         build.Credentials,
+		CredentialInjection: NormalizeCredentialInjection(build.Credentials, build.CredentialInjection),
 		Channel: PlanChannelConfig{
 			Type:     channelType,
 			Config:   build.ChannelConfig,

@@ -8,9 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/pkg/docs/slides"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/google/uuid"
 )
 
 // memDocsStore is a functional in-memory store.DocsStore supporting the

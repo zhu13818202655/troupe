@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/zhu13818202655/troupe/pkg/channels"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/zhu13818202655/troupe/pkg/channels"
 )
 
 // fakeTelegramServer creates a mock Telegram API server for testing.

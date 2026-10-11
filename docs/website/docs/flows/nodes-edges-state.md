@@ -176,7 +176,7 @@ In **Studio**, the flow editor provides a visual debugger that:
 From the **CLI**, run flows with debug output:
 
 ```bash
-astonish flows run my-flow --debug
+troupe flows run my-flow --debug
 ```
 
 The `--debug` flag shows tool inputs and responses during execution.

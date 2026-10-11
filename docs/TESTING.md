@@ -1,6 +1,6 @@
 # Testing Guide
 
-A comprehensive guide to Astonish's test suite — what exists, why it exists, and how to run it.
+A comprehensive guide to Troupe's test suite — what exists, why it exists, and how to run it.
 
 ---
 
@@ -332,7 +332,7 @@ These tests ensure the system prompt contains strings that the frontend and back
 
 The system prompt is a contract between three parties:
 1. **The prompt** (tells the LLM what syntax to produce)
-2. **The backend** (parses LLM output with regex, e.g. `appPreviewFenceRe` matches `` ```astonish-app ``)
+2. **The backend** (parses LLM output with regex, e.g. `appPreviewFenceRe` matches `` ```troupe-app ``)
 3. **The frontend** (renders specific patterns, e.g. mermaid fences, useAppData calls)
 
 If someone edits the prompt and accidentally removes or renames a string, the backend/frontend regex breaks silently. These tests catch that.
@@ -357,7 +357,7 @@ Beyond the golden file, targeted assertions verify ~60 specific strings that oth
 
 | Test Group | Contracts Verified |
 |------------|-------------------|
-| `TestSystemPromptContracts_GenerativeUI` | `astonish-app` fence, `useAppData`/`useAppAction`/`useAppAI`/`useAppState`, dark theme, transparent root, fetch/XHR/axios blocked, credential `@`-syntax, mermaid, React 19, Tailwind v4, Recharts, Lucide |
+| `TestSystemPromptContracts_GenerativeUI` | `troupe-app` fence, `useAppData`/`useAppAction`/`useAppAI`/`useAppState`, dark theme, transparent root, fetch/XHR/axios blocked, credential `@`-syntax, mermaid, React 19, Tailwind v4, Recharts, Lucide |
 | `TestSystemPromptContracts_Delegation` | `delegate_tasks`, `announce_plan`, `plan_step`, planning strategy, tool group listing |
 | `TestSystemPromptContracts_ToolUse` | `memory_search`/`memory_save`, `http_request` RFC1918 restriction, `search_tools`, `skill_lookup` |
 | `TestSystemPromptContracts_Identity` | `browser_request_human`, `email_wait`, `credential store` |
@@ -402,7 +402,7 @@ go test ./pkg/agent -run TestSystemPromptBuilder_Golden -update
 
 ## Layer 4: E2E Tests
 
-E2E tests bootstrap a complete Astonish platform (fresh DB, real `StudioServer`, real auth, real LLM provider) and run real user journeys against it. They live under `tests/e2e/<feature>/` and run via `make test-e2e`. The current suite has ~35 passing scenarios across chat, sandbox layer chains, MCP install, fleet, and the flow assistant.
+E2E tests bootstrap a complete Troupe platform (fresh DB, real `StudioServer`, real auth, real LLM provider) and run real user journeys against it. They live under `tests/e2e/<feature>/` and run via `make test-e2e`. The current suite has ~35 passing scenarios across chat, sandbox layer chains, MCP install, fleet, and the flow assistant.
 
 This layer is **operational, not future**. For the harness contract (`e2eboot.Bootstrap(t)`), the K8s sandbox infra (`make e2e-k8s-up`), the inspector mode for browsing failed runs (`make test-e2e-inspect` on port 9394), and the package-scoped seeding model, see [`docs/architecture/testing.md`](architecture/testing.md). For the user-journey scenario catalog and `// COVERS:` contract, see [`tests/scenarios/`](../tests/scenarios/).
 

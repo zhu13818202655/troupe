@@ -15,7 +15,7 @@ import (
 // fleetCommentMarker is an HTML comment embedded in every GitHub comment
 // posted by the fleet. The comment poller uses this to skip fleet-generated
 // comments so they are not re-ingested as human messages.
-const fleetCommentMarker = "<!-- astonish-fleet-msg -->"
+const fleetCommentMarker = "<!-- troupe-fleet-msg -->"
 
 // defaultCommentPollInterval is how often the channel polls for new human
 // comments on the issue.

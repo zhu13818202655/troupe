@@ -55,7 +55,7 @@ type minimalToolContext struct {
 func (m *minimalToolContext) Actions() *session.EventActions       { return &session.EventActions{} }
 func (m *minimalToolContext) Branch() string                       { return "" }
 func (m *minimalToolContext) AgentName() string                    { return "tool-discovery" }
-func (m *minimalToolContext) AppName() string                      { return "astonish" }
+func (m *minimalToolContext) AppName() string                      { return "troupe" }
 func (m *minimalToolContext) Artifacts() agent.Artifacts           { return nil }
 func (m *minimalToolContext) FunctionCallID() string               { return "" }
 func (m *minimalToolContext) InvocationID() string                 { return "" }

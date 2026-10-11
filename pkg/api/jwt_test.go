@@ -44,8 +44,8 @@ func TestJWTIssuer_AccessToken(t *testing.T) {
 	if claims.TokenType != TokenTypeAccess {
 		t.Errorf("TokenType = %q, want %q", claims.TokenType, TokenTypeAccess)
 	}
-	if claims.Issuer != "astonish-platform" {
-		t.Errorf("Issuer = %q, want %q", claims.Issuer, "astonish-platform")
+	if claims.Issuer != "troupe-platform" {
+		t.Errorf("Issuer = %q, want %q", claims.Issuer, "troupe-platform")
 	}
 	if claims.Subject != "user-123" {
 		t.Errorf("Subject = %q, want %q", claims.Subject, "user-123")

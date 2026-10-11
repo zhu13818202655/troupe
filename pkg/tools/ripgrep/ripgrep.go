@@ -24,6 +24,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 // Version is the pinned ripgrep release provisioned when rg is not already
@@ -112,15 +114,16 @@ func binaryName() string {
 // XDG_CONFIG_HOME (like pkg/config.GetConfigDir) for portability and test
 // isolation, without importing pkg/config to avoid a dependency cycle.
 func CacheDir() (string, error) {
-	base := os.Getenv("XDG_CONFIG_HOME")
-	if base == "" {
-		cfg, err := os.UserConfigDir()
-		if err != nil {
-			return "", err
-		}
-		base = cfg
+	// Delegate to the shared config-dir resolver rather than re-deriving it
+	// here: a hard-coded directory name silently diverged from
+	// config.GetConfigDir() after the rebrand, splitting app state across two
+	// directories. Going through the resolver also means the cache follows the
+	// legacy directory when an existing install is still using it.
+	base, err := config.GetConfigDir()
+	if err != nil {
+		return "", err
 	}
-	return filepath.Join(base, "astonish", "bin"), nil
+	return filepath.Join(base, "bin"), nil
 }
 
 // ManagedPath returns the absolute path the managed rg binary would occupy.

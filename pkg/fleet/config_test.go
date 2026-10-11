@@ -1076,9 +1076,9 @@ func TestGetConfigStringSlice(t *testing.T) {
 		},
 		{
 			name:     "single string value",
-			config:   map[string]any{"label": "astonish_fleet"},
+			config:   map[string]any{"label": "troupe_fleet"},
 			key:      "label",
-			expected: []string{"astonish_fleet"},
+			expected: []string{"troupe_fleet"},
 		},
 		{
 			name:     "empty string value",
@@ -1131,11 +1131,11 @@ func TestNewGitHubMonitor_LabelFallback(t *testing.T) {
 	// Singular key (common in YAML configs)
 	m := NewGitHubMonitor("test-plan", map[string]any{
 		"repo":  "owner/repo",
-		"label": "astonish_fleet",
+		"label": "troupe_fleet",
 	}, NewFileMonitorStateStore(stateDir))
 
-	if len(m.Labels) != 1 || m.Labels[0] != "astonish_fleet" {
-		t.Errorf("expected labels=[astonish_fleet] from singular 'label' key, got %v", m.Labels)
+	if len(m.Labels) != 1 || m.Labels[0] != "troupe_fleet" {
+		t.Errorf("expected labels=[troupe_fleet] from singular 'label' key, got %v", m.Labels)
 	}
 
 	// Plural key takes precedence
@@ -2167,14 +2167,14 @@ func TestResolveSessionWorkspaceDir(t *testing.T) {
 	}{
 		{
 			name:       "task slug used as container name",
-			baseDir:    "/home/user/.config/astonish/sessions",
+			baseDir:    "/home/user/.config/troupe/sessions",
 			sessionID:  "abc12345-6789-0000-1111-222233334444",
 			taskSlug:   "issue-6-payoff-chart",
 			wantSuffix: "/workspaces/issue-6-payoff-chart",
 		},
 		{
 			name:       "session ID fallback (first 8 chars)",
-			baseDir:    "/home/user/.config/astonish/sessions",
+			baseDir:    "/home/user/.config/troupe/sessions",
 			sessionID:  "abc12345-6789-0000-1111-222233334444",
 			taskSlug:   "",
 			wantSuffix: "/workspaces/abc12345",
@@ -2501,7 +2501,7 @@ func TestCleanupSessionWorkspace_SafetyGuard(t *testing.T) {
 	// Paths that look like container-internal paths (not under workspaces/)
 	// should be refused even if they exist on the host.
 	tmpDir := t.TempDir()
-	dangerousDir := filepath.Join(tmpDir, "astonish")
+	dangerousDir := filepath.Join(tmpDir, "troupe")
 	if err := os.MkdirAll(dangerousDir, 0755); err != nil {
 		t.Fatal(err)
 	}
@@ -2703,7 +2703,7 @@ func TestFleetValidate_SupervisorMode(t *testing.T) {
 	po.Capabilities = map[string]bool{"supervisor": true}
 	dev := baseAgent("Dev")
 	f := &FleetConfig{
-		Name: "s",
+		Name:   "s",
 		Agents: map[string]FleetAgentConfig{"po": po, "dev": dev},
 		Communication: &CommunicationConfig{Flow: []CommunicationNode{
 			{Role: "po", TalksTo: []string{"dev", "customer"}, EntryPoint: true},
@@ -2738,7 +2738,7 @@ func TestFleetValidate_SupervisorReachability(t *testing.T) {
 	po.Capabilities = map[string]bool{"supervisor": true}
 	orphan := baseAgent("Orphan")
 	f := &FleetConfig{
-		Name: "s",
+		Name:   "s",
 		Agents: map[string]FleetAgentConfig{"po": po, "orphan": orphan},
 		Communication: &CommunicationConfig{Flow: []CommunicationNode{
 			{Role: "po", TalksTo: []string{"customer"}, EntryPoint: true},
@@ -2808,7 +2808,7 @@ func TestFleetConfig_NewFieldsRoundTrip(t *testing.T) {
 	b := baseAgent("B")
 	b.Execution = &AgentExecutionConfig{Parallelizable: true}
 	f := &FleetConfig{
-		Name: "rt",
+		Name:   "rt",
 		Agents: map[string]FleetAgentConfig{"po": baseAgent("PO"), "a": a, "b": b},
 		Communication: &CommunicationConfig{Flow: []CommunicationNode{
 			{Role: "po", TalksTo: []string{"a", "b"}, EntryPoint: true},

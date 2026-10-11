@@ -371,7 +371,7 @@ func (c *ChatAgent) ConfirmAndDistill(ctx context.Context, ds DistillSession, pr
 		}
 
 		// Build run command with parameter suggestions
-		runCmd := "astonish flows run " + result.FlowName
+		runCmd := "troupe flows run " + result.FlowName
 		paramFlags := c.extractInputParams(ctx, result.YAML, merged)
 		for _, pf := range paramFlags {
 			parts := strings.SplitN(pf, "=", 2)
@@ -397,7 +397,7 @@ func (c *ChatAgent) ConfirmAndDistill(ctx context.Context, ds DistillSession, pr
 		if cfgErr != nil {
 			return fmt.Errorf("failed to determine config directory: %w", cfgErr)
 		}
-		saveDir = filepath.Join(configDir, "astonish", "flows")
+		saveDir = filepath.Join(configDir, "troupe", "flows")
 	}
 
 	// Create the directory if it doesn't exist
@@ -442,7 +442,7 @@ func (c *ChatAgent) ConfirmAndDistill(ctx context.Context, ds DistillSession, pr
 	}
 
 	// Build run command with parameter suggestions
-	runCmd := "astonish flows run " + result.FlowName
+	runCmd := "troupe flows run " + result.FlowName
 	paramFlags := c.extractInputParams(ctx, result.YAML, merged)
 	for _, pf := range paramFlags {
 		parts := strings.SplitN(pf, "=", 2)
@@ -821,7 +821,7 @@ func (c *ChatAgent) SaveDistillReview(ctx context.Context, sessionID string) (fi
 	}
 
 	// Build run command with parameter suggestions (shared by both modes)
-	cmd := "astonish flows run " + review.FlowName
+	cmd := "troupe flows run " + review.FlowName
 	if len(review.Traces) > 0 {
 		merged := c.mergeTraces(review.Traces)
 		paramFlags := c.extractInputParams(ctx, review.YAML, merged)
@@ -855,7 +855,7 @@ func (c *ChatAgent) SaveDistillReview(ctx context.Context, sessionID string) (fi
 		if cfgErr != nil {
 			return "", "", fmt.Errorf("failed to determine config directory: %w", cfgErr)
 		}
-		saveDir = filepath.Join(configDir, "astonish", "flows")
+		saveDir = filepath.Join(configDir, "troupe", "flows")
 	}
 
 	if mkErr := os.MkdirAll(saveDir, 0755); mkErr != nil {

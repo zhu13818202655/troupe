@@ -89,14 +89,14 @@ func SandboxTerminalHandler(w http.ResponseWriter, r *http.Request) {
 	//
 	// K8s: kubectl exec lands in the pod's base namespace (bare Debian),
 	//   not PID 1's chroot (/sandbox/rootfs where runtimes are installed).
-	//   The astonish-shell wrapper does `exec chroot /sandbox/rootfs "$@"`
+	//   The troupe-shell wrapper does `exec chroot /sandbox/rootfs "$@"`
 	//   to enter the composed overlay.
 	//
 	// Incus: the overlay IS the container's root filesystem — no chroot
 	//   needed. Commands execute directly in the correct namespace.
 	var shellCmd []string
 	if backend.Kind() == sandbox.BackendKindK8s {
-		shellCmd = []string{"/usr/local/bin/astonish-shell"}
+		shellCmd = []string{"/usr/local/bin/troupe-shell"}
 	} else {
 		shellCmd = []string{"/bin/bash", "-l"}
 	}

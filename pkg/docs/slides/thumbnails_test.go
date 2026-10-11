@@ -7,9 +7,9 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/go-rod/rod"
 	"github.com/zhu13818202655/troupe/pkg/docs/slides/themes"
 	"github.com/zhu13818202655/troupe/pkg/pdfgen"
-	"github.com/go-rod/rod"
 )
 
 // fakePNG is canned PNG-magic-prefixed bytes returned by the injected renderer.

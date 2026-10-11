@@ -12,7 +12,7 @@ import (
 
 // codeProviderCatalogSupported is the set of provider types that the /provider
 // overlay in code mode must offer. It mirrors provider.ProviderDisplayNames —
-// every provider Astonish supports and that can be configured from a plaintext
+// every provider Troupe supports and that can be configured from a plaintext
 // config file must be addable via /provider.
 func codeProviderCatalogSupported() map[string]bool {
 	supported := make(map[string]bool, len(provider.ProviderDisplayNames))

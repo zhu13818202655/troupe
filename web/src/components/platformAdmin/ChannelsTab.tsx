@@ -472,7 +472,7 @@ function SlackConfigFields({ form, setForm }: SlackConfigFieldsProps) {
       </div>
       <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
         Socket mode requires Bot Token + App-Level Token. Events mode requires Bot Token + Signing Secret.
-        Add Slack App ID + a Slack App Configuration Token to sync /link and Slack-safe Astonish commands automatically.
+        Add Slack App ID + a Slack App Configuration Token to sync /link and Slack-safe Troupe commands automatically.
         Socket Mode omits slash-command URLs in the synced manifest; Events mode also needs a public HTTPS Slash Command URL.
         The configuration token is not the xapp Socket Mode token or the xoxb bot token.
       </p>

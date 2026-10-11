@@ -8,7 +8,7 @@ import (
 )
 
 func TestBuildCLIAuthorizeURLUsesFirstPartyClientAndPKCE(t *testing.T) {
-	got := buildCLIAuthorizeURL("https://astonish.example", "http://127.0.0.1:54321/oauth/callback", "state-1", "challenge-1")
+	got := buildCLIAuthorizeURL("https://troupe.example", "http://127.0.0.1:54321/oauth/callback", "state-1", "challenge-1")
 	parsed, err := url.Parse(got)
 	if err != nil {
 		t.Fatal(err)

@@ -7,20 +7,20 @@ import (
 
 type contextKey string
 
-const servicesKey contextKey = "astonish_services"
-const credStoreKey contextKey = "astonish_credential_store"
-const memoryStoreKey contextKey = "astonish_memory_store"
-const memoryScopeKey contextKey = "astonish_memory_scope"
-const memorySearcherKey contextKey = "astonish_memory_searcher"
-const memoryStoresByScopeKey contextKey = "astonish_memory_stores_by_scope"
-const memoryDeleteAuthorizerKey contextKey = "astonish_memory_delete_authorizer"
-const flowStoreKey contextKey = "astonish_flow_store"
-const teamFlowStoreKey contextKey = "astonish_team_flow_store"
-const drillReportStoreKey contextKey = "astonish_drill_report_store"
-const sessionIDKey contextKey = "astonish_session_id"
-const chatFilesKey contextKey = "astonish_chat_files"
-const debugEnabledKey contextKey = "astonish_debug_enabled"
-const cacheDiagnosticRecorderKey contextKey = "astonish_cache_diagnostic_recorder"
+const servicesKey contextKey = "troupe_services"
+const credStoreKey contextKey = "troupe_credential_store"
+const memoryStoreKey contextKey = "troupe_memory_store"
+const memoryScopeKey contextKey = "troupe_memory_scope"
+const memorySearcherKey contextKey = "troupe_memory_searcher"
+const memoryStoresByScopeKey contextKey = "troupe_memory_stores_by_scope"
+const memoryDeleteAuthorizerKey contextKey = "troupe_memory_delete_authorizer"
+const flowStoreKey contextKey = "troupe_flow_store"
+const teamFlowStoreKey contextKey = "troupe_team_flow_store"
+const drillReportStoreKey contextKey = "troupe_drill_report_store"
+const sessionIDKey contextKey = "troupe_session_id"
+const chatFilesKey contextKey = "troupe_chat_files"
+const debugEnabledKey contextKey = "troupe_debug_enabled"
+const cacheDiagnosticRecorderKey contextKey = "troupe_cache_diagnostic_recorder"
 
 // WithServices returns a new context containing the Services instance.
 func WithServices(ctx context.Context, svc *Services) context.Context {
@@ -197,10 +197,10 @@ func DrillReportStoreFromContext(ctx context.Context) DrillReportStore {
 	return rs
 }
 
-const skillStoresKey contextKey = "astonish_skill_stores"
-const schedulerStoreKey contextKey = "astonish_scheduler_store"
-const personalSchedulerStoreKey contextKey = "astonish_personal_scheduler_store"
-const mcpServerStoresKey contextKey = "astonish_mcp_server_stores"
+const skillStoresKey contextKey = "troupe_skill_stores"
+const schedulerStoreKey contextKey = "troupe_scheduler_store"
+const personalSchedulerStoreKey contextKey = "troupe_personal_scheduler_store"
+const mcpServerStoresKey contextKey = "troupe_mcp_server_stores"
 
 // SkillStores holds references to platform, org, and team skill stores
 // for use in tool context injection.
@@ -291,7 +291,7 @@ func MCPServerStoresFromContext(ctx context.Context) *MCPServerStores {
 	return ms
 }
 
-const a2aAgentStoresKey contextKey = "astonish_a2a_agent_stores"
+const a2aAgentStoresKey contextKey = "troupe_a2a_agent_stores"
 
 // A2AAgentStores holds references to platform/org/team A2A agent stores
 // for use in tool context injection.
@@ -322,14 +322,14 @@ func A2AAgentStoresFromContext(ctx context.Context) *A2AAgentStores {
 	return as
 }
 
-const fleetTemplateStoreKey contextKey = "astonish_fleet_template_store"
-const fleetPlanStoreKey contextKey = "astonish_fleet_plan_store"
-const fleetSetupProfileStoreKey contextKey = "astonish_fleet_setup_profile_store"
-const fleetSetupDraftStoreKey contextKey = "astonish_fleet_setup_draft_store"
-const fleetRunStateStoreKey contextKey = "astonish_fleet_run_state_store"
-const fleetMailboxStoreKey contextKey = "astonish_fleet_mailbox_store"
-const fleetTaskBoardStoreKey contextKey = "astonish_fleet_task_board_store"
-const fleetTaskEventHandlerKey contextKey = "astonish_fleet_task_event_handler"
+const fleetTemplateStoreKey contextKey = "troupe_fleet_template_store"
+const fleetPlanStoreKey contextKey = "troupe_fleet_plan_store"
+const fleetSetupProfileStoreKey contextKey = "troupe_fleet_setup_profile_store"
+const fleetSetupDraftStoreKey contextKey = "troupe_fleet_setup_draft_store"
+const fleetRunStateStoreKey contextKey = "troupe_fleet_run_state_store"
+const fleetMailboxStoreKey contextKey = "troupe_fleet_mailbox_store"
+const fleetTaskBoardStoreKey contextKey = "troupe_fleet_task_board_store"
+const fleetTaskEventHandlerKey contextKey = "troupe_fleet_task_event_handler"
 
 // FleetTaskEventHandler notifies listeners when a task board entry changes.
 type FleetTaskEventHandler func(event string, task FleetTask)
@@ -456,12 +456,12 @@ func FleetTaskBoardStoreFromContext(ctx context.Context) FleetTaskBoardStore {
 	return fs
 }
 
-const sandboxTemplateKey contextKey = "astonish_sandbox_template"
-const sandboxLayerChainKey contextKey = "astonish_sandbox_layer_chain"
-const sandboxImageKey contextKey = "astonish_sandbox_image"
-const sessionServiceKey contextKey = "astonish_session_service"
-const userIDKey contextKey = "astonish_user_id"
-const teamDataStoreKey contextKey = "astonish_team_data_store"
+const sandboxTemplateKey contextKey = "troupe_sandbox_template"
+const sandboxLayerChainKey contextKey = "troupe_sandbox_layer_chain"
+const sandboxImageKey contextKey = "troupe_sandbox_image"
+const sessionServiceKey contextKey = "troupe_session_service"
+const userIDKey contextKey = "troupe_user_id"
+const teamDataStoreKey contextKey = "troupe_team_data_store"
 
 // WithSandboxTemplate returns a new context containing the team's sandbox
 // template name. Used to propagate the team's custom container template into
@@ -794,7 +794,7 @@ func TenantContextFrom(ctx context.Context) *TenantContext {
 
 // --- Provider settings stores (for per-message provider resolution) ---
 
-const providerStoresKey contextKey = "astonish_provider_stores"
+const providerStoresKey contextKey = "troupe_provider_stores"
 
 // ProviderStores holds references to the 3-tier settings stores needed for
 // provider resolution. Used by the channel manager to resolve the effective
@@ -822,7 +822,7 @@ func ProviderStoresFromContext(ctx context.Context) *ProviderStores {
 
 // --- Network policy stores (for multi-tier allow/deny rules) ---
 
-const networkPolicyStoresKey contextKey = "astonish_network_policy_stores"
+const networkPolicyStoresKey contextKey = "troupe_network_policy_stores"
 
 // NetworkPolicyStores holds references to the 3-tier network policy stores.
 // Used to resolve effective allow/deny rules for sandbox network access.

@@ -153,6 +153,27 @@ describe('extension-sessions', () => {
     expect(state.sessions[0].title).toBe('Legacy session');
     // Legacy key should be removed after migration
     const legacy = await chrome.storage.local.get('astonishExtensionChat');
-    expect(legacy.troupeExtensionChat).toBeUndefined();
+    expect(legacy.astonishExtensionChat).toBeUndefined();
+  });
+
+  it('reads the pre-rebrand astonishExtensionChatByTab key, migrates it, and drops the old entry', async () => {
+    await chrome.storage.session.set({
+      astonishExtensionChatByTab: {
+        7: {
+          currentSessionId: 'pre-rebrand-1',
+          sessions: [{ id: 'pre-rebrand-1', title: 'Old tab session' }],
+        },
+      },
+    });
+    const state = await loadExtensionChat(7);
+    expect(state.currentSessionId).toBe('pre-rebrand-1');
+    expect(state.sessions[0].title).toBe('Old tab session');
+    const migrated = await chrome.storage.session.get('troupeExtensionChatByTab');
+    expect((migrated.troupeExtensionChatByTab as Store)[7]).toEqual({
+      currentSessionId: 'pre-rebrand-1',
+      sessions: [{ id: 'pre-rebrand-1', title: 'Old tab session' }],
+    });
+    const legacy = await chrome.storage.session.get('astonishExtensionChatByTab');
+    expect(legacy.astonishExtensionChatByTab).toBeUndefined();
   });
 });

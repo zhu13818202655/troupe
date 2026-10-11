@@ -1,6 +1,6 @@
 # Flows Overview
 
-Flows are deterministic YAML workflows that capture proven agent behavior as repeatable, schedulable automation. Where chat is exploratory and open-ended, a flow is a fixed node graph executed by Astonish's agent state machine — producing the same result every time given the same inputs.
+Flows are deterministic YAML workflows that capture proven agent behavior as repeatable, schedulable automation. Where chat is exploratory and open-ended, a flow is a fixed node graph executed by Troupe's agent state machine — producing the same result every time given the same inputs.
 
 ## What Is a Flow?
 
@@ -74,7 +74,7 @@ Flows are stored in the platform database with full multi-tenancy:
 
 ```bash
 # Run from CLI
-astonish flows run summarize-pr -p pr_url="https://github.com/org/repo/pull/42"
+troupe flows run summarize-pr -p pr_url="https://github.com/org/repo/pull/42"
 ```
 
 In Studio, navigate to the Flows tab, select a flow, click Run, and fill in the parameters visually.

@@ -13,9 +13,9 @@ import (
 	"strings"
 	"sync/atomic"
 
+	"github.com/sashabaranov/go-openai"
 	"github.com/zhu13818202655/troupe/pkg/common"
 	"github.com/zhu13818202655/troupe/pkg/provider/llmerror"
-	"github.com/sashabaranov/go-openai"
 	"google.golang.org/adk/model"
 	"google.golang.org/genai"
 )

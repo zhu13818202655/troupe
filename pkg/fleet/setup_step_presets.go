@@ -4,8 +4,8 @@ import "strings"
 
 // SetupDraftContext carries runtime context for prompt composition (not stored in profile YAML).
 type SetupDraftContext struct {
-	BaseFleetKey        string
-	TemplateAgentNames  []string
+	BaseFleetKey       string
+	TemplateAgentNames []string
 }
 
 // NormalizeStepType maps legacy step type names to canonical types.

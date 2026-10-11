@@ -6,8 +6,10 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/credentials"
 	"github.com/zhu13818202655/troupe/pkg/provider"
@@ -24,7 +26,6 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/provider/xai"
 	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/zhu13818202655/troupe/pkg/version"
-	"github.com/gorilla/mux"
 )
 
 // --- Package-level credential store for API handlers ---
@@ -61,13 +62,22 @@ func injectProviderSecrets(appCfg *config.AppConfig) {
 	config.InjectProviderSecretsToConfig(appCfg, store.GetSecret)
 }
 
+// isPlaceholderSecret reports whether val is a placeholder that must never be
+// used as a real secret: the literal "EMPTY" (observed in the wild — a bogus
+// stored secret shadowed the correct config.yaml api_key and made every
+// models-metadata call 401 against the real gateway) and maskValue output
+// ("****" prefix, the masked form the settings UI echoes back).
+func isPlaceholderSecret(val string) bool {
+	return val == "EMPTY" || strings.HasPrefix(val, "****")
+}
+
 // resolveProviderSecret looks up a provider secret from the credential store,
 // falling back to the config map and then to an environment variable.
 func resolveProviderSecret(instanceName, cfgKey, envVar string, providerCfg config.ProviderConfig) string {
 	// 1. Credential store
 	if store := getAPICredentialStore(); store != nil {
 		storeKey := "provider." + instanceName + "." + cfgKey
-		if val := store.GetSecret(storeKey); val != "" {
+		if val := store.GetSecret(storeKey); val != "" && !isPlaceholderSecret(val) {
 			return val
 		}
 	}
@@ -497,7 +507,7 @@ func updateMCPSettingsPlatform(w http.ResponseWriter, r *http.Request, mcpStore 
 		}
 
 		// Trigger async tool discovery for new or changed servers.
-		// The detached runtime context carries Astonish Network Policy stores so
+		// The detached runtime context carries Troupe Network Policy stores so
 		// disposable MCP discovery sandboxes receive Settings allow rules.
 		existing := existingMap[name]
 		if existing == nil || !mcpServerConfigUnchanged(existing, s) {

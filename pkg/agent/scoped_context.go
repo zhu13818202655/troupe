@@ -19,8 +19,8 @@ type minimalReadonlyContext struct {
 	sessionID string
 }
 
-func (m *minimalReadonlyContext) AgentName() string                    { return "astonish-agent" }
-func (m *minimalReadonlyContext) AppName() string                      { return "astonish" }
+func (m *minimalReadonlyContext) AgentName() string                    { return "troupe-agent" }
+func (m *minimalReadonlyContext) AppName() string                      { return "troupe" }
 func (m *minimalReadonlyContext) UserContent() *genai.Content          { return nil }
 func (m *minimalReadonlyContext) InvocationID() string                 { return "" }
 func (m *minimalReadonlyContext) ReadonlyState() session.ReadonlyState { return nil }

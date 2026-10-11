@@ -14,9 +14,9 @@ import (
 // we force PullAlways so dev pushes are picked up without manual
 // node-side cache eviction.
 var mutableImageTags = map[string]bool{
-	"dev":    true,
-	"latest": true,
-	"edge":   true,
+	"dev":     true,
+	"latest":  true,
+	"edge":    true,
 	"nightly": true,
 }
 

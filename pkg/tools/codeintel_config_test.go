@@ -53,7 +53,7 @@ func TestGetInternalTools_CodeIntelEnabledByDefault(t *testing.T) {
 
 func TestGetInternalTools_LibraryPathSetsEnv(t *testing.T) {
 	configDir := setupToolsTempConfigDir(t)
-	libPath := filepath.Join(t.TempDir(), "libastonish-treesitter.so")
+	libPath := filepath.Join(t.TempDir(), "libtroupe-treesitter.so")
 	if err := os.WriteFile(libPath, []byte("placeholder"), 0644); err != nil {
 		t.Fatal(err)
 	}
@@ -75,7 +75,7 @@ func setupToolsTempConfigDir(t *testing.T) string {
 	t.Helper()
 	tmpDir := t.TempDir()
 	if runtime.GOOS == "darwin" {
-		configDir := filepath.Join(tmpDir, "Library", "Application Support", "astonish")
+		configDir := filepath.Join(tmpDir, "Library", "Application Support", "troupe")
 		if err := os.MkdirAll(configDir, 0755); err != nil {
 			t.Fatalf("mkdir: %v", err)
 		}
@@ -83,7 +83,7 @@ func setupToolsTempConfigDir(t *testing.T) string {
 		t.Setenv("XDG_CONFIG_HOME", "")
 		return configDir
 	}
-	configDir := filepath.Join(tmpDir, "astonish")
+	configDir := filepath.Join(tmpDir, "troupe")
 	if err := os.MkdirAll(configDir, 0755); err != nil {
 		t.Fatalf("mkdir: %v", err)
 	}

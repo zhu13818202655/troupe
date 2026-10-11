@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	platforment "github.com/zhu13818202655/troupe/ent/platform"
 	"github.com/zhu13818202655/troupe/ent/platform/oauthauthorization"
 	"github.com/zhu13818202655/troupe/ent/platform/oauthclient"
@@ -12,7 +13,6 @@ import (
 	"github.com/zhu13818202655/troupe/ent/platform/oauthsigningkey"
 	"github.com/zhu13818202655/troupe/ent/platform/oauthtoken"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/google/uuid"
 )
 
 // OAuthServer returns the platform-scoped OAuth persistence boundary.

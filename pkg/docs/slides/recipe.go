@@ -62,7 +62,7 @@ func allRecipeMeta() []recipeMeta {
 				{ID: "headline_2", Role: "optional", Hint: "Display title line 2 (optional)"},
 				{ID: "dek", Role: "body", Hint: "One-sentence thesis, 12–22 words"},
 				{ID: "dek_accent", Role: "optional", Hint: "Exact substring of dek to paint in accent"},
-				{ID: "prompt", Role: "optional", Hint: "Cover prompt (e.g. $ astonish chat) — product skin"},
+				{ID: "prompt", Role: "optional", Hint: "Cover prompt (e.g. $ troupe chat) — product skin"},
 				{ID: "ph-pic-1", Role: "optional", Hint: "Optional top-right logo (modern). sha256 asset-ref, or omit"},
 				{ID: "meta_1_label", Role: "label", Hint: "Meta cell 1 label"},
 				{ID: "meta_1_value", Role: "body", Hint: "Meta cell 1 value"},

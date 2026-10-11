@@ -58,7 +58,7 @@ func TestOAuthStudioBearerMiddlewareInstallsScopedStudioPrincipal(t *testing.T) 
 	}))
 
 	req := httptest.NewRequest(http.MethodGet, "/api/studio/sessions", nil)
-	req.Header.Set("Authorization", "Bearer astonish-oauth-token")
+	req.Header.Set("Authorization", "Bearer troupe-oauth-token")
 	result := httptest.NewRecorder()
 	handler.ServeHTTP(result, req)
 

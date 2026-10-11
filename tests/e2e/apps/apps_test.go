@@ -1,6 +1,6 @@
 //go:build e2e
 
-// Package apps contains E2E tests for the Astonish Apps subsystem:
+// Package apps contains E2E tests for the Troupe Apps subsystem:
 // CRUD persistence, app state SQL, and MCP data source invocation.
 package apps
 

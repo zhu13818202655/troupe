@@ -1,4 +1,4 @@
-// Package email provides IMAP and SMTP email client functionality for Astonish.
+// Package email provides IMAP and SMTP email client functionality for Troupe.
 // It supports reading, searching, sending, and managing emails through standard
 // IMAP/SMTP protocols, with verification link extraction for portal registration flows.
 package email

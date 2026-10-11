@@ -3012,8 +3012,8 @@ func GetTools() ([]tool.Tool, error) {
 		description string
 		newTool     func() (tool.Tool, error)
 	}{
-		{"create_deck", "Create a new private Astonish Slides deck AFTER ask_user intake (audience, length, who picks the template, title variant, cover image) unless those answers are already explicit in the user message. Using existing knowledge / skipping search is not a skip. Pass template. titleKind is required when the template has 2+ title* covers; titleImage is required (sha256-…, upload, URL, or none) when that cover has a ph-pic well or the template is modern. Optional palette, closingKind. Seeds theme, fonts, and a slim catalog. Author with fill_slides; do not copy markup.", func() (tool.Tool, error) {
-			return functiontool.New(functiontool.Config{Name: "create_deck", Description: "Create a new private Astonish Slides deck AFTER ask_user intake (audience, length, who picks the template, title variant, cover image) unless those answers are already explicit in the user message. Using existing knowledge / skipping search is not a skip. Pass template. titleKind is required when the template has 2+ title* covers; titleImage is required (sha256-…, upload, URL, or none) when that cover has a ph-pic well or the template is modern. Optional palette, closingKind. Seeds theme, fonts, and a slim catalog. Author with fill_slides; do not copy markup."}, func(ctx tool.Context, args CreateDeckArgs) (DeckResult, error) {
+		{"create_deck", "Create a new private Troupe Slides deck AFTER ask_user intake (audience, length, who picks the template, title variant, cover image) unless those answers are already explicit in the user message. Using existing knowledge / skipping search is not a skip. Pass template. titleKind is required when the template has 2+ title* covers; titleImage is required (sha256-…, upload, URL, or none) when that cover has a ph-pic well or the template is modern. Optional palette, closingKind. Seeds theme, fonts, and a slim catalog. Author with fill_slides; do not copy markup.", func() (tool.Tool, error) {
+			return functiontool.New(functiontool.Config{Name: "create_deck", Description: "Create a new private Troupe Slides deck AFTER ask_user intake (audience, length, who picks the template, title variant, cover image) unless those answers are already explicit in the user message. Using existing knowledge / skipping search is not a skip. Pass template. titleKind is required when the template has 2+ title* covers; titleImage is required (sha256-…, upload, URL, or none) when that cover has a ph-pic well or the template is modern. Optional palette, closingKind. Seeds theme, fonts, and a slim catalog. Author with fill_slides; do not copy markup."}, func(ctx tool.Context, args CreateDeckArgs) (DeckResult, error) {
 				return createDeck(ctx, args)
 			})
 		}},
@@ -3047,8 +3047,8 @@ func GetTools() ([]tool.Tool, error) {
 				return readSlide(ctx, args)
 			})
 		}},
-		{"list_decks", "List private Astonish Slides decks available to the current user.", func() (tool.Tool, error) {
-			return functiontool.New(functiontool.Config{Name: "list_decks", Description: "List private Astonish Slides decks available to the current user."}, func(ctx tool.Context, args ListDecksArgs) (ListDecksResult, error) {
+		{"list_decks", "List private Troupe Slides decks available to the current user.", func() (tool.Tool, error) {
+			return functiontool.New(functiontool.Config{Name: "list_decks", Description: "List private Troupe Slides decks available to the current user."}, func(ctx tool.Context, args ListDecksArgs) (ListDecksResult, error) {
 				return listDecks(ctx, args)
 			})
 		}},

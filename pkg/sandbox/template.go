@@ -6,7 +6,7 @@ const DefaultBaseImage = "ubuntu/24.04"
 // OverlaySentinelPath is a file written into the template during setup.
 // Its presence inside a running container verifies the overlay template layer
 // is properly mounted. If missing, the overlay is stale or broken.
-const OverlaySentinelPath = "/etc/astonish-overlay-ok"
+const OverlaySentinelPath = "/etc/troupe-overlay-ok"
 
 // CoreTools are the tools installed in the @base template during setup.
 var CoreTools = []string{
@@ -59,7 +59,7 @@ func CoreToolInstallCommands() [][]string {
 		// Write sentinel file used by container health checks to verify the
 		// template layer is visible through the overlay. If this file is
 		// missing at runtime, the overlay mount is stale or broken.
-		{"sh", "-c", "echo 'astonish-template-ready' > /etc/astonish-overlay-ok"},
+		{"sh", "-c", "echo 'troupe-template-ready' > /etc/troupe-overlay-ok"},
 		// Clean up apt cache
 		{"apt-get", "clean"},
 		// Use sh -c so the shell expands the glob (shellJoin would single-quote
@@ -121,8 +121,8 @@ func DefaultBaseTemplateOptions() BaseTemplateOptions {
 	}
 }
 
-// BinaryDestPath is where the astonish binary is placed inside templates/containers.
-const BinaryDestPath = "/usr/local/bin/astonish"
+// BinaryDestPath is where the troupe binary is placed inside templates/containers.
+const BinaryDestPath = "/usr/local/bin/troupe"
 
 // TreeSitterLibraryDestPath is where code intelligence loads its native parser.
-const TreeSitterLibraryDestPath = "/usr/lib/astonish/libastonish-treesitter.so"
+const TreeSitterLibraryDestPath = "/usr/lib/troupe/libtroupe-treesitter.so"

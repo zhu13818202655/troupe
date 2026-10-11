@@ -98,7 +98,7 @@ type PolicyChunkInfo struct {
 	ID string
 	// Status is "pending", "approved", or "rejected".
 	Status string
-	// RuleName is the network_policies map key (e.g., "astonish-egress").
+	// RuleName is the network_policies map key (e.g., "troupe-egress").
 	RuleName string
 	// Host is the proposed endpoint host pattern.
 	Host string
@@ -142,7 +142,7 @@ type PolicyStatusResponse struct {
 type PolicyMergeOp struct {
 	// Type is the operation type.
 	Type PolicyMergeOpType
-	// RuleName is the network policy rule name (e.g., "astonish-egress").
+	// RuleName is the network policy rule name (e.g., "troupe-egress").
 	RuleName string
 	// Endpoint is used for AddEndpoint operations.
 	Endpoint *EndpointSpec
@@ -338,7 +338,7 @@ type SandboxStatus struct {
 
 // ExecRequest contains the parameters for executing a command in a sandbox.
 type ExecRequest struct {
-	// Command is the command to execute (e.g., ["/usr/local/bin/astonish", "node"]).
+	// Command is the command to execute (e.g., ["/usr/local/bin/troupe", "node"]).
 	Command []string
 
 	// Env is additional environment variables for the command.

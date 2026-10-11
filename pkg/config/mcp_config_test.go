@@ -60,7 +60,10 @@ func TestSaveMCPConfig_DoesNotPersistCodegraph(t *testing.T) {
 	t.Setenv("XDG_CONFIG_HOME", tmp)
 	// Some platforms resolve config dir from HOME; set both defensively.
 	t.Setenv("HOME", tmp)
-	if err := os.MkdirAll(filepath.Join(tmp, "astonish"), 0755); err != nil {
+	// Bind to the implementation constant rather than a literal directory name:
+	// hard-coding "astonish" here silently desynchronised the fixture from the
+	// code under test when configDirName was renamed.
+	if err := os.MkdirAll(filepath.Join(tmp, configDirName), 0755); err != nil {
 		t.Fatalf("mkdir config dir: %v", err)
 	}
 
@@ -84,7 +87,6 @@ func TestSaveMCPConfig_DoesNotPersistCodegraph(t *testing.T) {
 		t.Fatal("custom servers must still be persisted")
 	}
 }
-
 
 // TestMergeStandardServers_PreservesDisabledKeyBased verifies that a key-based server
 // with Enabled=false keeps that flag when re-merged with a valid API key.
@@ -157,7 +159,7 @@ func setupTempConfigDir(t *testing.T) string {
 
 	if runtime.GOOS == "darwin" {
 		// macOS: UserConfigDir() returns $HOME/Library/Application Support
-		configDir := filepath.Join(tmpDir, "Library", "Application Support", "astonish")
+		configDir := filepath.Join(tmpDir, "Library", "Application Support", configDirName)
 		if err := os.MkdirAll(configDir, 0755); err != nil {
 			t.Fatalf("failed to create temp config dir: %v", err)
 		}
@@ -165,7 +167,7 @@ func setupTempConfigDir(t *testing.T) string {
 		return configDir
 	}
 	// Linux/other: UserConfigDir() returns $XDG_CONFIG_HOME or $HOME/.config
-	configDir := filepath.Join(tmpDir, "astonish")
+	configDir := filepath.Join(tmpDir, configDirName)
 	if err := os.MkdirAll(configDir, 0755); err != nil {
 		t.Fatalf("failed to create temp config dir: %v", err)
 	}

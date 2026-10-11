@@ -28,8 +28,11 @@ export const BRAND_THEME_SELECT_ORDER: BrandTheme[] = [
   'amethyst',
 ]
 
-export const BRAND_THEME_STORAGE_KEY = 'astonish-brand-theme'
-export const PLATFORM_BRAND_THEME_STORAGE_KEY = 'astonish-platform-brand-theme'
+export const BRAND_THEME_STORAGE_KEY = 'troupe-brand-theme'
+export const PLATFORM_BRAND_THEME_STORAGE_KEY = 'troupe-platform-brand-theme'
+// Pre-rebrand keys; read for backwards compatibility, then migrated.
+const LEGACY_BRAND_THEME_STORAGE_KEY = 'astonish-brand-theme'
+const LEGACY_PLATFORM_BRAND_THEME_STORAGE_KEY = 'astonish-platform-brand-theme'
 
 /** Human labels for settings / switchers (not all packs may ship yet). */
 export const BRAND_THEME_META: Record<BrandTheme, { label: string; tone: string; shipped: boolean }> = {
@@ -70,7 +73,16 @@ export function resolveBrandTheme(
 
 export function getStoredBrandTheme(): BrandTheme {
   if (typeof localStorage === 'undefined') return DEFAULT_BRAND_THEME
-  const stored = localStorage.getItem(BRAND_THEME_STORAGE_KEY)
+  let stored = localStorage.getItem(BRAND_THEME_STORAGE_KEY)
+  if (stored === null) {
+    // Fall back to the legacy key, migrate the value, then drop the old entry.
+    const legacy = localStorage.getItem(LEGACY_BRAND_THEME_STORAGE_KEY)
+    if (legacy !== null) {
+      localStorage.setItem(BRAND_THEME_STORAGE_KEY, legacy)
+      localStorage.removeItem(LEGACY_BRAND_THEME_STORAGE_KEY)
+      stored = legacy
+    }
+  }
   if (isShippedBrandTheme(stored)) return stored
   return DEFAULT_BRAND_THEME
 }

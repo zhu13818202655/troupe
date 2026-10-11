@@ -31,7 +31,7 @@ window.onerror = function(msg, src, line, col, err) {
 // It contains the styles, DOM, and the application bootstrap script.
 const sandboxHTMLBody = `
 <style type="text/tailwindcss">
-  /* Astonish App Canvas — light + dark × brand pack. Defaults = Nova dark;
+  /* Troupe App Canvas — light + dark × brand pack. Defaults = Nova dark;
      parent postMessage { type:'theme', mode, pack, tokens } overrides CSS vars.
      Generated apps use: bg-surface, text-app, border-app-border, bg-brand, … */
   @theme {
@@ -542,7 +542,7 @@ const sandboxHTMLBody = `
     }, [execFn, queryFn]);
   };
 
-  // Make hooks available via require('astonish') too — added to modules below
+  // Make hooks available via require('troupe') too — added to modules below
   // ── End data hooks ─────────────────────────────────────────────────
 
   function reportHeight() {
@@ -556,6 +556,8 @@ const sandboxHTMLBody = `
     'react-dom/client': window.ReactDOM,
     'recharts': window.Recharts || {},
     'lucide-react': window.LucideReact || {},
+    'troupe': { useAppData: window.useAppData, useAppAction: window.useAppAction, useAppAI: window.useAppAI, useAppState: window.useAppState },
+    // Legacy alias: apps generated before the rebrand require('astonish').
     'astonish': { useAppData: window.useAppData, useAppAction: window.useAppAction, useAppAI: window.useAppAI, useAppState: window.useAppState },
   };
 
@@ -563,7 +565,7 @@ const sandboxHTMLBody = `
     if (modules[name]) return modules[name];
     var baseName = name.split('/')[0];
     if (modules[baseName]) return modules[baseName];
-    throw new Error('Module not found: ' + name + '. Available: react, recharts, lucide-react, astonish');
+    throw new Error('Module not found: ' + name + '. Available: react, recharts, lucide-react, troupe');
   }
 
   window.addEventListener('message', function(e) {

@@ -171,7 +171,7 @@ func startBackendBrowser(ctx context.Context, backend Backend, sessionID string,
 
 	var stderr bytes.Buffer
 	stream, err := backend.ExecStreaming(ctx, sessionID, ExecStreamSpec{
-		Command:        []string{"/usr/local/bin/astonish-shell", "sh", "-c", wrapper},
+		Command:        []string{"/usr/local/bin/troupe-shell", "sh", "-c", wrapper},
 		SeparateStderr: &stderr,
 	})
 	if err != nil {
@@ -262,12 +262,12 @@ touch /tmp/.Xauthority
 mkdir -p /tmp/.X11-unix
 if command -v Xkasmvnc >/dev/null 2>&1; then
   if ! proc_running 'Xkasmvnc.*:%s'; then
-    mkdir -p /tmp/astonish-kasmvnc/.vnc
-    cat > /tmp/astonish-kasmvnc/.vnc/kasmvnc.yaml << 'KASMCFG'
+    mkdir -p /tmp/troupe-kasmvnc/.vnc
+    cat > /tmp/troupe-kasmvnc/.vnc/kasmvnc.yaml << 'KASMCFG'
 %s
 KASMCFG
     VNC_LOG=/tmp/kasmvnc_start.log
-    HOME=/tmp/astonish-kasmvnc setsid Xkasmvnc :%s \
+    HOME=/tmp/troupe-kasmvnc setsid Xkasmvnc :%s \
       -geometry %dx%d \
       -depth 24 \
       -rfbport 5900 \
@@ -334,7 +334,7 @@ fi
 
 echo "STEP 3: Launch browser (bin=$BROWSER_BIN)" >&2
 if ! proc_running 'remote-debugging-port'; then
-  BROWSER_LOG=/tmp/astonish-browser.log
+  BROWSER_LOG=/tmp/troupe-browser.log
   setsid "$BROWSER_BIN" \
     --no-sandbox \
     --test-type \
@@ -362,7 +362,7 @@ fi
 
 echo "STEP 4: socat CDP bridge" >&2
 if ! proc_running 'socat.*TCP-LISTEN:%d'; then
-  setsid socat TCP-LISTEN:%d,fork,bind=0.0.0.0,reuseaddr TCP:127.0.0.1:%d >/tmp/astonish-browser-socat.log 2>&1 &
+  setsid socat TCP-LISTEN:%d,fork,bind=0.0.0.0,reuseaddr TCP:127.0.0.1:%d >/tmp/troupe-browser-socat.log 2>&1 &
 fi
 
 echo "STEP 5: Verify CDP port" >&2
@@ -403,7 +403,7 @@ exec sleep infinity
 
 func dialBackendSessionPort(ctx context.Context, backend Backend, sessionID string, port int) (net.Conn, error) {
 	stream, err := backend.ExecStreaming(ctx, sessionID, ExecStreamSpec{
-		Command: []string{"/usr/local/bin/astonish-shell", "sh", "-c", fmt.Sprintf("exec socat STDIO TCP:127.0.0.1:%d", port)},
+		Command: []string{"/usr/local/bin/troupe-shell", "sh", "-c", fmt.Sprintf("exec socat STDIO TCP:127.0.0.1:%d", port)},
 	})
 	if err != nil {
 		return nil, fmt.Errorf("backend browser: dial session %s:%d: %w", shortSession(sessionID), port, err)
@@ -418,13 +418,13 @@ func dialBackendSessionPort(ctx context.Context, backend Backend, sessionID stri
 
 // backendShellCommand wraps a raw shell command for execution in backend containers.
 // On Kubernetes backends (which chroot into /sandbox/rootfs), it wraps through
-// /usr/local/bin/astonish-shell to ensure tools like xdpyinfo, ffmpeg, etc.
+// /usr/local/bin/troupe-shell to ensure tools like xdpyinfo, ffmpeg, etc.
 // are found inside the overlay. On Docker backends, the overlay IS the root
 // filesystem, so we use plain sh -c.
 // This mirrors the pattern established in backend_mcp_transport.go.
 func backendShellCommand(backend Backend, script string) []string {
 	if backend != nil && backend.Kind() == BackendKindK8s {
-		return []string{"/usr/local/bin/astonish-shell", "sh", "-c", script}
+		return []string{"/usr/local/bin/troupe-shell", "sh", "-c", script}
 	}
 	return []string{"sh", "-c", script}
 }
@@ -456,8 +456,8 @@ func (a backendExecAddr) String() string {
 }
 
 const (
-	backendRecordingPIDFile = "/tmp/astonish-recording.pid"
-	backendRecordingLogFile = "/tmp/astonish-recording.log"
+	backendRecordingPIDFile = "/tmp/troupe-recording.pid"
+	backendRecordingLogFile = "/tmp/troupe-recording.log"
 )
 
 // startBackendRecording starts ffmpeg x11grab inside the session container

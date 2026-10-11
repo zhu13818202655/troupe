@@ -561,7 +561,7 @@ func (m model) renderWebSearchPickerOverlay() string {
 	}
 
 	box := th.InputBorderFocus.
-		Width(w - 2).
+		Width(w-2).
 		MaxHeight(h).
 		Padding(1, 2).
 		Render(body.String())

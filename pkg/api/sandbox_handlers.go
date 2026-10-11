@@ -14,12 +14,12 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/sandbox"
 	sboxdocker "github.com/zhu13818202655/troupe/pkg/sandbox/docker"
 	persistentsession "github.com/zhu13818202655/troupe/pkg/session"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 )
 
 // validTemplateName matches only safe template names: lowercase alphanumeric,
@@ -629,7 +629,7 @@ func SandboxTemplateCreateHandler(w http.ResponseWriter, r *http.Request) {
 		Type:       sandbox.SessionTypeChat,
 		TemplateID: sandbox.BaseTemplateID,
 		LayerChain: []string{sandbox.BaseTemplateID},
-		Labels:     map[string]string{"astonish.io/purpose": "template"},
+		Labels:     map[string]string{"troupe.io/purpose": "template"},
 	})
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "failed to create template: "+err.Error())
@@ -787,7 +787,7 @@ func SandboxTemplatePromoteHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // SandboxRefreshHandler handles POST /api/sandbox/refresh.
-// Refreshes all templates with the current astonish binary.
+// Refreshes all templates with the current troupe binary.
 func SandboxRefreshHandler(w http.ResponseWriter, r *http.Request) {
 	if !allowHostSandboxMutation(w, r) {
 		return

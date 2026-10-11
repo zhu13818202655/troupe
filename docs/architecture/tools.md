@@ -2,7 +2,7 @@
 
 ## Overview
 
-Astonish provides 60+ built-in tools that give the AI agent the ability to interact with the filesystem, execute commands, manage processes, make HTTP requests, control a browser, send emails, and more. Tools follow a consistent architecture based on Google ADK's tool interface, with a key innovation: most tools execute inside sandbox containers via a transparent proxy layer.
+Troupe provides 60+ built-in tools that give the AI agent the ability to interact with the filesystem, execute commands, manage processes, make HTTP requests, control a browser, send emails, and more. Tools follow a consistent architecture based on Google ADK's tool interface, with a key innovation: most tools execute inside sandbox containers via a transparent proxy layer.
 
 ## Key Design Decisions
 
@@ -19,7 +19,7 @@ This provides strong typing, automatic schema generation, and a uniform interfac
 
 ### Why Transparent Sandbox Proxying
 
-Tools that modify the filesystem or execute commands run inside sandbox containers, but the tool implementation doesn't know this. The `NodeTool` wrapper intercepts `Run()` calls and forwards them to the `astonish node` process inside the container via NDJSON. From the tool's perspective, it runs locally -- the proxying is invisible.
+Tools that modify the filesystem or execute commands run inside sandbox containers, but the tool implementation doesn't know this. The `NodeTool` wrapper intercepts `Run()` calls and forwards them to the `troupe node` process inside the container via NDJSON. From the tool's perspective, it runs locally -- the proxying is invisible.
 
 A whitelist (`containerTools`) determines which tools are proxied:
 
@@ -85,7 +85,7 @@ LLM requests tool call: read_file(path="/etc/hosts")
     v
 NodeTool.Run():
   1. Serialize args as NDJSON: {"id":"1", "tool":"read_file", "args":{"path":"/etc/hosts"}}
-  2. Send to astonish node inside container via stdin
+  2. Send to troupe node inside container via stdin
   3. Read response from stdout: {"id":"1", "result":{"content":"..."}}
   4. Deserialize and return result
 ```
@@ -122,7 +122,7 @@ The `search_tools` tool and `ToolIndex` provide catalog discovery with a fixed m
 2. `describe_tools(names)` returns the selected tools' descriptions and input schemas.
 3. `execute_tool(name, arguments)` resolves and runs the deferred tool with first-party precedence and request-scoped MCP access/disabled checks.
 
-`execute_tool` is dispatched by ADK as a normal fixed tool. ChatAgent's existing BeforeTool/AfterTool callbacks unwrap the selected tool identity and arguments for mode/authorization gates, credential substitution, redaction, tracing, and artifact capture before the bridge invokes it. Request-scoped groups are merged; ambiguous bare names are rejected and must use a qualified `group/tool` reference. MCP authorization applies effective team → org → platform precedence, including explicit disabled overrides. MCP tools use this discovery model in every mode, including Astonish Code.
+`execute_tool` is dispatched by ADK as a normal fixed tool. ChatAgent's existing BeforeTool/AfterTool callbacks unwrap the selected tool identity and arguments for mode/authorization gates, credential substitution, redaction, tracing, and artifact capture before the bridge invokes it. Request-scoped groups are merged; ambiguous bare names are rejected and must use a qualified `group/tool` reference. MCP authorization applies effective team → org → platform precedence, including explicit disabled overrides. MCP tools use this discovery model in every mode, including Troupe Code.
 
 ## Key Files
 

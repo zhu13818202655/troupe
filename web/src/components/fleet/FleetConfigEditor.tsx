@@ -103,7 +103,7 @@ export function FleetSettingsEditor({ settings, setupProfileKey, setupProfiles, 
       </div>
       {readOnly && (
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-          Bundled Astonish templates are read-only. Clone this template to customize settings.
+          Bundled Troupe templates are read-only. Clone this template to customize settings.
         </p>
       )}
       {status === 'error' && <p className="text-xs text-red-400">Save failed. Check validation and try again.</p>}
@@ -315,7 +315,7 @@ export function FleetAgentsEditor({
         </div>
         {readOnly && (
           <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
-            Bundled Astonish templates are read-only. Clone this template to add or remove agents.
+            Bundled Troupe templates are read-only. Clone this template to add or remove agents.
           </p>
         )}
         {listError && <p className="text-xs text-red-400 mb-3">{listError}</p>}

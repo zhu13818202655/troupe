@@ -77,8 +77,8 @@ func TestLoadRESTConfig_DefaultsApplied(t *testing.T) {
 	if cfg.Burst != 100 {
 		t.Errorf("Burst = %d, want 100 (default)", cfg.Burst)
 	}
-	if !strings.Contains(cfg.UserAgent, "astonish") {
-		t.Errorf("UserAgent = %q, want to contain 'astonish'", cfg.UserAgent)
+	if !strings.Contains(cfg.UserAgent, "troupe") {
+		t.Errorf("UserAgent = %q, want to contain 'troupe'", cfg.UserAgent)
 	}
 }
 

@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const defaultSandboxNamespace = "astonish-sandbox"
+const defaultSandboxNamespace = "troupe-sandbox"
 
 // SandboxNamespace returns the K8s namespace for sandbox pods. It honors
 // TROUPE_E2E_SANDBOX_NAMESPACE so tests stay aligned with whatever
@@ -77,7 +77,7 @@ func GetPodAnnotation(t *testing.T, podName, annotation string) string {
 // GetPodChain retrieves the layer-chain annotation from a sandbox pod.
 func GetPodChain(t *testing.T, podName string) string {
 	t.Helper()
-	return GetPodAnnotation(t, podName, `astonish\.io/layer-chain`)
+	return GetPodAnnotation(t, podName, `troupe\.io/layer-chain`)
 }
 
 // AssertCommandPresent verifies a command is available in the sandbox rootfs.
@@ -149,7 +149,7 @@ func SweepAllPods(t *testing.T) {
 	SweepStagingDirs(t)
 }
 
-// SweepStagingDirs removes __staging-* directories from the astonish-layers PVC.
+// SweepStagingDirs removes __staging-* directories from the troupe-layers PVC.
 // These are left behind when template builder pods are killed (OOM, node pressure, timeout).
 // We spawn a short-lived alpine pod that mounts the PVC and does the rm.
 func SweepStagingDirs(t *testing.T) {
@@ -158,7 +158,7 @@ func SweepStagingDirs(t *testing.T) {
 	podName := fmt.Sprintf("sweep-staging-%d", time.Now().UnixNano()%100000000)
 
 	// Use a one-shot pod that mounts the layers PVC directly.
-	overrides := `{"spec":{"restartPolicy":"Never","containers":[{"name":"sweep","image":"alpine:3.21","command":["sh","-c","rm -rf /layers/__staging-* 2>/dev/null; echo 'staging cleaned'"],"volumeMounts":[{"name":"layers","mountPath":"/layers"}]}],"volumes":[{"name":"layers","persistentVolumeClaim":{"claimName":"astonish-layers"}}]}}`
+	overrides := `{"spec":{"restartPolicy":"Never","containers":[{"name":"sweep","image":"alpine:3.21","command":["sh","-c","rm -rf /layers/__staging-* 2>/dev/null; echo 'staging cleaned'"],"volumeMounts":[{"name":"layers","mountPath":"/layers"}]}],"volumes":[{"name":"layers","persistentVolumeClaim":{"claimName":"troupe-layers"}}]}}`
 
 	cmd := exec.Command("kubectl", "run", podName,
 		"--image=alpine:3.21",
@@ -177,7 +177,7 @@ func SweepStagingDirs(t *testing.T) {
 	}
 }
 
-// SweepOrphanLayers aggressively removes layer directories on the astonish-layers PVC
+// SweepOrphanLayers aggressively removes layer directories on the troupe-layers PVC
 // except for the well-known @base layer and the platform "Configure Base" layer.
 //
 // IMPORTANT: This function is **not** called automatically by SweepAllPods.
@@ -194,7 +194,7 @@ func SweepOrphanLayers(t *testing.T) {
 	// Remove everything except:
 	//   - the sacred raw @base layer (UUID form and the @base directory)
 	//   - any layer that is still referenced (we leave that to the GC reconciler in prod)
-	overrides := `{"spec":{"restartPolicy":"Never","containers":[{"name":"sweep","image":"alpine:3.21","command":["sh","-c","find /layers -mindepth 1 -maxdepth 1 ! -name 'a0000000-0000-4000-8000-000000000001' ! -name '@base' -exec rm -rf {} + 2>/dev/null; echo 'orphan layers cleaned'"],"volumeMounts":[{"name":"layers","mountPath":"/layers"}]}],"volumes":[{"name":"layers","persistentVolumeClaim":{"claimName":"astonish-layers"}}]}}`
+	overrides := `{"spec":{"restartPolicy":"Never","containers":[{"name":"sweep","image":"alpine:3.21","command":["sh","-c","find /layers -mindepth 1 -maxdepth 1 ! -name 'a0000000-0000-4000-8000-000000000001' ! -name '@base' -exec rm -rf {} + 2>/dev/null; echo 'orphan layers cleaned'"],"volumeMounts":[{"name":"layers","mountPath":"/layers"}]}],"volumes":[{"name":"layers","persistentVolumeClaim":{"claimName":"troupe-layers"}}]}}`
 
 	cmd := exec.Command("kubectl", "run", podName,
 		"--image=alpine:3.21",

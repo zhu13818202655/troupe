@@ -191,7 +191,7 @@ func BuildAppRefinementContext(app *ActiveApp) string {
 	sb.WriteString("## Active App Refinement\n\n")
 	sb.WriteString(fmt.Sprintf("The user is refining a visual app called %q (version %d).\n", app.Title, app.Version))
 	sb.WriteString("Apply the user's requested changes to the CURRENT source code below and output the COMPLETE updated component.\n")
-	sb.WriteString("You MUST output the full component inside an ```astonish-app code fence — do NOT output a diff or partial snippet.\n")
+	sb.WriteString("You MUST output the full component inside an ```troupe-app code fence — do NOT output a diff or partial snippet.\n")
 	sb.WriteString("Preserve all existing functionality unless the user explicitly asks to remove it.\n\n")
 
 	sb.WriteString("### Current Source Code\n\n")

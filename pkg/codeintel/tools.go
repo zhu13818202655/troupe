@@ -120,5 +120,5 @@ func rootAndPath(path string) (string, string, error) {
 }
 
 func codeintelUnavailable(err error) error {
-	return fmt.Errorf("code intelligence unavailable: %w; ensure libastonish-treesitter.so is installed or use grep_search/find_files", err)
+	return fmt.Errorf("code intelligence unavailable: %w; ensure libtroupe-treesitter.so is installed or use grep_search/find_files", err)
 }

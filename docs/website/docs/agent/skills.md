@@ -45,7 +45,7 @@ The description is critical because it tells the agent when the skill applies. R
 
 ## Filesystem Discovery
 
-Astonish loads filesystem skills from the configured user skills directory first and then from each configured extra skills root in order.
+Troupe loads filesystem skills from the configured user skills directory first and then from each configured extra skills root in order.
 
 If two skills have the same name ignoring case, the later root wins:
 
@@ -95,14 +95,14 @@ Depending on your permissions and deployment, Studio lets you:
 The CLI provides skill management commands:
 
 ```bash
-astonish skills list              # List available skills
-astonish skills show <name>       # Show skill content
-astonish skills install <source>  # Install from ClawHub
-astonish skills create <name>     # Create a new skill template
+troupe skills list              # List available skills
+troupe skills show <name>       # Show skill content
+troupe skills install <source>  # Install from ClawHub
+troupe skills create <name>     # Create a new skill template
 ```
 
 ::: tip Plural Command
-The CLI command is `astonish skills` (plural), not `astonish skill`.
+The CLI command is `troupe skills` (plural), not `troupe skill`.
 :::
 
 ### Agent-Created Local Skills

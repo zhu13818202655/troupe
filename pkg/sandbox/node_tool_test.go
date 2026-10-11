@@ -163,7 +163,7 @@ type testToolContext struct {
 func (c testToolContext) InvocationID() string                 { return "invocation-1" }
 func (c testToolContext) AgentName() string                    { return "agent-1" }
 func (c testToolContext) UserID() string                       { return "user-1" }
-func (c testToolContext) AppName() string                      { return "astonish" }
+func (c testToolContext) AppName() string                      { return "troupe" }
 func (c testToolContext) SessionID() string                    { return c.sessionID }
 func (c testToolContext) Branch() string                       { return "" }
 func (c testToolContext) UserContent() *genai.Content          { return nil }

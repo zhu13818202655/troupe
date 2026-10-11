@@ -166,7 +166,7 @@ export default function TemplateDetail({ templateKey, templates, setupProfiles =
                     color: isBundled ? 'var(--brand)' : 'var(--text-muted)',
                   }}
                 >
-                  {isBundled ? 'Astonish template' : 'Your template'}
+                  {isBundled ? 'Troupe template' : 'Your template'}
                 </span>
                 <span className="text-xs font-mono px-2 py-0.5 rounded" style={{ background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
                   key: {templateKey}
@@ -216,7 +216,7 @@ export default function TemplateDetail({ templateKey, templates, setupProfiles =
 
           {isBundled && (
             <div className="rounded-lg p-3 text-xs" style={{ background: 'var(--brand-muted)', border: '1px solid color-mix(in oklab, var(--brand) 25%, transparent)', color: 'var(--text-secondary)' }}>
-              This template ships with Astonish and cannot be edited. Clone it to create a customizable copy stored in your team database.
+              This template ships with Troupe and cannot be edited. Clone it to create a customizable copy stored in your team database.
             </div>
           )}
 

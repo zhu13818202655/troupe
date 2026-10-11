@@ -15,6 +15,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/a2aclient"
 	"github.com/zhu13818202655/troupe/pkg/agent"
 	"github.com/zhu13818202655/troupe/pkg/apps"
@@ -29,8 +31,6 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/skills"
 	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/zhu13818202655/troupe/pkg/tools"
-	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 	"google.golang.org/adk/model"
 	"google.golang.org/adk/session"
 	"google.golang.org/genai"
@@ -56,7 +56,7 @@ type StudioChatRequest struct {
 	Provider         string           `json:"provider,omitempty"`         // per-request provider override (pre-chat picker)
 	Model            string           `json:"model,omitempty"`            // per-request model override (pre-chat picker)
 	MemoryScope      string           `json:"memoryScope,omitempty"`      // per-session memory scope: "team" (default) or "personal"
-	AppName          string           `json:"appName,omitempty"`          // optional app name for session categorization (e.g. "astonish-extension")
+	AppName          string           `json:"appName,omitempty"`          // optional app name for session categorization (e.g. "troupe-extension")
 }
 
 // StudioSessionResponse is a single session in list responses.
@@ -97,13 +97,13 @@ type ArtifactInfo struct {
 	ToolName string `json:"toolName"` // "write_file" or "edit_file"
 
 	// IsReport flags artifacts the agent explicitly signaled as reports via
-	// an ```astonish-report fence in the same turn. Only artifacts with
+	// an ```troupe-report fence in the same turn. Only artifacts with
 	// IsReport=true AND fileType="Markdown" AND emitted in the last turn
 	// are eligible for inline EmbeddedFileViewer rendering on the frontend;
 	// everything else falls back to the compact ArtifactCard.
 	IsReport bool `json:"isReport,omitempty"`
 
-	// ReportTitle is the optional title carried in the astonish-report
+	// ReportTitle is the optional title carried in the troupe-report
 	// fence's frontmatter (e.g., "Q4 Revenue Analysis"). May be empty even
 	// when IsReport is true; the frontend falls back to the file basename.
 	ReportTitle string `json:"reportTitle,omitempty"`
@@ -359,9 +359,26 @@ type ChatManager struct {
 }
 
 const (
-	studioChatAppName = "astonish"
+	studioChatAppName = "troupe"
 	studioChatUserID  = "studio_user"
 )
+
+// legacyAppNames maps pre-rebrand app names to their post-rebrand values.
+// Older CLI/extension builds still send "troupe" / "troupe-extension";
+// they are normalised so their sessions land in the same bucket as the
+// renamed clients instead of being rejected or split into a stale namespace.
+var legacyAppNames = map[string]string{
+	"astonish":           studioChatAppName,
+	"astonish-extension": "troupe-extension",
+}
+
+// normalizeAppName rewrites a pre-rebrand app name to its current value.
+func normalizeAppName(appName string) string {
+	if mapped, ok := legacyAppNames[appName]; ok {
+		return mapped
+	}
+	return appName
+}
 
 // contextKeyAppName is used to store the effective app name in the request context,
 // so that helper functions (like persistDistillPreview) can retrieve it without
@@ -648,7 +665,7 @@ func StudioChatHandler(w http.ResponseWriter, r *http.Request) {
 	// to categorize its sessions separately from Studio sessions.
 	effectiveApp := studioChatAppName
 	if req.AppName != "" {
-		effectiveApp = req.AppName
+		effectiveApp = normalizeAppName(req.AppName)
 	}
 	if !validAppName.MatchString(effectiveApp) {
 		respondError(w, http.StatusBadRequest, "invalid app name")
@@ -673,7 +690,12 @@ func StudioChatHandler(w http.ResponseWriter, r *http.Request) {
 	r = r.WithContext(executionCtx)
 	requestedMemoryScope := req.MemoryScope
 	if requestedMemoryScope == "" {
-		requestedMemoryScope = r.Header.Get("X-Astonish-Memory-Mode")
+		// X-Troupe-Memory-Mode is the post-rebrand name; accept the legacy
+		// X-Astonish-Memory-Mode from older clients.
+		requestedMemoryScope = r.Header.Get("X-Troupe-Memory-Mode")
+		if requestedMemoryScope == "" {
+			requestedMemoryScope = r.Header.Get("X-Astonish-Memory-Mode")
+		}
 	}
 	if requestedMemoryScope == "personal" && principal.Kind == execution.PrincipalKindService {
 		respondError(w, http.StatusForbidden, "service principals cannot access personal memory")
@@ -2201,7 +2223,7 @@ type PatchSessionModelResponse struct {
 //
 // Personal mode: when no TenantRouter/platform user is present, pin
 // persistence is skipped silently (personal SQLite has no team-scoped pin
-// store wired here); the hot-swap still runs so `astonish chat` can flip
+// store wired here); the hot-swap still runs so `troupe chat` can flip
 // models mid-session.
 //
 // Contract references:

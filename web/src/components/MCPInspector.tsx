@@ -231,7 +231,7 @@ export default function MCPInspector({ serverName, teamSlug, scope, onClose }: M
           <div>
             <p className="font-medium">Outbound network access is required</p>
             <p className="mt-1 text-sm">
-              {networkAuthorization.message || 'This MCP server needs permission to reach external hosts before Astonish can install or start it.'}
+              {networkAuthorization.message || 'This MCP server needs permission to reach external hosts before Troupe can install or start it.'}
             </p>
           </div>
           <div className="space-y-2">
@@ -256,7 +256,7 @@ export default function MCPInspector({ serverName, teamSlug, scope, onClose }: M
             })}
           </div>
           <p className="text-xs text-muted-foreground">
-            Astonish saves this as a durable allow rule for the selected MCP scope, then retries in a fresh sandbox.
+            Troupe saves this as a durable allow rule for the selected MCP scope, then retries in a fresh sandbox.
           </p>
         </AlertDescription>
       </Alert>

@@ -1,7 +1,9 @@
-export const PAGE_EDIT_FENCE = 'astonish-page-edit';
+// Fence id sent to the model (new brand). Parsing accepts the legacy id too.
+export const PAGE_EDIT_FENCE = 'troupe-page-edit';
+const LEGACY_PAGE_EDIT_FENCE = 'astonish-page-edit';
 
 const FENCE_RE = new RegExp(
-  '```' + PAGE_EDIT_FENCE + '\\s*\\r?\\n([\\s\\S]*?)```',
+  '```(?:' + PAGE_EDIT_FENCE + '|' + LEGACY_PAGE_EDIT_FENCE + ')\\s*\\r?\\n([\\s\\S]*?)```',
   'g',
 );
 
@@ -71,7 +73,7 @@ function unwrapRecord(parsed: Record<string, unknown>): string | null {
   return text;
 }
 
-/** Extract the last `astonish-page-edit` fenced block from agent text. */
+/** Extract the last `troupe-page-edit` (legacy `astonish-page-edit`) fenced block from agent text. */
 export function extractPageEdit(text: string): string | null {
   let match: RegExpExecArray | null;
   let last: string | null = null;

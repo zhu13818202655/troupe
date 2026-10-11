@@ -15,8 +15,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/jackc/pgx/v5"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 // BuildDSN constructs a PostgreSQL connection string from individual components.
@@ -115,10 +115,10 @@ func PlatformDBExistsDB(ctx context.Context, db *sql.DB, suffix string) (bool, e
 // PostgreSQL roles used by the platform.
 const (
 	// RolePlatformAdmin owns all databases and runs migrations.
-	RolePlatformAdmin = "astonish_platform_admin"
+	RolePlatformAdmin = "troupe_platform_admin"
 
 	// RoleApp is the application connection role with restricted privileges.
-	RoleApp = "astonish_app"
+	RoleApp = "troupe_app"
 )
 
 // EnsureRoles creates the platform roles if they don't already exist.
@@ -141,7 +141,7 @@ func EnsureRoles(ctx context.Context, db *sql.DB) error {
 	return nil
 }
 
-// ApplyGrants applies standard grants for the astonish_app role on the
+// ApplyGrants applies standard grants for the troupe_app role on the
 // given database. Call this after Schema.Create() on each newly provisioned
 // database (platform, org, team, personal).
 func ApplyGrants(ctx context.Context, db *sql.DB, scope string) error {

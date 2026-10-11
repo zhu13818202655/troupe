@@ -76,4 +76,11 @@ describe('brandTheme', () => {
     localStorage.setItem(BRAND_THEME_STORAGE_KEY, 'nova')
     expect(getStoredBrandTheme()).toBe('nova')
   })
+
+  it('getStoredBrandTheme reads the pre-rebrand astonish-brand-theme key, migrates it, and drops the old entry', () => {
+    localStorage.setItem('astonish-brand-theme', 'nova')
+    expect(getStoredBrandTheme()).toBe('nova')
+    expect(localStorage.getItem(BRAND_THEME_STORAGE_KEY)).toBe('nova')
+    expect(localStorage.getItem('astonish-brand-theme')).toBeNull()
+  })
 })

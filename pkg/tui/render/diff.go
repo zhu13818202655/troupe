@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/alecthomas/chroma/v2/lexers"
 	"charm.land/lipgloss/v2"
+	"github.com/alecthomas/chroma/v2/lexers"
 	"github.com/charmbracelet/x/ansi"
 )
 
@@ -363,7 +363,7 @@ func renderDiffEditor(path, rawPath string, rows []DiffRow, note string, width i
 		Kind: "diff", Added: added, Removed: removed,
 	}, st)
 	if note != "" {
-		header += st.Muted.Render("  ("+note+")")
+		header += st.Muted.Render("  (" + note + ")")
 	}
 	b.WriteString(header)
 	b.WriteByte('\n')

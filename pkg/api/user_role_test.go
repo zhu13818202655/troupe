@@ -10,8 +10,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/gorilla/mux"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // ---------------------------------------------------------------------------

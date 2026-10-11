@@ -123,7 +123,7 @@ export default function BrowserSettings({ config, onSaved }: BrowserSettingsProp
         <CardHeader>
           <CardTitle className="text-base">Browser Engine</CardTitle>
           <CardDescription>
-            Choose the Chromium runtime Astonish uses for browser automation and human handoff.
+            Choose the Chromium runtime Troupe uses for browser automation and human handoff.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -134,15 +134,15 @@ export default function BrowserSettings({ config, onSaved }: BrowserSettingsProp
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="default">Default (Chromium, auto-downloaded by Astonish)</SelectItem>
+                <SelectItem value="default">Default (Chromium, auto-downloaded by Troupe)</SelectItem>
                 <SelectItem value="cloakbrowser">CloakBrowser (anti-detect Chromium with stealth patches)</SelectItem>
                 <SelectItem value="custom">Custom Chrome/Chromium path</SelectItem>
                 <SelectItem value="remote">Remote browser (connect via CDP)</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-xs leading-relaxed text-muted-foreground">
-              {engineType === 'default' && 'Astonish will automatically download and manage a Chromium binary.'}
-              {engineType === 'cloakbrowser' && 'CloakBrowser provides advanced fingerprint spoofing at the binary level. Install via CLI: astonish config browser.'}
+              {engineType === 'default' && 'Troupe will automatically download and manage a Chromium binary.'}
+              {engineType === 'cloakbrowser' && 'CloakBrowser provides advanced fingerprint spoofing at the binary level. Install via CLI: troupe config browser.'}
               {engineType === 'custom' && 'Point to an existing Chrome or Chromium installation on your system.'}
               {engineType === 'remote' && 'Connect to a remote browser instance via Chrome DevTools Protocol.'}
             </p>
@@ -175,7 +175,7 @@ export default function BrowserSettings({ config, onSaved }: BrowserSettingsProp
                   className="bg-background font-mono"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Path to the CloakBrowser binary. Use the CLI to auto-install: <code>astonish config browser</code>.
+                  Path to the CloakBrowser binary. Use the CLI to auto-install: <code>troupe config browser</code>.
                 </p>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -223,7 +223,7 @@ export default function BrowserSettings({ config, onSaved }: BrowserSettingsProp
                 className="bg-background font-mono"
               />
               <p className="text-xs text-muted-foreground">
-                WebSocket URL of the Chrome DevTools Protocol endpoint. Use the CLI for auto-discovery: <code>astonish config browser</code>.
+                WebSocket URL of the Chrome DevTools Protocol endpoint. Use the CLI for auto-discovery: <code>troupe config browser</code>.
               </p>
             </div>
           )}
@@ -326,7 +326,7 @@ export default function BrowserSettings({ config, onSaved }: BrowserSettingsProp
               type="text"
               value={form.user_data_dir}
               onChange={(e) => setForm({ ...form, user_data_dir: e.target.value })}
-              placeholder="~/.config/astonish/browser/ (default)"
+              placeholder="~/.config/troupe/browser/ (default)"
               className="bg-background font-mono"
             />
             <p className="text-xs text-muted-foreground">Persistent browser profile directory. Stores cookies, localStorage, etc.</p>
@@ -379,7 +379,7 @@ export default function BrowserSettings({ config, onSaved }: BrowserSettingsProp
           <Info className="text-primary" />
           <AlertDescription>
             CloakBrowser dependency installation (Python, pip, Xvfb) is only available through the CLI. Run{' '}
-            <code className="rounded bg-background px-1 py-0.5">astonish config browser</code> for guided setup.
+            <code className="rounded bg-background px-1 py-0.5">troupe config browser</code> for guided setup.
           </AlertDescription>
         </Alert>
       )}

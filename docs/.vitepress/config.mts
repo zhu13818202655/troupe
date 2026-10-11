@@ -9,19 +9,19 @@ export default withMermaid(defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   ignoreDeadLinks: true,
-  title: "Astonish",
+  title: "Troupe",
   description: "AI Agent Platform That Makes Your Whole Team Smarter",
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/astonish/astonish-logo.svg' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/astonish/troupe-logo.svg' }],
     ['link', { rel: 'manifest', href: '/astonish/site.webmanifest' }],
     ['meta', { name: 'theme-color', content: '#7c3aed' }],
     ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:site_name', content: 'Astonish' }],
+    ['meta', { property: 'og:site_name', content: 'Troupe' }],
   ],
   themeConfig: {
     logo: {
-      light: '/astonish-logo.svg',
-      dark: '/astonish-logo.svg',
+      light: '/troupe-logo.svg',
+      dark: '/troupe-logo.svg',
     },
     nav: [
       {

@@ -1,6 +1,6 @@
 # pkg/store — AGENTS.md
 
-Storage contracts and dependency bundles for Astonish's `platform → org → team → personal` hierarchy. Implementations live below this package; [`entstore/AGENTS.md`](entstore/AGENTS.md) adds Ent-specific rules.
+Storage contracts and dependency bundles for Troupe's `platform → org → team → personal` hierarchy. Implementations live below this package; [`entstore/AGENTS.md`](entstore/AGENTS.md) adds Ent-specific rules.
 
 ## Scope model
 - Platform stores own cross-org identity, organizations, login/OIDC, platform defaults, and platform-wide resources.

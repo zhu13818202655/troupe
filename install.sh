@@ -3,8 +3,8 @@ set -e
 
 # --- CONFIGURATION (CHANGE THESE) ---
 OWNER="SAP"
-REPO="astonish"
-BINARY="astonish"
+REPO="zhu13818202655/troupe"
+BINARY="troupe"
 # ------------------------------------
 
 # 1. Detect OS
@@ -27,7 +27,7 @@ echo "Detected OS: $OS"
 echo "Detected Arch: $ARCH"
 
 # 3. Find the latest release URL
-# We construct the asset name we want: astonish-OS-ARCH (e.g., astonish-linux-amd64)
+# We construct the asset name we want: troupe-OS-ARCH (e.g., troupe-linux-amd64)
 # We avoid .exe since we are on *nix
 ASSET_NAME="${BINARY}-${OS}-${ARCH}"
 

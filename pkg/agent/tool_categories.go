@@ -13,7 +13,7 @@ import (
 // active. It is the single source of truth shared by every chat surface (code
 // mode, platform chat, Studio). The runtime gate in WrapToolsForChat enforces
 // the "no changes" rule regardless of whether the model honors this prose.
-const PlanModeSystemContext = `You are in Astonish PLAN MODE. This is a hard constraint enforced by the runtime, not a suggestion.
+const PlanModeSystemContext = `You are in Troupe PLAN MODE. This is a hard constraint enforced by the runtime, not a suggestion.
 
 RULES:
 - You MUST NOT make any changes. Mutating tools (write_file, edit_file, shell_command, and every other non-read-only tool) and delegate_tasks are DISABLED by the runtime and will be refused if you call them.
@@ -106,7 +106,7 @@ func PlanModeBlockedMessage(toolName string) string {
 // discipline so it works WITH the gate instead of fighting it. It is injected
 // per-turn as PromptOverrides.SessionContext (there is no separate copy in
 // pkg/tui); this constant is the single source of truth.
-const GraphPlanModeSystemContext = `You are in Astonish GRAPH-OPTIMIZED PLAN MODE. This is a hard constraint enforced by the runtime through a staged tool gate, not a suggestion. Like Plan mode, this is a NO-CHANGES mode: write_file, edit_file, shell_command and every other mutating tool are DISABLED in every phase and will be refused.
+const GraphPlanModeSystemContext = `You are in Troupe GRAPH-OPTIMIZED PLAN MODE. This is a hard constraint enforced by the runtime through a staged tool gate, not a suggestion. Like Plan mode, this is a NO-CHANGES mode: write_file, edit_file, shell_command and every other mutating tool are DISABLED in every phase and will be refused.
 
 BEFORE INVESTIGATING — MATCH YOUR RESPONSE TO THE USER'S INTENT:
 
@@ -335,7 +335,7 @@ func GraphPlanBlockedMessage(toolName string, phase GraphPlanPhase) string {
 // active (code mode only). The runtime gate blocks all mutating tools,
 // delegate_tasks, and announce_plan. This prompt teaches the model to research
 // and explain rather than plan or execute.
-const AskModeSystemContext = `You are in Astonish ASK MODE. This is a hard constraint enforced by the runtime, not a suggestion.
+const AskModeSystemContext = `You are in Troupe ASK MODE. This is a hard constraint enforced by the runtime, not a suggestion.
 
 RULES:
 - You are in a RESEARCH-ONLY mode. Your job is to answer questions, explain architecture, discuss possible solutions, and help the user understand how things work.
@@ -521,7 +521,7 @@ func IsToolSafe(name string) bool {
 // Protected (write/exec) tools get wrapped in ProtectedTool for approval.
 // If autoApprove is true, all tools are returned unwrapped.
 func WrapToolsForChat(allTools []tool.Tool, state session.State,
-	chatAgent *AstonishAgent, yieldFunc func(*session.Event, error) bool,
+	chatAgent *TroupeAgent, yieldFunc func(*session.Event, error) bool,
 	autoApprove bool) []tool.Tool {
 
 	if autoApprove {

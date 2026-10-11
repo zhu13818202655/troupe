@@ -1251,7 +1251,7 @@ export default function SkillsSettings({ config, onSaved, theme = 'dark', scope,
                   ? 'No team skills yet. Click "New Skill" to create one.'
                   : scope === 'org'
                     ? 'No organization skills yet. Click "New Skill" to create one.'
-                    : 'No skills found. Click "New Skill" to create one, or install from ClawHub via CLI: astonish skills install <slug>'
+                    : 'No skills found. Click "New Skill" to create one, or install from ClawHub via CLI: troupe skills install <slug>'
                 }
               </p>
             )}
@@ -1273,12 +1273,12 @@ export default function SkillsSettings({ config, onSaved, theme = 'dark', scope,
                       type="text"
                       value={form.user_dir}
                       onChange={(e) => setForm({ ...form, user_dir: e.target.value })}
-                      placeholder="~/.config/astonish/skills/ (default)"
+                      placeholder="~/.config/troupe/skills/ (default)"
                       className={inputClass + ' font-mono'}
                       style={inputStyle}
                     />
                     <p className="text-xs mt-1" style={hintStyle}>
-                      Directory for user-defined skill files. Default: ~/.config/astonish/skills/
+                      Directory for user-defined skill files. Default: ~/.config/troupe/skills/
                     </p>
                   </div>
                   <div>

@@ -49,9 +49,28 @@ export interface UseThemeReturn {
   setBrandTheme: (brand: BrandTheme) => void
 }
 
+const THEME_STORAGE_KEY = 'troupe-theme'
+// Pre-rebrand key; read for backwards compatibility, then migrated.
+const LEGACY_THEME_STORAGE_KEY = 'astonish-theme'
+
+function readStoredTheme(): string | null {
+  try {
+    const next = localStorage.getItem(THEME_STORAGE_KEY)
+    if (next !== null) return next
+    // Fall back to the legacy key, migrate the value, then drop the old entry.
+    const legacy = localStorage.getItem(LEGACY_THEME_STORAGE_KEY)
+    if (legacy !== null) {
+      localStorage.setItem(THEME_STORAGE_KEY, legacy)
+      localStorage.removeItem(LEGACY_THEME_STORAGE_KEY)
+      return legacy
+    }
+    return null
+  } catch { return null }
+}
+
 export function useTheme(): UseThemeReturn {
   const [theme, setTheme] = useState<Theme>(() => {
-    const stored = localStorage.getItem('astonish-theme')
+    const stored = readStoredTheme()
     if (stored === 'dark' || stored === 'light') return stored
 
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -73,7 +92,7 @@ export function useTheme(): UseThemeReturn {
       root.classList.remove('dark')
     }
 
-    localStorage.setItem('astonish-theme', theme)
+    localStorage.setItem(THEME_STORAGE_KEY, theme)
   }, [theme])
 
   useEffect(() => {
@@ -84,7 +103,7 @@ export function useTheme(): UseThemeReturn {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
     const handleChange = (e: MediaQueryListEvent) => {
-      const stored = localStorage.getItem('astonish-theme')
+      const stored = readStoredTheme()
       if (!stored) {
         setTheme(e.matches ? 'dark' : 'light')
       }

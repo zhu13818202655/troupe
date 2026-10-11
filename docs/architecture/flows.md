@@ -4,7 +4,7 @@
 
 Flows are YAML-defined agent workflows that execute as deterministic node graphs. Unlike the open-ended ChatAgent where the LLM decides what to do next, a flow specifies a sequence of nodes (LLM calls, tool invocations, conditionals) with explicit transitions between them. Flows are used for repeatable tasks, automated workflows, and as the output format of the distillation system that converts chat traces into reusable procedures.
 
-Flows are executed by the `AstonishAgent` and can also be invoked from ChatAgent via the `run_flow` tool.
+Flows are executed by the `TroupeAgent` and can also be invoked from ChatAgent via the `run_flow` tool.
 
 ## Key Design Decisions
 
@@ -93,7 +93,7 @@ flow:
 ### Execution State Machine
 
 ```
-AstonishAgent.Run()
+TroupeAgent.Run()
     |
     v
 Parse flow: build adjacency map from flow items
@@ -196,14 +196,14 @@ Flows often feel slower than Chat for the same `shell_command` / OpenStack curl 
 2. **Distilled shell steps are usually `llm` + `tools: true`** — not deterministic `type: tool` nodes — so each step still pays LLM round-trips (see `flow_distiller.go` shell guidance).
 3. **Cold start used to serialize on the first tool** — Chat overlaps `BindSession` with the LLM via `NodeTool.ProcessRequest`. Flows now call `sandbox.WarmFlowSession` after ADK session create so provisioning overlaps the first LLM node **within the same run** only; cleanup still destroys the sandbox.
 
-`type: tool` nodes honor global `AutoApprove` (same as LLM nodes) so headless / `run_flow` do not pause for “Yes” when `AstonishAgent.AutoApprove` is set.
+`type: tool` nodes honor global `AutoApprove` (same as LLM nodes) so headless / `run_flow` do not pause for “Yes” when `TroupeAgent.AutoApprove` is set.
 
 ## Key Files
 
 | File | Purpose |
 |---|---|
 | `pkg/config/yaml_loader.go` | Flow YAML schema: AgentConfig, Node, FlowItem, Edge, ParallelConfig |
-| `pkg/agent/astonish_agent.go` | AstonishAgent: flow state machine, node dispatch, approval handling |
+| `pkg/agent/troupe_agent.go` | TroupeAgent: flow state machine, node dispatch, approval handling |
 | `pkg/agent/node_llm.go` | LLM node execution: retry logic, callback wiring, variable interpolation |
 | `pkg/agent/node_tool.go` | Deterministic tool nodes; AutoApprove parity with LLM nodes |
 | `pkg/sandbox/flow_warm.go` | Same-run eager BindSession / EnsureReady / PreSeed |
@@ -217,7 +217,7 @@ Flows often feel slower than Chat for the same `shell_command` / OpenStack curl 
 
 ## Interactions
 
-- **Agent Engine**: ChatAgent invokes flows via `run_flow` tool. AstonishAgent IS the flow executor.
+- **Agent Engine**: ChatAgent invokes flows via `run_flow` tool. TroupeAgent IS the flow executor.
 - **Sandbox**: Tool nodes and LLM nodes with tools enabled execute inside sandbox containers via the same node protocol.
 - **Credentials**: Flow tool args containing `{{CREDENTIAL:...}}` placeholders are substituted by the same BeforeToolCallback used in ChatAgent. Flow `http_request(credential: ...)` resolves against the request-scoped merged credential store: personal credentials are checked first, then team credentials. Credential names are exact identifiers, not display labels, so `openstack_keystone` and `openstack-keystone` are distinct.
 - **Drill**: Drill test suites are a specialized flow type (`type: drill_suite`) with assertions, ready checks, and visual regression.

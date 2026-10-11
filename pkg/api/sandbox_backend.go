@@ -352,7 +352,7 @@ type baseTopLayerResolver interface {
 //
 // On K8s, the returned chain is passed as SessionSpec.LayerChain to the
 // backend, which sets TROUPE_LAYER_CHAIN in the pod env. Each element is
-// a literal directory name under /mnt/astonish-layers/ on the PVC.
+// a literal directory name under /mnt/troupe-layers/ on the PVC.
 //
 // Returns nil if:
 //   - The platform backend is not available.

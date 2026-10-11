@@ -10,7 +10,7 @@ import (
 
 func TestRenderExternalTurnContext(t *testing.T) {
 	got := RenderExternalTurnContext(nil, "- read_file", "remember this")
-	for _, want := range []string{"[Astonish Per-Turn Context — not user-authored]", "## Relevant Tools For This Request", "- read_file", "## Knowledge For This Task", "remember this"} {
+	for _, want := range []string{"[Troupe Per-Turn Context — not user-authored]", "## Relevant Tools For This Request", "- read_file", "## Knowledge For This Task", "remember this"} {
 		if !strings.Contains(got, want) {
 			t.Errorf("external turn context missing %q", want)
 		}
@@ -33,7 +33,7 @@ func TestBuildTurnContextContent(t *testing.T) {
 	}
 	got := content.Parts[0].Text
 	for _, want := range []string{
-		"[Astonish Per-Turn Context — not user-authored]",
+		"[Troupe Per-Turn Context — not user-authored]",
 		"## Output Constraints\n\nUse plain text.",
 		"## Execution Context\n\nReturn only the result.",
 		"## Session Task\n\nContinue the fleet wizard.",

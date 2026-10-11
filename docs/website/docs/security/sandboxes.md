@@ -1,6 +1,6 @@
 # Sandboxes
 
-Astonish executes agent tool calls inside isolated sandbox environments. Each organization gets its own network-isolated sandbox infrastructure, preventing lateral movement between tenants even if code execution is compromised.
+Troupe executes agent tool calls inside isolated sandbox environments. Each organization gets its own network-isolated sandbox infrastructure, preventing lateral movement between tenants even if code execution is compromised.
 
 ## Per-Org Network Isolation
 
@@ -8,7 +8,7 @@ Every organization's sandboxes run on a dedicated network segment. Containers fr
 
 ## Backends
 
-Astonish supports three sandbox backends depending on your deployment model.
+Troupe supports three sandbox backends depending on your deployment model.
 
 ### OpenShell (NVIDIA)
 
@@ -78,10 +78,10 @@ Every sandbox pod is labeled for policy targeting:
 ```yaml
 metadata:
   labels:
-    astonish.dev/org: acme
-    astonish.dev/team: backend
-    astonish.dev/sandbox: "true"
-    astonish.dev/session: a1b2c3d4
+    troupe.dev/org: acme
+    troupe.dev/team: backend
+    troupe.dev/sandbox: "true"
+    troupe.dev/session: a1b2c3d4
 ```
 
 #### NetworkPolicies
@@ -92,12 +92,12 @@ A NetworkPolicy is applied per org to restrict traffic:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: astonish-sandbox-acme
+  name: troupe-sandbox-acme
 spec:
   podSelector:
     matchLabels:
-      astonish.dev/org: acme
-      astonish.dev/sandbox: "true"
+      troupe.dev/org: acme
+      troupe.dev/sandbox: "true"
   policyTypes:
     - Ingress
     - Egress
@@ -105,31 +105,31 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              astonish.dev/org: acme
+              troupe.dev/org: acme
   egress:
     - to:
         - podSelector:
             matchLabels:
-              astonish.dev/org: acme
+              troupe.dev/org: acme
 ```
 
 Pods from org `acme` can only communicate with other `acme` pods. Cross-org traffic is denied by default.
 
 ### Docker OverlayFS (local)
 
-For non-Kubernetes deployments, Astonish runs session containers with Docker OverlayFS — the same overlay contract as the Kubernetes sandbox-base image. This is the local Studio default on both macOS and Linux.
+For non-Kubernetes deployments, Troupe runs session containers with Docker OverlayFS — the same overlay contract as the Kubernetes sandbox-base image. This is the local Studio default on both macOS and Linux.
 
-- Session containers are named `astonish-session-*` from `ghcr.io/sap/astonish-sandbox-base`.
+- Session containers are named `troupe-session-*` from `ghcr.io/sap/troupe-sandbox-base`.
 - Template layers live on the host; the live upper is a Docker volume.
-- `fuse-overlayfs` composes `/sandbox/rootfs`. Tools run via `astonish-shell`.
+- `fuse-overlayfs` composes `/sandbox/rootfs`. Tools run via `troupe-shell`.
 
 #### Network Architecture
 
 Each organization gets a dedicated Docker bridge network:
 
 ```
-astonish-org-acme     →  org acme containers only
-astonish-org-other    →  org other containers only
+troupe-org-acme     →  org acme containers only
+troupe-org-other    →  org other containers only
 ```
 
 Containers on different org networks have no route to each other.
@@ -137,7 +137,7 @@ Containers on different org networks have no route to each other.
 #### Container Naming
 
 ```
-astonish-session-<session-id-prefix>-<short>
+troupe-session-<session-id-prefix>-<short>
 ```
 
 ## Team-Scoped Sandbox Templates
@@ -148,25 +148,25 @@ Organizations can define sandbox templates per team, controlling the base image,
 sandbox:
   templates:
     backend:
-      image: astonish-sandbox:python-3.12
+      image: troupe-sandbox:python-3.12
       cpu: "2"
       memory: 4Gi
       packages: [git, python3, python3-pip, curl]
     frontend:
-      image: astonish-sandbox:node-22
+      image: troupe-sandbox:node-22
       cpu: "1"
       memory: 2Gi
       packages: [git, nodejs, npm]
 ```
 
-Templates are managed through Studio or the platform API. When packages are added, Astonish builds a new sandbox image automatically using Kaniko (no Docker daemon required).
+Templates are managed through Studio or the platform API. When packages are added, Troupe builds a new sandbox image automatically using Kaniko (no Docker daemon required).
 
 ## Sandbox Auditing
 
 For Kubernetes deployments, audit sandbox storage for orphaned data:
 
 ```bash
-astonish platform sandbox-audit
+troupe platform sandbox-audit
 ```
 
 This spawns a remote audit pod that diffs on-disk PVC contents against database records, identifying orphaned sandbox data that can be reclaimed.

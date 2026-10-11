@@ -1,6 +1,6 @@
 # Fleet Overview
 
-Fleet is Astonish's multi-agent coordination system. It enables teams of specialized AI agents to collaborate on complex, multi-step projects through structured communication and task management.
+Fleet is Troupe's multi-agent coordination system. It enables teams of specialized AI agents to collaborate on complex, multi-step projects through structured communication and task management.
 
 ## When to Use Fleet
 

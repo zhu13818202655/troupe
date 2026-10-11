@@ -95,7 +95,7 @@ function installDeclaredFonts(
 ): void {
   const refs = declaredFonts(theme)
   if (refs.length === 0 || typeof document === 'undefined') return
-  const id = `astonish-slides-fonts-${template || 'deck'}`
+  const id = `troupe-slides-fonts-${template || 'deck'}`
   if (document.getElementById(id)) return
   const rules: string[] = []
   for (const ref of refs) {
@@ -140,7 +140,7 @@ function resolveAssets(markup: string, assets?: Record<string, string>): string 
 }
 
 /**
- * SlidesArchetypeThumb live-renders a single Astonish Slides archetype variant
+ * SlidesArchetypeThumb live-renders a single Troupe Slides archetype variant
  * markup as a non-interactive miniature. It reuses the exact ast-* web-component
  * runtime by mounting an <ast-deck> whose single child is the archetype's own
  * <ast-slide> (set via innerHTML). The runtime's DeckController activates slide 0

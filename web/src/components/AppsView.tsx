@@ -78,8 +78,8 @@ export default function AppsView({ theme, appName, isPlatformMode, onNavigate, o
   // Listen for apps-updated events (from chat save flow)
   useEffect(() => {
     const handler = () => loadApps()
-    window.addEventListener('astonish:apps-updated', handler)
-    return () => window.removeEventListener('astonish:apps-updated', handler)
+    window.addEventListener('troupe:apps-updated', handler)
+    return () => window.removeEventListener('troupe:apps-updated', handler)
   }, [loadApps])
 
   // Load app from URL param (deep link or refresh)
@@ -161,12 +161,12 @@ export default function AppsView({ theme, appName, isPlatformMode, onNavigate, o
       `The user wants to improve a saved visual app called "${selectedApp.name}" (version ${selectedApp.version}).`,
       '',
       'IMPORTANT: The app preview is ALREADY displayed to the user. Do NOT generate or output any code right now.',
-      'Do NOT output an ```astonish-app code fence in this response.',
+      'Do NOT output an ```troupe-app code fence in this response.',
       'Simply acknowledge that you can see the app and ask the user what changes they would like to make.',
-      'Only output code inside an ```astonish-app fence AFTER the user describes specific changes they want.',
+      'Only output code inside an ```troupe-app fence AFTER the user describes specific changes they want.',
       '',
       'When the user later describes changes, apply them to the source code below and output the COMPLETE updated component.',
-      'You MUST output the full component inside an ```astonish-app code fence — do NOT output a diff or partial snippet.',
+      'You MUST output the full component inside an ```troupe-app code fence — do NOT output a diff or partial snippet.',
       'Preserve all existing functionality unless the user explicitly asks to remove it.',
       '',
       '### Current Source Code\n',

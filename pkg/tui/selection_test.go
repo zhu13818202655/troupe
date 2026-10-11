@@ -75,7 +75,6 @@ func TestSelectionIntersectsLines(t *testing.T) {
 	}
 }
 
-
 func TestSelectionTextSingleAndMultiLine(t *testing.T) {
 	lines := []string{"hello world", "second line", "third"}
 	got := selectionText(lines, nil, selectionPoint{line: 0, col: 6}, selectionPoint{line: 1, col: 6})

@@ -1,6 +1,6 @@
 # Publish & Fork
 
-Resources in Astonish are **private by default**. You own your sessions, flows, apps, slide decks, and memory entries. Sharing is always an explicit action — publish to your team, fork from your team.
+Resources in Troupe are **private by default**. You own your sessions, flows, apps, slide decks, and memory entries. Sharing is always an explicit action — publish to your team, fork from your team.
 
 ## The Model
 

@@ -7,11 +7,11 @@ import (
 	"runtime"
 )
 
-const astonishRootEnv = "TROUPE_ROOT"
+const troupeRootEnv = "TROUPE_ROOT"
 
 func slidesWorkerPaths(scriptName string) (workingDir, scriptPath string, err error) {
 	var roots []string
-	if root := os.Getenv(astonishRootEnv); root != "" {
+	if root := os.Getenv(troupeRootEnv); root != "" {
 		roots = append(roots, root)
 	}
 	if cwd, cwdErr := os.Getwd(); cwdErr == nil {
@@ -34,7 +34,7 @@ func slidesWorkerPaths(scriptName string) (workingDir, scriptPath string, err er
 			return workingDir, scriptPath, nil
 		}
 	}
-	return "", "", fmt.Errorf("slides worker %q is not installed; set %s to the Astonish runtime root", scriptName, astonishRootEnv)
+	return "", "", fmt.Errorf("slides worker %q is not installed; set %s to the Troupe runtime root", scriptName, troupeRootEnv)
 }
 
 func directoryExists(path string) bool {

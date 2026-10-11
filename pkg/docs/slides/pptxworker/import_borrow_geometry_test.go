@@ -29,15 +29,21 @@ import (
 // shape painted BEHIND it, and with no leftover neutral solid-fill panel.
 
 // EMU -> canvas conversion (matches toCanvasBox in import_worker.mjs):
-//   px  = EMU / 9525
-//   scale = min(1920 / (slideCX/9525), 1080 / (slideCY/9525))
+//
+//	px  = EMU / 9525
+//	scale = min(1920 / (slideCX/9525), 1080 / (slideCY/9525))
+//
 // With slide size 12192000 x 6858000 EMU the scale is exactly 1.5, so:
-//   canvasUnits = round(EMU / 9525 * 1.5) = round(EMU / 6350)
+//
+//	canvasUnits = round(EMU / 9525 * 1.5) = round(EMU / 6350)
 //
 // Sample hero <p:pic> box  off(1905000,190500) ext(8382000,4762500)
-//   -> x=300 y=30 w=1320 h=750   (the BORROWED box we assert on)
+//
+//	-> x=300 y=30 w=1320 h=750   (the BORROWED box we assert on)
+//
 // Layout pic placeholder box off(6069496,2029240) ext(5711687,2828844)
-//   -> x=956 y=320 w=899 h=445   (must NOT be used)
+//
+//	-> x=956 y=320 w=899 h=445   (must NOT be used)
 const (
 	wantBorrowX = 300
 	wantBorrowY = 30

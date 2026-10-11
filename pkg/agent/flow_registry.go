@@ -66,7 +66,7 @@ func DefaultRegistryPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(configDir, "astonish", "flow_registry.json"), nil
+	return filepath.Join(configDir, "troupe", "flow_registry.json"), nil
 }
 
 // Entries returns a copy of all registry entries.

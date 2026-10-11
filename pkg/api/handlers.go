@@ -12,10 +12,10 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/flowstore"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 	"google.golang.org/adk/session"
 	"google.golang.org/genai"
 	"gopkg.in/yaml.v3"
@@ -484,7 +484,7 @@ func SaveAgentHandler(w http.ResponseWriter, r *http.Request) {
 		// Flow exists - save to original location
 		path = existingPath
 	} else {
-		// New flow - save to flows directory (~/.config/astonish/flows/)
+		// New flow - save to flows directory (~/.config/troupe/flows/)
 		flowsDir, err := flowstore.GetFlowsDir()
 		if err != nil {
 			respondError(w, http.StatusInternalServerError, "Failed to get flows directory")
@@ -826,7 +826,7 @@ type minimalReadonlyContext struct {
 }
 
 func (m *minimalReadonlyContext) AgentName() string                    { return "tools-api" }
-func (m *minimalReadonlyContext) AppName() string                      { return "astonish" }
+func (m *minimalReadonlyContext) AppName() string                      { return "troupe" }
 func (m *minimalReadonlyContext) UserContent() *genai.Content          { return nil }
 func (m *minimalReadonlyContext) InvocationID() string                 { return "" }
 func (m *minimalReadonlyContext) ReadonlyState() session.ReadonlyState { return nil }

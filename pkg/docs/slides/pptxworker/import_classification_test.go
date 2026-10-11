@@ -229,19 +229,19 @@ func buildClassificationPPTX(t *testing.T) string {
 <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>
 </Relationships>`,
 
-		"ppt/theme/theme1.xml":                          classificationTheme,
-		"ppt/slideMasters/slideMaster1.xml":             classificationMaster,
-		"ppt/slideMasters/_rels/slideMaster1.xml.rels":  classificationMasterRels,
-		"ppt/slideLayouts/slideLayout1.xml":             l1,
-		"ppt/slideLayouts/slideLayout2.xml":             l2,
-		"ppt/slideLayouts/slideLayout3.xml":             l3,
-		"ppt/slideLayouts/slideLayout4.xml":             l4,
-		"ppt/slideLayouts/slideLayout5.xml":             l5,
-		"ppt/slideLayouts/_rels/slideLayout1.xml.rels":  layoutRelsToMaster,
-		"ppt/slideLayouts/_rels/slideLayout2.xml.rels":  layoutRelsToMaster,
-		"ppt/slideLayouts/_rels/slideLayout3.xml.rels":  layoutRelsToMaster,
-		"ppt/slideLayouts/_rels/slideLayout4.xml.rels":  layoutRelsToMaster,
-		"ppt/slideLayouts/_rels/slideLayout5.xml.rels":  layoutRelsToMaster,
+		"ppt/theme/theme1.xml":                         classificationTheme,
+		"ppt/slideMasters/slideMaster1.xml":            classificationMaster,
+		"ppt/slideMasters/_rels/slideMaster1.xml.rels": classificationMasterRels,
+		"ppt/slideLayouts/slideLayout1.xml":            l1,
+		"ppt/slideLayouts/slideLayout2.xml":            l2,
+		"ppt/slideLayouts/slideLayout3.xml":            l3,
+		"ppt/slideLayouts/slideLayout4.xml":            l4,
+		"ppt/slideLayouts/slideLayout5.xml":            l5,
+		"ppt/slideLayouts/_rels/slideLayout1.xml.rels": layoutRelsToMaster,
+		"ppt/slideLayouts/_rels/slideLayout2.xml.rels": layoutRelsToMaster,
+		"ppt/slideLayouts/_rels/slideLayout3.xml.rels": layoutRelsToMaster,
+		"ppt/slideLayouts/_rels/slideLayout4.xml.rels": layoutRelsToMaster,
+		"ppt/slideLayouts/_rels/slideLayout5.xml.rels": layoutRelsToMaster,
 	}
 
 	var buf bytes.Buffer
@@ -317,9 +317,9 @@ func TestImportClassifiesContentLayoutsAsFlexible(t *testing.T) {
 	as := importClassificationFixture(t)
 
 	cases := []struct {
-		titleSub  string
-		wantKind  string // base kind prefix
-		wantTier  string
+		titleSub string
+		wantKind string // base kind prefix
+		wantTier string
 	}{
 		{"Title and Text: 2 Columns", "content", "flexible"},
 		{"Title and Content", "content", "flexible"},

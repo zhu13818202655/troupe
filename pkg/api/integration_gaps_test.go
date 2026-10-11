@@ -467,11 +467,11 @@ func TestSSEWireFormat_SendErrorSSE(t *testing.T) {
 // TestIntegration_ApprovalFlow_AutoApproveFalse verifies that when autoApprove
 // is false and a tool requires approval, the runner emits an approval event.
 // Note: The full pause→resume cycle requires ProtectedTool wrapping which is
-// handled by the AstonishAgent (not ChatAgent). This test verifies that the
+// handled by the TroupeAgent (not ChatAgent). This test verifies that the
 // runner functions correctly when autoApprove=false at the ChatRunner level.
 func TestIntegration_ApprovalFlow_AutoApproveFalse(t *testing.T) {
 	// With autoApprove=false, the ChatAgent still passes it to the ADK runner.
-	// However, ProtectedTool wrapping happens at a higher level (AstonishAgent).
+	// However, ProtectedTool wrapping happens at a higher level (TroupeAgent).
 	// At the ChatAgent/ChatRunner level, autoApprove=false means the ADK runner
 	// won't auto-confirm tool calls — but without ProtectedTool, regular tools
 	// execute normally. This test verifies the flag is propagated correctly.
@@ -504,7 +504,10 @@ func TestIntegration_ApprovalEvent_EmittedByStateDelta(t *testing.T) {
 		runner.Unsubscribe("test")
 		runner.Stop()
 		// Drain
-		go func() { for range ch {} }()
+		go func() {
+			for range ch {
+			}
+		}()
 	}()
 
 	// Simulate the approval request (what ProtectedTool.Run() sets in state)
@@ -555,7 +558,10 @@ func TestIntegration_ApprovalFlow_DenyStateDelta(t *testing.T) {
 	defer func() {
 		runner.Unsubscribe("test")
 		runner.Stop()
-		go func() { for range ch {} }()
+		go func() {
+			for range ch {
+			}
+		}()
 	}()
 
 	// Emit approval request

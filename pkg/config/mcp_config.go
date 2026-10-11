@@ -256,7 +256,7 @@ func MergeStandardServersWithConfig(cfg *MCPConfig, appCfg *AppConfig) {
 // Exception: disabled standard servers are preserved — the user explicitly
 // chose to disable them, and that choice must survive save/load cycles.
 func SaveMCPConfig(config *MCPConfig) error {
-	configDir, err := GetConfigDir()
+	configDir, err := ensureConfigDir()
 	if err != nil {
 		return fmt.Errorf("failed to get config directory: %w", err)
 	}

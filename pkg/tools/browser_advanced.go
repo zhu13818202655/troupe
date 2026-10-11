@@ -12,8 +12,8 @@ import (
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/zhu13818202655/troupe/pkg/browser"
 	"github.com/ysmood/gson"
+	"github.com/zhu13818202655/troupe/pkg/browser"
 	"google.golang.org/adk/tool"
 )
 

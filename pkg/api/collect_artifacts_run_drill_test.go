@@ -31,10 +31,10 @@ func TestCollectArtifacts_RunDrillArtifactPaths(t *testing.T) {
 								"status":  "passed",
 								"summary": "1/1 tests passed",
 								"artifact_paths": []any{
-									"/tmp/astonish-recordings/open_studio.mp4",
-									"/home/user/.config/astonish/reports/demo/scene_manifest.json",
+									"/tmp/troupe-recordings/open_studio.mp4",
+									"/home/user/.config/troupe/reports/demo/scene_manifest.json",
 								},
-								"manifest_path": "/home/user/.config/astonish/reports/demo/scene_manifest.json",
+								"manifest_path": "/home/user/.config/troupe/reports/demo/scene_manifest.json",
 							},
 						}},
 					},

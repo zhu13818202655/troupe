@@ -118,16 +118,16 @@ func absDiff(a, b uint32) uint32 {
 
 // BaselineDir returns the directory where visual baselines are stored.
 // If an artifact manager is available, baselines go alongside artifacts.
-// Otherwise, uses ~/.config/astonish/drill-baselines/.
+// Otherwise, uses ~/.config/troupe/drill-baselines/.
 func BaselineDir(am *ArtifactManager) string {
 	if am != nil {
 		return filepath.Join(filepath.Dir(am.baseDir), "baselines")
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return filepath.Join(os.TempDir(), "astonish-drill-baselines")
+		return filepath.Join(os.TempDir(), "troupe-drill-baselines")
 	}
-	return filepath.Join(home, ".config", "astonish", "drill-baselines")
+	return filepath.Join(home, ".config", "troupe", "drill-baselines")
 }
 
 // SaveBaseline saves PNG image data as a baseline for visual regression tests.

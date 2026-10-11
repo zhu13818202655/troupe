@@ -1,10 +1,10 @@
-# Parameter Passing in Astonish
+# Parameter Passing in Troupe
 
-This document explains how to pass parameters to Astonish agents, allowing for more automated workflows.
+This document explains how to pass parameters to Troupe agents, allowing for more automated workflows.
 
 ## Overview
 
-Astonish now supports passing parameters directly to agents, which can be used to pre-populate input fields that would normally require user interaction. This is particularly useful for:
+Troupe now supports passing parameters directly to agents, which can be used to pre-populate input fields that would normally require user interaction. This is particularly useful for:
 
 - Automating agent execution in scripts
 - Integrating agents into larger workflows
@@ -17,7 +17,7 @@ Astonish now supports passing parameters directly to agents, which can be used t
 You can pass parameters to an agent using the `-p` or `--param` flag with key=value format. You can use multiple flags for multiple parameters:
 
 ```bash
-astonish agents run simple_question_answer_loop -p get_question="Who was Albert Einstein" -p continue_loop=no
+troupe agents run simple_question_answer_loop -p get_question="Who was Albert Einstein" -p continue_loop=no
 ```
 
 ### Using File Content
@@ -25,7 +25,7 @@ astonish agents run simple_question_answer_loop -p get_question="Who was Albert 
 You can use shell expansion to read file content as a parameter value:
 
 ```bash
-astonish agents run simple_question_answer_loop -p get_question="$(<question.txt)" -p continue_loop=no
+troupe agents run simple_question_answer_loop -p get_question="$(<question.txt)" -p continue_loop=no
 ```
 
 This reads the content of `question.txt` and passes it as the value for the `get_question` parameter.
@@ -39,7 +39,7 @@ You can use environment variables as parameter values:
 export QUESTION="Who was Albert Einstein"
 
 # Use it in the command
-astonish agents run simple_question_answer_loop -p get_question="$QUESTION" -p continue_loop=no
+troupe agents run simple_question_answer_loop -p get_question="$QUESTION" -p continue_loop=no
 ```
 
 ## Parameter Format
@@ -126,5 +126,5 @@ flow:
 You would call it like this:
 
 ```bash
-astonish agents run simple_question_answer_loop -p get_question="Who was Albert Einstein" -p continue_loop=no
+troupe agents run simple_question_answer_loop -p get_question="Who was Albert Einstein" -p continue_loop=no
 ```

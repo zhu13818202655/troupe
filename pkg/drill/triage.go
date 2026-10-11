@@ -136,7 +136,7 @@ func (ta *TriageAgent) Investigate(ctx context.Context, step StepResult, test Lo
 	sessionSvc := common.NewAutoInitService(session.InMemoryService())
 
 	r, err := runner.New(runner.Config{
-		AppName:        "astonish-triage",
+		AppName:        "troupe-triage",
 		Agent:          agent,
 		SessionService: sessionSvc,
 	})
@@ -149,7 +149,7 @@ func (ta *TriageAgent) Investigate(ctx context.Context, step StepResult, test Lo
 
 	// Create the session
 	_, err = sessionSvc.Create(ctx, &session.CreateRequest{
-		AppName:   "astonish-triage",
+		AppName:   "troupe-triage",
 		UserID:    userID,
 		SessionID: sessionID,
 		State:     map[string]any{},
@@ -232,7 +232,7 @@ func (ta *TriageAgent) Investigate(ctx context.Context, step StepResult, test Lo
 func (ta *TriageAgent) buildInstruction(step StepResult, test LoadedTest, suite *LoadedSuite, setupLog string) string {
 	var b strings.Builder
 
-	b.WriteString(`You are the L1 Triage Agent for Astonish, an AI-powered test runner.
+	b.WriteString(`You are the L1 Triage Agent for Troupe, an AI-powered test runner.
 A deterministic test step has failed and you must investigate the root cause.
 
 ## Your Goal

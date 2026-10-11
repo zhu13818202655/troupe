@@ -20,7 +20,7 @@ func TestOAuthServerConfigDefaultsAndOverrides(t *testing.T) {
 
 	disabled := false
 	cfg.Enabled = &disabled
-	cfg.Issuer = "https://astonish.example/base/"
+	cfg.Issuer = "https://troupe.example/base/"
 	cfg.Resource = "https://resource.example"
 	if cfg.IsEnabled() {
 		t.Fatal("explicit enabled=false was ignored")

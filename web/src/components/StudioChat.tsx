@@ -297,10 +297,23 @@ interface StudioChatProps {
   isPlatformMode?: boolean
 }
 
-const DEBUG_STORAGE_KEY = 'astonish-studio-cache-debug'
+const DEBUG_STORAGE_KEY = 'troupe-studio-cache-debug'
+// Pre-rebrand key; read for backwards compatibility, then migrated.
+const LEGACY_DEBUG_STORAGE_KEY = 'astonish-studio-cache-debug'
 
 function readDebugPreference(): boolean {
-  try { return globalThis.localStorage?.getItem(DEBUG_STORAGE_KEY) === 'true' }
+  try {
+    const next = globalThis.localStorage?.getItem(DEBUG_STORAGE_KEY)
+    if (next !== null) return next === 'true'
+    // Fall back to the legacy key, migrate the value, then drop the old entry.
+    const legacy = globalThis.localStorage?.getItem(LEGACY_DEBUG_STORAGE_KEY)
+    if (legacy !== null) {
+      globalThis.localStorage?.setItem(DEBUG_STORAGE_KEY, legacy)
+      globalThis.localStorage?.removeItem(LEGACY_DEBUG_STORAGE_KEY)
+      return legacy === 'true'
+    }
+    return false
+  }
   catch { return false }
 }
 
@@ -471,7 +484,7 @@ export default function StudioChat({ theme, initialSessionId, pendingChatMessage
   // Markdown reports use a narrow three-signal gate (do NOT widen — see AGENTS.md):
   //   1. produced in the *last turn*, AND
   //   2. fileType === 'Markdown', AND
-  //   3. isReport === true (matching ```astonish-report``` fence).
+  //   3. isReport === true (matching ```troupe-report``` fence).
   // Last-turn Video artifacts (e.g. browser_stop_recording) also embed so the
   // user gets an inline player — separate from the markdown report contract.
   const embeddedArtifactPaths = useMemo(() => {
@@ -1183,7 +1196,7 @@ export default function StudioChat({ theme, initialSessionId, pendingChatMessage
             break
 
           case 'report_marker':
-            // The agent emitted an ```astonish-report``` fence whose `path`
+            // The agent emitted an ```troupe-report``` fence whose `path`
             // matched a same-turn write_file/edit_file artifact. Flip the
             // matching artifact's isReport flag so the embed gate
             // (embeddedArtifactPaths useMemo) admits it. The marker carries
@@ -1382,7 +1395,7 @@ export default function StudioChat({ theme, initialSessionId, pendingChatMessage
                 path: data.path as string || '',
               } as AppSavedMessage])
             }
-            window.dispatchEvent(new Event('astonish:apps-updated'))
+            window.dispatchEvent(new Event('troupe:apps-updated'))
             break
 
           case 'distill_saved':
@@ -1392,7 +1405,7 @@ export default function StudioChat({ theme, initialSessionId, pendingChatMessage
               runCommand: data.runCommand as string,
             } as DistillSavedMessage])
             // Notify App to refresh the flows list
-            window.dispatchEvent(new Event('astonish:flows-updated'))
+            window.dispatchEvent(new Event('troupe:flows-updated'))
             break
 
           case 'done':
@@ -2598,7 +2611,7 @@ export default function StudioChat({ theme, initialSessionId, pendingChatMessage
                 path: data.path as string || '',
               } as AppSavedMessage])
             }
-            window.dispatchEvent(new Event('astonish:apps-updated'))
+            window.dispatchEvent(new Event('troupe:apps-updated'))
             break
 
           case 'distill_saved':
@@ -2608,7 +2621,7 @@ export default function StudioChat({ theme, initialSessionId, pendingChatMessage
               runCommand: data.runCommand as string,
             } as DistillSavedMessage])
             // Notify App to refresh the flows list
-            window.dispatchEvent(new Event('astonish:flows-updated'))
+            window.dispatchEvent(new Event('troupe:flows-updated'))
             break
 
           case 'done':
@@ -3217,20 +3230,21 @@ export default function StudioChat({ theme, initialSessionId, pendingChatMessage
                           {msg.content}
                         </pre>
                       ) : (() => {
-                        // Strip ```astonish-report``` fences first — they are
+                        // Strip ```troupe-report``` (legacy ```astonish-report```)
+                        // fences first — they are
                         // signal-only (their effect is the report_marker SSE
                         // event flipping the artifact gate), not display
                         // content. The matching disk file is rendered inline
                         // below as an EmbeddedFileViewer; showing the raw
                         // fence here would duplicate the path on screen.
                         // Mirrors stripReportMarkerFences in pkg/api/chat_runner.go.
-                        const reportFenceRe = /```astonish-report\s*\n[\s\S]*?(?:\n```|$)/g
+                        const reportFenceRe = /```(?:troupe-report|astonish-report)\s*\n[\s\S]*?(?:\n```|$)/g
                         const cleanedContent = msg.content.replace(reportFenceRe, '').trim()
-                        // Split out astonish-app code fences so they render as a stable
+                        // Split out troupe-app (legacy astonish-app) code fences so they render as a stable
                         // AppCodeIndicator outside the ReactMarkdown tree. This avoids
                         // the jank of ReactMarkdown recreating the component on every
                         // streaming text update.
-                        const appFenceRe = /```astonish-app\s*\n([\s\S]*?)(?:\n```|$)/
+                        const appFenceRe = /```(?:troupe-app|astonish-app)\s*\n([\s\S]*?)(?:\n```|$)/
                         const match = cleanedContent.match(appFenceRe)
                         if (!match) {
                           return (

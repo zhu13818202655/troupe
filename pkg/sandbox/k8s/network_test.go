@@ -120,7 +120,7 @@ func TestEnsureOrgNetwork_CreatesPolicyWithExpectedShape(t *testing.T) {
 			if peer.PodSelector != nil && peer.PodSelector.MatchLabels[labelOrg] == "acme" {
 				gotSameOrg = true
 			}
-			if peer.NamespaceSelector != nil && peer.NamespaceSelector.MatchLabels["kubernetes.io/metadata.name"] == "astonish" {
+			if peer.NamespaceSelector != nil && peer.NamespaceSelector.MatchLabels["kubernetes.io/metadata.name"] == "troupe" {
 				gotControlPlane = true
 			}
 		}

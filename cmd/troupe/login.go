@@ -7,8 +7,8 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/zhu13818202655/troupe/pkg/client"
 	"github.com/charmbracelet/huh"
+	"github.com/zhu13818202655/troupe/pkg/client"
 	"golang.org/x/term"
 )
 

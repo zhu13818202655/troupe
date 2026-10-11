@@ -856,7 +856,7 @@ func (m *ChannelManager) handleInbound(ctx context.Context, msg InboundMessage) 
 	// Create ADK agent wrapper for this turn
 	adkAgent, err := adkagent.New(adkagent.Config{
 		Name:        "astonish_channel",
-		Description: "Astonish channel agent",
+		Description: "Troupe channel agent",
 		Run:         m.agent.Run,
 	})
 	if err != nil {

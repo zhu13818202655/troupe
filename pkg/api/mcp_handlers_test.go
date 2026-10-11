@@ -11,9 +11,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/cache"
 	"github.com/zhu13818202655/troupe/pkg/config"
-	"github.com/gorilla/mux"
 )
 
 func testSetup(t *testing.T) func() {

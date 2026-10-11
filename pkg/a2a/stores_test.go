@@ -18,7 +18,7 @@ func TestStoresIssuerCRUD(t *testing.T) {
 		Name:      "Test IdP",
 		Issuer:    "https://idp.example.com",
 		JWKSURL:   "https://idp.example.com/.well-known/jwks.json",
-		Audience:  "astonish",
+		Audience:  "troupe",
 		UserClaim: "email",
 		OrgID:     "org-1",
 	}

@@ -1,9 +1,9 @@
 import { cn } from '@/lib/utils'
 
-type AstonishLogoSize = 'sm' | 'md' | 'lg'
+type TroupeLogoSize = 'sm' | 'md' | 'lg'
 
 const sizeClasses: Record<
-  AstonishLogoSize,
+  TroupeLogoSize,
   { plate: string; mark: string }
 > = {
   /** TopBar / compact chrome */
@@ -23,9 +23,9 @@ const sizeClasses: Record<
   },
 }
 
-interface AstonishLogoProps {
+interface TroupeLogoProps {
   /** sm = header, md = default, lg = home hero */
-  size?: AstonishLogoSize
+  size?: TroupeLogoSize
   /** When false, skip the brand-tinted plate (mark only). */
   withPlate?: boolean
   className?: string
@@ -34,15 +34,15 @@ interface AstonishLogoProps {
 }
 
 /**
- * Theme-aware Astonish mark: CSS mask recolors the body with brand tokens;
+ * Theme-aware Troupe mark: CSS mask recolors the body with brand tokens;
  * white eyes are a separate layer (a single mask cannot spare white by color).
  */
-export default function AstonishLogo({
+export default function TroupeLogo({
   size = 'md',
   withPlate = true,
   className,
   alt = '',
-}: AstonishLogoProps) {
+}: TroupeLogoProps) {
   const { plate, mark } = sizeClasses[size]
 
   const markEl = (
@@ -51,8 +51,8 @@ export default function AstonishLogo({
         className="absolute inset-0"
         style={{
           background: 'linear-gradient(135deg, var(--brand), var(--accent2) 55%, var(--accent3))',
-          WebkitMaskImage: 'url(/astonish-logo-body.svg)',
-          maskImage: 'url(/astonish-logo-body.svg)',
+          WebkitMaskImage: 'url(/troupe-logo-body.svg)',
+          maskImage: 'url(/troupe-logo-body.svg)',
           WebkitMaskSize: 'contain',
           maskSize: 'contain',
           WebkitMaskRepeat: 'no-repeat',
@@ -62,7 +62,7 @@ export default function AstonishLogo({
         }}
       />
       <img
-        src="/astonish-logo-eyes.svg"
+        src="/troupe-logo-eyes.svg"
         alt=""
         className="absolute inset-0 size-full object-contain"
         draggable={false}

@@ -26,13 +26,13 @@ import (
 
 // TeamTemplateStatusResponse is the response for GET /api/team/template/status.
 type TeamTemplateStatusResponse struct {
-	Exists         bool   `json:"exists"`
-	Running        bool   `json:"running"`
-	TemplateName   string `json:"templateName"`
-	Saved          bool   `json:"saved"`                   // true if TeamSettings.TemplateName is set
-	SandboxImage   string `json:"sandboxImage,omitempty"`   // per-template container image (OpenShell)
-	Backend        string `json:"backend,omitempty"`        // "incus", "k8s", or "openshell"
-	HasDockerfile  bool   `json:"hasDockerfile,omitempty"`  // true if dockerfile_body is saved
+	Exists        bool   `json:"exists"`
+	Running       bool   `json:"running"`
+	TemplateName  string `json:"templateName"`
+	Saved         bool   `json:"saved"`                   // true if TeamSettings.TemplateName is set
+	SandboxImage  string `json:"sandboxImage,omitempty"`  // per-template container image (OpenShell)
+	Backend       string `json:"backend,omitempty"`       // "incus", "k8s", or "openshell"
+	HasDockerfile bool   `json:"hasDockerfile,omitempty"` // true if dockerfile_body is saved
 }
 
 // TeamTemplateStatusHandler handles GET /api/team/template/status.
@@ -171,8 +171,8 @@ func TeamTemplateCreateHandler(w http.ResponseWriter, r *http.Request) {
 		TeamSlug:   tc.TeamSlug,
 		LayerChain: baseChain,
 		Labels: map[string]string{
-			"astonish.io/purpose": "team-template-editor",
-			"astonish.io/team":    tc.TeamSlug,
+			"troupe.io/purpose": "team-template-editor",
+			"troupe.io/team":    tc.TeamSlug,
 		},
 	})
 	if err != nil {
@@ -291,10 +291,10 @@ func persistTeamTemplateArtifact(ctx context.Context, backend store.PlatformBack
 
 	// 1. Ensure the layer row exists.
 	layer := &store.SandboxLayer{
-		LayerID:    artifact.LayerID,
+		LayerID:     artifact.LayerID,
 		ParentLayer: ptrIfNonEmpty(artifact.ParentLayer),
-		CephFSPath: "/mnt/astonish-layers/" + artifact.LayerID,
-		SizeBytes:  artifact.SizeBytes,
+		CephFSPath:  "/mnt/troupe-layers/" + artifact.LayerID,
+		SizeBytes:   artifact.SizeBytes,
 	}
 	if err := layers.PutLayer(ctx, layer); err != nil {
 		return fmt.Errorf("put layer: %w", err)
@@ -514,8 +514,8 @@ func TeamTemplateRestoreHandler(w http.ResponseWriter, r *http.Request) {
 		TeamSlug:   tc.TeamSlug,
 		LayerChain: baseChain,
 		Labels: map[string]string{
-			"astonish.io/purpose": "team-template-editor",
-			"astonish.io/team":    tc.TeamSlug,
+			"troupe.io/purpose": "team-template-editor",
+			"troupe.io/team":    tc.TeamSlug,
 		},
 	})
 	if err != nil {

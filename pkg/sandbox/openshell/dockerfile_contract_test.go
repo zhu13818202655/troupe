@@ -10,7 +10,7 @@ import (
 
 // TestOpenShellDockerfileIncludesRipgrep locks the packaging contract that
 // grep_search / find_files require ripgrep inside the OpenShell sandbox image
-// rootfs (tools run there without an Astonish overlay chroot).
+// rootfs (tools run there without an Troupe overlay chroot).
 func TestOpenShellDockerfileIncludesRipgrep(t *testing.T) {
 	_, thisFile, _, ok := runtime.Caller(0)
 	if !ok {

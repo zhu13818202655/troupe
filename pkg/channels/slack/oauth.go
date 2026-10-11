@@ -157,7 +157,7 @@ func (h *OAuthHandler) CallbackHandler() http.Handler {
 <head><title>Slack App Installed</title></head>
 <body style="font-family: sans-serif; text-align: center; padding: 60px;">
 <h1>Success!</h1>
-<p>Astonish has been installed to <strong>%s</strong>.</p>
+<p>Troupe has been installed to <strong>%s</strong>.</p>
 <p>You can close this window and start chatting with the bot in Slack.</p>
 </body>
 </html>`, install.TeamName)

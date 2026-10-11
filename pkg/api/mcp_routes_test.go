@@ -7,11 +7,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/agent"
 	"github.com/zhu13818202655/troupe/pkg/execution"
 	"github.com/zhu13818202655/troupe/pkg/skills"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 )
 
 type mcpValidatorStub struct {
@@ -164,8 +164,8 @@ func TestMCPRoutesInitializesForAuthorizedPrincipal(t *testing.T) {
 	if rec.Code != http.StatusOK {
 		t.Fatalf("status = %d, want %d; body=%s", rec.Code, http.StatusOK, rec.Body.String())
 	}
-	if !strings.Contains(rec.Body.String(), `"serverInfo":{"name":"astonish"`) {
-		t.Fatalf("initialize response does not identify Astonish MCP server: %s", rec.Body.String())
+	if !strings.Contains(rec.Body.String(), `"serverInfo":{"name":"troupe"`) {
+		t.Fatalf("initialize response does not identify Troupe MCP server: %s", rec.Body.String())
 	}
 	if validator.surface != execution.SurfaceMCP || validator.resource != "" || len(validator.scopes) != 1 || validator.scopes[0] != mcpToolExecuteScope {
 		t.Fatalf("validator received resource=%q scopes=%v surface=%q", validator.resource, validator.scopes, validator.surface)
@@ -182,7 +182,7 @@ func TestMCPProgressiveRuntimeHydratesSkillsAndCredentials(t *testing.T) {
 	}}
 	teamSkills := &apiSkillStore{skills: []store.Skill{{
 		Name:        "opencode",
-		Description: "List OpenStack VMs through Astonish http_request",
+		Description: "List OpenStack VMs through Troupe http_request",
 	}}}
 	services := &store.Services{
 		Mode:                store.ModePlatform,
@@ -255,7 +255,7 @@ func TestMCPRoutesListsProgressiveTools(t *testing.T) {
 	if got := strings.Count(rec.Body.String(), `"name":"`); got != 4 {
 		t.Fatalf("tools/list exposes %d tools, want exactly 4: %s", got, rec.Body.String())
 	}
-	for _, forbidden := range []string{"astonish_chat", "delegate_to_astonish"} {
+	for _, forbidden := range []string{"troupe_chat", "delegate_to_troupe"} {
 		if strings.Contains(rec.Body.String(), `"name":"`+forbidden+`"`) {
 			t.Fatalf("tools/list exposes forbidden %s: %s", forbidden, rec.Body.String())
 		}

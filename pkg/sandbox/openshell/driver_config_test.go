@@ -22,8 +22,8 @@ func TestRenderDriverConfig_Empty(t *testing.T) {
 func TestRenderDriverConfig_PVCShape(t *testing.T) {
 	result, err := renderDriverConfig([]config.CertBundleConfig{{
 		Name:      "corp-root-ca",
-		ClaimName: "astonish-corp-ca",
-		MountPath: "/etc/astonish-ca/ca-bundle.crt",
+		ClaimName: "troupe-corp-ca",
+		MountPath: "/etc/troupe-ca/ca-bundle.crt",
 		SubPath:   "ca-bundle.crt",
 	}})
 	if err != nil {
@@ -45,7 +45,7 @@ func TestRenderDriverConfig_PVCShape(t *testing.T) {
 		t.Errorf("volume name = %v", vol["name"])
 	}
 	pvc := vol["persistent_volume_claim"].(map[string]any)
-	if pvc["claim_name"] != "astonish-corp-ca" {
+	if pvc["claim_name"] != "troupe-corp-ca" {
 		t.Errorf("claim_name = %v", pvc["claim_name"])
 	}
 	if pvc["read_only"] != true {
@@ -59,7 +59,7 @@ func TestRenderDriverConfig_PVCShape(t *testing.T) {
 		t.Fatalf("volume_mounts len = %d, want 2 (operator + system)", len(mounts))
 	}
 	m0 := mounts[0].(map[string]any)
-	if m0["mount_path"] != "/etc/astonish-ca/ca-bundle.crt" {
+	if m0["mount_path"] != "/etc/troupe-ca/ca-bundle.crt" {
 		t.Errorf("mount_path[0] = %v", m0["mount_path"])
 	}
 	if m0["sub_path"] != "ca-bundle.crt" {
@@ -80,14 +80,14 @@ func TestRenderDriverConfig_PVCShape(t *testing.T) {
 	}
 
 	for _, k := range defaultTrustEnvVars {
-		if result.TrustEnv[k] != "/etc/astonish-ca/ca-bundle.crt" {
+		if result.TrustEnv[k] != "/etc/troupe-ca/ca-bundle.crt" {
 			t.Errorf("TrustEnv[%s] = %q", k, result.TrustEnv[k])
 		}
 	}
 	if len(result.ExtraReadOnly) != 2 {
 		t.Fatalf("ExtraReadOnly = %v, want 2 paths", result.ExtraReadOnly)
 	}
-	if result.ExtraReadOnly[0] != "/etc/astonish-ca/ca-bundle.crt" || result.ExtraReadOnly[1] != systemCABundlePath {
+	if result.ExtraReadOnly[0] != "/etc/troupe-ca/ca-bundle.crt" || result.ExtraReadOnly[1] != systemCABundlePath {
 		t.Errorf("ExtraReadOnly = %v", result.ExtraReadOnly)
 	}
 }
@@ -96,7 +96,7 @@ func TestRenderDriverConfig_CustomTrustEnv(t *testing.T) {
 	result, err := renderDriverConfig([]config.CertBundleConfig{{
 		Name:      "corp",
 		ClaimName: "pvc-ca",
-		MountPath: "/etc/astonish-ca/ca.pem",
+		MountPath: "/etc/troupe-ca/ca.pem",
 		TrustEnv:  []string{"SSL_CERT_FILE", "NODE_EXTRA_CA_CERTS"},
 	}})
 	if err != nil {
@@ -105,7 +105,7 @@ func TestRenderDriverConfig_CustomTrustEnv(t *testing.T) {
 	if len(result.TrustEnv) != 2 {
 		t.Fatalf("TrustEnv = %v, want 2 keys", result.TrustEnv)
 	}
-	if result.TrustEnv["SSL_CERT_FILE"] != "/etc/astonish-ca/ca.pem" {
+	if result.TrustEnv["SSL_CERT_FILE"] != "/etc/troupe-ca/ca.pem" {
 		t.Errorf("SSL_CERT_FILE = %q", result.TrustEnv["SSL_CERT_FILE"])
 	}
 }
@@ -136,7 +136,7 @@ func TestRenderDriverConfig_RejectRelativeMount(t *testing.T) {
 	_, err := renderDriverConfig([]config.CertBundleConfig{{
 		Name:      "bad",
 		ClaimName: "pvc",
-		MountPath: "etc/astonish-ca/ca.pem",
+		MountPath: "etc/troupe-ca/ca.pem",
 	}})
 	if err == nil {
 		t.Fatal("expected error for relative mount_path")
@@ -145,8 +145,8 @@ func TestRenderDriverConfig_RejectRelativeMount(t *testing.T) {
 
 func TestRenderDriverConfig_RejectDuplicateName(t *testing.T) {
 	_, err := renderDriverConfig([]config.CertBundleConfig{
-		{Name: "corp", ClaimName: "pvc-a", MountPath: "/etc/astonish-ca/a.crt"},
-		{Name: "corp", ClaimName: "pvc-b", MountPath: "/etc/astonish-ca/b.crt"},
+		{Name: "corp", ClaimName: "pvc-a", MountPath: "/etc/troupe-ca/a.crt"},
+		{Name: "corp", ClaimName: "pvc-b", MountPath: "/etc/troupe-ca/b.crt"},
 	})
 	if err == nil {
 		t.Fatal("expected duplicate name error")
@@ -159,7 +159,7 @@ func TestRenderDriverConfig_InstallSystemTrustFalse(t *testing.T) {
 	result, err := renderDriverConfig([]config.CertBundleConfig{{
 		Name:               "corp",
 		ClaimName:          "pvc-ca",
-		MountPath:          "/etc/astonish-ca/ca.pem",
+		MountPath:          "/etc/troupe-ca/ca.pem",
 		InstallSystemTrust: boolPtr(false),
 	}})
 	if err != nil {
@@ -169,15 +169,15 @@ func TestRenderDriverConfig_InstallSystemTrustFalse(t *testing.T) {
 	if len(mounts) != 1 {
 		t.Fatalf("volume_mounts len = %d, want 1", len(mounts))
 	}
-	if mounts[0].(map[string]any)["mount_path"] != "/etc/astonish-ca/ca.pem" {
+	if mounts[0].(map[string]any)["mount_path"] != "/etc/troupe-ca/ca.pem" {
 		t.Errorf("unexpected mounts: %#v", mounts)
 	}
 }
 
 func TestRenderDriverConfig_RejectTwoSystemTrustInstalls(t *testing.T) {
 	_, err := renderDriverConfig([]config.CertBundleConfig{
-		{Name: "a", ClaimName: "pvc-a", MountPath: "/etc/astonish-ca/a.crt"},
-		{Name: "b", ClaimName: "pvc-b", MountPath: "/etc/astonish-ca/b.crt"},
+		{Name: "a", ClaimName: "pvc-a", MountPath: "/etc/troupe-ca/a.crt"},
+		{Name: "b", ClaimName: "pvc-b", MountPath: "/etc/troupe-ca/b.crt"},
 	})
 	if err == nil {
 		t.Fatal("expected error for two default install_system_trust bundles")
@@ -186,8 +186,8 @@ func TestRenderDriverConfig_RejectTwoSystemTrustInstalls(t *testing.T) {
 
 func TestRenderDriverConfig_SecondBundleWithoutSystemTrust(t *testing.T) {
 	result, err := renderDriverConfig([]config.CertBundleConfig{
-		{Name: "a", ClaimName: "pvc-a", MountPath: "/etc/astonish-ca/a.crt"},
-		{Name: "b", ClaimName: "pvc-b", MountPath: "/etc/astonish-ca/b.crt", InstallSystemTrust: boolPtr(false)},
+		{Name: "a", ClaimName: "pvc-a", MountPath: "/etc/troupe-ca/a.crt"},
+		{Name: "b", ClaimName: "pvc-b", MountPath: "/etc/troupe-ca/b.crt", InstallSystemTrust: boolPtr(false)},
 	})
 	if err != nil {
 		t.Fatalf("renderDriverConfig: %v", err)
@@ -238,8 +238,8 @@ func TestApplyCertBundles_MergesTrustEnv(t *testing.T) {
 	cfg := config.SandboxOpenShellConfig{
 		CertBundles: []config.CertBundleConfig{{
 			Name:      "corp",
-			ClaimName: "astonish-corp-ca",
-			MountPath: "/etc/astonish-ca/ca-bundle.crt",
+			ClaimName: "troupe-corp-ca",
+			MountPath: "/etc/troupe-ca/ca-bundle.crt",
 		}},
 	}
 	env := map[string]string{"TROUPE_SESSION_ID": "s1"}
@@ -250,7 +250,7 @@ func TestApplyCertBundles_MergesTrustEnv(t *testing.T) {
 	if dc == nil {
 		t.Fatal("expected driver_config")
 	}
-	if env["SSL_CERT_FILE"] != "/etc/astonish-ca/ca-bundle.crt" {
+	if env["SSL_CERT_FILE"] != "/etc/troupe-ca/ca-bundle.crt" {
 		t.Errorf("SSL_CERT_FILE = %q", env["SSL_CERT_FILE"])
 	}
 	if env["TROUPE_SESSION_ID"] != "s1" {
@@ -262,8 +262,8 @@ func TestRenderDriverConfig_ConfigMapSource(t *testing.T) {
 	result, err := renderDriverConfig([]config.CertBundleConfig{{
 		Name:          "corp-root-ca",
 		Source:        config.CertBundleSourceConfigMap,
-		ConfigMapName: "astonish-corp-ca",
-		MountPath:     "/etc/astonish-ca/ca-bundle.crt",
+		ConfigMapName: "troupe-corp-ca",
+		MountPath:     "/etc/troupe-ca/ca-bundle.crt",
 		SubPath:       "ca-bundle.crt",
 	}})
 	if err != nil {
@@ -272,13 +272,13 @@ func TestRenderDriverConfig_ConfigMapSource(t *testing.T) {
 	if result.DriverConfig != nil {
 		t.Fatalf("DriverConfig = %#v, want nil (Kyverno injects mounts)", result.DriverConfig)
 	}
-	if result.TrustEnv["SSL_CERT_FILE"] != "/etc/astonish-ca/ca-bundle.crt" {
+	if result.TrustEnv["SSL_CERT_FILE"] != "/etc/troupe-ca/ca-bundle.crt" {
 		t.Errorf("SSL_CERT_FILE = %q", result.TrustEnv["SSL_CERT_FILE"])
 	}
 	if len(result.ExtraReadOnly) != 2 {
 		t.Fatalf("ExtraReadOnly = %v, want operator + system paths", result.ExtraReadOnly)
 	}
-	if result.ExtraReadOnly[0] != "/etc/astonish-ca/ca-bundle.crt" || result.ExtraReadOnly[1] != systemCABundlePath {
+	if result.ExtraReadOnly[0] != "/etc/troupe-ca/ca-bundle.crt" || result.ExtraReadOnly[1] != systemCABundlePath {
 		t.Errorf("ExtraReadOnly = %v", result.ExtraReadOnly)
 	}
 }
@@ -287,7 +287,7 @@ func TestRenderDriverConfig_ConfigMapRequiresName(t *testing.T) {
 	_, err := renderDriverConfig([]config.CertBundleConfig{{
 		Name:      "corp",
 		Source:    config.CertBundleSourceConfigMap,
-		MountPath: "/etc/astonish-ca/ca.pem",
+		MountPath: "/etc/troupe-ca/ca.pem",
 	}})
 	if err == nil {
 		t.Fatal("expected error for missing config_map_name")
@@ -299,8 +299,8 @@ func TestApplyCertBundles_ConfigMapStillSetsTrustEnv(t *testing.T) {
 		CertBundles: []config.CertBundleConfig{{
 			Name:          "corp",
 			Source:        config.CertBundleSourceConfigMap,
-			ConfigMapName: "astonish-corp-ca",
-			MountPath:     "/etc/astonish-ca/ca-bundle.crt",
+			ConfigMapName: "troupe-corp-ca",
+			MountPath:     "/etc/troupe-ca/ca-bundle.crt",
 		}},
 	}
 	env := map[string]string{}
@@ -311,7 +311,7 @@ func TestApplyCertBundles_ConfigMapStillSetsTrustEnv(t *testing.T) {
 	if dc != nil {
 		t.Fatalf("driver_config = %#v, want nil", dc)
 	}
-	if env["SSL_CERT_FILE"] != "/etc/astonish-ca/ca-bundle.crt" {
+	if env["SSL_CERT_FILE"] != "/etc/troupe-ca/ca-bundle.crt" {
 		t.Errorf("SSL_CERT_FILE = %q", env["SSL_CERT_FILE"])
 	}
 }
@@ -321,14 +321,14 @@ func TestDefaultSandboxPolicy_ConfigMapCertBundleExtraReadOnly(t *testing.T) {
 		CertBundles: []config.CertBundleConfig{{
 			Name:          "corp",
 			Source:        config.CertBundleSourceConfigMap,
-			ConfigMapName: "astonish-corp-ca",
-			MountPath:     "/etc/astonish-ca/ca-bundle.crt",
+			ConfigMapName: "troupe-corp-ca",
+			MountPath:     "/etc/troupe-ca/ca-bundle.crt",
 		}},
 	}
 	policy := defaultSandboxPolicy(cfg)
 	found := false
 	for _, p := range policy.Filesystem.ReadOnly {
-		if p == "/etc/astonish-ca/ca-bundle.crt" {
+		if p == "/etc/troupe-ca/ca-bundle.crt" {
 			found = true
 			break
 		}
@@ -343,13 +343,13 @@ func TestDefaultSandboxPolicy_CertBundleExtraReadOnly(t *testing.T) {
 		CertBundles: []config.CertBundleConfig{{
 			Name:      "corp",
 			ClaimName: "pvc",
-			MountPath: "/etc/astonish-ca/ca-bundle.crt",
+			MountPath: "/etc/troupe-ca/ca-bundle.crt",
 		}},
 	}
 	policy := defaultSandboxPolicy(cfg)
 	found := false
 	for _, p := range policy.Filesystem.ReadOnly {
-		if p == "/etc/astonish-ca/ca-bundle.crt" {
+		if p == "/etc/troupe-ca/ca-bundle.crt" {
 			found = true
 			break
 		}

@@ -53,9 +53,9 @@ export const runtimeStyles = `
 `
 
 export function installRuntimeStyles(): void {
-  if (document.getElementById('astonish-slides-runtime-styles')) return
+  if (document.getElementById('troupe-slides-runtime-styles')) return
   const style = document.createElement('style')
-  style.id = 'astonish-slides-runtime-styles'
+  style.id = 'troupe-slides-runtime-styles'
   style.textContent = runtimeStyles
   document.head.append(style)
 }

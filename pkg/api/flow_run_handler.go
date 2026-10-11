@@ -205,18 +205,18 @@ func FlowRunHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 5. Create Agent
-	astonishAgent := agent.NewAstonishAgentWithToolsets(cfg, llm, internalTools, mcpToolsets)
-	astonishAgent.DebugMode = false
-	astonishAgent.IsWebMode = true // Disable ANSI colors
-	astonishAgent.AutoApprove = true
-	astonishAgent.SessionService = session.InMemoryService()
+	troupeAgent := agent.NewTroupeAgentWithToolsets(cfg, llm, internalTools, mcpToolsets)
+	troupeAgent.DebugMode = false
+	troupeAgent.IsWebMode = true // Disable ANSI colors
+	troupeAgent.AutoApprove = true
+	troupeAgent.SessionService = session.InMemoryService()
 
 	// Wire credential store for {{CREDENTIAL:...}} placeholder resolution.
 	// File-based store (personal mode) + context-injected PG store (platform mode).
 	if cs := tools.GetCredentialStore(); cs != nil {
-		astonishAgent.Redactor = cs.Redactor()
-		astonishAgent.CredentialStore = cs
-		astonishAgent.PendingSecrets = credentials.NewPendingVault(cs.Redactor())
+		troupeAgent.Redactor = cs.Redactor()
+		troupeAgent.CredentialStore = cs
+		troupeAgent.PendingSecrets = credentials.NewPendingVault(cs.Redactor())
 		ctx = credentials.WithRedactor(ctx, cs.Redactor())
 	}
 	// Platform mode: inject PG-backed credential store into context so
@@ -230,22 +230,22 @@ func FlowRunHandler(w http.ResponseWriter, r *http.Request) {
 			slog.Debug("flow credential store injected", "agent", agentName, "has_personal_credentials", svc.PersonalCredentials != nil, "has_team_credentials", svc.Credentials != nil)
 		}
 		// Wire agent-level resolver as fallback
-		astonishAgent.CredentialStore = credentials.NewStoreAdapter(merged)
-		if astonishAgent.PendingSecrets == nil {
-			astonishAgent.PendingSecrets = credentials.NewPendingVault(nil)
+		troupeAgent.CredentialStore = credentials.NewStoreAdapter(merged)
+		if troupeAgent.PendingSecrets == nil {
+			troupeAgent.PendingSecrets = credentials.NewPendingVault(nil)
 		}
 		// Hydrate redactor from PG store so credential values are masked in SSE
-		if astonishAgent.Redactor == nil {
-			astonishAgent.Redactor = credentials.NewRedactor()
-			ctx = credentials.WithRedactor(ctx, astonishAgent.Redactor)
+		if troupeAgent.Redactor == nil {
+			troupeAgent.Redactor = credentials.NewRedactor()
+			ctx = credentials.WithRedactor(ctx, troupeAgent.Redactor)
 		}
-		astonishAgent.Redactor.HydrateFromStore(merged)
+		troupeAgent.Redactor.HydrateFromStore(merged)
 	}
 
 	adkAgent, err := adkagent.New(adkagent.Config{
-		Name:        "astonish_headless",
+		Name:        "troupe_headless",
 		Description: cfg.Description,
-		Run:         astonishAgent.Run,
+		Run:         troupeAgent.Run,
 	})
 	if err != nil {
 		SendErrorSSE(w, flusher, fmt.Sprintf("failed to create agent: %v", err))
@@ -253,9 +253,9 @@ func FlowRunHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 6. Create Session
-	sessionService := astonishAgent.SessionService
+	sessionService := troupeAgent.SessionService
 	resp, err := sessionService.Create(ctx, &session.CreateRequest{
-		AppName: "astonish",
+		AppName: "troupe",
 		UserID:  sessionID,
 	})
 	if err != nil {
@@ -270,7 +270,7 @@ func FlowRunHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 7. Create Runner
 	rnr, err := runner.New(runner.Config{
-		AppName:        "astonish",
+		AppName:        "troupe",
 		Agent:          adkAgent,
 		SessionService: sessionService,
 	})

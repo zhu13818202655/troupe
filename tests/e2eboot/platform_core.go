@@ -119,7 +119,7 @@ func DropDBs(ctx context.Context, baseDSN, suffix string, log CoreLogger) {
 }
 
 // DropAllDBsWithSuffix drops every database whose name matches
-// "astonish_<suffix>_*". Used by the inspector at startup to clear lingering
+// "troupe_<suffix>_*". Used by the inspector at startup to clear lingering
 // per-test org DBs from prior runs.
 func DropAllDBsWithSuffix(ctx context.Context, baseDSN, suffix string, log CoreLogger) {
 	if log == nil {
@@ -137,7 +137,7 @@ func DropAllDBsWithSuffix(ctx context.Context, baseDSN, suffix string, log CoreL
 	}
 	defer conn.Close(ctx)
 
-	prefix := fmt.Sprintf("astonish_%s_", suffix)
+	prefix := fmt.Sprintf("troupe_%s_", suffix)
 	rows, err := conn.Query(ctx,
 		"SELECT datname FROM pg_database WHERE datname LIKE $1", prefix+"%")
 	if err != nil {
@@ -165,7 +165,7 @@ func DropAllDBsWithSuffix(ctx context.Context, baseDSN, suffix string, log CoreL
 	}
 }
 
-// BootstrapPlatformCore bootstraps a fresh Astonish platform: creates the
+// BootstrapPlatformCore bootstraps a fresh Troupe platform: creates the
 // platform DB, starts a StudioServer, registers the bootstrap user, seeds
 // a provider. Returns a CoreHarness containing live handles.
 //
@@ -372,7 +372,7 @@ func writeConfigFile(dir, platformDSN, suffix, bifrostURL, jwtSecret string) err
   openshell:
     gateway_addr: %s
     gateway_tls: false
-    sandbox_image: ghcr.io/sap/astonish-sandbox-openshell:dev
+    sandbox_image: ghcr.io/sap/troupe-sandbox-openshell:dev
     network_policy:
       presets:
         - default
@@ -380,11 +380,11 @@ func writeConfigFile(dir, platformDSN, suffix, bifrostURL, jwtSecret string) err
 	default:
 		sandboxNS := os.Getenv("TROUPE_E2E_SANDBOX_NAMESPACE")
 		if sandboxNS == "" {
-			sandboxNS = "astonish-sandbox"
+			sandboxNS = "troupe-sandbox"
 		}
 		controlPlaneNS := os.Getenv("TROUPE_E2E_CONTROL_PLANE_NAMESPACE")
 		if controlPlaneNS == "" {
-			controlPlaneNS = "astonish"
+			controlPlaneNS = "troupe"
 		}
 		kubeconfigPath := os.Getenv("KUBECONFIG")
 		if kubeconfigPath == "" {
@@ -407,9 +407,9 @@ func writeConfigFile(dir, platformDSN, suffix, bifrostURL, jwtSecret string) err
     control_plane_namespace: %s
     overlay_mode: fuse
     privileged_pods: true
-    sandbox_image: ghcr.io/sap/astonish-sandbox-base:dev
-    layers_pvc_name: astonish-layers
-    uppers_pvc_name: astonish-uppers
+    sandbox_image: ghcr.io/sap/troupe-sandbox-base:dev
+    layers_pvc_name: troupe-layers
+    uppers_pvc_name: troupe-uppers
 `, kubeconfigPath, sandboxNS, controlPlaneNS)
 	}
 

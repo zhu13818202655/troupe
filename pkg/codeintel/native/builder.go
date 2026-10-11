@@ -1,7 +1,7 @@
-// Package native builds the astonish tree-sitter shared library on demand.
+// Package native builds the troupe tree-sitter shared library on demand.
 //
 // In container images the library is compiled at image-build time and installed
-// under /usr/lib/astonish. Local code mode runs in the user's own environment
+// under /usr/lib/troupe. Local code mode runs in the user's own environment
 // where that path does not exist, so this package compiles the library from the
 // embedded C sources on first use and caches the result under the user's config
 // directory. The compile is a plain `cc -shared`, matching
@@ -23,6 +23,7 @@ import (
 	"time"
 
 	nativeembed "github.com/zhu13818202655/troupe/pkg/codeintel/native/embed"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 // ErrNoCompiler indicates no usable C compiler was found on PATH, so the library
@@ -36,26 +37,27 @@ const buildTimeout = 3 * time.Minute
 // libraryFileName is the shared-object name written into the cache directory.
 func libraryFileName() string {
 	if runtime.GOOS == "darwin" {
-		return "libastonish-treesitter.dylib"
+		return "libtroupe-treesitter.dylib"
 	}
-	return "libastonish-treesitter.so"
+	return "libtroupe-treesitter.so"
 }
 
 // CacheDir returns the directory where the locally built library is cached. It
 // honors XDG_CONFIG_HOME (like pkg/config.GetConfigDir) for portability and test
 // isolation, without importing pkg/config to avoid an import cycle.
 func CacheDir() (string, error) {
-	base := os.Getenv("XDG_CONFIG_HOME")
-	if base == "" {
-		cfg, err := os.UserConfigDir()
-		if err != nil {
-			return "", err
-		}
-		base = cfg
+	// Delegate to the shared config-dir resolver rather than re-deriving it
+	// here: a hard-coded directory name silently diverged from
+	// config.GetConfigDir() after the rebrand, splitting app state across two
+	// directories. Going through the resolver also means the cache follows the
+	// legacy directory when an existing install is still using it.
+	base, err := config.GetConfigDir()
+	if err != nil {
+		return "", err
 	}
 	// Namespace by embedded-source version so a binary upgrade with newer
 	// grammars rebuilds instead of loading a stale library.
-	return filepath.Join(base, "astonish", "lib", nativeembed.Version), nil
+	return filepath.Join(base, "lib", nativeembed.Version), nil
 }
 
 // CachedLibraryPath returns the absolute path the built library would occupy.
@@ -105,7 +107,7 @@ func buildLibrary(dst string) (string, error) {
 		return "", err
 	}
 
-	srcDir, err := os.MkdirTemp("", "astonish-treesitter-src-")
+	srcDir, err := os.MkdirTemp("", "troupe-treesitter-src-")
 	if err != nil {
 		return "", fmt.Errorf("create temp source dir: %w", err)
 	}
@@ -129,7 +131,7 @@ func buildLibrary(dst string) (string, error) {
 	}
 	// Compile to a temp file in the destination dir, then rename atomically so a
 	// concurrent reader never sees a half-written library.
-	tmpOut, err := os.CreateTemp(filepath.Dir(dst), ".libastonish-treesitter-*.tmp")
+	tmpOut, err := os.CreateTemp(filepath.Dir(dst), ".libtroupe-treesitter-*.tmp")
 	if err != nil {
 		return "", fmt.Errorf("create temp library file: %w", err)
 	}

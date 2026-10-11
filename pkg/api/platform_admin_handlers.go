@@ -340,12 +340,12 @@ func PlatformAdminListUsersHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Enrich with org memberships
 	type userEntry struct {
-		ID           string               `json:"id"`
-		Email        string               `json:"email"`
-		DisplayName  string               `json:"display_name"`
-		PlatformRole string               `json:"platform_role,omitempty"`
-		Status       string               `json:"status"`
-		CreatedAt    time.Time            `json:"created_at"`
+		ID           string                 `json:"id"`
+		Email        string                 `json:"email"`
+		DisplayName  string                 `json:"display_name"`
+		PlatformRole string                 `json:"platform_role,omitempty"`
+		Status       string                 `json:"status"`
+		CreatedAt    time.Time              `json:"created_at"`
 		Orgs         []*store.OrgMembership `json:"orgs"`
 	}
 

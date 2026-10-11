@@ -1,6 +1,6 @@
 # Browser Automation
 
-Astonish includes 34 browser automation tools for full web interaction, testing, and data extraction.
+Troupe includes 34 browser automation tools for full web interaction, testing, and data extraction.
 
 ## Configuration
 
@@ -13,7 +13,7 @@ browser:
   viewport_height: 1080
 ```
 
-Configure browser settings via `astonish config edit` or Studio Settings.
+Configure browser settings via `troupe config edit` or Studio Settings.
 
 ## Tools
 

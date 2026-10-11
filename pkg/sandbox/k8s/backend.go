@@ -99,9 +99,9 @@ type Config struct {
 	// created. Defaults to "troupe-sandboxes".
 	Namespace string
 
-	// ControlPlaneNamespace is the namespace where the Astonish API and
+	// ControlPlaneNamespace is the namespace where the Troupe API and
 	// Worker pods run. Used by EnsureOrgNetwork to allow ingress from
-	// the control plane into sandbox pods. Defaults to "astonish".
+	// the control plane into sandbox pods. Defaults to "troupe".
 	ControlPlaneNamespace string
 
 	// RuntimeClassName is the RuntimeClass used for sandbox pods.
@@ -143,28 +143,28 @@ type Config struct {
 	FuseDeviceResource string
 
 	// LayersPath is the node-local mount point for the RWX CephFS layer
-	// store. Defaults to "/mnt/astonish-layers".
+	// store. Defaults to "/mnt/troupe-layers".
 	LayersPath string
 
 	// UppersPath is the node-local mount point for the RWX CephFS upper
 	// store (persisted evicted upper layers). Defaults to
-	// "/mnt/astonish-uppers".
+	// "/mnt/troupe-uppers".
 	UppersPath string
 
 	// LayersPVCName is the name of the PersistentVolumeClaim that backs
 	// LayersPath (mounted read-only into sandbox pods). Defaults to
-	// "astonish-layers".
+	// "troupe-layers".
 	LayersPVCName string
 
 	// UppersPVCName is the name of the PersistentVolumeClaim that backs
 	// UppersPath (mounted RW for eviction/resume). Defaults to
-	// "astonish-uppers".
+	// "troupe-uppers".
 	UppersPVCName string
 
 	// SandboxImage is the container image used for sandbox pods. It
-	// MUST ship the astonish-sandbox-entrypoint binary and the node
+	// MUST ship the troupe-sandbox-entrypoint binary and the node
 	// runtime. Defaults to
-	// "ghcr.io/sap/astonish-sandbox-base:latest" (§10 "Astonish ships").
+	// "ghcr.io/sap/troupe-sandbox-base:latest" (§10 "Troupe ships").
 	SandboxImage string
 
 	// MaxChainDepth caps the overlayfs lowerdir chain (default 20).
@@ -227,7 +227,7 @@ func (c *Config) applyDefaults() {
 		c.Namespace = "troupe-sandboxes"
 	}
 	if c.ControlPlaneNamespace == "" {
-		c.ControlPlaneNamespace = "astonish"
+		c.ControlPlaneNamespace = "troupe"
 	}
 	// RuntimeClassName intentionally defaults to the empty string
 	// ("use the cluster default runtime"). Phase F drops the hard
@@ -237,19 +237,19 @@ func (c *Config) applyDefaults() {
 		c.OverlayMode = OverlayModeFuse
 	}
 	if c.LayersPath == "" {
-		c.LayersPath = "/mnt/astonish-layers"
+		c.LayersPath = "/mnt/troupe-layers"
 	}
 	if c.UppersPath == "" {
-		c.UppersPath = "/mnt/astonish-uppers"
+		c.UppersPath = "/mnt/troupe-uppers"
 	}
 	if c.LayersPVCName == "" {
-		c.LayersPVCName = "astonish-layers"
+		c.LayersPVCName = "troupe-layers"
 	}
 	if c.UppersPVCName == "" {
-		c.UppersPVCName = "astonish-uppers"
+		c.UppersPVCName = "troupe-uppers"
 	}
 	if c.SandboxImage == "" {
-		c.SandboxImage = "ghcr.io/sap/astonish-sandbox-base:latest"
+		c.SandboxImage = "ghcr.io/sap/troupe-sandbox-base:latest"
 	}
 	if c.MaxChainDepth <= 0 {
 		c.MaxChainDepth = 20
@@ -368,7 +368,7 @@ func hasK8sConnectivitySignal(kc config.SandboxKubernetesConfig) bool {
 		return true
 	}
 	// Honour the traditional $KUBECONFIG env var so that CLI invocations
-	// like `KUBECONFIG=... astonish ...` light up the k8s backend.
+	// like `KUBECONFIG=... troupe ...` light up the k8s backend.
 	if v, ok := osLookupEnv("KUBECONFIG"); ok && v != "" {
 		return true
 	}

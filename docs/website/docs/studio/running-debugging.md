@@ -56,13 +56,13 @@ For deeper debugging, check the daemon logs:
 
 ```bash
 # Follow live logs
-astonish daemon logs -f
+troupe daemon logs -f
 ```
 
 Or run the daemon in foreground mode and force logs to stdout:
 
 ```bash
-TROUPE_LOG_DEST=stdout astonish daemon run
+TROUPE_LOG_DEST=stdout troupe daemon run
 ```
 
 Local/default daemon mode remains file-based unless `TROUPE_LOG_DEST=stdout` is set. Kubernetes API and worker pods use stdout by default.

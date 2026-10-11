@@ -217,7 +217,7 @@ CRITICAL RULES:
 	} else if job.Scope == "personal" && job.OwnerID != "" {
 		userID = job.OwnerID
 	}
-	appName := "astonish"
+	appName := "troupe"
 
 	// Get or create ADK session (stable per job for transcript continuity).
 	sess, err := getOrCreateSession(ctx, e.SessionService, appName, userID, sessionKey)
@@ -232,8 +232,8 @@ CRITICAL RULES:
 
 	// Create ADK agent wrapper for this execution
 	adkAgent, err := adkagent.New(adkagent.Config{
-		Name:        "astonish_scheduler",
-		Description: "Astonish scheduled adaptive task",
+		Name:        "troupe_scheduler",
+		Description: "Troupe scheduled adaptive task",
 		Run:         e.ChatAgent.Run,
 	})
 	if err != nil {

@@ -1,6 +1,6 @@
 # pkg/tui — AGENTS.md
 
-Fullscreen terminal chat app for Astonish (Claude Code / OpenCode–style).
+Fullscreen terminal chat app for Troupe (Claude Code / OpenCode–style).
 
 ## Scope
 
@@ -19,9 +19,9 @@ Fullscreen terminal chat app for Astonish (Claude Code / OpenCode–style).
 
 ## Key rules
 
-1. **Chat is always platform-backed.** Requires `astonish login`. No in-process agent path in the TUI.
+1. **Chat is always platform-backed.** Requires `troupe login`. No in-process agent path in the TUI.
 2. **TUI never imports `pkg/daemon` or agent wiring.** It only consumes `backend.Backend` and reduces `events.Event`.
-3. **cmd stays thin** — no bubbletea models under `cmd/astonish`.
+3. **cmd stays thin** — no bubbletea models under `cmd/troupe`.
 4. Soft-degrade Studio-only SSE events (`app_preview`, browser handoff, …) to system notices.
 5. Plan mode is a TUI toggle (`shift+tab`) that cycles Normal → Plan → Ask → Normal in code mode (Normal ↔ Plan in platform mode). In code mode, Plan sets `backend.TurnOptions.GraphPlanMode` → `agent.PromptOverrides.GraphPlanMode` and uses the phased Graph-Optimized Plan gate (graph → read → gap → plan, driven by codegraph + `gplan_*` transition tools). In platform mode, Plan sets `backend.TurnOptions.PlanMode` → `agent.PromptOverrides.PlanMode` with a simpler gate that blocks all mutating tools. Enforcement lives in `pkg/agent` (`graph_plan_state.go`, `chat_agent_run.go`), not the TUI — the TUI only sets the flag and mirrors the prompt text in `graphPlanModeSystemContext` (source of truth is `agent.GraphPlanModeSystemContext`; keep in sync). `planMode` and `graphPlanMode` are mutually exclusive booleans on the model struct; `planMode` is used only by platform mode. After `announce_plan`, the TUI shows a structured plan card (`plan.go`) plus a keyed action bar (`renderPlanApprovalFooter`); `ApprovalKind` `"plan"` is handled by `handlePlanApprovalKey` (Enter/y implement, r request changes, n/esc decline) and must not go through `pickYes`/`pickNo`. Visual contract: `docs/architecture/terminal-app.md` → "Plan presentation (code TUI)".
 6. Capability-gated commands (`/provider`, `/rollback`) are exposed only when the active backend implements the matching optional interface (`backend.ProviderAdminBackend`, `backend.RollbackBackend`), which only the code-mode `localAgentBackend` does. Gate them in three places — `handleSlash`, `syncSlashCompletion` (the `extra` slash commands), and `helpText` — via `m.providerAdmin()` / `m.rollbackCap()`. Never expose these on platform chat. The `/provider` list shows **only** local config.yaml providers (all editable); code mode never fetches or displays platform providers.
@@ -31,8 +31,8 @@ Fullscreen terminal chat app for Astonish (Claude Code / OpenCode–style).
 
 ## Entry points
 
-- `astonish chat` → `launcher.RunChatTUI` → `tui.Run`
-- bare `astonish` → same path when stdin/stdout are TTYs and login exists
+- `troupe chat` → `launcher.RunChatTUI` → `tui.Run`
+- bare `troupe` → same path when stdin/stdout are TTYs and login exists
 
 ## When editing
 

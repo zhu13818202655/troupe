@@ -8,7 +8,7 @@
 
 ## Overview
 
-Astonish Docs enables the agent to create, refine, present, and export professional presentations from natural language. Slides are authored as a **versioned, declarative Web Component document** and rendered live in Studio. The same semantic source compiles to:
+Troupe Docs enables the agent to create, refine, present, and export professional presentations from natural language. Slides are authored as a **versioned, declarative Web Component document** and rendered live in Studio. The same semantic source compiles to:
 
 - an interactive web presentation;
 - a deterministic PDF;
@@ -26,7 +26,7 @@ Default authoring is **not** “fill empty holes in an imported sample slide.”
 3. Preserve native editability in PowerPoint wherever a semantic mapping exists.
 4. Make export behavior predictable, inspectable, and testable.
 5. Allow richer web-only components without pretending they can round-trip to PowerPoint.
-6. Preserve existing Astonish tenant scoping, Studio SSE behavior, and sandbox boundaries.
+6. Preserve existing Troupe tenant scoping, Studio SSE behavior, and sandbox boundaries.
 7. Compose on-brand decks from a small catalog of layout types (cover, chapter, contrast, quote, closer) rather than pouring a story into whichever imported sample ranked richest.
 
 ## Non-goals
@@ -55,7 +55,7 @@ Default authoring is **not** “fill empty holes in an imported sample slide.”
          optional slots omitted; card grids are capped panels; named ast-text slots
                                 │
                                 ▼
-                ASTONISH SLIDES DOCUMENT (ASD v1)
+                TROUPE SLIDES DOCUMENT (ASD v1)
         versioned custom-element markup + typed properties/data
                                 │
                  parse → validate → normalized scene graph
@@ -264,7 +264,7 @@ Existing heuristics still apply (`run_adjacency`, `empty_card`, `missing_title`,
 
 ## Technology Decision
 
-### Public authoring model: Astonish Custom Elements
+### Public authoring model: Troupe Custom Elements
 
 Use autonomous Custom Elements with an `ast-` prefix:
 
@@ -287,7 +287,7 @@ Keep meaningful content and machine-readable data in attributes/light DOM. Shado
 
 ### Presentation runtime
 
-Build a small Astonish-owned deck controller around `<ast-deck>` and `<ast-slide>`. It owns:
+Build a small Troupe-owned deck controller around `<ast-deck>` and `<ast-slide>`. It owns:
 
 - keyboard, pointer, and touch navigation;
 - fullscreen and overview modes;
@@ -303,7 +303,7 @@ Do not make a third-party runtime part of the stored format.
 
 | Option | Finding | Decision |
 |---|---|---|
-| Lit | Active, standards-based Custom Element library; no slide runtime | Use as the implementation helper for Astonish components |
+| Lit | Active, standards-based Custom Element library; no slide runtime | Use as the implementation helper for Troupe components |
 | OddBird `<slide-deck>` | The closest modern true Web Component deck; small and pre-1.0; no first-class export | Use as design reference or prototype behind an adapter, not as a persisted contract |
 | reveal.js | Mature presentation runtime and excellent PDF workflow; not Web Component-based | Keep as a possible runtime adapter if the owned controller becomes too costly |
 | Slidev | Mature Vue/Markdown product with strong export; PPTX export is image-oriented | Do not use as the canonical model |
@@ -499,7 +499,7 @@ A whole-slide screenshot is allowed only as an explicit `fidelity=visual` export
 
 Use **PptxGenJS** as the initial native PPTX generation engine. It generates standard OOXML and supports native text, shapes, images, tables, common charts, slide masters, and speaker notes in browser/Node environments.
 
-PptxGenJS is a drawing/generation API, not a general HTML renderer. Astonish supplies the semantic mapping layer. Its HTML import helper is table-focused and is not the architecture for arbitrary components.
+PptxGenJS is a drawing/generation API, not a general HTML renderer. Troupe supplies the semantic mapping layer. Its HTML import helper is table-focused and is not the architecture for arbitrary components.
 
 The Go server invokes a pinned, bundled Node worker rather than building a broad custom OOXML writer in Go:
 
@@ -542,7 +542,7 @@ Web and PowerPoint rendering engines differ in font metrics, line breaking, grad
 - compare semantic layout and visual output in tests;
 - never promise arbitrary CSS fidelity and complete native editability simultaneously.
 
-SVG inserted into PowerPoint is a picture, not automatically a set of editable PowerPoint shapes. Microsoft 365 may offer “Convert to Shape” interactively, but that is lossy and is not an Astonish round-trip guarantee.
+SVG inserted into PowerPoint is a picture, not automatically a set of editable PowerPoint shapes. Microsoft 365 may offer “Convert to Shape” interactively, but that is lossy and is not an Troupe round-trip guarantee.
 
 ### Live web content in PowerPoint
 
@@ -651,7 +651,7 @@ banks the lossless IR.
 ### Data model
 
 `TemplateModel` (Go: `pkg/docs/slides/themes/template_model.go`; TS mirror:
-`web/src/api/slidesTemplateModel.ts`) is expressed in Astonish canvas units
+`web/src/api/slidesTemplateModel.ts`) is expressed in Troupe canvas units
 (logical px on a 1920×1080 canvas, colors `#RRGGBB`) rather than OOXML EMUs/inches:
 
 - `TemplateModel { schema:3, size{w,h}, theme{}, layouts[], slides[], warnings[] }`
@@ -1163,7 +1163,7 @@ master** — there is no natural boundary to split on.
 
 Two options were considered:
 
-- **Option A (chosen):** keep **one Astonish template per pptx** and expose its
+- **Option A (chosen):** keep **one Troupe template per pptx** and expose its
   layouts as classified, human-labeled, selectable **variants** (label = the real
   PowerPoint layout name). Chrome fidelity comes from master→layout inheritance.
 - **Option B (rejected):** emit **multiple templates from one pptx** (e.g. one per
@@ -1394,7 +1394,7 @@ Continue using existing Go infrastructure for stores, APIs, go-rod PDF rendering
 ### Web/runtime
 
 - `lit` — Custom Element implementation helper (BSD-3-Clause).
-- optional deck-runtime adapter kept behind Astonish interfaces.
+- optional deck-runtime adapter kept behind Troupe interfaces.
 
 ### PPTX worker
 
@@ -1430,7 +1430,7 @@ The exporter interface must isolate this choice. Browser-side export reduces ser
 - Add validation tools and generated model guidance.
 - Add scoped storage schemas/implementations and migrations.
 
-### Phase 2 — Astonish integration (2 weeks)
+### Phase 2 — Troupe integration (2 weeks)
 
 - Add deck/slide tools and conditional prompt guidance.
 - Add APIs and sandboxed slide serving.
@@ -1496,7 +1496,7 @@ The exporter interface must isolate this choice. Browser-side export reduces ser
 |---|---|---|
 | Canonical source | Versioned `ast-*` Custom Element markup | Human/LLM-readable web format with explicit export semantics |
 | Internal contract | Normalized semantic scene graph | Decouples source syntax, web DOM, and PPTX library |
-| Web implementation | Astonish components, Lit where useful | Standards-based and framework-neutral without making Lit syntax persistent |
+| Web implementation | Troupe components, Lit where useful | Standards-based and framework-neutral without making Lit syntax persistent |
 | Runtime | Small owned controller behind an adapter | Avoids coupling persisted decks to a third-party framework |
 | Geometry | Fixed 1920 × 1080 logical canvas | Deterministic 16:9 mapping to 12 × 6.75 inch PowerPoint |
 | Styling | Typed theme tokens and export-safe properties | Predictable dual-target behavior and stronger security |
@@ -1506,7 +1506,7 @@ The exporter interface must isolate this choice. Browser-side export reduces ser
 | Screenshot deck | Explicit visual-fidelity mode only | Useful escape hatch without mislabeling output as editable |
 | PDF | Chromium print of Web Components | Web rendering is the visual-fidelity target |
 | Live HTML in PPTX | Separate optional Office add-in profile | Add-ins are hosted runtime surfaces, not native portable shapes |
-| Storage | Tenant-scoped database and managed assets | Preserves Astonish scope invariants |
+| Storage | Tenant-scoped database and managed assets | Preserves Troupe scope invariants |
 | Security | Parsed allowlisted DSL in sandboxed iframe | Web Components do not justify arbitrary model-authored script execution |
 | Default body authoring | Server-side `recipe-*` layouts themed from the template | Named slots + chrome overlay beat filling imported sample holes; identity still comes from the `.pptx` |
 | Template `muted` token | Body/caption color only if WCAG AA vs surface | Corporate washes are decorative; unreadable cyan captions are a defect |

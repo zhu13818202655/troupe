@@ -1,6 +1,6 @@
 # Email
 
-The Email channel allows users to interact with Astonish agents by sending and receiving standard email. It supports both traditional IMAP/SMTP and Microsoft 365 via the Graph API.
+The Email channel allows users to interact with Troupe agents by sending and receiving standard email. It supports both traditional IMAP/SMTP and Microsoft 365 via the Graph API.
 
 ## Setup
 
@@ -11,7 +11,7 @@ The Email channel allows users to interact with Astonish agents by sending and r
 Run the interactive setup wizard:
 
 ```bash
-astonish channels setup email
+troupe channels setup email
 ```
 
 The wizard collects IMAP/SMTP details, tests the IMAP connection, and stores credentials securely in the encrypted credential store.
@@ -38,7 +38,7 @@ Passwords are stored in the encrypted credential store, not in the config file.
 #### 2. Start the Daemon
 
 ```bash
-astonish daemon start
+troupe daemon start
 ```
 
 The daemon polls the IMAP inbox at the configured interval and processes new messages.
@@ -50,7 +50,7 @@ Use this option for Microsoft 365 mailboxes. It uses the Microsoft Graph API wit
 #### 1. Register an App in Microsoft Entra ID
 
 1. Go to [Azure Portal > App Registrations](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) and select **New registration**
-2. Name it (e.g., "Astonish Email") and set the supported account type to **Single tenant**
+2. Name it (e.g., "Troupe Email") and set the supported account type to **Single tenant**
 3. No redirect URI is needed — click **Register**
 4. Under **API permissions**, add Microsoft Graph **Delegated** permissions:
    - `Mail.ReadWrite` — Read and write mail
@@ -70,7 +70,7 @@ Run the following script to authenticate as your service account and obtain a re
 #!/bin/bash
 
 # ==========================================
-# Configuration for Astonish Service Account
+# Configuration for Troupe Service Account
 # ==========================================
 TENANT_ID="your_tenant_id_here"
 CLIENT_ID="your_client_id_here"
@@ -142,7 +142,7 @@ while true; do
         echo ""
         echo "Authentication Successful!"
         echo ""
-        echo "REFRESH TOKEN (save this in Astonish):"
+        echo "REFRESH TOKEN (save this in Troupe):"
         echo "$REFRESH_TOKEN"
         echo ""
         echo "ACCESS TOKEN (for testing, expires in ~1 hour):"
@@ -163,7 +163,7 @@ while true; do
 done
 ```
 
-Sign in as the **service account** (the mailbox Astonish will use) when prompted. After approval, the script prints the refresh token.
+Sign in as the **service account** (the mailbox Troupe will use) when prompted. After approval, the script prints the refresh token.
 
 #### 3. Configure in Studio
 
@@ -179,12 +179,12 @@ Sign in as the **service account** (the mailbox Astonish will use) when prompted
 5. Click **Test Connection** to verify — this exchanges the refresh token and calls the Graph API
 6. Click **Save** and toggle the channel to **Enabled**
 
-Astonish automatically refreshes the access token and persists rotated refresh tokens. No manual token rotation is needed.
+Troupe automatically refreshes the access token and persists rotated refresh tokens. No manual token rotation is needed.
 
 #### 4. Start the Daemon
 
 ```bash
-astonish daemon start
+troupe daemon start
 ```
 
 The daemon polls the Graph API inbox at the configured interval.
@@ -217,7 +217,7 @@ Microsoft Graph secrets (Tenant ID, Client ID, Client Secret, Refresh Token) are
 
 Email threads (based on `In-Reply-To`/`References` headers) maintain the same agent session.
 
-In PostgreSQL platform deployments, a verified email channel identity is resolved to the linked Astonish user. Agent tools invoked from that email can read that user's personal credentials first, then fall back to the routed team's credentials. This matches Studio chat behavior, so credentials saved privately in **Settings → Credentials** are available when the same user interacts by email. Email-triggered sandbox sessions also inherit the platform/org/team network allow rules and OpenShell gateway pre-seed configuration for the routed context.
+In PostgreSQL platform deployments, a verified email channel identity is resolved to the linked Troupe user. Agent tools invoked from that email can read that user's personal credentials first, then fall back to the routed team's credentials. This matches Studio chat behavior, so credentials saved privately in **Settings → Credentials** are available when the same user interacts by email. Email-triggered sandbox sessions also inherit the platform/org/team network allow rules and OpenShell gateway pre-seed configuration for the routed context.
 
 ## Plus-Addressing Routing (PostgreSQL)
 
@@ -234,6 +234,6 @@ This allows users to control routing per-message without any in-band commands.
 ## Managing the Channel
 
 ```bash
-astonish channels status           # Check channel status
-astonish channels disable email    # Disable the channel
+troupe channels status           # Check channel status
+troupe channels disable email    # Disable the channel
 ```

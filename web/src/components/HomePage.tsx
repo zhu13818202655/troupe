@@ -8,7 +8,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
-import AstonishLogo from './AstonishLogo'
+import TroupeLogo from './TroupeLogo'
 
 interface HomePageProps {
   onSuggestionClick?: (text: string) => void
@@ -43,7 +43,7 @@ export default function HomePage({ onSuggestionClick, userDisplayName }: HomePag
     <div className="flex flex-1 flex-col items-center justify-center overflow-y-auto px-6 py-6">
       <div className="flex w-full max-w-[900px] flex-col items-center gap-5">
         <div className="hero-card-nova w-full px-6 py-5 text-center shadow-none sm:px-8 sm:py-6">
-          <AstonishLogo size="lg" className="mx-auto" />
+          <TroupeLogo size="lg" className="mx-auto" />
           <h1 className="font-display mt-3 text-[26px] leading-snug tracking-[-0.03em] text-[color:var(--text-primary)] sm:text-[32px]">
             Hello, {name}.{' '}
             <em className="text-gradient-nova not-italic" style={{ fontStyle: 'italic' }}>

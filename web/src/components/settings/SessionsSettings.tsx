@@ -91,7 +91,7 @@ export default function SessionsSettings({ config, onSaved }: { config: Record<s
               </SelectContent>
             </Select>
             <p className="text-xs leading-relaxed text-muted-foreground">
-              File sessions are persisted to disk at ~/.config/astonish/sessions/. Memory sessions are stored in RAM only and are lost on restart.
+              File sessions are persisted to disk at ~/.config/troupe/sessions/. Memory sessions are stored in RAM only and are lost on restart.
             </p>
           </div>
 
@@ -103,7 +103,7 @@ export default function SessionsSettings({ config, onSaved }: { config: Record<s
                 type="text"
                 value={form.base_dir}
                 onChange={(e) => setForm({ ...form, base_dir: e.target.value })}
-                placeholder="~/.config/astonish/sessions/ (default)"
+                placeholder="~/.config/troupe/sessions/ (default)"
                 className="bg-background font-mono"
               />
               <p className="text-xs text-muted-foreground">

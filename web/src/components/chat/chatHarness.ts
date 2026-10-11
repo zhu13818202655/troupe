@@ -160,7 +160,7 @@ export const SIDEBAR_COLLAPSED_WIDTH = 48
 /** Expanded session sidebar width (px). */
 export const SIDEBAR_EXPANDED_WIDTH = 280
 
-export const HARNESS_WIDTH_STORAGE_KEY = 'astonish.harnessPanelWidth'
+export const HARNESS_WIDTH_STORAGE_KEY = 'troupe.harnessPanelWidth'
 
 /**
  * Clamp the harness panel width so chat keeps at least CHAT_MIN_WIDTH

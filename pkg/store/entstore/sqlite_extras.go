@@ -161,7 +161,7 @@ var personalSQLiteExtras = teamSQLiteExtras
 var platformSQLiteExtras = []string{
 	// Seed the @base sandbox layer (raw OS image placeholder).
 	`INSERT INTO sandbox_layers (layer_id, parent_layer, cephfs_path, size_bytes, ref_count)
-	 VALUES ('@base', NULL, '/mnt/astonish-layers/@base', 0, 1)
+	 VALUES ('@base', NULL, '/mnt/troupe-layers/@base', 0, 1)
 	 ON CONFLICT (layer_id) DO NOTHING`,
 
 	// Seed the global "base" sandbox template pointing to @base layer.

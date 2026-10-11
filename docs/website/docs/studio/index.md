@@ -1,6 +1,6 @@
 # Studio Overview
 
-Studio is Astonish's web-based UI, served locally at `http://localhost:9393`. It provides a visual interface for chatting with agents, creating presentations, designing flows, managing fleet operations, and previewing generated applications.
+Studio is Troupe's web-based UI, served locally at `http://localhost:9393`. It provides a visual interface for chatting with agents, creating presentations, designing flows, managing fleet operations, and previewing generated applications.
 
 ## Main Tabs
 
@@ -18,14 +18,14 @@ Studio is Astonish's web-based UI, served locally at `http://localhost:9393`. It
 Studio is served automatically by the daemon. Start the daemon and open your browser:
 
 ```bash
-astonish daemon start
+troupe daemon start
 # Studio available at http://localhost:9393
 ```
 
 Or run in the foreground for debugging:
 
 ```bash
-astonish daemon run
+troupe daemon run
 # Studio available at http://localhost:9393 (logs printed to stdout)
 ```
 

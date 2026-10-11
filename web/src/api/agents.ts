@@ -1,5 +1,5 @@
 /**
- * API client for Astonish Studio
+ * API client for Troupe Studio
  */
 
 import { teamFetch } from './teamContext'

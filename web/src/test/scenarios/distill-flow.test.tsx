@@ -110,7 +110,7 @@ describe('Distill Flow Scenarios', () => {
 
       await waitFor(() => {
         const text = result.container.textContent || ''
-        expect(text).toContain('astonish run research_flow')
+        expect(text).toContain('troupe run research_flow')
       }, { timeout: 10000 })
     })
   })

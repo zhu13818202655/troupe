@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/flowstore"
 	"github.com/zhu13818202655/troupe/pkg/mcpstore"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 )
 
 // MCPStoreListResponse is the response for GET /api/mcp-store

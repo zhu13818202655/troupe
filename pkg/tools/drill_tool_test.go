@@ -100,7 +100,7 @@ func (m *memFlowStore) AddTap(_ context.Context, _ string, _ string) (string, er
 	return "", nil
 }
 func (m *memFlowStore) RemoveTap(_ context.Context, _ string) error { return nil }
-func (m *memFlowStore) GetStoreDir(_ context.Context) string       { return "" }
+func (m *memFlowStore) GetStoreDir(_ context.Context) string        { return "" }
 
 // flowSummary builds a FlowSummary from stored data (must hold lock).
 func (m *memFlowStore) flowSummary(name string) store.FlowSummary {
@@ -131,18 +131,18 @@ type mockToolCtx struct {
 
 var _ tool.Context = (*mockToolCtx)(nil)
 
-func (m *mockToolCtx) UserContent() *genai.Content                                    { return nil }
-func (m *mockToolCtx) InvocationID() string                                           { return "test" }
-func (m *mockToolCtx) AgentName() string                                              { return "test" }
-func (m *mockToolCtx) ReadonlyState() session.ReadonlyState                           { return nil }
-func (m *mockToolCtx) UserID() string                                                 { return "" }
-func (m *mockToolCtx) AppName() string                                                { return "" }
-func (m *mockToolCtx) SessionID() string                                              { return "" }
-func (m *mockToolCtx) Branch() string                                                 { return "" }
-func (m *mockToolCtx) Artifacts() agent.Artifacts                                     { return nil }
-func (m *mockToolCtx) State() session.State                                           { return nil }
-func (m *mockToolCtx) FunctionCallID() string                                         { return "" }
-func (m *mockToolCtx) Actions() *session.EventActions                                 { return nil }
+func (m *mockToolCtx) UserContent() *genai.Content          { return nil }
+func (m *mockToolCtx) InvocationID() string                 { return "test" }
+func (m *mockToolCtx) AgentName() string                    { return "test" }
+func (m *mockToolCtx) ReadonlyState() session.ReadonlyState { return nil }
+func (m *mockToolCtx) UserID() string                       { return "" }
+func (m *mockToolCtx) AppName() string                      { return "" }
+func (m *mockToolCtx) SessionID() string                    { return "" }
+func (m *mockToolCtx) Branch() string                       { return "" }
+func (m *mockToolCtx) Artifacts() agent.Artifacts           { return nil }
+func (m *mockToolCtx) State() session.State                 { return nil }
+func (m *mockToolCtx) FunctionCallID() string               { return "" }
+func (m *mockToolCtx) Actions() *session.EventActions       { return nil }
 func (m *mockToolCtx) SearchMemory(_ context.Context, _ string) (*memory.SearchResponse, error) {
 	return nil, nil
 }

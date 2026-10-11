@@ -2,7 +2,7 @@
  * Team context for platform-mode API calls.
  *
  * Provides a module-level active team slug and a fetch wrapper that
- * injects the X-Astonish-Team header into every request. The backend's
+ * injects the X-Troupe-Team header into every request. The backend's
  * PlatformAuthMiddleware reads this header to override the JWT's default
  * team, enabling per-request team scoping without re-issuing tokens.
  *
@@ -20,7 +20,24 @@ import { refreshToken } from './auth'
 
 let _activeTeam: string | null = null
 
-const STORAGE_KEY = 'astonish_active_team'
+const STORAGE_KEY = 'troupe_active_team'
+// Pre-rebrand key; read for backwards compatibility, then migrated.
+const LEGACY_STORAGE_KEY = 'astonish_active_team'
+
+function readStoredTeam(): string | null {
+  try {
+    const next = localStorage.getItem(STORAGE_KEY)
+    if (next !== null) return next
+    // Fall back to the legacy key, migrate the value, then drop the old entry.
+    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY)
+    if (legacy !== null) {
+      localStorage.setItem(STORAGE_KEY, legacy)
+      localStorage.removeItem(LEGACY_STORAGE_KEY)
+      return legacy
+    }
+    return null
+  } catch { return null }
+}
 
 // Callback invoked when the middleware rejects a team (403).
 // App.tsx sets this to trigger a team reset + UI notification.
@@ -73,7 +90,7 @@ function isAuthApiPath(url: string): boolean {
 
 // Restore from localStorage on module load
 try {
-  _activeTeam = localStorage.getItem(STORAGE_KEY)
+  _activeTeam = readStoredTeam()
 } catch { /* SSR or private browsing */ }
 
 /** Update the active team slug. Called from App.tsx when the user switches teams. */
@@ -94,7 +111,7 @@ export function getActiveTeam(): string | null {
 }
 
 /**
- * Fetch wrapper that injects X-Astonish-Team header when an active team
+ * Fetch wrapper that injects X-Troupe-Team header when an active team
  * is set. Signature matches the standard fetch() API so it's a drop-in
  * replacement. Falls through to plain fetch() when no team is active
  * (personal mode).
@@ -121,8 +138,8 @@ export async function teamFetch(input: Parameters<typeof fetch>[0], init?: Param
   }
 
   // Only set if not already explicitly provided by the caller
-  if (effectiveTeam && !headers.has('X-Astonish-Team')) {
-    headers.set('X-Astonish-Team', effectiveTeam)
+  if (effectiveTeam && !headers.has('X-Troupe-Team')) {
+    headers.set('X-Troupe-Team', effectiveTeam)
   }
 
   const res = await fetch(input, { ...init, headers })

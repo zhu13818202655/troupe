@@ -51,10 +51,10 @@ func TestGraphPlanTransitionTools_AdvancePhases(t *testing.T) {
 		gotAcceptance = acceptance
 		return nil
 	})
-	if res, err := graphPlanFinalize(nil, GraphPlanFinalizeArgs{Acceptance: "docker inspect astonish-session-x"}); err != nil || res.Status != "ok" {
+	if res, err := graphPlanFinalize(nil, GraphPlanFinalizeArgs{Acceptance: "docker inspect troupe-session-x"}); err != nil || res.Status != "ok" {
 		t.Fatalf("gplan_finalize unexpected: %+v err=%v", res, err)
 	}
-	if gotAcceptance != "docker inspect astonish-session-x" {
+	if gotAcceptance != "docker inspect troupe-session-x" {
 		t.Fatalf("acceptance = %q", gotAcceptance)
 	}
 	if got != agent.GraphPlanPhasePlan {

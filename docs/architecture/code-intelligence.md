@@ -1,7 +1,7 @@
 # Code Intelligence (Tree-sitter)
 
 > **Status: Implemented.**
-> This document specifies the code intelligence system for Astonish
+> This document specifies the code intelligence system for Troupe
 > Fleet agents. It is based on analysis of Grok (xAI), OpenClaude, and
 > OpenClaw's production implementations. The primary system is
 > **tree-sitter** - zero-config, low-memory, always-on
@@ -72,7 +72,7 @@ runs builds as part of its workflow.
    in-process index. Adding it to sandboxes costs <5MB disk.
 
 3. **Runs inside the sandbox.** Tree-sitter indexing runs within the
-   `astonish node` process inside the sandbox, alongside the code it
+   `troupe node` process inside the sandbox, alongside the code it
    analyzes. No cross-boundary protocol proxying needed.
 
 4. **Lazy initialization.** Indexing happens on first tool invocation,
@@ -104,7 +104,7 @@ development scenarios:
 - Grok covers: Rust, TypeScript, JavaScript, Go, Python (5 languages)
 - OpenClaude covers: TypeScript, TSX, JavaScript, Python (4 languages)
 - OpenClaw covers: TypeScript (via LSP only)
-- **Astonish:** Go, TypeScript, JavaScript, Python (4 languages)
+- **Troupe:** Go, TypeScript, JavaScript, Python (4 languages)
 
 TSX is handled by the TypeScript grammar (tree-sitter-typescript includes
 TSX support). Rust can be added later if demand appears.
@@ -161,9 +161,9 @@ TSX support). Rust can be added later if demand appears.
 
 **Dependencies:**
 - `github.com/ebitengine/purego` — runtime `dlopen` of a bundled shared library
-  (keeps `CGO_ENABLED=0` for the astonish binary)
+  (keeps `CGO_ENABLED=0` for the troupe binary)
 - Language grammars compiled into one shared object at
-  `/usr/lib/astonish/libastonish-treesitter.so`, packaged per sandbox backend
+  `/usr/lib/troupe/libtroupe-treesitter.so`, packaged per sandbox backend
 
 ### Library resolution and local auto-build
 
@@ -172,9 +172,9 @@ The shared library is resolved lazily on the first structural-tool call by
 which tries, in order:
 
 1. `$TROUPE_TREESITTER_LIB` (explicit override — fails fast if missing, never auto-builds).
-2. Next to the executable, then the current working directory (`libastonish-treesitter.{so,dylib}`).
-3. The previously auto-built cache under `<config-dir>/astonish/lib/<version>/`.
-4. The container/system install path `/usr/lib/astonish/libastonish-treesitter.so`.
+2. Next to the executable, then the current working directory (`libtroupe-treesitter.{so,dylib}`).
+3. The previously auto-built cache under `<config-dir>/troupe/lib/<version>/`.
+4. The container/system install path `/usr/lib/troupe/libtroupe-treesitter.so`.
 
 If none exist — the normal case for **local code mode**, which runs in the
 user's own environment rather than a sandbox container — the library is
@@ -200,7 +200,7 @@ was removed. `pkg/tools/ripgrep` (`ResolvePath`) guarantees rg is available: it
 prefers an `rg` already on `PATH` (respecting the user's install), and otherwise
 downloads the **pinned official release** for the host OS/arch, verifies its
 SHA256 against a checked-in manifest, and caches the binary under
-`<config-dir>/astonish/bin/rg`. Code mode kicks this off in the background at
+`<config-dir>/troupe/bin/rg`. Code mode kicks this off in the background at
 startup (`RunCodeTUI`) so the first search is not blocked; the result is
 memoized for the process. If `rg` cannot be resolved, `grep_search` errors
 rather than silently degrading. `find_files` still keeps a Go listing fallback.
@@ -424,10 +424,10 @@ type ReferenceLocation struct {
 ### 5.7. Sandbox Integration
 
 - **Grammar library:** Single shared object
-  `/usr/lib/astonish/libastonish-treesitter.so` (Go/TS/TSX/JS/Python
+  `/usr/lib/troupe/libtroupe-treesitter.so` (Go/TS/TSX/JS/Python
   grammars). Path must be visible **inside the filesystem where
-  `astonish node` runs** (after overlay chroot on K8s).
-- **Query files:** Embedded in the `astonish` Go binary via `//go:embed`
+  `troupe node` runs** (after overlay chroot on K8s).
+- **Query files:** Embedded in the `troupe` Go binary via `//go:embed`
   (`pkg/codeintel/queries/*.scm`).
 - **Tool registration:** `repo_map`, `code_definition`, `code_references`
   are registered in `pkg/tools/internal.go` and added to the
@@ -448,7 +448,7 @@ type ReferenceLocation struct {
   present, so non-code agents (channels, general chat) never see it and
   `grep_search` stays domain-agnostic — its own tool description must not carry
   code-navigation advice.
-- **No new processes:** Everything runs in-process within `astonish node`.
+- **No new processes:** Everything runs in-process within `troupe node`.
   No servers to manage, no lifecycle complexity.
 
 #### Packaging by backend
@@ -457,7 +457,7 @@ type ReferenceLocation struct {
 |---------|-------------------|----------------|
 | **Docker OverlayFS** | Baked into `sandbox-base` **and** bind-mounted into the overlay by the entrypoint (`HostTreeSitterLibPath`). Same image as K8s. | Installed into `@base` overlay layers via `baseconfig.Render()` → `CoreToolInstallCommands()` when `Core: true`. |
 | **K8s** | Baked into `sandbox-base` **and** bind-mounted into the overlay by the entrypoint (`HostTreeSitterLibPath`). Dockerfile `COPY` alone is insufficient after chroot. | Installed into `@base` overlay layers via `baseconfig.Render()` → `CoreToolInstallCommands()` when `Core: true`. Do **not** rely on packaging `rg` only in the pod image. |
-| **OpenShell** | Baked into `docker/sandbox-openshell` image rootfs (no Astonish overlay chroot) | apt `ripgrep` in `docker/sandbox-openshell/Dockerfile` |
+| **OpenShell** | Baked into `docker/sandbox-openshell` image rootfs (no Troupe overlay chroot) | apt `ripgrep` in `docker/sandbox-openshell/Dockerfile` |
 
 Ripgrep and the tree-sitter library must live where tools execute (template/overlay/image rootfs), not only on a helper host image.
 
@@ -481,7 +481,7 @@ Ripgrep and the tree-sitter library must live where tools execute (template/over
 | Flag | Default | Effect |
 |------|---------|--------|
 | `codeintel.enabled` | `true` | When false, `GetInternalTools` omits `repo_map`, `code_definition`, and `code_references` |
-| `codeintel.library_path` | _(empty)_ | If set, exported as `TROUPE_TREESITTER_LIB` before tool registration (overrides the default `/usr/lib/astonish/libastonish-treesitter.so`) |
+| `codeintel.library_path` | _(empty)_ | If set, exported as `TROUPE_TREESITTER_LIB` before tool registration (overrides the default `/usr/lib/troupe/libtroupe-treesitter.so`) |
 
 Auto-inject of a repo map into the system prompt at session start is not implemented yet; those knobs are intentionally omitted until that feature lands.
 
@@ -509,12 +509,12 @@ Auto-inject of a repo map into the system prompt at session start is not impleme
 
 ### Step 3: Sandbox Image (implemented)
 
-1. Build `libastonish-treesitter.so` via `pkg/codeintel/native/Makefile`
+1. Build `libtroupe-treesitter.so` via `pkg/codeintel/native/Makefile`
    (used by Docker multi-stage builds).
 2. **K8s:** `COPY` into `docker/sandbox-base/Dockerfile` at
-   `/usr/lib/astonish/libastonish-treesitter.so`, **and** bind-mount that
+   `/usr/lib/troupe/libtroupe-treesitter.so`, **and** bind-mount that
    path into the composed overlay in `pkg/sandbox/k8s/overlay_entrypoint.go`
-   (`HostTreeSitterLibPath`). Without the bind-mount, `astonish node`
+   (`HostTreeSitterLibPath`). Without the bind-mount, `troupe node`
    cannot `dlopen` the library after chroot.
 3. **OpenShell:** `COPY` into `docker/sandbox-openshell/Dockerfile` image
    rootfs (sufficient; no overlay chroot).
@@ -614,16 +614,16 @@ Options to mitigate (if LSP proves necessary):
 | Grok (xAI) | Yes | Runs locally, not multi-tenant cloud |
 | OpenClaude | Yes | Runs locally, not multi-tenant cloud |
 | OpenClaw | Yes | Runs on host (not in sandbox), single-user |
-| **Astonish** | **Deferred** | Multi-tenant cloud; memory cost is prohibitive without mitigation |
+| **Troupe** | **Deferred** | Multi-tenant cloud; memory cost is prohibitive without mitigation |
 
 All three platforms that use LSP run **locally on user hardware** where
-memory is abundant and not shared. Astonish is the only one operating as
+memory is abundant and not shared. Troupe is the only one operating as
 a multi-tenant cloud service where per-session memory directly impacts
 cost and density.
 
 ## 10. Comparison with Prior Art
 
-| Aspect | Grok (xAI) | OpenClaude | OpenClaw | Astonish (planned) |
+| Aspect | Grok (xAI) | OpenClaude | OpenClaw | Troupe (planned) |
 |--------|------------|------------|----------|-------------------|
 | Tree-sitter | Native Rust | WASM | Bash only | **Native Go** |
 | Languages | 5 (Rust,TS,JS,Go,Py) | 4 (TS,TSX,JS,Py) | 0 | **4 (Go,TS,JS,Py)** |

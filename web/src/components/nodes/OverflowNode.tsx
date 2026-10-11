@@ -55,7 +55,7 @@ export default function OverflowNode({
     const rect = (e.currentTarget.closest('.overflow-node') as HTMLElement | null)?.getBoundingClientRect()
     if (!rect) return
     // Dispatch custom event for FlowCanvas to handle
-    window.dispatchEvent(new CustomEvent('astonish:add-node-click', { 
+    window.dispatchEvent(new CustomEvent('troupe:add-node-click', { 
       detail: { 
         sourceId: id, 
         position: { x: rect.left + rect.width / 2, y: rect.bottom + 10 } 

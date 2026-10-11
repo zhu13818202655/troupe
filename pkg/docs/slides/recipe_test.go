@@ -523,7 +523,7 @@ func TestProductSkinUsesDotRailNotLogoRule(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	prod, err := RenderRecipe(RecipeThreeUp, ProductSkin(tokens), nil, Chrome{Page: 1, Total: 8, DeckTitle: "astonish"}, sampleFills(RecipeThreeUp))
+	prod, err := RenderRecipe(RecipeThreeUp, ProductSkin(tokens), nil, Chrome{Page: 1, Total: 8, DeckTitle: "troupe"}, sampleFills(RecipeThreeUp))
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -12,9 +12,9 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/cdp"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // TestGetOrLaunch_ContainerPath_MissingResolveFunc verifies that GetOrLaunch

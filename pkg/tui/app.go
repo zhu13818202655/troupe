@@ -291,7 +291,7 @@ func newModel(parent context.Context, cfg Config) model {
 	th := ThemeForMode(info.Mode)
 
 	ta := textarea.New()
-	ta.Placeholder = "Message Astonish…"
+	ta.Placeholder = "Message Troupe…"
 	ta.CharLimit = 0
 	ta.ShowLineNumbers = false
 	// First line: prompt; continuation lines: spaces (avoids stacked ❯ clutter).
@@ -1170,7 +1170,7 @@ func (m model) insertNewline(intentional bool) (tea.Model, tea.Cmd) {
 // planModeSystemContext must stay in sync with agent.PlanModeSystemContext
 // (the runtime gate's source of truth). Read-only tools listed here — including
 // the tree-sitter navigation tools — are allowed by the gate (agent.SafeTools).
-const planModeSystemContext = `You are in Astonish PLAN MODE. This is a hard constraint enforced by the runtime, not a suggestion.
+const planModeSystemContext = `You are in Troupe PLAN MODE. This is a hard constraint enforced by the runtime, not a suggestion.
 
 RULES:
 - You MUST NOT make any changes. Mutating tools (write_file, edit_file, shell_command, and every other non-read-only tool) and delegate_tasks are DISABLED by the runtime and will be refused if you call them.
@@ -1249,7 +1249,7 @@ Before calling announce_plan, present a brief STRATEGY SUMMARY (2-4 sentences): 
 // agent.GraphPlanModeSystemContext (the runtime gate's source of truth). It
 // teaches the model the phased "plan-for-the-plan" discipline enforced by the
 // staged tool gate in Graph-Optimized Plan mode.
-const graphPlanModeSystemContext = `You are in Astonish GRAPH-OPTIMIZED PLAN MODE. This is a hard constraint enforced by the runtime through a staged tool gate, not a suggestion. Like Plan mode, this is a NO-CHANGES mode: write_file, edit_file, shell_command and every other mutating tool are DISABLED in every phase and will be refused.
+const graphPlanModeSystemContext = `You are in Troupe GRAPH-OPTIMIZED PLAN MODE. This is a hard constraint enforced by the runtime through a staged tool gate, not a suggestion. Like Plan mode, this is a NO-CHANGES mode: write_file, edit_file, shell_command and every other mutating tool are DISABLED in every phase and will be refused.
 
 BEFORE INVESTIGATING — MATCH YOUR RESPONSE TO THE USER'S INTENT:
 
@@ -1331,7 +1331,7 @@ Produce a COMPLETE plan — cover every dependency the change reaches, order pha
 // askModeSystemContext must stay in sync with agent.AskModeSystemContext
 // (the runtime gate's source of truth). It teaches the model it is in a
 // read-only research mode — no changes, no plans, just Q&A.
-const askModeSystemContext = `You are in Astonish ASK MODE. This is a hard constraint enforced by the runtime, not a suggestion.
+const askModeSystemContext = `You are in Troupe ASK MODE. This is a hard constraint enforced by the runtime, not a suggestion.
 
 RULES:
 - You are in a RESEARCH-ONLY mode. Your job is to answer questions, explain architecture, discuss possible solutions, and help the user understand how things work.
@@ -1368,7 +1368,7 @@ func (m *model) restoreComposerPlaceholder() {
 		m.ta.Placeholder = "Message Platform…"
 		return
 	}
-	m.ta.Placeholder = "Message Astonish…"
+	m.ta.Placeholder = "Message Troupe…"
 }
 
 func (m model) turnOptions() backend.TurnOptions {
@@ -2647,12 +2647,12 @@ func (m model) welcomeLines(width int) []string {
 		Bold(true).
 		Align(lipgloss.Center).
 		Width(width).
-		Render("✦ Astonish")
+		Render("✦ Troupe")
 
 	return []string{
 		title,
 		"",
-		th.Text.Width(width).Align(lipgloss.Center).Render("Build, investigate, and operate with Astonish agents."),
+		th.Text.Width(width).Align(lipgloss.Center).Render("Build, investigate, and operate with Troupe agents."),
 		th.Muted.Width(width).Align(lipgloss.Center).Render("Ask questions, plan work, run tasks, or attach @files."),
 		th.Muted.Width(width).Align(lipgloss.Center).Render("Connected to your platform. Ready when you are."),
 		"",
@@ -2660,7 +2660,7 @@ func (m model) welcomeLines(width int) []string {
 	}
 }
 
-// codeWelcomeLines renders the welcome card for `astonish code` — the local,
+// codeWelcomeLines renders the welcome card for `troupe code` — the local,
 // unsandboxed coding tool. Unlike platform chat, tools run directly on the host
 // filesystem in the working directory, so the copy makes that context clear and
 // shows the directory being operated on.
@@ -2672,7 +2672,7 @@ func (m model) codeWelcomeLines(width int) []string {
 		Bold(true).
 		Align(lipgloss.Center).
 		Width(width).
-		Render("✦ Astonish Code")
+		Render("✦ Troupe Code")
 
 	lines := []string{
 		title,
@@ -2702,9 +2702,9 @@ func (m model) codeWelcomeLines(width int) []string {
 // --auto-approve.
 func codeApprovalNotice(autoApprove bool) string {
 	if autoApprove {
-		return "Astonish intelligence, right where your code lives — no prompts."
+		return "Troupe intelligence, right where your code lives — no prompts."
 	}
-	return "Astonish intelligence, right where your code lives."
+	return "Troupe intelligence, right where your code lives."
 }
 
 // abbreviateHomePath collapses the user's home directory prefix to "~" for
@@ -4105,7 +4105,7 @@ func (m model) View() tea.View {
 	if m.quitting {
 		content = ""
 	} else if !m.ready {
-		content = m.paintBackground("\n  Initializing Astonish…\n")
+		content = m.paintBackground("\n  Initializing Troupe…\n")
 	} else {
 		content = m.viewContent()
 	}
@@ -4462,7 +4462,7 @@ func (m model) renderHeader() string {
 }
 
 func (m model) headerConnectionText() string {
-	parts := []string{"Astonish"}
+	parts := []string{"Troupe"}
 	if m.info.ServerURL != "" {
 		parts = append(parts, m.info.ServerURL)
 	}
@@ -4479,11 +4479,11 @@ func (m model) renderHeaderLeft(text string) string {
 	if text == "" {
 		return ""
 	}
-	if text == "Astonish" {
+	if text == "Troupe" {
 		return m.theme.Header.Render(text)
 	}
-	if strings.HasPrefix(text, "Astonish") {
-		return m.theme.Header.Render("Astonish") + m.theme.Muted.Render(strings.TrimPrefix(text, "Astonish"))
+	if strings.HasPrefix(text, "Troupe") {
+		return m.theme.Header.Render("Troupe") + m.theme.Muted.Render(strings.TrimPrefix(text, "Troupe"))
 	}
 	return m.theme.Muted.Render(text)
 }

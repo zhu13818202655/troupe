@@ -51,15 +51,15 @@ func RunSimpleWeb(ctx context.Context, cfg *SimpleWebConfig) error {
 		return fmt.Errorf("failed to initialize internal tools: %w", err)
 	}
 
-	// Create Astonish agent
-	astonishAgent := agent.NewAstonishAgent(cfg.AgentConfig, llm, internalTools)
-	astonishAgent.AutoApprove = cfg.AutoApprove
+	// Create Troupe agent
+	troupeAgent := agent.NewTroupeAgent(cfg.AgentConfig, llm, internalTools)
+	troupeAgent.AutoApprove = cfg.AutoApprove
 
 	// Create ADK agent wrapper
 	adkAgent, err := adkagent.New(adkagent.Config{
-		Name:        "astonish_agent",
+		Name:        "troupe_agent",
 		Description: cfg.AgentConfig.Description,
-		Run:         astonishAgent.Run,
+		Run:         troupeAgent.Run,
 	})
 	if err != nil {
 		return fmt.Errorf("failed to create ADK agent: %w", err)
@@ -73,7 +73,7 @@ func RunSimpleWeb(ctx context.Context, cfg *SimpleWebConfig) error {
 
 	// Create runner
 	r, err := runner.New(runner.Config{
-		AppName:        "astonish",
+		AppName:        "troupe",
 		Agent:          adkAgent,
 		SessionService: sessionService,
 	})
@@ -128,7 +128,7 @@ func (s *chatServer) handleChat(w http.ResponseWriter, r *http.Request) {
 	sess, exists := s.sessions[req.SessionID]
 	if !exists {
 		resp, err := s.sessionService.Create(ctx, &session.CreateRequest{
-			AppName: "astonish",
+			AppName: "troupe",
 			UserID:  req.SessionID,
 		})
 		if err != nil {
@@ -188,7 +188,7 @@ const htmlTemplate = `<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astonish Chat</title>
+    <title>Troupe Chat</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -438,7 +438,7 @@ const htmlTemplate = `<!DOCTYPE html>
                 <path fill="#b173ff" d="M 262.46 334.70 Q 262.30 334.82 262.23 335.00 L 74.78 335.00 Q 74.52 334.90 74.33 334.70 Q 74.76 334.28 74.99 333.75 Q 78.14 326.67 84.18 321.18 C 97.77 308.82 120.42 303.50 139.05 302.32 Q 169.69 300.37 197.77 302.30 C 219.34 303.79 251.75 311.03 261.58 333.66 Q 261.84 334.28 262.46 334.70 Z"/>
             </svg>
         </div>
-        <h1>Astonish</h1>
+        <h1>Troupe</h1>
     </div>
     <div class="chat-container">
         <div class="messages" id="messages"></div>

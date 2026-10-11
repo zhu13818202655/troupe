@@ -13,12 +13,12 @@ import (
 )
 
 const (
-	systemdServiceName = "astonish-daemon"
-	systemdLabel       = "astonish-daemon.service"
+	systemdServiceName = "troupe-daemon"
+	systemdLabel       = "troupe-daemon.service"
 
 	// System-level paths (used when installed via sudo / root)
 	systemUnitDir = "/etc/systemd/system"
-	systemLogDir  = "/var/log/astonish"
+	systemLogDir  = "/var/log/troupe"
 )
 
 type systemdService struct {
@@ -111,7 +111,7 @@ func (s *systemdService) Install(cfg InstallConfig) error {
 	}
 
 	unit := fmt.Sprintf(`[Unit]
-Description=Astonish AI Agent Daemon
+Description=Troupe AI Agent Daemon
 After=network.target
 
 [Service]

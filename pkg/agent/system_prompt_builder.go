@@ -39,7 +39,7 @@ func (id *AgentIdentity) IsConfigured() bool {
 //     execution plans, and auto-retrieved knowledge. These are appended at the end
 //     of the system prompt so the static prefix remains cacheable by providers.
 //
-// For code mode (astonish code), use CodeSystemPromptBuilder which embeds this
+// For code mode (troupe code), use CodeSystemPromptBuilder which embeds this
 // struct and installs a BuildOverride to emit code-specific sections.
 type SystemPromptBuilder struct {
 	Tools                 []tool.Tool
@@ -181,7 +181,7 @@ func (b *SystemPromptBuilder) BuildExternal() string {
 	clone.RelevantTools = ""
 	prompt := clone.Build()
 	return prompt + "\n\n## External MCP Tool Loop\n\n" +
-		"You are being driven by an external client. At the start of every user turn, call `get_agent_context` with the current user message and a stable session ID. Inspect the returned Available Skills before deciding that a capability is unavailable. When a skill matches the task, discover and execute Astonish's `skill_lookup` through `search_tools`, `describe_tools`, and `execute_tool` before acting; then discover and execute every tool recommended by that skill through the same Astonish MCP operations. Use the context token for every discovery and execution call, execute one tool at a time, and reason over each result. Do not guess tool names or schemas. Names such as `http_request`, `shell_command`, and browser tools always mean tools from Astonish's returned catalog, never similarly named client or host tools. Local PATH, environment-variable, SDK, or package probes outside Astonish do not establish whether an Astonish skill or tool is available. Pass only credential names or placeholders to Astonish tools; never request, resolve, or return credential values. The client must retrieve relevant memory and tool context before producing its final response.\n"
+		"You are being driven by an external client. At the start of every user turn, call `get_agent_context` with the current user message and a stable session ID. Inspect the returned Available Skills before deciding that a capability is unavailable. When a skill matches the task, discover and execute Troupe's `skill_lookup` through `search_tools`, `describe_tools`, and `execute_tool` before acting; then discover and execute every tool recommended by that skill through the same Troupe MCP operations. Use the context token for every discovery and execution call, execute one tool at a time, and reason over each result. Do not guess tool names or schemas. Names such as `http_request`, `shell_command`, and browser tools always mean tools from Troupe's returned catalog, never similarly named client or host tools. Local PATH, environment-variable, SDK, or package probes outside Troupe do not establish whether an Troupe skill or tool is available. Pass only credential names or placeholders to Troupe tools; never request, resolve, or return credential values. The client must retrieve relevant memory and tool context before producing its final response.\n"
 }
 
 // Build constructs the full system prompt.
@@ -202,7 +202,7 @@ func (b *SystemPromptBuilder) Build() string {
 	// ── Tier 1: Static Core ──────────────────────────────────────
 
 	// 1. Identity
-	sb.WriteString("You are Astonish, an AI assistant with access to tools.\n")
+	sb.WriteString("You are Troupe, an AI assistant with access to tools.\n")
 	sb.WriteString("You help users accomplish tasks by calling tools and reasoning through problems.\n\n")
 
 	// 1b. Channel-specific output constraints (set per-turn by channel manager)
@@ -350,7 +350,7 @@ func (b *SystemPromptBuilder) Build() string {
 		sb.WriteString("\n**Credentials:** Encrypted vault (no files on disk). `resolve_credential` returns `{{CREDENTIAL:name:field}}` placeholders — auto-substituted in `shell_command`/`process_write`/`browser_type`. For HTTP APIs use `http_request(credential=\"name\")`.\n")
 	}
 	if b.hasSlideTools() {
-		sb.WriteString("\n**Slide decks:** Any ask for slides, a slide deck, a slideshow, a slide show, a presentation, PowerPoint, or `.pptx` MUST call `skill_lookup(\"slides\")` first. This pointer is not the skill — do not skip lookup because these words already appear here or in memory. Do not ask intake as chat text; after the skill loads, the next tool is `ask_user` (audience, length, who picks the template) — one question per turn. After the template is known, ask_user for the title variant when there are 2+ title* covers, then cover image (pick from template, provide your own, or none) when that cover has a ph-pic well, a top-right logo yes/no on Modern, and a color palette when the template lists palettes (Classic, Modern) — do not skip those to create_deck. Using existing knowledge / skipping search is not a skip of those questions; inferring a tone is not permission to pick a template. Then `fill_slides` (one call for the whole deck) with `recipe-*` kinds (named slots). `fill_slide` edits a single slide later. `write_slide` is blank-canvas only — one complete ASD v1 `<ast-slide>` per call. All `x`, `y`, `w`, and `h` values are integer logical pixels on a fixed 1920×1080 canvas—never percentages or 0–100 coordinates. `ast-text` renders plain text, so never put Markdown markers in it; use `size`, `weight`, `font-token`, and `color-token` attributes and compose a designed slide with shapes and theme tokens. Fix validation errors before continuing. Use `get_deck` before revising an existing deck and `validate_deck` before declaring it complete. Do not substitute an `astonish-app` for a requested deck.\n")
+		sb.WriteString("\n**Slide decks:** Any ask for slides, a slide deck, a slideshow, a slide show, a presentation, PowerPoint, or `.pptx` MUST call `skill_lookup(\"slides\")` first. This pointer is not the skill — do not skip lookup because these words already appear here or in memory. Do not ask intake as chat text; after the skill loads, the next tool is `ask_user` (audience, length, who picks the template) — one question per turn. After the template is known, ask_user for the title variant when there are 2+ title* covers, then cover image (pick from template, provide your own, or none) when that cover has a ph-pic well, a top-right logo yes/no on Modern, and a color palette when the template lists palettes (Classic, Modern) — do not skip those to create_deck. Using existing knowledge / skipping search is not a skip of those questions; inferring a tone is not permission to pick a template. Then `fill_slides` (one call for the whole deck) with `recipe-*` kinds (named slots). `fill_slide` edits a single slide later. `write_slide` is blank-canvas only — one complete ASD v1 `<ast-slide>` per call. All `x`, `y`, `w`, and `h` values are integer logical pixels on a fixed 1920×1080 canvas—never percentages or 0–100 coordinates. `ast-text` renders plain text, so never put Markdown markers in it; use `size`, `weight`, `font-token`, and `color-token` attributes and compose a designed slide with shapes and theme tokens. Fix validation errors before continuing. Use `get_deck` before revising an existing deck and `validate_deck` before declaring it complete. Do not substitute an `troupe-app` for a requested deck.\n")
 	}
 
 	// 6b. Task delegation — list available tool groups for delegate_tasks
@@ -429,20 +429,20 @@ func (b *SystemPromptBuilder) Build() string {
 
 	// 6k. Generative UI critical rules (always present in prompt)
 	sb.WriteString("\n## Visual Apps (Generative UI)\n\n")
-	sb.WriteString("When users ask to build a UI, dashboard, app, or visual component, generate a React component inside an `astonish-app` code fence.\n")
+	sb.WriteString("When users ask to build a UI, dashboard, app, or visual component, generate a React component inside an `troupe-app` code fence.\n")
 	sb.WriteString("**MANDATORY:** Before generating ANY visual app, call `skill_lookup` with name `generative-ui` to load the complete documentation. Do NOT generate app code without loading this skill first — it contains the only correct APIs, design system, and sandbox constraints.\n")
 	sb.WriteString("Sandbox hard constraints (violations cause runtime errors):\n")
 	sb.WriteString("- fetch(), XMLHttpRequest, and axios are BLOCKED — the skill documents the correct alternatives\n")
-	sb.WriteString("- Only react, recharts, lucide-react, and astonish modules exist — no other imports work\n")
+	sb.WriteString("- Only react, recharts, lucide-react, and troupe modules exist — no other imports work\n")
 	sb.WriteString("- No component libraries (no shadcn/ui, no Material UI) — use native HTML + Tailwind\n")
 
 	// 6l. Reports contract (always present — must be unconditional, not
 	// hidden behind vector retrieval, because the LLM cannot retrieve
 	// guidance it doesn't know exists).
 	sb.WriteString("\n## Reports\n\n")
-	sb.WriteString("For any report, analysis, review, summary, or document the user may share or export: save it as a `.md` file via `write_file`, then emit an `astonish-report` fence in your reply. Both steps are required every time. Reports may include mermaid diagrams for flows and architectures.\n\n")
-	sb.WriteString("```astonish-report\npath: <exact path passed to write_file>\ntitle: <human-readable title>\n```\n\n")
-	sb.WriteString("The fence's `path` MUST match the `file_path` you used. Without the fence the file appears as a small download card instead of an inline report. Without `write_file` the fence is ignored. Do NOT use `astonish-app` for reports — that fence is for interactive UIs.\n")
+	sb.WriteString("For any report, analysis, review, summary, or document the user may share or export: save it as a `.md` file via `write_file`, then emit an `troupe-report` fence in your reply. Both steps are required every time. Reports may include mermaid diagrams for flows and architectures.\n\n")
+	sb.WriteString("```troupe-report\npath: <exact path passed to write_file>\ntitle: <human-readable title>\n```\n\n")
+	sb.WriteString("The fence's `path` MUST match the `file_path` you used. Without the fence the file appears as a small download card instead of an inline report. Without `write_file` the fence is ignored. Do NOT use `troupe-app` for reports — that fence is for interactive UIs.\n")
 
 	// ── Tier 3: Per-Turn Dynamic ─────────────────────────────────
 	// Execution plans and auto-retrieved knowledge are appended here at

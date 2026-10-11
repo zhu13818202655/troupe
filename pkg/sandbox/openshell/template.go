@@ -13,7 +13,7 @@ import (
 //
 // In the OpenShell model, "templates" correspond to custom sandbox images
 // (the --from flag in `openshell sandbox create`). The OpenShell gateway
-// manages sandbox images; Astonish does not build overlay layers itself.
+// manages sandbox images; Troupe does not build overlay layers itself.
 //
 // These methods satisfy the sandbox.Backend interface. BuildTemplate and
 // SaveSessionAsTemplate are not supported in the OpenShell backend because

@@ -56,7 +56,7 @@ var liveSurfaceFollowupNeedles = []string{
 	"fuse-overlayfs",
 	"in the session",
 	"in this sandbox",
-	"astonish-session",
+	"troupe-session",
 	"not installed",
 }
 

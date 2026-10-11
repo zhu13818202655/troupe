@@ -73,19 +73,19 @@ func DefaultTheme() Theme {
 		return plainTheme()
 	}
 
-	bg := lipgloss.Color("#111416")         // near-black terminal background
-	brand := lipgloss.Color("250")          // light gray accent (formerly purple)
-	muted := lipgloss.Color("245")          // gray
-	dim := lipgloss.Color("240")            // dimmer gray (hints)
-	text := lipgloss.Color("252")           // near white
-	composerBorder := lipgloss.Color("246") // softened composer border
-	cyan := brand                           // user accent (legacy)
-	green := lipgloss.Color("78")           // agent / success
-	red := lipgloss.Color("203")            // error / danger
-	orange := lipgloss.Color("208")         // numbers
-	userAccent := lipgloss.Color("#75633F") // muted bronze user-message outline
-	yellow := lipgloss.Color("221")         // approval
-	border := lipgloss.Color("238")         // subtle separator border
+	bg := lipgloss.Color("#111416")            // near-black terminal background
+	brand := lipgloss.Color("250")             // light gray accent (formerly purple)
+	muted := lipgloss.Color("245")             // gray
+	dim := lipgloss.Color("240")               // dimmer gray (hints)
+	text := lipgloss.Color("252")              // near white
+	composerBorder := lipgloss.Color("246")    // softened composer border
+	cyan := brand                              // user accent (legacy)
+	green := lipgloss.Color("78")              // agent / success
+	red := lipgloss.Color("203")               // error / danger
+	orange := lipgloss.Color("208")            // numbers
+	userAccent := lipgloss.Color("#75633F")    // muted bronze user-message outline
+	yellow := lipgloss.Color("221")            // approval
+	border := lipgloss.Color("238")            // subtle separator border
 	diffAddedBg := lipgloss.Color("#1a3320")   // subtle dark green for added lines
 	diffRemovedBg := lipgloss.Color("#3d1f1f") // subtle dark red for removed lines
 
@@ -112,19 +112,19 @@ func DefaultTheme() Theme {
 			Align(lipgloss.Right),
 		// Agent: plain text, no background, no role label.
 		// Width is applied at render time for wrapping.
-		Agent:      lipgloss.NewStyle().Foreground(text).Background(bg),
-		System:     lipgloss.NewStyle().Foreground(muted).Background(bg).Italic(true),
-		Error:      lipgloss.NewStyle().Foreground(red).Background(bg),
-		Success:    lipgloss.NewStyle().Foreground(green).Background(bg),
-		Danger:     lipgloss.NewStyle().Foreground(red).Background(bg),
-		Number:     lipgloss.NewStyle().Foreground(orange).Background(bg),
-		Border:     lipgloss.NewStyle().Foreground(border).Background(bg),
-		Header:     lipgloss.NewStyle().Foreground(brand).Background(bg).Bold(true),
-		Status:     lipgloss.NewStyle().Foreground(muted).Background(bg),
-		Input:      lipgloss.NewStyle().Foreground(text).Background(bg),
-		Activity:   lipgloss.NewStyle().Foreground(brand).Background(bg),
-		Approval:   lipgloss.NewStyle().Foreground(yellow).Background(bg).Bold(true),
-		CodeGutter: lipgloss.NewStyle().Foreground(muted).Background(bg),
+		Agent:         lipgloss.NewStyle().Foreground(text).Background(bg),
+		System:        lipgloss.NewStyle().Foreground(muted).Background(bg).Italic(true),
+		Error:         lipgloss.NewStyle().Foreground(red).Background(bg),
+		Success:       lipgloss.NewStyle().Foreground(green).Background(bg),
+		Danger:        lipgloss.NewStyle().Foreground(red).Background(bg),
+		Number:        lipgloss.NewStyle().Foreground(orange).Background(bg),
+		Border:        lipgloss.NewStyle().Foreground(border).Background(bg),
+		Header:        lipgloss.NewStyle().Foreground(brand).Background(bg).Bold(true),
+		Status:        lipgloss.NewStyle().Foreground(muted).Background(bg),
+		Input:         lipgloss.NewStyle().Foreground(text).Background(bg),
+		Activity:      lipgloss.NewStyle().Foreground(brand).Background(bg),
+		Approval:      lipgloss.NewStyle().Foreground(yellow).Background(bg).Bold(true),
+		CodeGutter:    lipgloss.NewStyle().Foreground(muted).Background(bg),
 		DiffAddedBg:   lipgloss.NewStyle().Foreground(text).Background(diffAddedBg),
 		DiffRemovedBg: lipgloss.NewStyle().Foreground(text).Background(diffRemovedBg),
 
@@ -173,19 +173,19 @@ func PlatformTheme() Theme {
 		return plainTheme()
 	}
 
-	bg := lipgloss.Color("#111416")         // near-black terminal background
-	brand := lipgloss.Color("75")           // steel blue (replaces code-mode's 250 gray)
-	muted := lipgloss.Color("245")          // gray (shared)
-	dim := lipgloss.Color("240")            // dimmer gray (hints)
-	text := lipgloss.Color("252")           // near white
-	composerBorder := lipgloss.Color("39")  // bright cyan border (key differentiator)
-	cyan := brand                           // user accent (legacy)
-	green := lipgloss.Color("78")           // agent / success
-	red := lipgloss.Color("203")            // error / danger
-	highlight := lipgloss.Color("75")       // blue for numbers (was orange 208)
-	userAccent := lipgloss.Color("#3F5A75") // muted steel-blue user outline (was bronze #75633F)
-	yellow := lipgloss.Color("221")         // approval
-	border := lipgloss.Color("238")         // subtle separator border
+	bg := lipgloss.Color("#111416")            // near-black terminal background
+	brand := lipgloss.Color("75")              // steel blue (replaces code-mode's 250 gray)
+	muted := lipgloss.Color("245")             // gray (shared)
+	dim := lipgloss.Color("240")               // dimmer gray (hints)
+	text := lipgloss.Color("252")              // near white
+	composerBorder := lipgloss.Color("39")     // bright cyan border (key differentiator)
+	cyan := brand                              // user accent (legacy)
+	green := lipgloss.Color("78")              // agent / success
+	red := lipgloss.Color("203")               // error / danger
+	highlight := lipgloss.Color("75")          // blue for numbers (was orange 208)
+	userAccent := lipgloss.Color("#3F5A75")    // muted steel-blue user outline (was bronze #75633F)
+	yellow := lipgloss.Color("221")            // approval
+	border := lipgloss.Color("238")            // subtle separator border
 	diffAddedBg := lipgloss.Color("#1a3320")   // subtle dark green for added lines
 	diffRemovedBg := lipgloss.Color("#3d1f1f") // subtle dark red for removed lines
 
@@ -208,19 +208,19 @@ func PlatformTheme() Theme {
 			Background(bg).
 			Italic(true).
 			Align(lipgloss.Right),
-		Agent:      lipgloss.NewStyle().Foreground(text).Background(bg),
-		System:     lipgloss.NewStyle().Foreground(muted).Background(bg).Italic(true),
-		Error:      lipgloss.NewStyle().Foreground(red).Background(bg),
-		Success:    lipgloss.NewStyle().Foreground(green).Background(bg),
-		Danger:     lipgloss.NewStyle().Foreground(red).Background(bg),
-		Number:     lipgloss.NewStyle().Foreground(highlight).Background(bg),
-		Border:     lipgloss.NewStyle().Foreground(border).Background(bg),
-		Header:     lipgloss.NewStyle().Foreground(brand).Background(bg).Bold(true),
-		Status:     lipgloss.NewStyle().Foreground(muted).Background(bg),
-		Input:      lipgloss.NewStyle().Foreground(text).Background(bg),
-		Activity:   lipgloss.NewStyle().Foreground(brand).Background(bg),
-		Approval:   lipgloss.NewStyle().Foreground(yellow).Background(bg).Bold(true),
-		CodeGutter: lipgloss.NewStyle().Foreground(muted).Background(bg),
+		Agent:         lipgloss.NewStyle().Foreground(text).Background(bg),
+		System:        lipgloss.NewStyle().Foreground(muted).Background(bg).Italic(true),
+		Error:         lipgloss.NewStyle().Foreground(red).Background(bg),
+		Success:       lipgloss.NewStyle().Foreground(green).Background(bg),
+		Danger:        lipgloss.NewStyle().Foreground(red).Background(bg),
+		Number:        lipgloss.NewStyle().Foreground(highlight).Background(bg),
+		Border:        lipgloss.NewStyle().Foreground(border).Background(bg),
+		Header:        lipgloss.NewStyle().Foreground(brand).Background(bg).Bold(true),
+		Status:        lipgloss.NewStyle().Foreground(muted).Background(bg),
+		Input:         lipgloss.NewStyle().Foreground(text).Background(bg),
+		Activity:      lipgloss.NewStyle().Foreground(brand).Background(bg),
+		Approval:      lipgloss.NewStyle().Foreground(yellow).Background(bg).Bold(true),
+		CodeGutter:    lipgloss.NewStyle().Foreground(muted).Background(bg),
 		DiffAddedBg:   lipgloss.NewStyle().Foreground(text).Background(diffAddedBg),
 		DiffRemovedBg: lipgloss.NewStyle().Foreground(text).Background(diffRemovedBg),
 

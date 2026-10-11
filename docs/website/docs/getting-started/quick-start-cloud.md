@@ -4,7 +4,7 @@ The cloud deployment uses PostgreSQL with pgvector, enabling full multi-tenant f
 
 ## Prerequisites
 
-- Astonish binary [installed](./installation.md)
+- Troupe binary [installed](./installation.md)
 - PostgreSQL 15+ with the `pgvector` extension enabled
 - A database user with CREATE DATABASE permissions
 
@@ -13,13 +13,13 @@ The cloud deployment uses PostgreSQL with pgvector, enabling full multi-tenant f
 Run the interactive setup wizard and select PostgreSQL as the backend:
 
 ```bash
-astonish setup
+troupe setup
 ```
 
 The wizard walks you through:
 
 1. **Deployment mode** — Choose PostgreSQL for cloud/multi-tenant deployment.
-2. **Database connection** — Enter your PostgreSQL DSN (e.g., `postgres://user:password@host:5432/astonish?sslmode=require`).
+2. **Database connection** — Enter your PostgreSQL DSN (e.g., `postgres://user:password@host:5432/troupe?sslmode=require`).
 3. **Organization** — Create your organization name and slug.
 4. **AI provider** — Select a provider and enter your API key.
 
@@ -34,8 +34,8 @@ You can also set the DSN via the `TROUPE_PLATFORM_DSN` environment variable or `
 Start the platform:
 
 ```bash
-astonish daemon install
-astonish daemon start
+troupe daemon install
+troupe daemon start
 ```
 
 Studio is now available at `http://localhost:9393` (or your configured port).
@@ -49,27 +49,27 @@ Open Studio at `http://localhost:9393` and log in with the admin credentials cre
 Invite users via the CLI. Specify the org, assign roles, and optionally assign to a team:
 
 ```bash
-astonish platform org invite --org engineering --email alice@company.com --role admin
-astonish platform org invite --org engineering --email bob@company.com --team backend
-astonish platform org invite --org engineering --email carol@company.com
+troupe platform org invite --org engineering --email alice@company.com --role admin
+troupe platform org invite --org engineering --email bob@company.com --team backend
+troupe platform org invite --org engineering --email carol@company.com
 ```
 
 Roles: `owner`, `admin`, `member` (default: `member`). Users are added to the `general` team by default unless `--team` is specified.
 
 ## 5. Team Members Connect
 
-Invited users install the Astonish binary and log in to your platform:
+Invited users install the Troupe binary and log in to your platform:
 
 ```bash
-astonish login https://your-astonish-server.com
+troupe login https://your-troupe-server.com
 ```
 
 This authenticates via password or OIDC/SSO (if configured), selects the org and team, and stores credentials locally. After login:
 
 ```bash
-astonish chat          # Chat through the platform
-astonish flows list    # Browse team flows
-astonish status        # Show connection info
+troupe chat          # Chat through the platform
+troupe flows list    # Browse team flows
+troupe status        # Show connection info
 ```
 
 Studio is also available at your server's URL for browser-based access.
@@ -79,7 +79,7 @@ Studio is also available at your server's URL for browser-based access.
 For enterprise environments, connect your identity provider by configuring OIDC settings in the platform configuration file:
 
 ```yaml
-# In your Astonish config (e.g., ~/.config/astonish/config.yaml)
+# In your Troupe config (e.g., ~/.config/troupe/config.yaml)
 auth:
   oidc:
     issuer: https://accounts.google.com
@@ -87,7 +87,7 @@ auth:
     client_secret: YOUR_CLIENT_SECRET
 ```
 
-OIDC group claims auto-map to Astonish team memberships. Users authenticate through your existing SSO flow.
+OIDC group claims auto-map to Troupe team memberships. Users authenticate through your existing SSO flow.
 
 ## What Cloud Deployment Adds
 

@@ -57,7 +57,7 @@ If a static thumbnail is unavailable, the card shows a presentation placeholder.
 
 ## Enhance with AI
 
-**Enhance with AI** opens Chat and creates a session working copy of the saved deck. Astonish asks what you want to change, then updates that draft rather than immediately modifying the permanent deck.
+**Enhance with AI** opens Chat and creates a session working copy of the saved deck. Troupe asks what you want to change, then updates that draft rather than immediately modifying the permanent deck.
 
 When the enhancement is ready, select **Save** and choose whether to:
 
@@ -68,7 +68,7 @@ This explicit save step lets you review AI changes before they affect the librar
 
 ## Version History
 
-When a saved deck is overwritten, Astonish snapshots the previous state. The newest five prior snapshots are retained for personal and team decks.
+When a saved deck is overwritten, Troupe snapshots the previous state. The newest five prior snapshots are retained for personal and team decks.
 
 To restore a version:
 

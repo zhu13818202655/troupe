@@ -52,14 +52,14 @@ import (
 )
 
 // Label and annotation keys used on sandbox pods. These are part of the
-// public contract with operators (kubectl get pods -l astonish.io/...).
+// public contract with operators (kubectl get pods -l troupe.io/...).
 // See docs/architecture/sandbox-backends.md §5.2 and §5.3.
 const (
-	labelOrg       = "astonish.io/org"
-	labelTeam      = "astonish.io/team"
-	labelSessionID = "astonish.io/session-id"
-	labelType      = "astonish.io/type"
-	labelTemplate  = "astonish.io/template"
+	labelOrg       = "troupe.io/org"
+	labelTeam      = "troupe.io/team"
+	labelSessionID = "troupe.io/session-id"
+	labelType      = "troupe.io/type"
+	labelTemplate  = "troupe.io/template"
 
 	typeSession         = "session"
 	typeFleet           = "fleet"
@@ -69,16 +69,16 @@ const (
 	// editors) from regular chat/fleet sessions. This label controls
 	// volume-mount behaviour: team-template-editor sessions mount the layers
 	// PVC read-write so SaveSessionAsTemplate can stage artifacts directly.
-	labelPurpose = "astonish.io/purpose"
+	labelPurpose = "troupe.io/purpose"
 
 	// purposeTeamTemplateEditor is the label value for team-template editor
 	// sessions. Pods with this purpose get RW access to the layers PVC.
 	purposeTeamTemplateEditor = "team-template-editor"
 
-	annotationCreatedBy  = "astonish.io/created-by"
-	annotationCreatedAt  = "astonish.io/created-at"
-	annotationLayerChain = "astonish.io/layer-chain"
-	annotationSessionID  = "astonish.io/session-id"
+	annotationCreatedBy  = "troupe.io/created-by"
+	annotationCreatedAt  = "troupe.io/created-at"
+	annotationLayerChain = "troupe.io/layer-chain"
+	annotationSessionID  = "troupe.io/session-id"
 )
 
 // Volume names used inside sandbox pods.
@@ -97,9 +97,9 @@ const (
 // kernel returns EXDEV because renameat refuses to cross mount
 // boundaries. A single emptyDir guarantees they share a mount.
 const (
-	mountLayers  = "/mnt/astonish-layers"
-	mountUppers  = "/mnt/astonish-uppers"
-	mountOverlay = "/var/astonish/overlay"
+	mountLayers  = "/mnt/troupe-layers"
+	mountUppers  = "/mnt/troupe-uppers"
+	mountOverlay = "/var/troupe/overlay"
 	mountUpper   = mountOverlay + "/upper"
 	mountWork    = mountOverlay + "/work"
 )
@@ -289,7 +289,7 @@ func (b *K8sBackend) buildPodManifest(spec sandbox.SessionSpec) (*corev1.Pod, er
 						{Name: "TROUPE_LAYERS_DIR", Value: mountLayers},
 						{Name: "TROUPE_UPPERS_DIR", Value: mountUppers},
 						// PID 1 sleeps after overlay composition; tool calls
-						// arrive via Backend.Exec ("kubectl exec -- astonish node")
+						// arrive via Backend.Exec ("kubectl exec -- troupe node")
 						// with proper stdin/stdout attachment per invocation.
 						{Name: "TROUPE_HANDOFF", Value: "/bin/sleep"},
 						{Name: "TROUPE_HANDOFF_ARGS", Value: "infinity"},
@@ -735,7 +735,7 @@ func buildPersistUpperScript(uppersPath, sessionDir string) string {
 	b.WriteString("mkdir -p \"$SESSION_DIR\"\n")
 	b.WriteString("rm -f \"$TMP\"\n")
 	b.WriteString("tar --numeric-owner --xattrs --acls -I 'zstd --adapt -T0' \\\n")
-	fmt.Fprintf(&b, "  --exclude=%s/mnt/astonish-uppers \\\n", mountUpper)
+	fmt.Fprintf(&b, "  --exclude=%s/mnt/troupe-uppers \\\n", mountUpper)
 	fmt.Fprintf(&b, "  -C %s -cf \"$TMP\" .\n", mountUpper)
 	b.WriteString("test -s \"$TMP\"\n")
 	b.WriteString("mv \"$TMP\" \"$FINAL\"\n")
@@ -790,7 +790,7 @@ func (b *K8sBackend) DestroySession(ctx context.Context, sessionID string) error
 // reclaimUpperTarball spawns a short-lived GC pod that removes the
 // evicted upper directory from the uppers PVC:
 //
-//	/mnt/astonish-uppers/<sessionID>/
+//	/mnt/troupe-uppers/<sessionID>/
 //
 // Uses the same pattern as DeleteTemplate's GC pod. The pod is
 // defer-deleted regardless of outcome.

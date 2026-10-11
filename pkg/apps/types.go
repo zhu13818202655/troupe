@@ -26,7 +26,7 @@ type VisualApp struct {
 //   - "static"    — return static data from config
 type DataSource struct {
 	ID       string         `json:"id" yaml:"id"`
-	Type     string         `json:"type" yaml:"type"`     // "mcp_tool", "http_api", "a2a_agent", "static"
+	Type     string         `json:"type" yaml:"type"` // "mcp_tool", "http_api", "a2a_agent", "static"
 	Config   map[string]any `json:"config" yaml:"config"`
 	Interval string         `json:"interval,omitempty" yaml:"interval,omitempty"`
 }

@@ -134,7 +134,7 @@ func TestNewSkillLookupTool(t *testing.T) {
 // TestSkillLookupCodeMode_GenerativeUINotResolvable verifies that in
 // SkillLookupModeCode the generative-ui builtin cannot be resolved by name.
 // It must return an error result, not the skill content, so the coding agent
-// cannot load Studio-only instructions and generate astonish-app fences.
+// cannot load Studio-only instructions and generate troupe-app fences.
 func TestSkillLookupCodeMode_GenerativeUINotResolvable(t *testing.T) {
 	fn := SkillLookup(nil, SkillLookupModeCode)
 	result, err := fn(nil, SkillLookupArgs{Name: "generative-ui"})

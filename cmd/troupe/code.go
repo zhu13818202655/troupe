@@ -89,7 +89,7 @@ func handleCodeCommand(args []string) error {
 func printCodeUsage() {
 	fmt.Println("usage: troupe code [options]")
 	fmt.Println("")
-	fmt.Println("Run Astonish as a local coding tool. The binary runs the agent loop")
+	fmt.Println("Run Troupe as a local coding tool. The binary runs the agent loop")
 	fmt.Println("in-process and executes its built-in tools directly on your machine,")
 	fmt.Println("in the working directory. No platform, daemon, or login required.")
 	fmt.Println("")

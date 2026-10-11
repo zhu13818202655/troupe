@@ -9,10 +9,10 @@ import (
 	"google.golang.org/genai"
 )
 
-// These tests cover the astonish-report fence pipeline introduced to make
+// These tests cover the troupe-report fence pipeline introduced to make
 // "is this artifact a report?" an explicit contract:
 //
-//   ```astonish-report
+//   ```troupe-report
 //   path: <abs path of a same-turn write_file/edit_file artifact>
 //   title: <optional human-readable title>
 //   ```
@@ -88,9 +88,9 @@ func TestParseReportMarkerFrontmatter_QuotesAndComments(t *testing.T) {
 // content. The stripper must remove the fence and its body cleanly,
 // leaving surrounding prose intact.
 func TestStripReportMarkerFences(t *testing.T) {
-	in := "Here is your analysis.\n\n```astonish-report\npath: /tmp/r.md\ntitle: T\n```\n\nLet me know if you want changes."
+	in := "Here is your analysis.\n\n```troupe-report\npath: /tmp/r.md\ntitle: T\n```\n\nLet me know if you want changes."
 	out := stripReportMarkerFences(in)
-	if contains(out, "astonish-report") || contains(out, "/tmp/r.md") {
+	if contains(out, "troupe-report") || contains(out, "/tmp/r.md") {
 		t.Errorf("fence not stripped: %q", out)
 	}
 	if !contains(out, "Here is your analysis.") {
@@ -105,16 +105,16 @@ func TestStripReportMarkerFences(t *testing.T) {
 // reports in a single turn. Every fence must be stripped, not just the
 // first.
 func TestStripReportMarkerFences_Multiple(t *testing.T) {
-	in := "```astonish-report\npath: /tmp/a.md\n```\n\nAnd:\n\n```astonish-report\npath: /tmp/b.md\n```"
+	in := "```troupe-report\npath: /tmp/a.md\n```\n\nAnd:\n\n```troupe-report\npath: /tmp/b.md\n```"
 	out := stripReportMarkerFences(in)
-	if contains(out, "astonish-report") || contains(out, "/tmp/a.md") || contains(out, "/tmp/b.md") {
+	if contains(out, "troupe-report") || contains(out, "/tmp/a.md") || contains(out, "/tmp/b.md") {
 		t.Errorf("not all fences stripped: %q", out)
 	}
 }
 
 // TestDetectAndEmitReportMarkers_HappyPath: end-to-end pipeline through
 // the runner. Given a turn with a write_file artifact event AND a
-// matching ```astonish-report fence in the agent text, the runner must
+// matching ```troupe-report fence in the agent text, the runner must
 // emit exactly one report_marker event with path+title.
 func TestDetectAndEmitReportMarkers_HappyPath(t *testing.T) {
 	runner := newChatRunner("test-rm-happy", studioChatUserID, studioChatAppName, true)
@@ -132,7 +132,7 @@ func TestDetectAndEmitReportMarkers_HappyPath(t *testing.T) {
 
 	// Agent prose containing the fence.
 	runner.emitEvent("text", map[string]any{
-		"text": "Done.\n\n```astonish-report\npath: /tmp/report.md\ntitle: My Report\n```\n",
+		"text": "Done.\n\n```troupe-report\npath: /tmp/report.md\ntitle: My Report\n```\n",
 	})
 	<-ch // drain text event
 
@@ -172,7 +172,7 @@ func TestDetectAndEmitReportMarkers_PathMismatch(t *testing.T) {
 	})
 	<-ch
 	runner.emitEvent("text", map[string]any{
-		"text": "```astonish-report\npath: /tmp/different.md\n```",
+		"text": "```troupe-report\npath: /tmp/different.md\n```",
 	})
 	<-ch
 
@@ -200,7 +200,7 @@ func TestDetectAndEmitReportMarkers_Dedup(t *testing.T) {
 	})
 	<-ch
 	runner.emitEvent("text", map[string]any{
-		"text": "```astonish-report\npath: /tmp/dup.md\ntitle: First\n```\n\n```astonish-report\npath: /tmp/dup.md\ntitle: Second\n```",
+		"text": "```troupe-report\npath: /tmp/dup.md\ntitle: First\n```\n\n```troupe-report\npath: /tmp/dup.md\ntitle: Second\n```",
 	})
 	<-ch
 

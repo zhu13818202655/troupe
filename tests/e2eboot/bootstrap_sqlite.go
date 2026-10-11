@@ -63,11 +63,11 @@ func bootstrapSQLite(t *testing.T) *Harness {
 
 	// Write config.yaml with backend: sqlite
 	configDir := t.TempDir()
-	astonishDir := filepath.Join(configDir, "astonish")
-	if err := os.MkdirAll(astonishDir, 0755); err != nil {
+	troupeDir := filepath.Join(configDir, "troupe")
+	if err := os.MkdirAll(troupeDir, 0755); err != nil {
 		t.Fatalf("[e2eboot] mkdir config dir: %v", err)
 	}
-	writeSQLiteConfig(t, astonishDir, dataDir)
+	writeSQLiteConfig(t, troupeDir, dataDir)
 	t.Setenv("XDG_CONFIG_HOME", configDir)
 
 	// Master key for encryption path coverage (same as PG mode).
@@ -147,12 +147,12 @@ func writeSQLiteConfig(t *testing.T, dir, dataDir string) {
 
 	sandboxNS := os.Getenv("TROUPE_E2E_SANDBOX_NAMESPACE")
 	if sandboxNS == "" {
-		sandboxNS = "astonish-sandbox"
+		sandboxNS = "troupe-sandbox"
 	}
 
 	controlPlaneNS := os.Getenv("TROUPE_E2E_CONTROL_PLANE_NAMESPACE")
 	if controlPlaneNS == "" {
-		controlPlaneNS = "astonish"
+		controlPlaneNS = "troupe"
 	}
 
 	kubeconfigPath := os.Getenv("KUBECONFIG")
@@ -190,9 +190,9 @@ sandbox:
     control_plane_namespace: %s
     overlay_mode: fuse
     privileged_pods: true
-    sandbox_image: ghcr.io/sap/astonish-sandbox-base:dev
-    layers_pvc_name: astonish-layers
-    uppers_pvc_name: astonish-uppers
+    sandbox_image: ghcr.io/sap/troupe-sandbox-base:dev
+    layers_pvc_name: troupe-layers
+    uppers_pvc_name: troupe-uppers
 `, bifrostURL, dataDir, defaultJWTSecret, kubeconfigPath, sandboxNS, controlPlaneNS)
 
 	path := filepath.Join(dir, "config.yaml")

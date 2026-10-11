@@ -28,7 +28,7 @@ import (
 // 9. On missing/invalid token: returns 401 for API requests.
 func PlatformAuthMiddleware(pa *PlatformAuth, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// An OAuth protocol adapter may already have validated a scoped Astonish
+		// An OAuth protocol adapter may already have validated a scoped Troupe
 		// bearer and attached its canonical principal. Do not reinterpret that
 		// token as a legacy platform JWT.
 		if _, ok := execution.PrincipalFromContext(r.Context()); ok {
@@ -171,11 +171,15 @@ func validateCSRF(r *http.Request) error {
 }
 
 // resolveTeamSlug determines the team slug for the request from claims and overrides.
-// Priority: X-Astonish-Team header > ?team query param > JWT default.
+// Priority: X-Troupe-Team header > ?team query param > JWT default.
 func resolveTeamSlug(r *http.Request, claims *PlatformClaims) string {
 	teamSlug := claims.DefaultTeamSlug
-	// Allow per-request team override via header
-	if headerTeam := r.Header.Get("X-Astonish-Team"); headerTeam != "" {
+	// Allow per-request team override via header. The header was renamed from
+	// X-Astonish-Team in the rebrand; keep accepting the legacy name so older
+	// CLI/extension builds keep working until they are upgraded.
+	if headerTeam := r.Header.Get("X-Troupe-Team"); headerTeam != "" {
+		teamSlug = headerTeam
+	} else if headerTeam := r.Header.Get("X-Astonish-Team"); headerTeam != "" {
 		teamSlug = headerTeam
 	}
 	// Allow team override via query parameter (for WebSocket connections
@@ -234,7 +238,7 @@ func buildAuthenticatedContext(ctx context.Context, claims *PlatformClaims, team
 		Authentication: execution.AuthMethodPlatformJWT,
 		Surface:        execution.SurfaceStudio,
 		Subject:        claims.UserID,
-		Issuer:         "astonish",
+		Issuer:         "troupe",
 		OrgSlug:        claims.OrgSlug,
 		TeamSlug:       teamSlug,
 		Roles:          []string{claims.Role, claims.PlatformRole},

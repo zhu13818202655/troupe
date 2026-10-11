@@ -240,11 +240,11 @@ func TestAccountStore_Persistence(t *testing.T) {
 
 	acct := &Account{
 		Portal:         "hackernews.com",
-		Username:       "astonish_ai",
+		Username:       "troupe_ai",
 		Email:          "bot@example.com",
 		CredentialName: "hn-cred",
 		Status:         AccountActive,
-		ProfileURL:     "https://news.ycombinator.com/user?id=astonish_ai",
+		ProfileURL:     "https://news.ycombinator.com/user?id=troupe_ai",
 		Notes:          "registered successfully",
 	}
 	if err := store1.Save(acct); err != nil {
@@ -272,7 +272,7 @@ func TestAccountStore_Persistence(t *testing.T) {
 		t.Fatalf("NewAccountStore (reload) failed: %v", err)
 	}
 
-	got := store2.Get("hackernews.com", "astonish_ai")
+	got := store2.Get("hackernews.com", "troupe_ai")
 	if got == nil {
 		t.Fatal("expected account after reload, got nil")
 		return
@@ -433,7 +433,7 @@ func TestAccountKey(t *testing.T) {
 		portal, username, want string
 	}{
 		{"reddit.com", "bot", "reddit.com:bot"},
-		{"hackernews.com", "astonish_ai", "hackernews.com:astonish_ai"},
+		{"hackernews.com", "troupe_ai", "hackernews.com:troupe_ai"},
 		{"", "user", ":user"},
 		{"portal.com", "", "portal.com:"},
 	}

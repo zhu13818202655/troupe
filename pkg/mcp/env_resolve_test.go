@@ -133,4 +133,3 @@ func TestEnvNeedsCredentialResolution(t *testing.T) {
 		t.Fatal("placeholder env should need resolution")
 	}
 }
-

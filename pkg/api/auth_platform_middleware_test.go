@@ -320,8 +320,9 @@ func TestPlatformAuthMiddleware_ValidJWT(t *testing.T) {
 	}
 }
 
-// TestPlatformAuthMiddleware_TeamOverrideHeader verifies that X-Astonish-Team
-// header overrides the default team from the JWT.
+// TestPlatformAuthMiddleware_TeamOverrideHeader verifies that the X-Troupe-Team
+// header overrides the default team from the JWT, and that the legacy
+// X-Astonish-Team name (pre-rebrand clients) is still honoured.
 func TestPlatformAuthMiddleware_TeamOverrideHeader(t *testing.T) {
 	pa := testPlatformAuth(t)
 
@@ -340,7 +341,7 @@ func TestPlatformAuthMiddleware_TeamOverrideHeader(t *testing.T) {
 	req := httptest.NewRequest("GET", "/api/agents", nil)
 	req.RemoteAddr = "192.168.1.100:54321"
 	req.AddCookie(&http.Cookie{Name: accessCookieName, Value: token})
-	req.Header.Set("X-Astonish-Team", "sre")
+	req.Header.Set("X-Troupe-Team", "sre")
 	w := httptest.NewRecorder()
 	handler.ServeHTTP(w, req)
 
@@ -349,6 +350,38 @@ func TestPlatformAuthMiddleware_TeamOverrideHeader(t *testing.T) {
 	}
 	if gotUser.TeamSlug != "sre" {
 		t.Errorf("team slug = %q, want %q (overridden by header)", gotUser.TeamSlug, "sre")
+	}
+}
+
+// TestPlatformAuthMiddleware_LegacyTeamOverrideHeader verifies that the
+// pre-rebrand X-Astonish-Team header is still accepted for older clients.
+func TestPlatformAuthMiddleware_LegacyTeamOverrideHeader(t *testing.T) {
+	pa := testPlatformAuth(t)
+
+	token, err := pa.jwt.IssueAccessToken("user-123", "test@example.com", "Test User", "my-org", "ops", "admin", "")
+	if err != nil {
+		t.Fatalf("IssueAccessToken() error: %v", err)
+	}
+
+	var gotUser *PlatformUser
+	inner := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gotUser = GetPlatformUser(r)
+		w.WriteHeader(http.StatusOK)
+	})
+	handler := PlatformAuthMiddleware(pa, inner)
+
+	req := httptest.NewRequest("GET", "/api/agents", nil)
+	req.RemoteAddr = "192.168.1.100:54321"
+	req.AddCookie(&http.Cookie{Name: accessCookieName, Value: token})
+	req.Header.Set("X-Astonish-Team", "legacy-sre")
+	w := httptest.NewRecorder()
+	handler.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("valid JWT should be allowed, got status %d", w.Code)
+	}
+	if gotUser.TeamSlug != "legacy-sre" {
+		t.Errorf("team slug = %q, want %q (legacy header must still work)", gotUser.TeamSlug, "legacy-sre")
 	}
 }
 

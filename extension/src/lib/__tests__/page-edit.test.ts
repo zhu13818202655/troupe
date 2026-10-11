@@ -2,13 +2,24 @@ import { describe, expect, it } from 'vitest';
 import { PAGE_EDIT_FENCE, extractPageEdit, unwrapEditorPayload } from '../page-edit';
 
 describe('page-edit', () => {
-  it('extracts the body of an astonish-page-edit fence', () => {
+  it('extracts the body of a troupe-page-edit fence', () => {
     const text = [
       'Here is a suggested rewrite:',
       '```' + PAGE_EDIT_FENCE,
       'Add cluster-east to the runbook.',
       '```',
       'Let me know if you want a shorter version.',
+    ].join('\n');
+
+    expect(extractPageEdit(text)).toBe('Add cluster-east to the runbook.');
+  });
+
+  it('still extracts the body of a legacy astonish-page-edit fence', () => {
+    const text = [
+      'Here is a suggested rewrite:',
+      '```astonish-page-edit',
+      'Add cluster-east to the runbook.',
+      '```',
     ].join('\n');
 
     expect(extractPageEdit(text)).toBe('Add cluster-east to the runbook.');

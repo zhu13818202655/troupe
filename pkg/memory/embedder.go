@@ -33,7 +33,7 @@ type EmbedderResult struct {
 //
 //	Uses a local, in-process embedding model via Hugot (pure Go, no external
 //	dependencies). The model (all-MiniLM-L6-v2, ~23 MB) is auto-downloaded on
-//	first use and cached in ~/.config/astonish/models/.
+//	first use and cached in ~/.config/troupe/models/.
 //
 // Explicit provider (memory.embedding.provider in config.yaml):
 //

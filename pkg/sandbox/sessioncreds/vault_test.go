@@ -36,8 +36,8 @@ func (m *memStore) Count(_ context.Context) int { return len(m.creds) }
 func (m *memStore) Resolve(_ context.Context, name string) (string, string, error) {
 	return store.ResolveCredentialHeader(name, m.Get(context.Background(), name), nil)
 }
-func (m *memStore) InvalidateToken(context.Context, string)              {}
-func (m *memStore) SetSecret(context.Context, string, string) error      { return nil }
+func (m *memStore) InvalidateToken(context.Context, string)         {}
+func (m *memStore) SetSecret(context.Context, string, string) error { return nil }
 func (m *memStore) SetSecretBatch(context.Context, map[string]string) error {
 	return nil
 }
@@ -50,7 +50,7 @@ func (m *memStore) Reload(context.Context) error               { return nil }
 
 func TestSerializeRoundTrip_Bearer(t *testing.T) {
 	cs := &memStore{creds: map[string]*store.Credential{
-		"api": {Type: store.CredBearer, Token: "tok-123"},
+		"api":       {Type: store.CredBearer, Token: "tok-123"},
 		"_secret:x": {Type: "_secret", Value: "should-skip"},
 	}}
 	data, err := Serialize(context.Background(), cs)

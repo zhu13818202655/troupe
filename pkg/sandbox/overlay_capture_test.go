@@ -7,16 +7,16 @@ import (
 
 func TestOverlayCaptureScript_StreamsWithoutTmpTar(t *testing.T) {
 	s := OverlayCaptureScript(OverlayCaptureOpts{
-		LayersDir:     "/mnt/astonish-layers",
-		UpperDir:      "/var/astonish/overlay/upper",
+		LayersDir:     "/mnt/troupe-layers",
+		UpperDir:      "/var/troupe/overlay/upper",
 		BuilderID:     "bid-123",
 		ExtractXattrs: false,
 	})
 	mustContain := []string{
 		"set -euo pipefail",
 		"trap cleanup EXIT",
-		"/mnt/astonish-layers/__staging-bid-123",
-		"/var/astonish/overlay/upper",
+		"/mnt/troupe-layers/__staging-bid-123",
+		"/var/troupe/overlay/upper",
 		"sha256sum",
 		"tar --numeric-owner --xattrs --acls --sort=name --mtime=@0",
 		`mv "$STAGING" "$LAYERS_DIR/$SHA"`,
@@ -48,8 +48,8 @@ func TestOverlayCaptureScript_StreamsWithoutTmpTar(t *testing.T) {
 
 func TestOverlayCaptureScript_K8sKeepsXattrsOnExtract(t *testing.T) {
 	s := OverlayCaptureScript(OverlayCaptureOpts{
-		LayersDir:     "/mnt/astonish-layers",
-		UpperDir:      "/var/astonish/overlay/upper",
+		LayersDir:     "/mnt/troupe-layers",
+		UpperDir:      "/var/troupe/overlay/upper",
 		BuilderID:     "bid-k8s",
 		ExtractXattrs: true,
 	})

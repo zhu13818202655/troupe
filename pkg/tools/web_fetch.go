@@ -23,7 +23,7 @@ const (
 	webFetchTimeout            = 30 * time.Second
 	webFetchMaxRedirects       = 5
 	webFetchMaxHTMLForReadable = 1000000 // 1M chars — skip readability for huge pages
-	webFetchUserAgent          = "Astonish/1.0 (AI Agent; +https://github.com/astonish-ai/astonish)"
+	webFetchUserAgent          = "Troupe/1.0 (AI Agent; +https://github.com/troupe-ai/troupe)"
 )
 
 type WebFetchArgs struct {

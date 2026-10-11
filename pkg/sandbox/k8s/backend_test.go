@@ -161,10 +161,10 @@ func TestK8sBackendConfigDefaults(t *testing.T) {
 	if b.cfg.FuseDeviceResource != "" {
 		t.Errorf("default FuseDeviceResource = %q, want empty (no device plugin)", b.cfg.FuseDeviceResource)
 	}
-	if b.cfg.LayersPath != "/mnt/astonish-layers" {
+	if b.cfg.LayersPath != "/mnt/troupe-layers" {
 		t.Errorf("default LayersPath = %q", b.cfg.LayersPath)
 	}
-	if b.cfg.UppersPath != "/mnt/astonish-uppers" {
+	if b.cfg.UppersPath != "/mnt/troupe-uppers" {
 		t.Errorf("default UppersPath = %q", b.cfg.UppersPath)
 	}
 	if b.cfg.MaxChainDepth != 20 {

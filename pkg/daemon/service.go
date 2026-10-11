@@ -36,7 +36,7 @@ type Service interface {
 
 // InstallConfig holds the parameters needed to install the daemon as a service.
 type InstallConfig struct {
-	BinaryPath string            // Absolute path to the astonish binary
+	BinaryPath string            // Absolute path to the troupe binary
 	Port       int               // HTTP port for the Studio server
 	LogDir     string            // Directory for log files
 	EnvVars    map[string]string // Extra environment variables to set
@@ -55,22 +55,22 @@ func NewService() (Service, error) {
 	return newPlatformService()
 }
 
-// DefaultLogDir returns the default log directory (~/.config/astonish/logs/).
+// DefaultLogDir returns the default log directory (~/.config/troupe/logs/).
 func DefaultLogDir() (string, error) {
 	configDir, err := os.UserConfigDir()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(configDir, "astonish", "logs"), nil
+	return filepath.Join(configDir, "troupe", "logs"), nil
 }
 
-// DefaultPIDPath returns the default PID file path (~/.config/astonish/daemon.pid).
+// DefaultPIDPath returns the default PID file path (~/.config/troupe/daemon.pid).
 func DefaultPIDPath() (string, error) {
 	configDir, err := os.UserConfigDir()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(configDir, "astonish", "daemon.pid"), nil
+	return filepath.Join(configDir, "troupe", "daemon.pid"), nil
 }
 
 // EnsureDir creates a directory if it doesn't exist.
@@ -111,10 +111,10 @@ func ReadPID(path string) (int, error) {
 // Platform-specific implementations are in process_unix.go and process_windows.go.
 
 // SystemUnitExists reports whether a system-level systemd unit file exists
-// at /etc/systemd/system/astonish-daemon.service. On non-Linux platforms
+// at /etc/systemd/system/troupe-daemon.service. On non-Linux platforms
 // this always returns false.
 func SystemUnitExists() bool {
-	const systemUnitPath = "/etc/systemd/system/astonish-daemon.service"
+	const systemUnitPath = "/etc/systemd/system/troupe-daemon.service"
 	_, err := os.Stat(systemUnitPath)
 	return err == nil
 }

@@ -982,7 +982,7 @@ func TestRepairOrphanedToolCalls_ApprovalSuperseded(t *testing.T) {
 		// 2. System event sets awaiting_approval=true
 		{
 			ID:     "e2",
-			Author: "astonish_code",
+			Author: "troupe_code",
 			LLMResponse: adkmodel.LLMResponse{
 				Content: genai.NewContentFromText("Approve?", genai.RoleModel),
 			},
@@ -1202,7 +1202,7 @@ func seedStateOnlySession(t *testing.T, store *FileStore) {
 	}
 	seed := []*adksession.Event{
 		contentEventFS("a", "message A"),
-		stateEvent("s1", map[string]any{"astonish_plan_lifecycle": "approved"}),
+		stateEvent("s1", map[string]any{"troupe_plan_lifecycle": "approved"}),
 		contentEventFS("b", "message B"),
 		stateEvent("s2", map[string]any{"routing_info": map[string]any{"tier": "strong", "model": "m1"}}),
 	}
@@ -1270,7 +1270,7 @@ func TestArchiveAndReplaceEvents_StateSurvivesReload(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Get after reload: %v", err)
 	}
-	v, gerr := got.Session.State().Get("astonish_plan_lifecycle")
+	v, gerr := got.Session.State().Get("troupe_plan_lifecycle")
 	if gerr != nil {
 		t.Fatalf("plan lifecycle state missing after compaction+reload: %v", gerr)
 	}

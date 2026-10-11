@@ -16,7 +16,7 @@ import (
 )
 
 // executeReActFallback runs the ReAct planner as a fallback when native tool calling is not supported
-func (a *AstonishAgent) executeReActFallback(ctx context.Context, node *config.Node, nodeName string, state session.State, yield func(*session.Event, error) bool, internalTools []tool.Tool, instruction string, userPrompt string) (bool, error) {
+func (a *TroupeAgent) executeReActFallback(ctx context.Context, node *config.Node, nodeName string, state session.State, yield func(*session.Event, error) bool, internalTools []tool.Tool, instruction string, userPrompt string) (bool, error) {
 	// Emit a message indicating we're using the fallback via spinner update
 	yield(&session.Event{
 		Actions: session.EventActions{

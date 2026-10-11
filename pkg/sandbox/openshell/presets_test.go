@@ -23,13 +23,13 @@ func TestResolvePresets_DefaultAll(t *testing.T) {
 
 	// Spot-check a host from each preset.
 	want := []string{
-		"github.com",            // code_hosting
-		"registry.npmjs.org",    // package_registries
-		"api.openai.com",        // llm_apis
-		"api.tavily.com",        // tools
-		"ghcr.io",              // system
-		"duckduckgo.com",        // search
-		"*.cloudflare.com",      // cdn
+		"github.com",         // code_hosting
+		"registry.npmjs.org", // package_registries
+		"api.openai.com",     // llm_apis
+		"api.tavily.com",     // tools
+		"ghcr.io",            // system
+		"duckduckgo.com",     // search
+		"*.cloudflare.com",   // cdn
 	}
 	for _, h := range want {
 		if !hostSet[h] {

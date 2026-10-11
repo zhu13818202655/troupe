@@ -1,4 +1,4 @@
-// Package api — device authorization flow for Astonish Studio.
+// Package api — device authorization flow for Troupe Studio.
 //
 // When auth is enabled (daemon mode), unauthenticated browsers see a short
 // code. The user types /authorize in a channel (Telegram, CLI) and enters
@@ -17,8 +17,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/zhu13818202655/troupe/pkg/browser"
 	"github.com/gorilla/mux"
+	"github.com/zhu13818202655/troupe/pkg/browser"
 )
 
 const (
@@ -29,7 +29,10 @@ const (
 	// maxPendingCodes limits the number of pending authorization codes.
 	maxPendingCodes = 5
 	// cookieName is the HTTP cookie name for authorized sessions.
-	cookieName = "astonish_session"
+	cookieName = "troupe_session"
+	// legacyCookieName is the pre-rebrand cookie name, still accepted on read
+	// so sessions established before the rename keep working.
+	legacyCookieName = "astonish_session"
 	// cookieMaxAge is the cookie max-age in seconds (90 days).
 	cookieMaxAge = 90 * 24 * 60 * 60
 )
@@ -147,7 +150,10 @@ func (am *AuthManager) ValidateRequest(r *http.Request) bool {
 	}
 	cookie, err := r.Cookie(cookieName)
 	if err != nil {
-		return false
+		// Fall back to the legacy pre-rebrand cookie name.
+		if cookie, err = r.Cookie(legacyCookieName); err != nil {
+			return false
+		}
 	}
 	return am.store.ValidateToken(cookie.Value)
 }
@@ -368,7 +374,7 @@ var authPageHTML = `<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Astonish Studio — Authorize</title>
+<title>Troupe Studio — Authorize</title>
 <style>
   :root {
     --bg: #fafbfe; --surface: #ffffff; --text: #0b1222;

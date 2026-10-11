@@ -71,9 +71,9 @@ func TestEaseInOutCubic_BoundaryValues(t *testing.T) {
 		t    float64
 		want float64
 	}{
-		{0.0, 0.0},   // origin: no movement
-		{0.5, 0.5},   // midpoint: exactly halfway
-		{1.0, 1.0},   // destination: fully arrived
+		{0.0, 0.0},    // origin: no movement
+		{0.5, 0.5},    // midpoint: exactly halfway
+		{1.0, 1.0},    // destination: fully arrived
 		{0.25, 0.125}, // quarter-way: 4*(0.25)^3 = 0.0625… wait, 4*0.015625 = 0.0625
 		{0.75, 0.875}, // three-quarter: symmetric to 0.25 → 1 - 0.125 = 0.875
 	}

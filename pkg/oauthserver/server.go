@@ -21,7 +21,7 @@ import (
 
 // Subject is the canonical platform identity established by existing built-in
 // or federated login. External IdPs remain authentication sources; tokens from
-// this server are Astonish-issued and audience-bound.
+// this server are Troupe-issued and audience-bound.
 type Subject struct {
 	ID, OrgID, TeamID, Actor string
 }
@@ -136,7 +136,7 @@ func (s *Server) authorize(w http.ResponseWriter, r *http.Request) {
 		oauthError(w, http.StatusBadRequest, "invalid_scope", "requested scope is not granted")
 		return
 	}
-	// An empty registration permits tokens for Astonish's two built-in protected
+	// An empty registration permits tokens for Troupe's two built-in protected
 	// resources. An explicit registration remains an audience restriction.
 	resources := allowed(q["resource"], client.Resources, s.defaultResources())
 	if len(q["resource"]) > 0 && len(resources) != len(q["resource"]) {
@@ -426,7 +426,7 @@ func allowed(requested, permitted, defaults []string) []string {
 }
 func authorizationScopes(clientScopes []string) []string {
 	// openid and offline_access are protocol scopes for interactive authorization
-	// code clients. They do not grant an Astonish capability and therefore are
+	// code clients. They do not grant an Troupe capability and therefore are
 	// intentionally not configurable in the client-permission selector.
 	out := make([]string, 0, len(clientScopes)+2)
 	out = append(out, "openid", "offline_access")

@@ -20,7 +20,7 @@ func SandboxDataDir() (string, error) {
 		dataHome = filepath.Join(home, ".local", "share")
 	}
 
-	return filepath.Join(dataHome, "astonish", "sandbox"), nil
+	return filepath.Join(dataHome, "troupe", "sandbox"), nil
 }
 
 // RealUserHomeDir returns the home directory of the real (non-root) user.

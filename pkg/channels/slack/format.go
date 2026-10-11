@@ -1,4 +1,4 @@
-// Package slack implements the Slack channel adapter for Astonish.
+// Package slack implements the Slack channel adapter for Troupe.
 // It connects to Slack via Socket Mode (WebSocket) or Events API (HTTP),
 // normalizes inbound messages, and delivers outbound responses with
 // Slack mrkdwn formatting and message chunking.

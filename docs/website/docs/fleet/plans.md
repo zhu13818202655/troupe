@@ -5,7 +5,7 @@ A plan is a mission instance — a running execution of a [template](./templates
 ## Creating a Plan
 
 ```bash
-astonish fleet plan create \
+troupe fleet plan create \
   --template full-stack-team \
   --objective "Implement user authentication with OAuth2 and session management"
 ```
@@ -39,7 +39,7 @@ Plans progress through defined stages:
 Plans maintain a task graph with dependencies and status:
 
 ```bash
-astonish fleet plan status <plan-id>
+troupe fleet plan status <plan-id>
 ```
 
 Output shows each task, its assignee, and current state:
@@ -77,14 +77,14 @@ When enabled:
 
 ```bash
 # List active plans
-astonish fleet plan list
+troupe fleet plan list
 
 # Pause a plan
-astonish fleet plan pause <plan-id>
+troupe fleet plan pause <plan-id>
 
 # Resume a paused plan
-astonish fleet plan resume <plan-id>
+troupe fleet plan resume <plan-id>
 
 # View plan details
-astonish fleet plan show <plan-id>
+troupe fleet plan show <plan-id>
 ```

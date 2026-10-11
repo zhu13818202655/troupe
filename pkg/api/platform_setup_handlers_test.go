@@ -29,7 +29,7 @@ func TestCleanPGError_RemovesConnectionString(t *testing.T) {
 		},
 		{
 			name:  "connection string in middle",
-			input: "error connecting to postgres://admin:secret@db.example.com:5432/astonish_platform more text",
+			input: "error connecting to postgres://admin:secret@db.example.com:5432/troupe_platform more text",
 			want:  "error connecting to [redacted] more text",
 		},
 		{
@@ -71,21 +71,28 @@ func TestCleanPGError_RemovesConnectionString(t *testing.T) {
 func setupTestConfigDir(t *testing.T, cfg *config.AppConfig) func() {
 	t.Helper()
 	tmpDir := t.TempDir()
-	astonishDir := filepath.Join(tmpDir, "astonish")
-	if err := os.MkdirAll(astonishDir, 0755); err != nil {
-		t.Fatalf("failed to create test config dir: %v", err)
-	}
 
 	origXDG := os.Getenv("XDG_CONFIG_HOME")
 
 	os.Setenv("XDG_CONFIG_HOME", tmpDir)
+
+	// Resolve the directory instead of hard-coding its name: writing into a
+	// literal "astonish" directory only worked because the code's legacy-dir
+	// fallback happened to find it.
+	configDir, err := config.GetConfigDir()
+	if err != nil {
+		t.Fatalf("failed to resolve test config dir: %v", err)
+	}
+	if err := os.MkdirAll(configDir, 0755); err != nil {
+		t.Fatalf("failed to create test config dir: %v", err)
+	}
 
 	if cfg != nil {
 		data, err := yaml.Marshal(cfg)
 		if err != nil {
 			t.Fatalf("failed to marshal config: %v", err)
 		}
-		if err := os.WriteFile(filepath.Join(astonishDir, "config.yaml"), data, 0644); err != nil {
+		if err := os.WriteFile(filepath.Join(configDir, "config.yaml"), data, 0644); err != nil {
 			t.Fatalf("failed to write config: %v", err)
 		}
 	}

@@ -2,7 +2,7 @@ package api
 
 // FlowSchema contains the schema documentation for AI to understand flow structure
 const FlowSchema = `
-# Astonish Agent Flow Schema
+# Troupe Agent Flow Schema
 
 ## Overview
 An agent flow is defined in YAML with nodes (processing steps) and flow (edges connecting them).

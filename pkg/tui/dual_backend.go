@@ -113,7 +113,7 @@ func (m model) switchBackend() (tea.Model, tea.Cmd) {
 	if m.info.Mode == "platform" {
 		m.ta.Placeholder = "Message Platform…"
 	} else {
-		m.ta.Placeholder = "Message Astonish…"
+		m.ta.Placeholder = "Message Troupe…"
 	}
 
 	m.refreshViewport()

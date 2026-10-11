@@ -13,7 +13,7 @@ A2A (Agent-to-Agent) protocol channel adapter. Implements the `channels.Channel`
 Unlike other channels (1 adapter = 1 bot account), the A2A channel handles ALL registered agents through a single adapter instance. Agent identity comes from HTTP authentication (resolved in `pkg/api/a2a_auth.go`), passed into handler methods.
 
 ### Identity Propagation
-External agents can act on behalf of Astonish users. The `pkg/a2a/identity.go` module resolves the effective user from message metadata. The adapter uses `PlatformResolver` with the resolved identity, exactly like Telegram/Slack/Email channels.
+External agents can act on behalf of Troupe users. The `pkg/a2a/identity.go` module resolves the effective user from message metadata. The adapter uses `PlatformResolver` with the resolved identity, exactly like Telegram/Slack/Email channels.
 
 ### HTTP-Driven (Not Polling)
 The A2A channel does NOT poll an external service. Instead, HTTP handlers in `pkg/api/a2a_routes.go` receive requests and call into this adapter's handler methods. `Start()` returns immediately.

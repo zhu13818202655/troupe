@@ -88,7 +88,7 @@ func LoginWithOAuth(serverURL string, onStatus func(status string)) (*LoginResul
 			if desc == "" {
 				desc = query.Get("error")
 			}
-			http.Error(w, "Astonish login failed: "+desc, http.StatusBadRequest)
+			http.Error(w, "Troupe login failed: "+desc, http.StatusBadRequest)
 			errCh <- fmt.Errorf("authorization failed: %s", desc)
 			return
 		}
@@ -104,7 +104,7 @@ func LoginWithOAuth(serverURL string, onStatus func(status string)) (*LoginResul
 			return
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		_, _ = io.WriteString(w, "<html><body><p>Astonish CLI login complete. You can close this window.</p></body></html>")
+		_, _ = io.WriteString(w, "<html><body><p>Troupe CLI login complete. You can close this window.</p></body></html>")
 		codeCh <- code
 	})
 	server := &http.Server{Handler: mux, ReadHeaderTimeout: 10 * time.Second}

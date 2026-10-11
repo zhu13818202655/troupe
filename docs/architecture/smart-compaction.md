@@ -45,7 +45,7 @@ The old `summarize()` function:
 This is architecturally wrong for tool-heavy sessions because:
 - A 53KB delegate response contains specific findings (file paths, API behaviors, verified facts)
 - A 500-char truncation for the summarizer input discards everything except the first few lines
-- The resulting summary is generic ("read some docs") rather than specific ("astonish deploy doesn't exist, found in 3 doc pages, port flag only on studio command")
+- The resulting summary is generic ("read some docs") rather than specific ("troupe deploy doesn't exist, found in 3 doc pages, port flag only on studio command")
 
 ### The Amplification Effect
 
@@ -292,7 +292,7 @@ Total input per task is capped at 2000 chars to keep the summarization call fast
 ### Expected Output
 
 ```
-Task 1: Reviewed 5 security documentation pages. Fixed CLI references (astonish mcp list doesn't exist), updated authentication docs, verified credential-security redaction layers. Committed cced039a.
+Task 1: Reviewed 5 security documentation pages. Fixed CLI references (troupe mcp list doesn't exist), updated authentication docs, verified credential-security redaction layers. Committed cced039a.
 Task 2: Implemented Helm subchart integration for OpenShell. Added NetworkPolicy, namespace config, pluggable mesh support via mesh.provider value. PR #266 merged.
 ```
 
@@ -341,7 +341,7 @@ relevant to the task above. Rules:
 - Remove verbose explanations of what was searched/read
 - Keep: verified facts, specific values, what exists/doesn't exist, 
   decisions made, error conditions discovered, file paths that matter
-- Be specific: "port 9393" not "a port", "astonish deploy doesn't exist" 
+- Be specific: "port 9393" not "a port", "troupe deploy doesn't exist" 
   not "some commands are missing"
 
 Target: 300-800 characters. Be dense.
@@ -360,17 +360,17 @@ Result: ## Deployment Documentation Review
 I read the file at docs/deployment/getting-started.md...
 [8KB of file contents and analysis]
 ### Page 2: Helm Values  
-I examined charts/astonish/values.yaml...
+I examined charts/troupe/values.yaml...
 [5KB of values analysis]
 ### Findings
-- The `astonish deploy` command referenced in docs doesn't exist in the CLI
+- The `troupe deploy` command referenced in docs doesn't exist in the CLI
 - Port flag (--port) is only on the `studio` subcommand, not `serve`
 - Helm chart version in docs says 3.0.8 but latest is 3.0.10
 ```
 
 **Output** (420 chars):
 ```
-Deployment docs review: (1) `astonish deploy` command doesn't exist — 
+Deployment docs review: (1) `troupe deploy` command doesn't exist — 
 referenced in getting-started.md and quickstart.md. (2) --port flag only 
 on `studio` subcommand, docs incorrectly show it on `serve`. (3) Helm 
 chart version in docs is 3.0.8, should be 3.0.10. (4) values.yaml 
@@ -847,7 +847,7 @@ Rules:
 - Remove descriptions of what was searched/read (the process)
 - Keep: verified facts, specific values, what exists vs doesn't exist, 
   decisions made, error conditions found, important file paths, version numbers
-- Be specific: "port 9393" not "a port", "astonish deploy doesn't exist" not "some commands missing"
+- Be specific: "port 9393" not "a port", "troupe deploy doesn't exist" not "some commands missing"
 - If the response contains multiple sub-results, preserve each key finding
 
 Target length: {target_chars} characters. Be dense and precise.
@@ -1030,8 +1030,8 @@ the plan's contents. Rendering/parsing of the plan document lives in
 unchanged.
 
 **Lifecycle:** the sidecar is cleaned up when its session is deleted (`localAgentBackend.DeleteSession`
-in `pkg/launcher/tui_code.go`, and the `astonish sessions delete` / `sessions clear` CLI in
-`cmd/astonish/sessions.go`), so `PLAN.md` files never outlive their session on disk.
+in `pkg/launcher/tui_code.go`, and the `troupe sessions delete` / `sessions clear` CLI in
+`cmd/troupe/sessions.go`), so `PLAN.md` files never outlive their session on disk.
 
 ---
 

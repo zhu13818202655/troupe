@@ -304,8 +304,8 @@ export function buildGitHubPageMap(location: Location | URL = window.location): 
         name: 'Issue description',
         status: issueOpen ? 'editor open' : 'read-only',
         notes: issueOpen
-          ? 'This is the field Apply writes. Use an astonish-page-edit fence with the full markdown document.'
-          : 'Read-only right now. To update it, the user opens Edit on the page, then presses Apply. Emit the full updated description in an astonish-page-edit fence. Apply will not write the comment box.',
+          ? 'This is the field Apply writes. Use an troupe-page-edit fence with the full markdown document.'
+          : 'Read-only right now. To update it, the user opens Edit on the page, then presses Apply. Emit the full updated description in an troupe-page-edit fence. Apply will not write the comment box.',
       },
       {
         name: 'New comment box',
@@ -317,11 +317,11 @@ export function buildGitHubPageMap(location: Location | URL = window.location): 
       ? [
           'You are already on this issue. Do not page_navigate.',
           'The document is in Main content below. Do not page_query or page_snapshot to re-read it.',
-          'Emit astonish-page-edit with the complete updated description (preserve existing sections). Never write the comment box unless the user asked to comment.',
+          'Emit troupe-page-edit with the complete updated description (preserve existing sections). Never write the comment box unless the user asked to comment.',
         ]
       : [
           'STOP. Do NOT page_query, page_snapshot, or page_click to hunt for an Edit button, the "Issue body actions" kebab (…) menu, or any edit affordance. You cannot and must not open edit mode yourself.',
-          'Emit the complete updated description in ONE astonish-page-edit fence, then STOP and end your turn. Do not ask permission to click anything and do not try again.',
+          'Emit the complete updated description in ONE troupe-page-edit fence, then STOP and end your turn. Do not ask permission to click anything and do not try again.',
           'The Apply bar will appear in the side panel. Opening Edit on the page and pressing Apply is the USER\'s job, not yours — the extension guides them through it.',
           'You are already on this issue. Do not page_navigate. The document is in Main content below; do not page_query or page_snapshot to re-read it.',
           'Do not write the comment box as a substitute for editing the description.',

@@ -33,10 +33,24 @@ recordings/
 .buildx-cache
 
 # Env / secrets / local state
+#
+# NOTE: a bare `.env` pattern matches ONLY the context root. It does NOT match
+# deploy/.env, which holds the real TROUPE_MASTER_KEY / TROUPE_JWT_SECRET.
+# Verified with a build-context probe: root .env was excluded, sub/.env was not.
+# The `**/` variants close that gap.
 .env
 .env.*
+**/.env
+**/.env.*
 !.env.example
+!**/.env.example
 .mcp.json
+
+# Local deployment state — must never enter the build context: the Postgres data
+# directory, the app config dir (holds .store_key and credentials.enc), and TLS
+# keys. Without this the context grows by hundreds of MB after first boot.
+deploy/state
+deploy/nginx/certs
 
 # Logs and caches
 *.log

@@ -246,8 +246,8 @@ function App() {
   const [aiChatContext, setAIChatContext] = useState('create_flow')
   const [aiFocusedNode, setAIFocusedNode] = useState<FocusedNodeData | null>(null)  // Node being edited when AI chat opens
   const [aiSelectedNodeIds, setAISelectedNodeIds] = useState<string[]>([])  // Multi-selected nodes for AI
-  const [defaultProvider, setDefaultProvider] = useState(() => localStorage.getItem('astonish_provider') || '')
-  const [defaultModel, setDefaultModel] = useState(() => localStorage.getItem('astonish_model') || '')
+  const [defaultProvider, setDefaultProvider] = useState(() => localStorage.getItem('troupe_provider') || '')
+  const [defaultModel, setDefaultModel] = useState(() => localStorage.getItem('troupe_model') || '')
   const [runningNodeId, setRunningNodeId] = useState<string | null>(null)
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [isWaitingForInput, setIsWaitingForInput] = useState(false)
@@ -358,7 +358,7 @@ function App() {
 
   // Check for updates (once per 4 hours)
   const checkForUpdates = useCallback(async () => {
-    const lastCheck = localStorage.getItem('astonish_update_check')
+    const lastCheck = localStorage.getItem('troupe_update_check')
     const now = Date.now()
 
     if (lastCheck && now - parseInt(lastCheck) < 4 * 60 * 60 * 1000) {
@@ -371,7 +371,7 @@ function App() {
       // If running dev version, clear any saved update state
       if (currentVersion === 'dev') {
         setUpdateAvailable(null)
-        localStorage.removeItem('astonish_update_available')
+        localStorage.removeItem('troupe_update_available')
         return
       }
 
@@ -383,12 +383,12 @@ function App() {
       const releaseData = await releaseRes.json()
 
       // Update last check time BEFORE comparison
-      localStorage.setItem('astonish_update_check', now.toString())
+      localStorage.setItem('troupe_update_check', now.toString())
 
       const latestVersion = (releaseData.tag_name || '').replace(/^v/, '').trim()
 
       // Check if this update was already seen (saved in localStorage)
-      const savedUpdate = localStorage.getItem('astonish_update_available')
+      const savedUpdate = localStorage.getItem('troupe_update_available')
 
       // Simple string comparison (both versions normalized without 'v' prefix)
       if (isNewerVersion(latestVersion, currentVersion)) {
@@ -396,12 +396,12 @@ function App() {
         setUpdateAvailable(updateInfo)
 
         // Save to localStorage so update button persists in Settings
-        localStorage.setItem('astonish_update_available', JSON.stringify(updateInfo))
+        localStorage.setItem('troupe_update_available', JSON.stringify(updateInfo))
 
         // Only show toast if this is a newly detected update (not already seen)
         if (!savedUpdate) {
           setToast({
-            message: `Astonish ${releaseData.tag_name} is available`,
+            message: `Troupe ${releaseData.tag_name} is available`,
             type: 'info',
             persistent: true,
             action: {
@@ -413,7 +413,7 @@ function App() {
       } else {
         // No update available - clear saved update state
         setUpdateAvailable(null)
-        localStorage.removeItem('astonish_update_available')
+        localStorage.removeItem('troupe_update_available')
       }
     } catch (err: any) {
       console.error('Failed to check for updates:', err)
@@ -424,7 +424,7 @@ function App() {
   // API calls. Without this gate, the effect fires as soon as isCheckingSetup
   // becomes false — which can happen before activeTeam is set (the team is
   // resolved asynchronously via fetchTeams). Firing too early sends requests
-  // without the X-Astonish-Team header, which may return empty/wrong data
+  // without the X-Troupe-Team header, which may return empty/wrong data
   // and overwrite the correct results that arrive later.
   const teamReady = isPlatformChecked && (!isPlatformMode || !!activeTeam)
 
@@ -436,7 +436,7 @@ function App() {
       const currentVersion = await loadAppVersion()      // Always load version on page load
 
       // Load saved update state from localStorage
-      const savedUpdate = localStorage.getItem('astonish_update_available')
+      const savedUpdate = localStorage.getItem('troupe_update_available')
       if (savedUpdate) {
         try {
           const updateInfo = JSON.parse(savedUpdate)
@@ -444,7 +444,7 @@ function App() {
           const savedVersion = (updateInfo.version || '').replace(/^v/, '').trim()
           if (!isNewerVersion(savedVersion, currentVersion)) {
             // User has updated to or past the saved version — clear notification
-            localStorage.removeItem('astonish_update_available')
+            localStorage.removeItem('troupe_update_available')
             setUpdateAvailable(null)
           } else {
             // Version still outdated - keep showing update button
@@ -483,8 +483,8 @@ function App() {
         setDefaultModel(model)
         // Persist for instant display on next page load
         try {
-          localStorage.setItem('astonish_provider', provider)
-          localStorage.setItem('astonish_model', model)
+          localStorage.setItem('troupe_provider', provider)
+          localStorage.setItem('troupe_model', model)
         } catch { /* ignore localStorage errors */ }
       }
     } catch (err: any) {
@@ -545,8 +545,8 @@ function App() {
   // Refresh agents/flows list when a flow is saved via distillation
   useEffect(() => {
     const handleFlowsUpdated = () => { loadAgents() }
-    window.addEventListener('astonish:flows-updated', handleFlowsUpdated)
-    return () => window.removeEventListener('astonish:flows-updated', handleFlowsUpdated)
+    window.addEventListener('troupe:flows-updated', handleFlowsUpdated)
+    return () => window.removeEventListener('troupe:flows-updated', handleFlowsUpdated)
   }, [loadAgents])
 
   // Push new YAML to history (called after applying changes)
@@ -1475,7 +1475,7 @@ layout:
     try {
       await publishDeckToTeam(deck.slug)
       showToast(`Deck "${deck.title}" published to team`, 'success')
-      window.dispatchEvent(new Event('astonish:slides-updated'))
+      window.dispatchEvent(new Event('troupe:slides-updated'))
     } catch (err) {
       showToast(`Failed to publish deck: ${err instanceof Error ? err.message : 'Unknown error'}`, 'error')
     }
@@ -1486,7 +1486,7 @@ layout:
     try {
       await forkDeckToPersonal(deck.slug)
       showToast(`Deck "${deck.title}" forked to personal`, 'success')
-      window.dispatchEvent(new Event('astonish:slides-updated'))
+      window.dispatchEvent(new Event('troupe:slides-updated'))
     } catch (err) {
       showToast(`Failed to fork deck: ${err instanceof Error ? err.message : 'Unknown error'}`, 'error')
     }

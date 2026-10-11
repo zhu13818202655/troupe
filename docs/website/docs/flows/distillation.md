@@ -99,7 +99,7 @@ In cloud deployments, distilled flows become shared team knowledge:
 - Popular flows surface in search results and recommendations.
 - Forking a team flow creates a personal copy for customization.
 
-This creates a flywheel: the more your team chats with Astonish, the more reusable automation accumulates in your flow library.
+This creates a flywheel: the more your team chats with Troupe, the more reusable automation accumulates in your flow library.
 
 ## Tips for Better Distillation
 

@@ -13,13 +13,13 @@ import (
 	"strings"
 	"time"
 
+	"charm.land/lipgloss/v2"
+	"github.com/charmbracelet/huh"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/credentials"
 	"github.com/zhu13818202655/troupe/pkg/daemon"
 	emailPkg "github.com/zhu13818202655/troupe/pkg/email"
 	"github.com/zhu13818202655/troupe/pkg/store/entstore"
-	"github.com/charmbracelet/huh"
-	"charm.land/lipgloss/v2"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	slackPkg "github.com/slack-go/slack"
@@ -108,7 +108,7 @@ func handleTelegramSetup() error {
 	fmt.Println()
 	channelsPrintHeader("Telegram Bot Setup")
 	fmt.Println()
-	fmt.Println("  To connect Astonish to Telegram, you need a bot token.")
+	fmt.Println("  To connect Troupe to Telegram, you need a bot token.")
 	fmt.Println()
 	fmt.Println("  1. Open Telegram and search for @BotFather")
 	fmt.Println("  2. Send /newbot and follow the instructions")
@@ -412,7 +412,7 @@ func detectTelegramUsers(botToken string) ([]string, error) {
 
 				// Send confirmation to the user in Telegram
 				reply := tgbotapi.NewMessage(msg.Chat.ID,
-					fmt.Sprintf("You've been added to Astonish! (ID: %s)", senderID))
+					fmt.Sprintf("You've been added to Troupe! (ID: %s)", senderID))
 				bot.Send(reply)
 
 				fmt.Printf("  Added %s (%s)\n\n", user.Name, senderID)
@@ -662,7 +662,7 @@ func handleSlackSetup() error {
 	fmt.Println("     • app_mention (in bot events)")
 	fmt.Println("     • message.im (in bot events)")
 	fmt.Println()
-	fmt.Println("  8. Optional: To let Astonish register Slack slash commands automatically,")
+	fmt.Println("  8. Optional: To let Troupe register Slack slash commands automatically,")
 	fmt.Println("     note your Slack App ID and create an App Configuration Token.")
 	fmt.Println()
 
@@ -772,7 +772,7 @@ func handleSlackSetup() error {
 		huh.NewGroup(
 			huh.NewConfirm().
 				Title("Register Slack slash commands automatically?").
-				Description("Uses Slack App Manifest APIs to register /link and Slack-safe Astonish commands. You can skip this and keep managing commands manually.").
+				Description("Uses Slack App Manifest APIs to register /link and Slack-safe Troupe commands. You can skip this and keep managing commands manually.").
 				Affirmative("Yes, sync commands").
 				Negative("Skip").
 				Value(&syncCommands),

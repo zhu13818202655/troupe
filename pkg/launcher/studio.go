@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/agent"
 	"github.com/zhu13818202655/troupe/pkg/api"
 	"github.com/zhu13818202655/troupe/pkg/oauthserver"
@@ -19,7 +20,6 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/zhu13818202655/troupe/pkg/tools"
 	"github.com/zhu13818202655/troupe/web"
-	"github.com/gorilla/mux"
 )
 
 // studioBackend is the minimal interface that StudioServer needs from the
@@ -400,9 +400,9 @@ func noAssetsHandler() http.Handler {
 			w.Header().Set("Content-Type", "text/html")
 			fmt.Fprintf(w, `<!DOCTYPE html>
 <html>
-<head><title>Astonish Studio</title></head>
+<head><title>Troupe Studio</title></head>
 <body style="font-family: sans-serif; padding: 40px; background: #0d121f; color: white;">
-<h1>Astonish Studio</h1>
+<h1>Troupe Studio</h1>
 <p>Web assets not found. Please build the frontend first:</p>
 <pre style="background: #1a1a2e; padding: 20px; border-radius: 8px;">
 cd web

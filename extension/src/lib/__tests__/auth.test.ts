@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { loginWithOAuth, persistSession, studioFetch } from '../auth';
+import { loadSession, loginWithOAuth, persistSession, studioFetch } from '../auth';
 
 type Store = Record<string, unknown>;
 
@@ -60,7 +60,7 @@ describe('auth', () => {
     const authorizeURL = new URL((chrome.identity.launchWebAuthFlow as ReturnType<typeof vi.fn>).mock.calls[0][0].url);
     expect(authorizeURL.origin).toBe('http://localhost:9393');
     expect(authorizeURL.pathname).toBe('/oauth/authorize');
-    expect(authorizeURL.searchParams.get('client_id')).toBe('astonish-chrome-extension');
+    expect(authorizeURL.searchParams.get('client_id')).toBe('troupe-chrome-extension');
     expect(authorizeURL.searchParams.get('redirect_uri')).toBe('https://oeiocpkpaiphjhoapdlihnbdpimipelg.chromiumapp.org/oauth2');
     expect(authorizeURL.searchParams.get('scope')).toBe('chat tool:execute offline_access');
     expect(authorizeURL.searchParams.get('code_challenge_method')).toBe('S256');
@@ -71,7 +71,7 @@ describe('auth', () => {
     expect(tokenInit.headers).toEqual({ 'Content-Type': 'application/x-www-form-urlencoded' });
     const body = new URLSearchParams(tokenInit.body);
     expect(body.get('grant_type')).toBe('authorization_code');
-    expect(body.get('client_id')).toBe('astonish-chrome-extension');
+    expect(body.get('client_id')).toBe('troupe-chrome-extension');
     expect(body.get('code')).toBe('code-123');
     expect(body.get('redirect_uri')).toBe('https://oeiocpkpaiphjhoapdlihnbdpimipelg.chromiumapp.org/oauth2');
     expect(body.get('code_verifier')).toBeTruthy();
@@ -95,7 +95,7 @@ describe('auth', () => {
     expect(url).toBe('http://localhost:9393/api/studio/sessions');
     const headers = new Headers(init.headers);
     expect(headers.get('Authorization')).toBe('Bearer tok-abc');
-    expect(headers.get('X-Astonish-Team')).toBeNull();
+    expect(headers.get('X-Troupe-Team')).toBeNull();
     expect(headers.get('Content-Type')).toBe('application/json');
   });
 
@@ -114,8 +114,22 @@ describe('auth', () => {
     expect(calls[1][0]).toBe('http://localhost:9393/oauth/token');
     const body = new URLSearchParams(calls[1][1].body);
     expect(body.get('grant_type')).toBe('refresh_token');
-    expect(body.get('client_id')).toBe('astonish-chrome-extension');
+    expect(body.get('client_id')).toBe('troupe-chrome-extension');
     expect(body.get('refresh_token')).toBe('refresh-keep');
     expect(new Headers(calls[2][1].headers).get('Authorization')).toBe('Bearer new-access');
+  });
+
+  it('loadSession reads the pre-rebrand astonishAuth key, migrates it, and drops the old entry', async () => {
+    const { local } = installChromeMock();
+    const legacySession = { serverUrl: 'http://localhost:9393', accessToken: 'legacy-tok', refreshToken: 'legacy-refresh', teamSlug: 'eng', expiresAt: Date.now() + 3600_000 };
+    local.astonishAuth = legacySession;
+
+    const session = await loadSession();
+    expect(session?.accessToken).toBe('legacy-tok');
+
+    const migrated = await chrome.storage.local.get('troupeAuth');
+    expect(migrated.troupeAuth).toEqual(legacySession);
+    const legacy = await chrome.storage.local.get('astonishAuth');
+    expect(legacy.astonishAuth).toBeUndefined();
   });
 });

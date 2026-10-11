@@ -15,12 +15,12 @@ func TestImagePullPolicy(t *testing.T) {
 		// Mutable tags → Always.
 		{
 			name:   "dev tag",
-			image:  "ghcr.io/sap/astonish-sandbox-base:dev",
+			image:  "ghcr.io/sap/troupe-sandbox-base:dev",
 			expect: corev1.PullAlways,
 		},
 		{
 			name:   "latest tag",
-			image:  "ghcr.io/sap/astonish-sandbox-base:latest",
+			image:  "ghcr.io/sap/troupe-sandbox-base:latest",
 			expect: corev1.PullAlways,
 		},
 		{
@@ -35,36 +35,36 @@ func TestImagePullPolicy(t *testing.T) {
 		},
 		{
 			name:   "no tag implies latest",
-			image:  "ghcr.io/sap/astonish-sandbox-base",
+			image:  "ghcr.io/sap/troupe-sandbox-base",
 			expect: corev1.PullAlways,
 		},
 
 		// Immutable tags → IfNotPresent.
 		{
 			name:   "semver tag",
-			image:  "ghcr.io/sap/astonish-sandbox-base:v1.2.3",
+			image:  "ghcr.io/sap/troupe-sandbox-base:v1.2.3",
 			expect: corev1.PullIfNotPresent,
 		},
 		{
 			name:   "sha tag",
-			image:  "ghcr.io/sap/astonish-sandbox-base:abc1234",
+			image:  "ghcr.io/sap/troupe-sandbox-base:abc1234",
 			expect: corev1.PullIfNotPresent,
 		},
 		{
 			name:   "release tag",
-			image:  "ghcr.io/sap/astonish-sandbox-base:2.9.0",
+			image:  "ghcr.io/sap/troupe-sandbox-base:2.9.0",
 			expect: corev1.PullIfNotPresent,
 		},
 
 		// Digest-pinned → IfNotPresent.
 		{
 			name:   "digest pinned with tag",
-			image:  "ghcr.io/sap/astonish-sandbox-base:dev@sha256:72740bb3e30ac977838be51d5f43f08d934f9fe89432493797eb64cb3113caf7",
+			image:  "ghcr.io/sap/troupe-sandbox-base:dev@sha256:72740bb3e30ac977838be51d5f43f08d934f9fe89432493797eb64cb3113caf7",
 			expect: corev1.PullIfNotPresent,
 		},
 		{
 			name:   "digest pinned without tag",
-			image:  "ghcr.io/sap/astonish-sandbox-base@sha256:72740bb3e30ac977838be51d5f43f08d934f9fe89432493797eb64cb3113caf7",
+			image:  "ghcr.io/sap/troupe-sandbox-base@sha256:72740bb3e30ac977838be51d5f43f08d934f9fe89432493797eb64cb3113caf7",
 			expect: corev1.PullIfNotPresent,
 		},
 

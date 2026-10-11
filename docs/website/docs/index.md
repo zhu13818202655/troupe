@@ -1,8 +1,8 @@
 # Introduction
 
-Astonish is an AI agent platform that makes your whole team smarter. When one person solves a problem, the solution flows to everyone who needs it. Knowledge compounds across every conversation, every team member, every day.
+Troupe is an AI agent platform that makes your whole team smarter. When one person solves a problem, the solution flows to everyone who needs it. Knowledge compounds across every conversation, every team member, every day.
 
-Built in Go on Google's Agent Development Kit, Astonish combines autonomous tool-use agents with three-tier memory, flow distillation, generative UI, and enterprise-grade multi-tenancy. It runs as a single binary with all platform capabilities regardless of deployment size:
+Built in Go on Google's Agent Development Kit, Troupe combines autonomous tool-use agents with three-tier memory, flow distillation, generative UI, and enterprise-grade multi-tenancy. It runs as a single binary with all platform capabilities regardless of deployment size:
 
 - **Local (SQLite)** — Runs entirely on your machine. SQLite handles storage and vector search out of the box. Full platform features with minimal setup.
 - **Cloud (PostgreSQL)** — Multi-tenant with pgvector. Organizations, teams, shared memory, cascading configuration, and enterprise security for your whole team.
@@ -21,7 +21,7 @@ Same binary, same 90+ tools, same platform. Your choice of database backend.
 
 **Flow Distillation.** After solving a multi-step problem, distill the execution trace into a reusable YAML workflow. Parameterized, validated, shareable. Schedule flows, version-control them, or edit visually in Studio.
 
-**Generative UI.** Describe a dashboard, tool, or interactive app in plain English. Astonish builds it live in the chat using React 19 and Tailwind CSS. Save and share with your team.
+**Generative UI.** Describe a dashboard, tool, or interactive app in plain English. Troupe builds it live in the chat using React 19 and Tailwind CSS. Save and share with your team.
 
 **Slides.** Generate complete presentations from prompts, documents, research, and connected systems. Apply built-in or imported PowerPoint templates, refine the deck with AI, present it in the browser, and export it as PPTX, PDF, or HTML. See [Slides](./slides/).
 
@@ -33,7 +33,7 @@ Same binary, same 90+ tools, same platform. Your choice of database backend.
 
 ## The Platform Differentiator
 
-Most AI tools are isolated to individual users. Astonish is built for teams from the ground up.
+Most AI tools are isolated to individual users. Troupe is built for teams from the ground up.
 
 When someone on your team spends an hour debugging a tricky Kubernetes networking issue, the solution goes into team memory. Next week, when another teammate hits the same problem, the agent already knows the answer. No repeated work, no tribal knowledge lost in chat logs.
 
@@ -43,17 +43,17 @@ Resources cascade downward — provider configs, MCP servers, skills, and sandbo
 
 ```bash
 # 1. Setup — configure backend and AI provider
-astonish setup                    # Interactive wizard (SQLite or PostgreSQL)
+troupe setup                    # Interactive wizard (SQLite or PostgreSQL)
 
 # 2. Start the platform
-astonish daemon install           # Register as system service
-astonish daemon start             # Start the daemon
+troupe daemon install           # Register as system service
+troupe daemon start             # Start the daemon
 
-# 3. Use Astonish
+# 3. Use Troupe
 # Open Studio at http://localhost:9393 and log in with your admin credentials
 # Or connect via CLI:
-astonish login http://localhost:9393
-astonish chat                     # Start solving problems
+troupe login http://localhost:9393
+troupe chat                     # Start solving problems
 ```
 
 The agent solves problems using autonomous tool-use loops. It selects tools, chains them together, and works through multi-step tasks without manual intervention. After a successful interaction, distill it into a reusable flow that anyone on the team can run.
@@ -65,12 +65,12 @@ Agent:  [executes 12 tool calls across shell, git, and kubectl]
 
 You:    /distill
 Agent:  Saved: deploy_staging.yaml
-        Run again: astonish flows run deploy_staging -p env="staging"
+        Run again: troupe flows run deploy_staging -p env="staging"
 ```
 
 ## What's Next
 
-- [Installation](./getting-started/installation.md) — Get Astonish on your machine
+- [Installation](./getting-started/installation.md) — Get Troupe on your machine
 - [Quick Start: Local](./getting-started/quick-start-local.md) — Get up and running with SQLite
 - [Quick Start: Cloud](./getting-started/quick-start-cloud.md) — Deploy for your team with PostgreSQL
 - [Choose Your Interface](./getting-started/choose-your-interface.md) — Studio, CLI, Telegram, and more

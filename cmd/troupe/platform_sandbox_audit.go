@@ -22,11 +22,12 @@ import (
 // against what PostgreSQL tracks.
 //
 // Flags:
-//   --reclaim         Delete orphan directories from PVCs (layers + uppers)
-//   --reclaim-pg      Also delete orphan PG layer rows that have no on-disk dir
-//   --namespace NS    Override sandbox namespace (default from config)
-//   --kubeconfig PATH Override kubeconfig path
-//   --grace DURATION  Grace period for orphan detection (default 1h)
+//
+//	--reclaim         Delete orphan directories from PVCs (layers + uppers)
+//	--reclaim-pg      Also delete orphan PG layer rows that have no on-disk dir
+//	--namespace NS    Override sandbox namespace (default from config)
+//	--kubeconfig PATH Override kubeconfig path
+//	--grace DURATION  Grace period for orphan detection (default 1h)
 func handlePlatformSandboxAudit(args []string) error {
 	var (
 		reclaim    bool

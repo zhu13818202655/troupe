@@ -47,8 +47,8 @@ import (
 // codeAppName is the ADK app name used for local code-mode sessions. It is
 // distinct from the Studio chat app name so the two never share session state.
 const (
-	codeAppName             = "astonish_code"
-	planLifecycleStateKey   = "astonish_plan_lifecycle"
+	codeAppName             = "troupe_code"
+	planLifecycleStateKey   = "troupe_plan_lifecycle"
 	planApprovalUserMessage = "I approve this plan. Please start implementing it now, phase by phase."
 	// routingInfoStateKey is the StateDelta key used to persist the routing
 	// decision (tier + model name) alongside each agent response event. This
@@ -93,7 +93,7 @@ func localExecutionContext(ctx context.Context, userID string) (context.Context,
 
 // CodeConfig configures the local, in-process code-mode TUI.
 //
-// Code mode is Astonish running as a local coding CLI (like Claude Code /
+// Code mode is Troupe running as a local coding CLI (like Claude Code /
 // opencode / grok): the single binary runs the agent loop in-process and calls
 // the tools compiled into the binary directly against the host filesystem in
 // the user's working directory. It never contacts a platform — there is no
@@ -162,7 +162,7 @@ func RunCodeTUI(ctx context.Context, cfg *CodeConfig) error {
 
 	// Resolve the LLM. Explicit CLI flags win; otherwise fall back to the
 	// configured cascade default (general.default_provider / default_model in
-	// ~/.config/astonish/config.yaml, written by `astonish setup` or the
+	// ~/.config/troupe/config.yaml, written by `troupe setup` or the
 	// in-TUI `/model` picker). Code mode may start with no provider at all —
 	// the user can configure one from inside the app via `/model`.
 	providerName := strings.TrimSpace(cfg.Provider)
@@ -1217,7 +1217,7 @@ func (b *localAgentBackend) RunTurn(ctx context.Context, message string, opts ba
 
 	agentInst, err := adkagent.New(adkagent.Config{
 		Name:        codeAppName,
-		Description: "Astonish local coding agent",
+		Description: "Troupe local coding agent",
 		Run:         b.result.ChatAgent.Run,
 	})
 	if err != nil {
@@ -3131,8 +3131,8 @@ func (b *localAgentBackend) SetModelPin(ctx context.Context, providerName, model
 		b.result.ChatAgent.SubAgentManager.Compactor.SetContextWindow(cw)
 	}
 
-	// Persist the choice as the Astonish default so it survives across runs
-	// (general.default_provider / default_model in ~/.config/astonish/config.yaml).
+	// Persist the choice as the Troupe default so it survives across runs
+	// (general.default_provider / default_model in ~/.config/troupe/config.yaml).
 	// A save failure is non-fatal — the in-memory swap already took effect.
 	if b.appConfig != nil {
 		b.appConfig.General.DefaultProvider = providerName
@@ -3282,8 +3282,9 @@ func (b *localAgentBackend) ListRollbackPoints(ctx context.Context) ([]backend.R
 			}
 			// Skip per-turn context injected by the runtime (plan instructions,
 			// skills, tools metadata). These are user-role events but not
-			// user-authored.
-			if strings.HasPrefix(text, "[Astonish Per-Turn Context") {
+			// user-authored. Accept the old "[Astonish Per-Turn Context" prefix
+			// for compatibility with transcripts recorded before the rename.
+			if strings.HasPrefix(text, "[Troupe Per-Turn Context") || strings.HasPrefix(text, "[Astonish Per-Turn Context") {
 				continue
 			}
 			turnNumber++
@@ -3442,7 +3443,7 @@ var _ backend.RollbackBackend = (*localAgentBackend)(nil)
 
 // --- ProviderAdminBackend (code-mode local provider management) ---
 // These methods let the /provider TUI overlay manage provider instances and
-// persist them to the local config file (~/.config/astonish/config.yaml). They
+// persist them to the local config file (~/.config/troupe/config.yaml). They
 // never touch a platform database — code mode is file-only by design.
 
 // codeProviderTypes is the catalog of provider types offerable via /provider in
@@ -3838,7 +3839,7 @@ var _ backend.XAIOAuthBackend = (*localAgentBackend)(nil)
 
 // --- WebSearchAdminBackend (code-mode local web search configuration) ---
 // These methods let the /websearch TUI overlay configure web search providers
-// and persist them to the local config file (~/.config/astonish/config.yaml).
+// and persist them to the local config file (~/.config/troupe/config.yaml).
 // After configuration, the user starts a /new session for the tools to load.
 
 // Verify localAgentBackend implements the optional web-search-admin capability.

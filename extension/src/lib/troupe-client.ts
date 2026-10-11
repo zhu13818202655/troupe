@@ -4,7 +4,7 @@ export type SSEEventCallback = (eventType: string, data: Record<string, unknown>
 export type ErrorCallback = (error: Error) => void;
 export type DoneCallback = () => void;
 
-export const EXTENSION_APP_NAME = 'astonish-extension';
+export const EXTENSION_APP_NAME = 'troupe-extension';
 
 const HANDLED_EVENTS = new Set([
   'session',
@@ -212,7 +212,7 @@ export function connectChat({
 
 /**
  * Delete an extension session on the server.
- * Sends DELETE /api/studio/sessions/{id}?app=astonish-extension.
+ * Sends DELETE /api/studio/sessions/{id}?app=troupe-extension.
  * Throws if the server returns a non-OK status.
  */
 export async function deleteSession(sid: string): Promise<void> {

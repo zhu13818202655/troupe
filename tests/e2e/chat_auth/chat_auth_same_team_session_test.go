@@ -160,7 +160,7 @@ func TestE2E_Artifact_SameTeamUserDenied(t *testing.T) {
 			t.Fatal("sandbox infrastructure broken: alice's write_file was " +
 				"called but every tool_result reports a sandbox/k8s " +
 				"scheduling failure. CHAT-065 cannot be exercised — fix " +
-				"the cluster (kubectl get pods -n astonishe2e-sandbox).")
+				"the cluster (kubectl get pods -n troupee2e-sandbox).")
 		case e2eboot.ToolNotCalled, e2eboot.ToolSucceeded:
 			t.Skip("LLM did not produce an artifact — cannot test same-team artifact denial")
 		}

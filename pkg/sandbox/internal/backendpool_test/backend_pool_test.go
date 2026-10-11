@@ -20,7 +20,7 @@
 //     Call provisions the session via Backend.CreateSession+StartSession
 //     and dispatches the NDJSON request-response pair via Backend.Exec.
 //
-//  2. NDJSON framing tolerates the {"ready":true} line the astonish-node
+//  2. NDJSON framing tolerates the {"ready":true} line the troupe-node
 //     server emits before the real response, regardless of ordering.
 //
 //  3. Pool.Cleanup destroys every vended session and returns nil from
@@ -28,7 +28,7 @@
 //     so flow code can swap between the two without behavior drift.
 //
 // MockBackend's ExecResultFn hook stands in for the sandbox-side
-// astonish-node process: it inspects the stdin payload (the NDJSON tool
+// troupe-node process: it inspects the stdin payload (the NDJSON tool
 // request), produces a canned response, and returns it as ExecResult.Stdout.
 
 package backendpool_test
@@ -47,7 +47,7 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/sandbox/mock"
 )
 
-// execHandler is a convenience wrapper that replays the astonish-node
+// execHandler is a convenience wrapper that replays the troupe-node
 // protocol inside MockBackend.ExecResultFn. readBody pulls all of stdin
 // (the single NDJSON request line) and returns the decoded payload so
 // tests can assert on it; respond writes the ready+response pair as
@@ -509,4 +509,3 @@ func TestBackendPool_RemoveDropsClientWithoutDestroy(t *testing.T) {
 		t.Fatalf("CreateSessionCalls = %d, want 2 (second client provisions)", n)
 	}
 }
-

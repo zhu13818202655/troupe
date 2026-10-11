@@ -20,7 +20,7 @@ import (
 // Test infrastructure: real Postgres, isolated database per test.
 //
 // Env: TROUPE_TEST_DSN must point to a Postgres instance. Example:
-//   export TROUPE_TEST_DSN="postgres://postgres:554252@192.168.1.196:5432/astonish_dxmtlc_platform"
+//   export TROUPE_TEST_DSN="postgres://postgres:554252@192.168.1.196:5432/troupe_dxmtlc_platform"
 // ---------------------------------------------------------------------------
 
 func mustTestDSN(t *testing.T) string {
@@ -43,7 +43,7 @@ func setupChainTestDB(t *testing.T) *entstore.Store {
 	suffix := fmt.Sprintf("chaintest_%s", sanitizeName(t.Name()))
 
 	// Build the platform DSN.
-	dbName := fmt.Sprintf("astonish_%s_platform", suffix)
+	dbName := fmt.Sprintf("troupe_%s_platform", suffix)
 	platformDSN, err := pgutil.ReplaceDSNDatabase(dsn, dbName)
 	if err != nil {
 		t.Fatalf("ReplaceDSNDatabase: %v", err)
@@ -155,7 +155,7 @@ func TestChainScenario2_ConfiguredBase_NoTeam(t *testing.T) {
 	configuredTop := "aabbccdd1234567890abcdef1234567890abcdef1234567890abcdef12345678"
 	if err := layers.PutLayer(ctx, &store.SandboxLayer{
 		LayerID:    configuredTop,
-		CephFSPath: "/mnt/astonish-layers/" + configuredTop,
+		CephFSPath: "/mnt/troupe-layers/" + configuredTop,
 		SizeBytes:  1000,
 	}); err != nil {
 		t.Fatalf("PutLayer: %v", err)
@@ -189,7 +189,7 @@ func TestChainScenario3_ConfiguredBase_TeamTemplate(t *testing.T) {
 	configuredTop := "1111111111111111111111111111111111111111111111111111111111111111"
 	if err := layers.PutLayer(ctx, &store.SandboxLayer{
 		LayerID:    configuredTop,
-		CephFSPath: "/mnt/astonish-layers/" + configuredTop,
+		CephFSPath: "/mnt/troupe-layers/" + configuredTop,
 		SizeBytes:  2000,
 	}); err != nil {
 		t.Fatalf("PutLayer configured: %v", err)
@@ -203,7 +203,7 @@ func TestChainScenario3_ConfiguredBase_TeamTemplate(t *testing.T) {
 	if err := layers.PutLayer(ctx, &store.SandboxLayer{
 		LayerID:     teamTop,
 		ParentLayer: strPtr(sandbox.BaseTemplateID),
-		CephFSPath:  "/mnt/astonish-layers/" + teamTop,
+		CephFSPath:  "/mnt/troupe-layers/" + teamTop,
 		SizeBytes:   500,
 	}); err != nil {
 		t.Fatalf("PutLayer team: %v", err)
@@ -253,7 +253,7 @@ func TestChainScenario4_FreshInstall_TeamTemplate(t *testing.T) {
 	if err := layers.PutLayer(ctx, &store.SandboxLayer{
 		LayerID:     teamTop,
 		ParentLayer: strPtr(sandbox.BaseTemplateID),
-		CephFSPath:  "/mnt/astonish-layers/" + teamTop,
+		CephFSPath:  "/mnt/troupe-layers/" + teamTop,
 		SizeBytes:   300,
 	}); err != nil {
 		t.Fatalf("PutLayer team: %v", err)

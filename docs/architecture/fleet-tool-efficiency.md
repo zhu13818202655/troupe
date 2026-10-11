@@ -32,7 +32,7 @@ In session `8bf63fbf`, the dev agent called `read_file` on the same file **58 ti
 ## Design Principles
 
 1. **All filesystem state and logic lives inside the container.** The sandbox is the isolation boundary. The host never has direct knowledge of or access to the container's filesystem. No host-side caching of file content or metadata.
-2. **Must work on K8s per-call Exec.** The K8s backend (`backendNodeClient`) spawns a fresh `astonish node` process per tool call. In-process state does not survive between calls. Any caching must be persisted to the container's filesystem.
+2. **Must work on K8s per-call Exec.** The K8s backend (`backendNodeClient`) spawns a fresh `troupe node` process per tool call. In-process state does not survive between calls. Any caching must be persisted to the container's filesystem.
 3. **Backend-agnostic.** The same tool implementation runs identically on Docker OverlayFS (persistent pipe), OpenShell (gRPC), K8s (per-call Exec), and Mock.
 4. **The real cost is tokens, not network I/O.** Even on K8s where process spawn is 200-500ms, the savings come from not injecting 50KB into the LLM context on every turn. A 100-byte stub response vs. 58KB payload is the win.
 
@@ -42,7 +42,7 @@ In session `8bf63fbf`, the dev agent called `read_file` on the same file **58 ti
 
 Analysis of `/root/openclaude` reveals how Claude Code solves the same problem:
 
-| Mechanism | OpenClaude Implementation | Relevance to Astonish |
+| Mechanism | OpenClaude Implementation | Relevance to Troupe |
 |-----------|--------------------------|----------------------|
 | Line-range reads | `offset` (1-indexed start) + `limit` (line count) params | Direct adoption |
 | Line numbers in output | `{lineNum}→{content}` format via `addLineNumbers()` | Direct adoption |
@@ -185,7 +185,7 @@ A file-persisted cache inside the container that deduplicates `read_file` calls 
 
 #### Design Constraint: K8s Per-Call Exec
 
-On K8s, each tool call spawns a fresh `astonish node` process. The cache must survive between process invocations. Solution: **persist the cache to a JSON file inside the container's filesystem** (`/tmp/.troupe_read_cache.json`). The container's filesystem (overlay/PVC) is persistent for the session lifetime.
+On K8s, each tool call spawns a fresh `troupe node` process. The cache must survive between process invocations. Solution: **persist the cache to a JSON file inside the container's filesystem** (`/tmp/.troupe_read_cache.json`). The container's filesystem (overlay/PVC) is persistent for the session lifetime.
 
 #### Cache File Format
 
@@ -440,7 +440,7 @@ Layers 1 and 2 are independent and can be implemented in parallel. Layer 3 depen
 - OpenClaude (`/root/openclaude`) — `FileReadTool.ts`, `FileEditTool.ts`, `fileStateCache.ts`, `readFileInRange.ts`
 - ADK tool execution: `google.golang.org/adk@v0.3.0/internal/llminternal/base_flow.go`
 - In-container tool dispatch: `pkg/tools/internal.go:ExecuteTool()`
-- Container node server: `cmd/astonish/node.go`
+- Container node server: `cmd/troupe/node.go`
 - Sandbox tool proxy: `pkg/sandbox/node_tool.go`
 - K8s per-call backend: `pkg/sandbox/backend_pool.go`
 - Truncation: `pkg/agent/tool_response_truncate.go`

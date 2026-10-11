@@ -111,13 +111,13 @@ func sanitizeSlug(slug string) string {
 }
 
 // orgDBName returns the database name for an org in PG mode.
-// Matches old pgstore convention: astonish_{suffix}_{slug_sanitized}
+//
+// It must route through OrgDBName (which delegates to config.OrgDBName):
+// organizations.db_name is persisted with config.OrgDBName, so a divergent
+// local implementation made deployments without an instance suffix write
+// "troupe_org_{slug}" and then try to connect to "troupe_{slug}".
 func (s *Store) orgDBName(slug string) string {
-	safe := sanitizeSlug(slug)
-	if s.instanceSuffix != "" {
-		return fmt.Sprintf("astonish_%s_%s", s.instanceSuffix, safe)
-	}
-	return fmt.Sprintf("astonish_%s", safe)
+	return OrgDBName(s.instanceSuffix, slug)
 }
 
 // teamSchemaName returns the PG schema name for a team within the org database.

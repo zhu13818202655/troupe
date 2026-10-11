@@ -9,6 +9,10 @@ import (
 )
 
 const (
+	// ArchiveFormat identifies the backup archive layout. It is written into
+	// every manifest and compared on restore, so it is intentionally NOT
+	// rebranded: archives created before the Astonish→Troupe rename must
+	// still restore.
 	ArchiveFormat        = "astonish.backup"
 	ArchiveFormatVersion = 1
 )

@@ -324,9 +324,9 @@ func TestIntentClassification_EdgeCases(t *testing.T) {
 // TestToolsContextInPrompt verifies tools context is properly formatted for the prompt
 func TestToolsContextInPrompt(t *testing.T) {
 	tests := []struct {
-		name           string
-		tools          []string
-		shouldContain  []string
+		name             string
+		tools            []string
+		shouldContain    []string
 		shouldNotContain []string
 	}{
 		{
@@ -344,7 +344,7 @@ func TestToolsContextInPrompt(t *testing.T) {
 			tools: []string{"github", "slack", "jira"},
 			shouldContain: []string{
 				"github",
-				"slack", 
+				"slack",
 				"jira",
 			},
 		},

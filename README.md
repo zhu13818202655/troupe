@@ -1,13 +1,13 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/zhu13818202655/troupe/main/images/astonish-logo-only.svg" width="200" height="200" alt="Astonish Logo">
+<img src="https://raw.githubusercontent.com/zhu13818202655/troupe/main/images/troupe-logo-only.svg" width="200" height="200" alt="Troupe Logo">
 
-# Astonish
+# Troupe
 
 ### AI agent platform that makes your whole team smarter
 
 _When one person solves a problem, everyone benefits. Multi-tenant. Three-tier memory. Enterprise-ready. Built in Go._
 
-[![Documentation](https://img.shields.io/badge/Documentation-Astonish-purple.svg)](https://sap.github.io/astonish/)
+[![Documentation](https://img.shields.io/badge/Documentation-Troupe-purple.svg)](https://github.com/zhu13818202655/troupe#readme)
 [![Lint](https://github.com/zhu13818202655/troupe/actions/workflows/lint.yml/badge.svg)](https://github.com/zhu13818202655/troupe/actions/workflows/lint.yml)
 [![Build Status](https://github.com/zhu13818202655/troupe/actions/workflows/build.yml/badge.svg)](https://github.com/zhu13818202655/troupe/actions/workflows/build.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
@@ -15,17 +15,17 @@ _When one person solves a problem, everyone benefits. Multi-tenant. Three-tier m
 
 <br>
 
-_Learn how Astonish works through the fable of "The Village of a Thousand Notebooks":_
+_Learn how Troupe works through the fable of "The Village of a Thousand Notebooks":_
 
-<a href="https://www.youtube.com/watch?v=0BSrnA5mUUk" title="Watch: Astonish — The Village of a Thousand Notebooks">
-  <img src="./images/astonish-presentation-video.webp" alt="Astonish — The Village of a Thousand Notebooks" width="720">
+<a href="https://www.youtube.com/watch?v=0BSrnA5mUUk" title="Watch: Troupe — The Village of a Thousand Notebooks">
+  <img src="./images/troupe-presentation-video.webp" alt="Troupe — The Village of a Thousand Notebooks" width="720">
 </a>
 
 </div>
 
 ---
 
-Astonish is a multi-tenant AI agent platform for teams and organizations. It solves problems dynamically using LLM-driven tool-use loops, distills successful interactions into reusable flows, builds live interactive apps, and generates complete presentations from plain English descriptions. Knowledge compounds across every conversation, every team member, every day — when someone solves a tricky problem, the solution flows into team memory and everyone benefits.
+Troupe is a multi-tenant AI agent platform for teams and organizations. It solves problems dynamically using LLM-driven tool-use loops, distills successful interactions into reusable flows, builds live interactive apps, and generates complete presentations from plain English descriptions. Knowledge compounds across every conversation, every team member, every day — when someone solves a tricky problem, the solution flows into team memory and everyone benefits.
 
 Run it as a shared platform backed by PostgreSQL for your organization, or standalone with SQLite for personal use. Same binary, same features, your choice.
 
@@ -37,36 +37,36 @@ Run it as a shared platform backed by PostgreSQL for your organization, or stand
 
 ```bash
 brew install zhu13818202655/troupe/troupe   # or: curl -fsSL https://raw.githubusercontent.com/zhu13818202655/troupe/refs/heads/main/install.sh | sh
-astonish setup                              # Configure your AI provider
-astonish chat                               # Start chatting
+troupe setup                              # Configure your AI provider
+troupe chat                               # Start chatting
 ```
 
 **Platform mode** — multi-tenant, PostgreSQL, teams:
 
 ```bash
-export TROUPE_PLATFORM_DSN="postgres://user:pass@host:5432/astonish"
-astonish platform init                      # Initialize database, create first org
-astonish platform org invite admin@co.com   # Invite team members
+export TROUPE_PLATFORM_DSN="postgres://user:pass@host:5432/troupe"
+troupe platform init                      # Initialize database, create first org
+troupe platform org invite admin@co.com   # Invite team members
 
 # Team members connect remotely:
-astonish login https://your-astonish-server.com
-astonish chat
+troupe login https://your-troupe-server.com
+troupe chat
 ```
 
 ---
 
 ## Platform Mode
 
-Astonish turns from a personal AI assistant into your team's collective intelligence. Everyone keeps their private workspace, but hard-won knowledge flows to everyone who needs it.
+Troupe turns from a personal AI assistant into your team's collective intelligence. Everyone keeps their private workspace, but hard-won knowledge flows to everyone who needs it.
 
-Imagine someone on your team spends an hour debugging a tricky Kubernetes networking issue. The solution goes into team memory. Next week, when another teammate hits the same problem, Astonish already knows the answer — no wasted time, no repeated work. Knowledge compounds across every conversation, every team member, every day.
+Imagine someone on your team spends an hour debugging a tricky Kubernetes networking issue. The solution goes into team memory. Next week, when another teammate hits the same problem, Troupe already knows the answer — no wasted time, no repeated work. Knowledge compounds across every conversation, every team member, every day.
 
 **Teams & Organizations.** Create orgs, invite members, assign roles (owner, admin, member). Each person gets a private workspace while sharing team-level resources. Multiple teams within one organization, each with their own scope and configuration.
 
 ```bash
-astonish platform org create engineering
-astonish platform org invite --role admin alice@company.com
-astonish platform org invite --team backend bob@company.com
+troupe platform org create engineering
+troupe platform org invite --role admin alice@company.com
+troupe platform org invite --team backend bob@company.com
 ```
 
 **Private-First Data Ownership.** Sessions, flows, apps, and credentials are personal by default. Share to the team with one-click Publish. Fork team resources into your personal space to customize. You control what's shared and what stays private.
@@ -89,7 +89,7 @@ astonish platform org invite --team backend bob@company.com
 
 Built for organizations that take security seriously. Every layer is designed for multi-tenant isolation.
 
-**Authentication.** JWT-based auth with secure HTTP-only cookies, bcrypt passwords, OIDC/SSO federation (any OpenID Connect provider), refresh token revocation, and CSRF protection. OIDC group claims auto-map to Astonish team memberships — connect your identity provider and team structure syncs automatically.
+**Authentication.** JWT-based auth with secure HTTP-only cookies, bcrypt passwords, OIDC/SSO federation (any OpenID Connect provider), refresh token revocation, and CSRF protection. OIDC group claims auto-map to Troupe team memberships — connect your identity provider and team structure syncs automatically.
 
 **Envelope Encryption.** A master KEK protects per-organization data encryption keys (DEKs). Credentials are encrypted with AES-256-GCM using the org's DEK. Secrets resolve personal-first with team fallback — isolation is structural, not just policy.
 
@@ -116,7 +116,7 @@ Team admins customize container templates and get terminal access for configurat
 
 ## Autonomous Chat Agent
 
-The core of Astonish is a dynamic agent that uses LLM-driven tool-use loops to solve problems. It decides which tools to call, chains them together, and works through multi-step tasks autonomously.
+The core of Troupe is a dynamic agent that uses LLM-driven tool-use loops to solve problems. It decides which tools to call, chains them together, and works through multi-step tasks autonomously.
 
 **58+ built-in tools** — shell execution (PTY-backed), file operations, web fetching, PDF reading, semantic memory, browser automation, email, credential management, sub-agent delegation, and skill lookup.
 
@@ -127,23 +127,23 @@ The core of Astonish is a dynamic agent that uses LLM-driven tool-use loops to s
 **Sub-agent delegation.** For complex tasks, the agent delegates work to up to 10 parallel sub-agents with isolated sessions and filtered tool access.
 
 ```bash
-astonish chat                          # New session
-astonish chat -p anthropic -m claude-4  # Specific provider/model
-astonish chat --resume                 # Resume last session
+troupe chat                          # New session
+troupe chat -p anthropic -m claude-4  # Specific provider/model
+troupe chat --resume                 # Resume last session
 ```
 
 ### Code Mode
 
-Your AI pair programmer that understands your entire codebase before writing a single line. `astonish code` runs locally — no daemon, no server, no login — executing the full agent loop in-process with direct access to your machine. Think Claude Code, Codex, or Cursor, but with a pre-computed knowledge graph that makes it **genuinely faster and smarter**.
+Your AI pair programmer that understands your entire codebase before writing a single line. `troupe code` runs locally — no daemon, no server, no login — executing the full agent loop in-process with direct access to your machine. Think Claude Code, Codex, or Cursor, but with a pre-computed knowledge graph that makes it **genuinely faster and smarter**.
 
 ```bash
-astonish code                          # Start coding in the current directory
-astonish code -m openai:gpt-4o         # Pin a provider/model
-astonish code -C ./my-project          # Operate in a specific directory
-astonish code --auto-approve           # Bypass tool & folder authorization prompts (a.k.a. --yolo)
+troupe code                          # Start coding in the current directory
+troupe code -m openai:gpt-4o         # Pin a provider/model
+troupe code -C ./my-project          # Operate in a specific directory
+troupe code --auto-approve           # Bypass tool & folder authorization prompts (a.k.a. --yolo)
 ```
 
-**Why it's different: codegraph-powered navigation.** While other coding agents grep and read files hoping to find the right context, Astonish queries a [pre-computed knowledge graph](https://github.com/colbymchenry/codegraph) of your repository — symbols, call edges, dependencies, blast radius — all resolved in 1–4 calls. The agent knows exactly what to read, what to change, and what else will break. No wasted tokens exploring. No missed callers. No half-baked plans.
+**Why it's different: codegraph-powered navigation.** While other coding agents grep and read files hoping to find the right context, Troupe queries a [pre-computed knowledge graph](https://github.com/colbymchenry/codegraph) of your repository — symbols, call edges, dependencies, blast radius — all resolved in 1–4 calls. The agent knows exactly what to read, what to change, and what else will break. No wasted tokens exploring. No missed callers. No half-baked plans.
 
 **Three operating modes** — cycle with `shift+tab`:
 
@@ -172,9 +172,9 @@ Sometimes you need answers, not changes. Ask mode gives the agent full read-only
 
 **Safety by default.** Tools run with your own permissions (no sandbox). File-modifying and command-running tools ask before executing; access to paths outside the project directory asks first. Each prompt offers **Allow**, **Always Allow**, or **Deny**. Use `--auto-approve` / `--yolo` to bypass both prompts when you trust the agent fully.
 
-**Zero-config startup.** Code mode opens even without a configured model. Type `/model` to choose a provider and model (saved to `~/.config/astonish/config.yaml`), or `/provider` to add one from scratch — no database needed.
+**Zero-config startup.** Code mode opens even without a configured model. Type `/model` to choose a provider and model (saved to `~/.config/troupe/config.yaml`), or `/provider` to add one from scratch — no database needed.
 
-**Project-aware context.** On startup, Astonish loads `AGENTS.md` (or `CLAUDE.md` as fallback) from your project — walking up from the working directory to the repo root — plus a global `~/.config/astonish/AGENTS.md`. Your conventions, build commands, and project rules are always in context.
+**Project-aware context.** On startup, Troupe loads `AGENTS.md` (or `CLAUDE.md` as fallback) from your project — walking up from the working directory to the repo root — plus a global `~/.config/troupe/AGENTS.md`. Your conventions, build commands, and project rules are always in context.
 
 **Per-project history.** Conversations are saved to disk and kept separate per project directory. Type `/sessions` to browse and resume any previous session. `/rollback` reverts both the conversation and file changes to any earlier point.
 
@@ -184,7 +184,7 @@ Sometimes you need answers, not changes. Ask mode gives the agent full read-only
 
 ## Generative UI (Apps)
 
-Describe any dashboard, tool, or interactive app in plain English and Astonish builds it live in the chat. Powered by React 19 and Tailwind CSS v4.
+Describe any dashboard, tool, or interactive app in plain English and Troupe builds it live in the chat. Powered by React 19 and Tailwind CSS v4.
 
 ```
 You:    "Build me a project tracker with task priorities and due dates"
@@ -213,7 +213,7 @@ Create complete presentations from prompts, attached documents and images, resea
 
 Saved decks live in the Slides library with thumbnails and version history. In platform mode, publish personal decks to a team or fork team decks into your personal workspace. Present from the browser, or export as editable PPTX, visually consistent PDF, or self-contained HTML.
 
-See the [Slides documentation](https://sap.github.io/astonish/docs/slides/) for the complete workflow.
+See the [Slides documentation](https://github.com/zhu13818202655/troupe#readme) for the complete workflow.
 
 ---
 
@@ -234,14 +234,14 @@ Agent:  [shell_command] ssh root@192.168.1.100 free -h
 
 You:    /distill
 Agent:  Saved: check_server_health.yaml
-        Run again: astonish flows run check_server_health -p host="192.168.1.100"
+        Run again: troupe flows run check_server_health -p host="192.168.1.100"
 ```
 
 ```bash
 # Schedule it, share it, reuse it
-astonish flows run check_server_health -p host="192.168.1.100"
-astonish scheduler add --cron "0 9 * * *" --flow check_server_health
-astonish tap add yourteam/shared-flows   # Community flow store
+troupe flows run check_server_health -p host="192.168.1.100"
+troupe scheduler add --cron "0 9 * * *" --flow check_server_health
+troupe tap add yourteam/shared-flows   # Community flow store
 ```
 
 ---
@@ -250,13 +250,13 @@ astonish tap add yourteam/shared-flows   # Community flow store
 
 **Channels.** Telegram, Email, and Slack adapters work in platform mode with database-backed allowlists and dynamic per-message routing. Email supports plus-addressing for per-org routing (`bot+orgname@domain.com`). In-channel `/org` and `/team` commands switch context on the fly.
 
-**Remote CLI.** A rich terminal client to interact with your platform remotely. Login with password or SSO, select your org and team, then use all Astonish commands as if local — list sessions, run flows, browse traces, chat with full lipgloss styling.
+**Remote CLI.** A rich terminal client to interact with your platform remotely. Login with password or SSO, select your org and team, then use all Troupe commands as if local — list sessions, run flows, browse traces, chat with full lipgloss styling.
 
 ```bash
-astonish login https://platform.yourcompany.com   # SSO or password
-astonish status                                    # Show connection info
-astonish chat                                      # Chat through the platform
-astonish flows list                                # Browse team flows
+troupe login https://platform.yourcompany.com   # SSO or password
+troupe status                                    # Show connection info
+troupe chat                                      # Chat through the platform
+troupe flows list                                # Browse team flows
 ```
 
 **Always-On Daemon.** Run as a system service (launchd/systemd) with a cron scheduler. Two execution modes: routine (headless flow replay) and adaptive (natural language instruction interpreted each run). Results broadcast to connected channels.
@@ -269,10 +269,10 @@ astonish flows list                                # Browse team flows
 
 **Browser Automation.** 32 browser tools in pure Go via Chrome DevTools Protocol. Navigation, interaction, screenshots, device emulation, stealth mode. No Node.js, no Playwright, zero external dependencies.
 
-**Astonish Studio.** Visual flow designer with AI assistant, drag-and-drop editing, real-time execution, and the Apps tab for managing generative UI creations. Plan auto-progression shows agent execution in real-time. Token usage tracking with per-call visibility.
+**Troupe Studio.** Visual flow designer with AI assistant, drag-and-drop editing, real-time execution, and the Apps tab for managing generative UI creations. Plan auto-progression shows agent execution in real-time. Token usage tracking with per-call visibility.
 
 ```bash
-astonish daemon run    # Opens at http://localhost:9393
+troupe daemon run    # Opens at http://localhost:9393
 ```
 
 ---
@@ -292,7 +292,7 @@ astonish daemon run    # Opens at http://localhost:9393
 | **LM Studio**     | Local       | Self-hosted with GUI                 |
 | **SAP AI Core**   | Cloud       | SAP enterprise AI                    |
 
-Configure via `astonish setup` or Studio Settings. In platform mode, provider defaults cascade from org to team to individual.
+Configure via `troupe setup` or Studio Settings. In platform mode, provider defaults cascade from org to team to individual.
 
 ---
 
@@ -363,7 +363,7 @@ Built on [Google's Agent Development Kit (ADK)](https://github.com/google/adk-go
 
 ## Contributing & Support
 
-- [Full Documentation](https://sap.github.io/astonish/)
+- [Full Documentation](https://github.com/zhu13818202655/troupe#readme)
 - [Testing Guide](docs/TESTING.md) — 1,650+ tests across 4 layers
 - [Submit a Pull Request](https://github.com/zhu13818202655/troupe/pulls)
 - **License**: Apache-2.0
@@ -374,6 +374,6 @@ Built on [Google's Agent Development Kit (ADK)](https://github.com/google/adk-go
 
 ## Licensing
 
-Copyright 2026 SAP SE or an SAP affiliate company and astonish contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/zhu13818202655/troupe).
+Copyright 2026 SAP SE or an SAP affiliate company and troupe contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/zhu13818202655/troupe).
 
-This project was originally developed and maintained by [schardosin](https://github.com/schardosin). Since 2026-07-15, Astonish has been maintained by SAP.
+This project was originally developed and maintained by [schardosin](https://github.com/schardosin). Since 2026-07-15, Troupe has been maintained by SAP.

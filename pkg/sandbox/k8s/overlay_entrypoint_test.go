@@ -7,7 +7,7 @@ import (
 
 // TestEntrypointScript_Defaults locks in the canonical script shape
 // emitted when callers pass the zero-value options. This is the script
-// that gets baked into astonish-sandbox-base, so regressions in the
+// that gets baked into troupe-sandbox-base, so regressions in the
 // defaults would ship broken images cluster-wide.
 //
 // The default overlay mode is fuse, because it's the most portable
@@ -25,10 +25,10 @@ func TestEntrypointScript_Defaults(t *testing.T) {
 		{"pipefail probe", "if ( set -o pipefail ) 2>/dev/null; then"},
 		{"session-id guard", `: "${TROUPE_SESSION_ID:?TROUPE_SESSION_ID must be set}"`},
 		{"layer-chain guard", `: "${TROUPE_LAYER_CHAIN:?TROUPE_LAYER_CHAIN must be set}"`},
-		{"uppers default mount", "UPPERS_DIR='/mnt/astonish-uppers'"},
-		{"layers default mount", "LAYERS_DIR='/mnt/astonish-layers'"},
-		{"upperdir default", "UPPER_DIR='/var/astonish/overlay/upper'"},
-		{"workdir default", "WORK_DIR='/var/astonish/overlay/work'"},
+		{"uppers default mount", "UPPERS_DIR='/mnt/troupe-uppers'"},
+		{"layers default mount", "LAYERS_DIR='/mnt/troupe-layers'"},
+		{"upperdir default", "UPPER_DIR='/var/troupe/overlay/upper'"},
+		{"workdir default", "WORK_DIR='/var/troupe/overlay/work'"},
 		{"mountpoint default", "MOUNT_POINT='/sandbox/rootfs'"},
 		{"overlay-mode default", "OVERLAY_MODE='fuse'"},
 		{"resume tarball path", `RESUME_TAR="$UPPERS_DIR/upper.tar.zst"`},
@@ -100,25 +100,25 @@ func TestEntrypointScript_OptionOverrides(t *testing.T) {
 			name:  "uppers mount override",
 			opts:  EntrypointScriptOptions{UppersMount: "/custom/uppers"},
 			wants: []string{"UPPERS_DIR='/custom/uppers'"},
-			avoid: []string{"UPPERS_DIR='/mnt/astonish-uppers'"},
+			avoid: []string{"UPPERS_DIR='/mnt/troupe-uppers'"},
 		},
 		{
 			name:  "layers mount override",
 			opts:  EntrypointScriptOptions{LayersMount: "/custom/layers"},
 			wants: []string{"LAYERS_DIR='/custom/layers'"},
-			avoid: []string{"LAYERS_DIR='/mnt/astonish-layers'"},
+			avoid: []string{"LAYERS_DIR='/mnt/troupe-layers'"},
 		},
 		{
 			name:  "upperdir override",
 			opts:  EntrypointScriptOptions{UpperDir: "/tmp/up"},
 			wants: []string{"UPPER_DIR='/tmp/up'"},
-			avoid: []string{"UPPER_DIR='/var/astonish/upper'"},
+			avoid: []string{"UPPER_DIR='/var/troupe/upper'"},
 		},
 		{
 			name:  "workdir override",
 			opts:  EntrypointScriptOptions{WorkDir: "/tmp/wk"},
 			wants: []string{"WORK_DIR='/tmp/wk'"},
-			avoid: []string{"WORK_DIR='/var/astonish/work'"},
+			avoid: []string{"WORK_DIR='/var/troupe/work'"},
 		},
 		{
 			name:  "mountpoint override",
@@ -213,11 +213,11 @@ func TestEntrypointScript_ApplyDefaults(t *testing.T) {
 	if len(o.HandoffArgs) != 1 || o.HandoffArgs[0] != "infinity" {
 		t.Errorf("HandoffArgs default = %v, want [infinity]", o.HandoffArgs)
 	}
-	if o.HostBinaryPath != "/usr/local/bin/astonish-host" {
-		t.Errorf("HostBinaryPath default = %q, want /usr/local/bin/astonish-host", o.HostBinaryPath)
+	if o.HostBinaryPath != "/usr/local/bin/troupe-host" {
+		t.Errorf("HostBinaryPath default = %q, want /usr/local/bin/troupe-host", o.HostBinaryPath)
 	}
-	if o.HostTreeSitterLibPath != "/usr/lib/astonish/libastonish-treesitter.so" {
-		t.Errorf("HostTreeSitterLibPath default = %q, want /usr/lib/astonish/libastonish-treesitter.so", o.HostTreeSitterLibPath)
+	if o.HostTreeSitterLibPath != "/usr/lib/troupe/libtroupe-treesitter.so" {
+		t.Errorf("HostTreeSitterLibPath default = %q, want /usr/lib/troupe/libtroupe-treesitter.so", o.HostTreeSitterLibPath)
 	}
 	if o.Mode != OverlayModeFuse {
 		t.Errorf("Mode default = %q, want %q", o.Mode, OverlayModeFuse)
@@ -282,10 +282,10 @@ func TestEntrypointScript_QuotingInjection(t *testing.T) {
 }
 
 // TestEntrypointScript_HostBinaryBindMount exercises the bind-mount
-// of a base-image astonish binary over the overlay's
-// /usr/local/bin/astonish. Three behaviours are pinned:
+// of a base-image troupe binary over the overlay's
+// /usr/local/bin/troupe. Three behaviours are pinned:
 //
-//  1. Default path: HostBinaryPath defaults to /usr/local/bin/astonish-host
+//  1. Default path: HostBinaryPath defaults to /usr/local/bin/troupe-host
 //     and the bind-mount block appears between overlay mount and handoff.
 //  2. Explicit override: a non-standard HostBinaryPath flows through
 //     shellQuote and overrides the default.
@@ -294,7 +294,7 @@ func TestEntrypointScript_QuotingInjection(t *testing.T) {
 func TestEntrypointScript_HostBinaryBindMount(t *testing.T) {
 	t.Run("default enables bind-mount", func(t *testing.T) {
 		s := EntrypointScript(EntrypointScriptOptions{})
-		if !strings.Contains(s, "HOST_BIN='/usr/local/bin/astonish-host'") {
+		if !strings.Contains(s, "HOST_BIN='/usr/local/bin/troupe-host'") {
 			t.Errorf("default HOST_BIN assignment missing; got:\n%s", s)
 		}
 		if !strings.Contains(s, `mount --bind "$HOST_BIN" "$OVERLAY_BIN"`) {
@@ -320,13 +320,13 @@ func TestEntrypointScript_HostBinaryBindMount(t *testing.T) {
 
 	t.Run("custom host binary path", func(t *testing.T) {
 		s := EntrypointScript(EntrypointScriptOptions{
-			HostBinaryPath: "/opt/astonish/bin/astonish",
+			HostBinaryPath: "/opt/troupe/bin/troupe",
 		})
-		if !strings.Contains(s, "HOST_BIN='/opt/astonish/bin/astonish'") {
+		if !strings.Contains(s, "HOST_BIN='/opt/troupe/bin/troupe'") {
 			t.Errorf("custom HOST_BIN missing; got:\n%s", s)
 		}
 		// Default path must NOT leak when overridden.
-		if strings.Contains(s, "HOST_BIN='/usr/local/bin/astonish-host'") {
+		if strings.Contains(s, "HOST_BIN='/usr/local/bin/troupe-host'") {
 			t.Errorf("default HOST_BIN leaked despite override; got:\n%s", s)
 		}
 	})
@@ -353,7 +353,7 @@ func TestEntrypointScript_HostBinaryBindMount(t *testing.T) {
 	t.Run("fallback when host binary missing", func(t *testing.T) {
 		// The generated script must tolerate the base-image binary
 		// being absent (e.g. a custom sandbox image that doesn't bake
-		// astonish in). The else branch logs to stderr and leaves
+		// troupe in). The else branch logs to stderr and leaves
 		// the overlay's binary intact so the handoff still works if
 		// @base shipped its own.
 		s := EntrypointScript(EntrypointScriptOptions{})
@@ -372,7 +372,7 @@ func TestEntrypointScript_HostBinaryBindMount(t *testing.T) {
 func TestEntrypointScript_HostTreeSitterLibBindMount(t *testing.T) {
 	t.Run("default enables bind-mount", func(t *testing.T) {
 		s := EntrypointScript(EntrypointScriptOptions{})
-		if !strings.Contains(s, "HOST_TS_LIB='/usr/lib/astonish/libastonish-treesitter.so'") {
+		if !strings.Contains(s, "HOST_TS_LIB='/usr/lib/troupe/libtroupe-treesitter.so'") {
 			t.Errorf("default HOST_TS_LIB assignment missing; got:\n%s", s)
 		}
 		if !strings.Contains(s, `mount --bind "$HOST_TS_LIB" "$OVERLAY_TS_LIB"`) {
@@ -393,12 +393,12 @@ func TestEntrypointScript_HostTreeSitterLibBindMount(t *testing.T) {
 
 	t.Run("custom library path", func(t *testing.T) {
 		s := EntrypointScript(EntrypointScriptOptions{
-			HostTreeSitterLibPath: "/opt/lib/libastonish-treesitter.so",
+			HostTreeSitterLibPath: "/opt/lib/libtroupe-treesitter.so",
 		})
-		if !strings.Contains(s, "HOST_TS_LIB='/opt/lib/libastonish-treesitter.so'") {
+		if !strings.Contains(s, "HOST_TS_LIB='/opt/lib/libtroupe-treesitter.so'") {
 			t.Errorf("custom HOST_TS_LIB missing; got:\n%s", s)
 		}
-		if strings.Contains(s, "HOST_TS_LIB='/usr/lib/astonish/libastonish-treesitter.so'") {
+		if strings.Contains(s, "HOST_TS_LIB='/usr/lib/troupe/libtroupe-treesitter.so'") {
 			t.Errorf("default HOST_TS_LIB leaked despite override; got:\n%s", s)
 		}
 	})

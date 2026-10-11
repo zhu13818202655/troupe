@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/oauthserver"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 )
 
 // oauthClientBackend is the narrow platform boundary needed to prove the

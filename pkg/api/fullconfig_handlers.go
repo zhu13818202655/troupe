@@ -505,7 +505,7 @@ func UpdateFullConfigHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Channels configuration is no longer accepted via /api/settings/full.
 	// In platform mode it must be managed exclusively through the Platform Admin
-	// Channels UI (or astonish channels CLI), which writes to the platform DB.
+	// Channels UI (or troupe channels CLI), which writes to the platform DB.
 	// The channels section has been removed from this endpoint.
 	// Channels are intentionally ignored here (see comment above).
 	// Any attempt to send channels in the request is dropped on the floor

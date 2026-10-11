@@ -94,11 +94,11 @@ func distillFlow(ctx tool.Context, args DistillFlowArgs) (DistillFlowResult, err
 
 // extractFlowName extracts the flow name from the distillation output.
 // The output typically contains: "Flow saved as `/path/to/flow_name.yaml`"
-// and a run command: "astonish flows run flow_name ..."
+// and a run command: "troupe flows run flow_name ..."
 func extractFlowName(output string) string {
-	// Look for "astonish flows run <name>" pattern — most reliable
-	if idx := strings.Index(output, "astonish flows run "); idx >= 0 {
-		rest := output[idx+len("astonish flows run "):]
+	// Look for "troupe flows run <name>" pattern — most reliable
+	if idx := strings.Index(output, "troupe flows run "); idx >= 0 {
+		rest := output[idx+len("troupe flows run "):]
 		// The flow name ends at the next space or newline
 		end := strings.IndexAny(rest, " \n\t")
 		if end > 0 {

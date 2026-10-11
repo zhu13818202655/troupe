@@ -44,7 +44,7 @@ function chromeExtensionAssets(): Plugin {
           outDir: 'dist',
           lib: {
             entry: resolve(root, 'src/content/content-script.ts'),
-            name: 'astonishContent',
+            name: 'troupeContent',
             formats: ['iife'],
             fileName: () => 'content-script.js',
           },

@@ -399,6 +399,7 @@ func extractEndpointHosts(text string) []string {
 		}
 	}
 	for _, host := range endpointHostPattern.FindAllString(strings.ToLower(text), -1) {
+		// 匹配旧品牌时期（Astonish）的记忆/路径，保留以兼容存量数据。
 		if strings.Contains(host, "astonish") {
 			continue
 		}
@@ -454,6 +455,7 @@ func ignoredURLPathAnchor(path string) bool {
 	case "", "/", "/efficient-successful-path", "/password":
 		return true
 	}
+	// 匹配旧品牌时期（Astonish）的记忆/路径，保留以兼容存量数据。
 	return strings.Contains(path, "astonish") || strings.Contains(path, "password")
 }
 

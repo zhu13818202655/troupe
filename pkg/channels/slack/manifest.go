@@ -13,14 +13,18 @@ import (
 const (
 	maxSlackCommandDescriptionLength = 2000
 	maxSlackCommandUsageHintLength   = 1000
-	slackCommandPrefix               = "astonish"
+	slackCommandPrefix               = "troupe"
+	// legacySlackCommandPrefix is the pre-rename command prefix. Old Slack App
+	// installations still register /astonish-* commands, so invocations using
+	// the legacy prefix are accepted and mapped to the same internal commands.
+	legacySlackCommandPrefix = "astonish"
 )
 
 var (
 	slackBuiltinCommands = []slackapi.ManifestSlashCommand{
 		{
 			Command:     "/link",
-			Description: "Link your Slack account to Astonish",
+			Description: "Link your Slack account to Troupe",
 			UsageHint:   "CODE",
 		},
 	}
@@ -33,7 +37,7 @@ func (s *SlackChannel) refreshCommandsBestEffort(ctx context.Context, commands *
 		s.logger.Printf("[slack] Slash command manifest sync skipped: %s", reason)
 		return
 	}
-	commandCount := len(buildAstonishSlackCommands(commands, s.manifestCommandURL()))
+	commandCount := len(buildTroupeSlackCommands(commands, s.manifestCommandURL()))
 	s.logger.Printf("[slack] Synchronizing app manifest requirements and %d slash command(s) for app %s", commandCount, s.config.AppID)
 	if err := s.syncCommandManifest(ctx, commands); err != nil {
 		s.logger.Printf("[slack] Failed to synchronize app manifest: %v", err)
@@ -110,7 +114,7 @@ func (s *SlackChannel) syncCommandManifest(ctx context.Context, commands *channe
 
 	configureManifestTransport(manifest, s.usesSocketMode())
 	requirementsAdded := reconcileSlackManifestRequirements(manifest, s.usesSocketMode())
-	mergeAstonishSlashCommands(manifest, buildAstonishSlackCommands(commands, s.manifestCommandURL()), commands)
+	mergeTroupeSlashCommands(manifest, buildTroupeSlackCommands(commands, s.manifestCommandURL()), commands)
 	if err := validateSlackManifest(ctx, api, manifest, s.config.ConfigToken, s.config.AppID); err != nil {
 		return err
 	}
@@ -169,7 +173,7 @@ func appendMissingStrings(existing, required []string, changed bool) ([]string, 
 	return existing, changed
 }
 
-func buildAstonishSlackCommands(registry *channels.CommandRegistry, commandURL string) []slackapi.ManifestSlashCommand {
+func buildTroupeSlackCommands(registry *channels.CommandRegistry, commandURL string) []slackapi.ManifestSlashCommand {
 	seen := make(map[string]bool)
 	out := make([]slackapi.ManifestSlashCommand, 0)
 	appendCommand := func(cmd slackapi.ManifestSlashCommand) {
@@ -204,11 +208,11 @@ func buildAstonishSlackCommands(registry *channels.CommandRegistry, commandURL s
 	return out
 }
 
-func mergeAstonishSlashCommands(manifest *slackapi.Manifest, commands []slackapi.ManifestSlashCommand, registry *channels.CommandRegistry) {
+func mergeTroupeSlashCommands(manifest *slackapi.Manifest, commands []slackapi.ManifestSlashCommand, registry *channels.CommandRegistry) {
 	if manifest == nil {
 		return
 	}
-	owned := astonishOwnedSlackCommandNames(commands, registry)
+	owned := troupeOwnedSlackCommandNames(commands, registry)
 
 	merged := make([]slackapi.ManifestSlashCommand, 0, len(manifest.Features.SlashCommands)+len(commands))
 	for _, existing := range manifest.Features.SlashCommands {
@@ -220,14 +224,15 @@ func mergeAstonishSlashCommands(manifest *slackapi.Manifest, commands []slackapi
 	manifest.Features.SlashCommands = append(merged, commands...)
 }
 
-func astonishOwnedSlackCommandNames(commands []slackapi.ManifestSlashCommand, registry *channels.CommandRegistry) map[string]bool {
-	owned := make(map[string]bool, len(commands)+2)
+func troupeOwnedSlackCommandNames(commands []slackapi.ManifestSlashCommand, registry *channels.CommandRegistry) map[string]bool {
+	owned := make(map[string]bool, len(commands)+3)
 	for _, cmd := range commands {
 		owned[normalizeSlackCommandName(cmd.Command)] = true
 	}
 	owned["/link"] = true
 	owned["/start"] = true
 	owned[slackCommandAlias("start")] = true
+	owned[legacySlackCommandAlias("start")] = true
 	if registry != nil {
 		for _, cmd := range registry.List() {
 			if cmd == nil {
@@ -300,7 +305,7 @@ func legacySlackCommandAlias(name string) string {
 	if name == "" {
 		return "/"
 	}
-	return "/" + slackCommandPrefix + "-" + name
+	return "/" + legacySlackCommandPrefix + "-" + name
 }
 
 func normalizeSlackCommandName(name string) string {
@@ -350,7 +355,7 @@ func invalidManifestHint(err error, manifest *slackapi.Manifest) string {
 			}
 		}
 	}
-	return "; check the exported Slack App Manifest for required fields. Slack may require Socket Mode settings, event request URLs, valid OAuth scope settings, and non-reserved slash command names. Astonish registers app-prefixed command names such as /astonish-status to avoid Slack's reserved generic command names"
+	return "; check the exported Slack App Manifest for required fields. Slack may require Socket Mode settings, event request URLs, valid OAuth scope settings, and non-reserved slash command names. Troupe registers app-prefixed command names such as /troupe-status to avoid Slack's reserved generic command names"
 }
 
 func manifestAuthHint(err error) string {

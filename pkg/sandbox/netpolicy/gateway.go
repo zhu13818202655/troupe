@@ -79,7 +79,7 @@ func PreSeedAllow(ctx context.Context, gatewayCfg *openshell.GRPCClientConfig, s
 	for _, ep := range endpoints {
 		ops = append(ops, openshell.PolicyMergeOp{
 			Type:     openshell.PolicyMergeAddEndpoint,
-			RuleName: "astonish-egress",
+			RuleName: "troupe-egress",
 			Endpoint: &openshell.EndpointSpec{Host: ep.Host, Port: ep.Port},
 		})
 	}
@@ -124,7 +124,7 @@ func AutoApproveEndpoint(ctx context.Context, gatewayCfg *openshell.GRPCClientCo
 	ops := []openshell.PolicyMergeOp{
 		{
 			Type:     openshell.PolicyMergeAddEndpoint,
-			RuleName: "astonish-egress",
+			RuleName: "troupe-egress",
 			Endpoint: &openshell.EndpointSpec{Host: host, Port: port},
 		},
 	}

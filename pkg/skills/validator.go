@@ -21,8 +21,8 @@ type LLMProvider interface {
 
 // ValidationIssue represents a single issue found during skill validation.
 type ValidationIssue struct {
-	Type       string                `json:"type"`                 // "file_reference", "security", "quality"
-	Severity   string                `json:"severity"`             // "critical", "warning", "info"
+	Type       string                `json:"type"`     // "file_reference", "security", "quality"
+	Severity   string                `json:"severity"` // "critical", "warning", "info"
 	Message    string                `json:"message"`
 	Line       int                   `json:"line,omitempty"`
 	Suggestion *ValidationSuggestion `json:"suggestion,omitempty"`
@@ -37,8 +37,8 @@ type ValidationSuggestion struct {
 
 // ValidationResult is the full output of skill validation.
 type ValidationResult struct {
-	Issues         []ValidationIssue `json:"issues"`
-	PreScanReport  *PreScanFindings  `json:"pre_scan_report,omitempty"` // Deterministic findings (independent of LLM)
+	Issues        []ValidationIssue `json:"issues"`
+	PreScanReport *PreScanFindings  `json:"pre_scan_report,omitempty"` // Deterministic findings (independent of LLM)
 }
 
 // ValidatorConfig provides all inputs needed for validation.
@@ -165,7 +165,7 @@ var (
 		{regexp.MustCompile(`(?i)(^|\s)rm\s+-rf\s+/[^.]`), "Destructive removal of system paths"},
 		{regexp.MustCompile(`(?i)/etc/(passwd|shadow|sudoers)`), "Access to sensitive system files"},
 		{regexp.MustCompile(`(?i)~/.ssh/`), "Access to SSH keys"},
-		{regexp.MustCompile(`(?i)/root/\.config/astonish/(config|credentials)`), "Access to Astonish credentials"},
+		{regexp.MustCompile(`(?i)/root/\.config/troupe/(config|credentials)`), "Access to Troupe credentials"},
 		{regexp.MustCompile(`(?i)chmod\s+[0-7]*777`), "World-writable permissions"},
 		{regexp.MustCompile(`(?i)(export|echo)\s+.*\$(GITHUB_TOKEN|API_KEY|SECRET|PASSWORD|PRIVATE_KEY)`), "Potential credential exposure"},
 	}
@@ -480,7 +480,7 @@ type AcknowledgedRisk struct {
 // ValidationMeta is the operational metadata stored alongside a skill's validation status.
 type ValidationMeta struct {
 	AcknowledgedRisks []AcknowledgedRisk `json:"acknowledged_risks,omitempty"`
-	Issues            []ValidationIssue  `json:"issues,omitempty"`         // Persisted issues from last validation run
+	Issues            []ValidationIssue  `json:"issues,omitempty"` // Persisted issues from last validation run
 	LastValidatedAt   string             `json:"last_validated_at,omitempty"`
 	ContentHash       string             `json:"content_hash,omitempty"`
 }

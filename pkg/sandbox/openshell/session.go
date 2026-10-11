@@ -18,7 +18,7 @@ var invalidLabelChars = regexp.MustCompile(`[^a-zA-Z0-9._-]`)
 
 // sanitizeLabelValue strips characters that are invalid in Kubernetes label
 // values. Labels allow only alphanumeric characters, '-', '_', and '.'.
-// This is needed because Astonish uses '@' as a prefix for built-in template
+// This is needed because Troupe uses '@' as a prefix for built-in template
 // IDs (e.g., "@base") which is not a valid K8s label character.
 func sanitizeLabelValue(v string) string {
 	return invalidLabelChars.ReplaceAllString(v, "")
@@ -115,17 +115,17 @@ func (b *OpenShellBackend) CreateSession(ctx context.Context, spec sandbox.Sessi
 	// allow only [a-zA-Z0-9._-]). The primary fix is at session-key creation
 	// (scheduler/executor.go); this is defense-in-depth.
 	labels := map[string]string{
-		"astonish.io/type":       "session",
-		"astonish.io/session-id": sanitizeLabelValue(spec.SessionID),
+		"troupe.io/type":       "session",
+		"troupe.io/session-id": sanitizeLabelValue(spec.SessionID),
 	}
 	if spec.OrgSlug != "" {
-		labels["astonish.io/org"] = spec.OrgSlug
+		labels["troupe.io/org"] = spec.OrgSlug
 	}
 	if spec.TeamSlug != "" {
-		labels["astonish.io/team"] = spec.TeamSlug
+		labels["troupe.io/team"] = spec.TeamSlug
 	}
 	if spec.TemplateID != "" {
-		labels["astonish.io/template"] = sanitizeLabelValue(spec.TemplateID)
+		labels["troupe.io/template"] = sanitizeLabelValue(spec.TemplateID)
 	}
 
 	// Resolve the container image: prefer per-session override (from template),
@@ -216,8 +216,8 @@ func (b *OpenShellBackend) StartSession(ctx context.Context, sessionID string) e
 	}
 
 	labels := map[string]string{
-		"astonish.io/type":       "session",
-		"astonish.io/session-id": sanitizeLabelValue(sessionID),
+		"troupe.io/type":       "session",
+		"troupe.io/session-id": sanitizeLabelValue(sessionID),
 	}
 
 	// Resolve the container image: prefer the image stored in the session

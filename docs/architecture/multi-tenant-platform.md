@@ -2,17 +2,17 @@
 
 ## Overview
 
-Astonish is transitioning from a single-user personal assistant to a multi-tenant AI Operations Platform. In its current form, Astonish runs as a local daemon with all data stored under `~/.config/astonish/` — sessions, memories, credentials, apps, flows, and fleet configurations are all file-based and scoped to a single user (the hardcoded `studio_user` identity).
+Troupe is transitioning from a single-user personal assistant to a multi-tenant AI Operations Platform. In its current form, Troupe runs as a local daemon with all data stored under `~/.config/troupe/` — sessions, memories, credentials, apps, flows, and fleet configurations are all file-based and scoped to a single user (the hardcoded `studio_user` identity).
 
-The platform evolution enables multiple organizations (companies), each with multiple teams and users, to share a single Astonish deployment. The core value proposition: **knowledge learned by one team member is shared with the entire team**, turning Astonish from a personal tool into an organizational knowledge multiplier.
+The platform evolution enables multiple organizations (companies), each with multiple teams and users, to share a single Troupe deployment. The core value proposition: **knowledge learned by one team member is shared with the entire team**, turning Troupe from a personal tool into an organizational knowledge multiplier.
 
 ### Deployment Modes
 
-Astonish supports two deployment modes, selected by configuration:
+Troupe supports two deployment modes, selected by configuration:
 
 | Mode | Storage | Auth | Use Case |
 |------|---------|------|----------|
-| **Personal** (default) | File-based (`~/.config/astonish/`) | Device auth code (current) | Single user, local machine |
+| **Personal** (default) | File-based (`~/.config/troupe/`) | Device auth code (current) | Single user, local machine |
 | **Platform** | PostgreSQL (+ future HANA) | Built-in + OIDC federation | Multi-org SaaS, cloud deployment |
 
 Personal mode is 100% backward compatible. Platform mode activates when `storage.backend: postgres` is configured. No existing behavior changes for users who don't opt in.
@@ -42,7 +42,7 @@ Personal mode is 100% backward compatible. Platform mode activates when `storage
 ```
 ┌───────────────────────────────────────────────────────────────────────┐
 │                         Platform Database                             │
-│  (astonish_platform)                                                  │
+│  (troupe_platform)                                                  │
 │                                                                       │
 │  organizations     users          org_memberships    platform_config  │
 │  login_sessions    oidc_providers platform_skills    global_audit_log │
@@ -50,7 +50,7 @@ Personal mode is 100% backward compatible. Platform mode activates when `storage
             │                      │                      │
             ▼                      ▼                      ▼
 ┌─────────────────────┐ ┌─────────────────────┐ ┌─────────────────────┐
-│   astonish_org_001  │ │   astonish_org_002  │ │   astonish_org_NNN  │
+│   troupe_org_001  │ │   troupe_org_002  │ │   troupe_org_NNN  │
 │                     │ │                     │ │                     │
 │ public schema:      │ │ public schema:      │ │ public schema:      │
 │   org_memories      │ │   org_memories      │ │   org_memories      │
@@ -85,9 +85,9 @@ Personal mode is 100% backward compatible. Platform mode activates when `storage
 
 ### Why Database-per-Organization
 
-The primary tenancy boundary is the **organization** (company). Different companies accessing Astonish as a SaaS must have absolute data isolation. A separate PostgreSQL database per organization provides this:
+The primary tenancy boundary is the **organization** (company). Different companies accessing Troupe as a SaaS must have absolute data isolation. A separate PostgreSQL database per organization provides this:
 
-- A connection to `astonish_org_001` literally cannot query tables in `astonish_org_002`. The isolation is structural at the PostgreSQL connection level -- no WHERE clause, no RLS policy, no session variable can be misconfigured to leak data.
+- A connection to `troupe_org_001` literally cannot query tables in `troupe_org_002`. The isolation is structural at the PostgreSQL connection level -- no WHERE clause, no RLS policy, no session variable can be misconfigured to leak data.
 - Backups, restores, and data exports are naturally per-org.
 - Resource-intensive queries from one org cannot scan another org's tables.
 - A coding mistake in a handler that forgets tenant filtering cannot access another org's data because the connection itself is scoped.
@@ -135,21 +135,21 @@ Request arrives with JWT
 
 Team and personal stores are opened lazily and auto-migrated on open. Credential access also performs a one-shot schema repair when the selected tenant schema is present but the `credentials` table is missing. The repair runs through the already-selected Ent client/search path, so it preserves schema-level tenant isolation while recovering from partial provisioning or stale cached store state without requiring a daemon restart.
 
-Runtime PostgreSQL pools use pgx `exec` query execution. Astonish can reconcile schemas while other pods still have active connections during rolling deployments, and platform deployments may use transaction-pooling proxies. Executing each query in one protocol exchange without a prepared-statement cache avoids both stale result-type plans and proxy-local prepared-statement state. Database errors still propagate to callers rather than being retried or suppressed.
+Runtime PostgreSQL pools use pgx `exec` query execution. Troupe can reconcile schemas while other pods still have active connections during rolling deployments, and platform deployments may use transaction-pooling proxies. Executing each query in one protocol exchange without a prepared-statement cache avoids both stale result-type plans and proxy-local prepared-statement state. Database errors still propagate to callers rather than being retried or suppressed.
 
 ### PostgreSQL Roles & Permissions
 
 ```sql
 -- Created once per PG cluster
-CREATE ROLE astonish_platform_admin;   -- owns all databases, runs migrations
-CREATE ROLE astonish_app;              -- application connections (restricted)
+CREATE ROLE troupe_platform_admin;   -- owns all databases, runs migrations
+CREATE ROLE troupe_app;              -- application connections (restricted)
 
 -- Per-org database:
--- Tables owned by astonish_platform_admin (so RLS applies to astonish_app)
--- astonish_app has CONNECT privilege
--- astonish_app gets SELECT/INSERT/UPDATE/DELETE on team and personal schemas
--- astonish_app gets INSERT-only on audit tables (no UPDATE, no DELETE)
--- astonish_app does NOT have BYPASSRLS
+-- Tables owned by troupe_platform_admin (so RLS applies to troupe_app)
+-- troupe_app has CONNECT privilege
+-- troupe_app gets SELECT/INSERT/UPDATE/DELETE on team and personal schemas
+-- troupe_app gets INSERT-only on audit tables (no UPDATE, no DELETE)
+-- troupe_app does NOT have BYPASSRLS
 ```
 
 ---
@@ -259,7 +259,7 @@ Migrations are versioned SQL files applied in order. When a new org is provision
 
 ## Schema Definitions
 
-### Platform Database (`astonish_platform`)
+### Platform Database (`troupe_platform`)
 
 ```sql
 CREATE TABLE organizations (
@@ -595,7 +595,7 @@ auth:
 auth:
   mode: oidc
   issuer: "https://accounts.sap.com"
-  client_id: "astonish-prod"
+  client_id: "troupe-prod"
   client_secret_env: "OIDC_CLIENT_SECRET"
   scopes: ["openid", "email", "profile"]
   team_claim: "groups"
@@ -615,7 +615,7 @@ Access tokens contain the full user context. Refresh tokens contain only `uid` a
   "org": "my-company",
   "team": "ops",
   "role": "admin",
-  "iss": "astonish-platform",
+  "iss": "troupe-platform",
   "sub": "user-uuid",
   "exp": 1714500000,
   "iat": 1714499100,
@@ -627,7 +627,7 @@ Access tokens contain the full user context. Refresh tokens contain only `uid` a
   "typ": "refresh",
   "uid": "user-uuid",
   "org": "my-company",
-  "iss": "astonish-platform",
+  "iss": "troupe-platform",
   "sub": "user-uuid",
   "exp": 1722276000,
   "iat": 1714499100,
@@ -635,7 +635,7 @@ Access tokens contain the full user context. Refresh tokens contain only `uid` a
 }
 ```
 
-> **Note:** The `team` field is `DefaultTeamSlug`, the user's default team. Per-request team context can be overridden via the `X-Astonish-Team` header. Full team membership details are NOT embedded in the JWT — they are looked up from the database at runtime to avoid stale data in long-lived tokens.
+> **Note:** The `team` field is `DefaultTeamSlug`, the user's default team. Per-request team context can be overridden via the `X-Troupe-Team` header. Full team membership details are NOT embedded in the JWT — they are looked up from the database at runtime to avoid stale data in long-lived tokens.
 
 ### Request Context
 
@@ -648,12 +648,12 @@ type RequestContext struct {
     OrgSlug        string
     OrgRole        string            // owner, admin, member
     Teams          map[string]string // team_id -> role
-    ActiveTeamID   string            // from X-Astonish-Team header
+    ActiveTeamID   string            // from X-Troupe-Team header
     ActiveTeamSlug string
 }
 ```
 
-The `X-Astonish-Team` header (sent by the UI) determines which team context the request operates in. The middleware validates that the user is a member of the specified team before proceeding.
+The `X-Troupe-Team` header (sent by the UI) determines which team context the request operates in. The middleware validates that the user is a member of the specified team before proceeding.
 
 In personal mode, a synthetic context with `studio_user` is injected for backward compatibility.
 
@@ -743,11 +743,11 @@ Day 1:  Engineer A encounters "nova-compute stuck in error state"
         → Saves solution to team memory
 
 Day 15: Engineer B encounters similar issue on different hypervisor
-        → Astonish searches team memory, finds Engineer A's solution
+        → Troupe searches team memory, finds Engineer A's solution
         → Suggests: "A similar issue was resolved previously:
            Restart nova-compute and evacuate VMs. Apply?"
         → Engineer B applies it, confirms success
-        → Astonish reinforces the memory (increases relevance)
+        → Troupe reinforces the memory (increases relevance)
 ```
 
 ---
@@ -791,8 +791,8 @@ Each organization gets its own Docker bridge network (local Docker OverlayFS) or
 
 ```
 Personal mode:    default Docker network (single-user)
-Org A containers: astonish-org-<org-a>
-Org B containers: astonish-org-<org-b>
+Org A containers: troupe-org-<org-a>
+Org B containers: troupe-org-<org-b>
 ```
 
 Containers from different organizations cannot reach each other at the network level.
@@ -885,7 +885,7 @@ Migration:
 
 ### Existing Endpoint Modifications
 
-All existing endpoints gain org/team context through the middleware-injected `RequestContext`. The hardcoded `studio_user` constant is replaced with the real user identity from JWT. The `X-Astonish-Team` header determines which team's data is accessed.
+All existing endpoints gain org/team context through the middleware-injected `RequestContext`. The hardcoded `studio_user` constant is replaced with the real user identity from JWT. The `X-Troupe-Team` header determines which team's data is accessed.
 
 In personal mode, existing endpoints work identically to today.
 
@@ -908,7 +908,7 @@ In personal mode, existing endpoints work identically to today.
 
 ### Team Context
 
-The UI stores the active org + team selection in local storage and sends `X-Astonish-Team` header on every API call. Switching teams refreshes the session list, app catalog, and available credentials.
+The UI stores the active org + team selection in local storage and sends `X-Troupe-Team` header on every API call. Switching teams refreshes the session list, app catalog, and available credentials.
 
 ---
 
@@ -917,7 +917,7 @@ The UI stores the active org + team selection in local storage and sends `X-Asto
 When a new organization signs up:
 
 1. Platform DB: insert `organizations` row
-2. `CREATE DATABASE astonish_org_{slug}`
+2. `CREATE DATABASE troupe_org_{slug}`
 3. Run org-level migrations (public schema tables, pgvector extension)
 4. Create application role grants
 5. Set up RLS policies on shared tables
@@ -928,7 +928,7 @@ When a new team is created:
 1. Org DB: insert into `teams`
 2. `CREATE SCHEMA team_{slug}`
 3. Run team-schema migrations
-4. `GRANT USAGE ON SCHEMA team_{slug} TO astonish_app`
+4. `GRANT USAGE ON SCHEMA team_{slug} TO troupe_app`
 5. Create org sandbox network (Docker bridge or K8s NetworkPolicy, if not exists)
 
 When a user joins an org:
@@ -952,28 +952,28 @@ No changes. If `storage.backend` is `file` (default), everything works exactly a
 # 1. Deploy PostgreSQL with pgvector extension
 
 # 2. Initialize platform (generates suffix + creates database)
-astonish platform init --host localhost --user postgres --password secret
+troupe platform init --host localhost --user postgres --password secret
 # Output includes the platformDSN and instanceSuffix to use below.
 
 # 3. Configure storage backend (values from platform init output)
 storage:
   backend: postgres
   postgres:
-    platform_dsn: "postgres://postgres:secret@localhost:5432/astonish_a1b2c3_platform?sslmode=prefer"
+    platform_dsn: "postgres://postgres:secret@localhost:5432/troupe_a1b2c3_platform?sslmode=prefer"
     instance_suffix: "a1b2c3"
 
 # 4. Create first organization
-astonish platform org create --name "My Company" --slug my-company
+troupe platform org create --name "My Company" --slug my-company
 
 # 5. Import existing personal data (optional)
-astonish platform migrate --from-file --to-org my-company --to-team default
+troupe platform migrate --from-file --to-org my-company --to-team default
 
 # 6. Configure auth
 auth:
   mode: builtin  # or oidc
 
 # 7. Invite team members
-astonish platform org invite --email user@company.com --team ops --role member
+troupe platform org invite --email user@company.com --team ops --role member
 ```
 
 ---
@@ -1064,7 +1064,7 @@ Each phase is tracked below. Update status as work progresses.
 | 2.7 | Implement team provisioning | `pkg/store/pgstore/provision.go` | `DONE` | CREATE SCHEMA, run migrations, GRANT USAGE |
 | 2.8 | Implement personal schema provisioning | `pkg/store/pgstore/provision.go` | `DONE` | CREATE SCHEMA, run migrations, GRANT USAGE |
 | 2.9 | Implement per-org connection pool manager | `pkg/store/pgstore/pool.go` | `DONE` | Pool per org DB, search_path + RLS session vars, lazy double-check locking |
-| 2.10 | Implement PGStore for sessions | `pkg/store/pgstore/sessions.go` | `DONE` | ADK session.Service + Astonish-specific methods |
+| 2.10 | Implement PGStore for sessions | `pkg/store/pgstore/sessions.go` | `DONE` | ADK session.Service + Troupe-specific methods |
 | 2.11 | Implement PGStore for memories | `pkg/store/pgstore/memories.go` | `DONE` | pgvector cosine distance search |
 | 2.12 | Implement PGStore for credentials | `pkg/store/pgstore/credentials.go` | `DONE` | Encrypted BYTEA storage, full CredentialStore interface |
 | 2.13 | Implement PGStore for apps | `pkg/store/pgstore/apps.go` | `DONE` | AppStore + AppStateStore |
@@ -1074,7 +1074,7 @@ Each phase is tracked below. Update status as work progresses.
 | 2.17 | Implement PGStore for skills | `pkg/store/pgstore/skills.go` | `DONE` | |
 | 2.18 | Implement PGStore for audit | `pkg/store/pgstore/audit.go` | `DONE` | Append-only, TeamManagementStore included |
 | 2.19 | Set up RLS policies on shared tables | `migrations/org/001_init.sql` | `DONE` | team_memberships RLS policy |
-| 2.20 | Set up PostgreSQL role permissions | `pkg/store/pgstore/provision.go` | `DONE` | EnsureRoles: astonish_platform_admin + astonish_app, audit INSERT-only grant |
+| 2.20 | Set up PostgreSQL role permissions | `pkg/store/pgstore/provision.go` | `DONE` | EnsureRoles: troupe_platform_admin + troupe_app, audit INSERT-only grant |
 | 2.21 | Add config parsing for `storage.backend: postgres` | `pkg/config/app_config.go` | `DONE` | StorageConfig + PostgresConfig structs |
 | 2.22 | Wire backend selection in daemon.Run() | `pkg/daemon/run.go` | `DONE` | pgstore.NewPlatformServices + TenantMiddleware |
 | 2.23 | Compile-time interface assertions | `pkg/store/pgstore/assertions.go` | `DONE` | All 18 PG types verified against store interfaces |
@@ -1097,7 +1097,7 @@ Each phase is tracked below. Update status as work progresses.
 | 3.4 | Implement OIDC team auto-mapping | `pkg/api/oidc.go` | `DEFERRED` | Map OIDC groups claim to team memberships — deferred to post-Phase 3 |
 | 3.5 | Platform auth middleware (JWT validation) | `pkg/api/auth_platform_middleware.go` | `DONE` | Validates JWT cookie, populates `TenantContext` + `PlatformUser`, loopback bypass, `/api/auth/*` bypass |
 | 3.6 | Implement RequestContext injection | `pkg/api/auth_platform_middleware.go` | `DONE` | Extracts user/org/team from JWT, sets `TenantContext` in context via `pgstore.TenantMiddleware` |
-| 3.7 | Implement team context override | `pkg/api/auth_platform_middleware.go` | `DONE` | X-Astonish-Team header override (membership validation deferred to Phase 4 scope handlers) |
+| 3.7 | Implement team context override | `pkg/api/auth_platform_middleware.go` | `DONE` | X-Troupe-Team header override (membership validation deferred to Phase 4 scope handlers) |
 | 3.8 | Implement org/team CRUD handlers | `pkg/api/team_handlers.go` | `DONE` | List/create/get/delete teams, add/remove/set-role members, org info endpoint, role-based access |
 | 3.9 | Implement user invitation flow | `pkg/api/invite_handlers.go` | `DEFERRED` | Invite by email — deferred to post-Phase 3 |
 | 3.10 | Implement automated org provisioning on registration | `pkg/api/auth_platform.go` | `DONE` | First registration creates default org + "general" team + personal schema, makes user org owner |
@@ -1140,7 +1140,7 @@ Each phase is tracked below. Update status as work progresses.
 
 When a user switches from personal mode (`storage.backend: "file"`) to platform mode (`storage.backend: "postgres"`), existing file-based data must be migrated to the database. This is a **one-time, non-reversible** operation triggered on first platform-mode startup when:
 - The platform database has zero organizations (fresh DB)
-- File-based data exists at `~/.config/astonish/`
+- File-based data exists at `~/.config/troupe/`
 
 The user is prompted (in Studio UI or CLI) to either migrate or start fresh. Migration creates a platform user account (email from identity config, password set by user), provisions the default org/team, then transfers all data.
 
@@ -1163,7 +1163,7 @@ The user is prompted (in Studio UI or CLI) to either migrate or start fresh. Mig
 | 4.23 | Migration frontend: MigrationPage | `web/src/components/MigrationPage.tsx` | `DONE` | Account setup form + progress display, pre-fills from identity config |
 | 4.24 | Migration frontend: App.tsx integration | `web/src/App.tsx` | `DONE` | Detect `migration_available` in setup-status, show MigrationPage |
 | 4.25 | Wire migration detection into daemon startup | `pkg/daemon/run.go` | `DONE` | Detect fresh DB + file data, expose migration API |
-| 4.26 | CLI `astonish migrate` command | `cmd/astonish/migrate.go` | `DONE` | Terminal prompts for email/password, runs migration with progress output |
+| 4.26 | CLI `troupe migrate` command | `cmd/troupe/migrate.go` | `DONE` | Terminal prompts for email/password, runs migration with progress output |
 
 **Phase 4 Status: COMPLETE** — 24/26 tasks done. 2 deferred (flow handler scoping 4.6, scheduler handler scoping 4.7 — both require per-tenant runtime instances).
 
@@ -1239,24 +1239,24 @@ The user is prompted (in Studio UI or CLI) to either migrate or start fresh. Mig
 
 | # | Task | Package/Files | Status | Notes |
 |---|------|--------------|--------|-------|
-| 8.1 | Implement `astonish platform init` | `cmd/astonish/platform.go` | `DONE` | Creates roles, runs platform migrations, verifies connectivity |
-| 8.2 | Implement `astonish platform org create` | `cmd/astonish/platform.go` | `DONE` | Provisions org DB, default "general" team, optional owner |
-| 8.3 | Implement `astonish platform org invite` | `cmd/astonish/platform.go` | `DONE` | Creates/finds user, adds to org+team, temp password |
-| 8.4 | Implement `astonish platform migrate --from-file` | `cmd/astonish/` | `DONE (4.26)` | Implemented as `astonish migrate` in Phase 4B |
-| 8.5 | Implement `astonish platform status` | `cmd/astonish/platform.go` | `DONE` | Shows org/team/user counts, PG version, per-org details |
+| 8.1 | Implement `troupe platform init` | `cmd/troupe/platform.go` | `DONE` | Creates roles, runs platform migrations, verifies connectivity |
+| 8.2 | Implement `troupe platform org create` | `cmd/troupe/platform.go` | `DONE` | Provisions org DB, default "general" team, optional owner |
+| 8.3 | Implement `troupe platform org invite` | `cmd/troupe/platform.go` | `DONE` | Creates/finds user, adds to org+team, temp password |
+| 8.4 | Implement `troupe platform migrate --from-file` | `cmd/troupe/` | `DONE (4.26)` | Implemented as `troupe migrate` in Phase 4B |
+| 8.5 | Implement `troupe platform status` | `cmd/troupe/platform.go` | `DONE` | Shows org/team/user counts, PG version, per-org details |
 | 8.6 | Test migration from file to PG round-trip | `pkg/migration/migrate_test.go` | `DONE` | 16 tests: data detection, marker lifecycle, format round-trips |
 
 **Phase 8 Status: COMPLETE** — 6/6 tasks done. Full platform CLI with `init`, `status`, `org create/list/invite`, and `migrate`.
 
 ### Phase 8B: Setup Wizard — Deployment Mode
 
-**Goal:** Integrate platform mode configuration into both the CLI setup wizard (`astonish setup`) and the Studio UI Setup Wizard, so users never need to manually edit config.yaml to enable platform mode.
+**Goal:** Integrate platform mode configuration into both the CLI setup wizard (`troupe setup`) and the Studio UI Setup Wizard, so users never need to manually edit config.yaml to enable platform mode.
 
 **Design Decisions:**
 - **Deployment mode choice** is the first substantive step in both wizards (after Welcome screen)
 - **Two modes:** Personal (file-based, zero-config) and Platform (PostgreSQL, multi-user)
-- **Automatic database creation:** When Platform is selected, the wizard connects to PostgreSQL using admin credentials, creates the `astonish_platform` database, creates roles, and runs all migrations — no manual SQL required
-- **Credential model:** A single admin DSN is stored in config. It must have `CREATEDB` privilege. The same credentials are used at runtime for all connections (platform + org pools). The `astonish_app` role + grants provide defense-in-depth RLS. Production hardening (switching runtime to `astonish_app` role) is a future step.
+- **Automatic database creation:** When Platform is selected, the wizard connects to PostgreSQL using admin credentials, creates the `troupe_platform` database, creates roles, and runs all migrations — no manual SQL required
+- **Credential model:** A single admin DSN is stored in config. It must have `CREATEDB` privilege. The same credentials are used at runtime for all connections (platform + org pools). The `troupe_app` role + grants provide defense-in-depth RLS. Production hardening (switching runtime to `troupe_app` role) is a future step.
 - **JWT secret:** Auto-generated (32 random bytes, hex-encoded) during setup, stored in config
 - **Daemon auto-init:** If `storage.backend == "postgres"` but the platform DB is not initialized, the daemon attempts `BootstrapPlatform()` automatically before failing
 - **UI restart requirement:** When Platform mode is configured via the UI Setup Wizard, the daemon must restart to switch from file-backed to PostgreSQL-backed mode. The UI shows "Restart Required" after successful initialization.
@@ -1270,8 +1270,8 @@ The user is prompted (in Studio UI or CLI) to either migrate or start fresh. Mig
 | 8B.2 | `GenerateJWTSecret()` helper | `pkg/config/app_config.go` | `DONE` | 32 random bytes → 64 hex chars |
 | 8B.3 | `POST /api/platform/init` API endpoint | `pkg/api/platform_setup_handlers.go` | `DONE` | Accept PG params, bootstrap, save config; also `GET /api/platform/mode` and `/init/status` |
 | 8B.4 | Route registration | `pkg/api/handlers.go` | `DONE` | `/api/platform/init`, `/api/platform/mode`, `/api/platform/init/status` |
-| 8B.5 | Refactor `platform init` CLI to use shared bootstrap | `cmd/astonish/platform.go` | `DONE` | Replace inline logic with BootstrapPlatform(); removed pgx import |
-| 8B.6 | CLI wizard deployment mode step | `cmd/astonish/setup.go` | `DONE` | huh form: mode choice, PG params, org defaults; calls BootstrapPlatform() |
+| 8B.5 | Refactor `platform init` CLI to use shared bootstrap | `cmd/troupe/platform.go` | `DONE` | Replace inline logic with BootstrapPlatform(); removed pgx import |
+| 8B.6 | CLI wizard deployment mode step | `cmd/troupe/setup.go` | `DONE` | huh form: mode choice, PG params, org defaults; calls BootstrapPlatform() |
 | 8B.7 | Daemon auto-init on startup | `pkg/daemon/run.go` | `DONE` | Try bootstrap if NewPlatformServices fails |
 | 8B.8 | Frontend platform init API | `web/src/api/platform.ts` | `DONE` | `initializePlatform()`, `getDeploymentMode()`, `getPlatformInitStatus()` |
 | 8B.9 | UI Setup Wizard deployment mode step | `web/src/components/SetupWizard.tsx` | `DONE` | New Step 1: Personal/Platform cards, PG form, org fields, restart banner; 10 steps total |
@@ -1291,7 +1291,7 @@ The following items were designed but explicitly deferred during implementation.
 | OIDC provider flow (Authorization Code + PKCE) | 3.3 | Requires external IdP for testing; builtin auth covers MVP |
 | OIDC team auto-mapping from group claims | 3.4 | Depends on 3.3 |
 | Email-based user invitation flow | 3.9 | Requires email transport; CLI `org invite` covers MVP |
-| Team membership validation on `X-Astonish-Team` header | 3.7 | Deferred to Phase 4 scope handlers; currently trusts the header |
+| Team membership validation on `X-Troupe-Team` header | 3.7 | Deferred to Phase 4 scope handlers; currently trusts the header |
 
 ### Data Scoping
 | Item | Phase | Reason |
@@ -1323,7 +1323,7 @@ The following items were designed but explicitly deferred during implementation.
 ### Infrastructure
 | Item | Phase | Notes |
 |------|-------|-------|
-| Runtime role switching (`astonish_app` vs admin DSN) | — | Defense-in-depth; currently uses admin DSN at runtime |
+| Runtime role switching (`troupe_app` vs admin DSN) | — | Defense-in-depth; currently uses admin DSN at runtime |
 | HANA HDI store implementation | — | Interface designed; needs `pkg/store/hanastore/` |
 | Connection pooling refinement (idle timeouts, pool sizing per org) | 2.9 | Basic pool implemented; production tuning deferred |
 

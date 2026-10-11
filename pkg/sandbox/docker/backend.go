@@ -58,7 +58,7 @@ type Config struct {
 	Sessions *sandbox.SessionRegistry
 
 	// SandboxImage is the OCI image used for new containers.
-	// Default: ghcr.io/sap/astonish-sandbox-base:latest
+	// Default: ghcr.io/sap/troupe-sandbox-base:latest
 	SandboxImage string
 
 	// OverlayMode selects the overlay driver: "fuse", "kernel", or "auto".
@@ -88,7 +88,7 @@ func (c *Config) applyDefaults() {
 		if img := os.Getenv("TROUPE_SANDBOX_IMAGE"); img != "" {
 			c.SandboxImage = img
 		} else {
-			c.SandboxImage = "ghcr.io/sap/astonish-sandbox-base:latest"
+			c.SandboxImage = "ghcr.io/sap/troupe-sandbox-base:latest"
 		}
 	}
 	if c.OverlayMode == "" {
@@ -97,13 +97,13 @@ func (c *Config) applyDefaults() {
 	if c.ContainerRuntimePath == "" {
 		c.ContainerRuntimePath = "docker"
 	}
-	// Default storage directories under the Astonish config directory.
+	// Default storage directories under the Troupe config directory.
 	// This mirrors the convention used by the daemon's layer migration
 	// (pkg/daemon/run.go) which looks for layers at <configDir>/sandbox/layers.
 	if c.LayersDir == "" || c.UppersDir == "" {
 		configDir, err := os.UserConfigDir()
 		if err == nil {
-			base := filepath.Join(configDir, "astonish", "sandbox")
+			base := filepath.Join(configDir, "troupe", "sandbox")
 			if c.LayersDir == "" {
 				c.LayersDir = filepath.Join(base, "layers")
 			}
@@ -254,7 +254,7 @@ func (db *DockerBackend) Health(ctx context.Context) (*sandbox.BackendHealth, er
 
 // containerName returns a collision-resistant Docker name for a session.
 func containerName(sessionID string) string {
-	const prefix = "astonish-session-"
+	const prefix = "troupe-session-"
 	sum := sha256.Sum256([]byte(sessionID))
 	suffix := fmt.Sprintf("%x", sum[:6])
 	clean := make([]byte, 0, len(sessionID))

@@ -65,7 +65,7 @@ func LoadBundledConfigs() (map[string]*FleetConfig, error) {
 	return bundledConfigs, bundledConfigsErr
 }
 
-// IsBundledKey reports whether key is an Astonish-shipped (embedded) fleet template.
+// IsBundledKey reports whether key is an Troupe-shipped (embedded) fleet template.
 // Bundled templates are immutable: they always win over any same-key DB row.
 func IsBundledKey(key string) bool {
 	bundled, err := LoadBundledConfigs()

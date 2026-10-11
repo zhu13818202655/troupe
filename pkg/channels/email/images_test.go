@@ -13,10 +13,10 @@ type captureClient struct {
 	last emailpkg.OutgoingMessage
 }
 
-func (c *captureClient) Connect(context.Context) error                          { return nil }
-func (c *captureClient) Close() error                                           { return nil }
-func (c *captureClient) IsConnected() bool                                      { return true }
-func (c *captureClient) Address() string                                        { return "bot@example.com" }
+func (c *captureClient) Connect(context.Context) error { return nil }
+func (c *captureClient) Close() error                  { return nil }
+func (c *captureClient) IsConnected() bool             { return true }
+func (c *captureClient) Address() string               { return "bot@example.com" }
 func (c *captureClient) ListMessages(context.Context, emailpkg.ListOpts) ([]emailpkg.MessageSummary, error) {
 	return nil, nil
 }

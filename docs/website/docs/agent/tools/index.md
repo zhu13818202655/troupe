@@ -1,6 +1,6 @@
 # Tools Overview
 
-Astonish provides 90+ built-in tools across multiple categories, plus unlimited extension via MCP servers. Tools are the agent's interface to the world — reading files, running commands, browsing the web, managing credentials, and more.
+Troupe provides 90+ built-in tools across multiple categories, plus unlimited extension via MCP servers. Tools are the agent's interface to the world — reading files, running commands, browsing the web, managing credentials, and more.
 
 ## Tool Categories
 

@@ -14,7 +14,7 @@ import (
 const (
 	// Default container-side directory for session recordings (writable in
 	// Incus and OpenShell sandboxes; downloadable via PullFile).
-	containerRecordingDir = "/tmp/astonish-recordings"
+	containerRecordingDir = "/tmp/troupe-recordings"
 	// Local (host) directory for session recordings, relative to cwd.
 	localRecordingDir = "recordings"
 	// Fixed X display used by KasmVNC inside session containers.

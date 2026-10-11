@@ -29,7 +29,7 @@ import (
 // knownSessionIDs (session IDs tracked in the database), and deletes any
 // untracked sandbox older than gracePeriod.
 //
-// The comparison uses the "astonish.io/session-id" label set on every sandbox
+// The comparison uses the "troupe.io/session-id" label set on every sandbox
 // pod during CreateSession. This label contains the logical session ID (the DB
 // primary key), which is what knownSessionIDs is keyed by. This ensures that
 // pods belonging to active sessions are NEVER deleted, even across daemon
@@ -51,7 +51,7 @@ func ReconcileOrphans(ctx context.Context, gateway GatewayClient, knownSessionID
 		// This is the authoritative link between a gateway sandbox and a DB
 		// session record. The label value is the logical session ID (DB primary
 		// key), which is what knownSessionIDs is keyed by.
-		sessionID := sb.Labels["astonish.io/session-id"]
+		sessionID := sb.Labels["troupe.io/session-id"]
 		if sessionID != "" && knownSessionIDs[sessionID] {
 			continue // session exists in DB — NOT an orphan
 		}

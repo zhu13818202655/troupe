@@ -1,6 +1,6 @@
 # Architecture
 
-Astonish uses a layered architecture where each level provides isolation, configuration cascading, and scoped access. Resources flow downward as defaults; data flows upward only through explicit publishing.
+Troupe uses a layered architecture where each level provides isolation, configuration cascading, and scoped access. Resources flow downward as defaults; data flows upward only through explicit publishing.
 
 ## Layer Model
 

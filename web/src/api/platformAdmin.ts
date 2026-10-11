@@ -510,7 +510,7 @@ export async function savePlatformAuthSettings(
   return res.json()
 }
 
-// --- Astonish OAuth Server Administration API ---
+// --- Troupe OAuth Server Administration API ---
 
 export interface OAuthDiscovery {
   issuer: string

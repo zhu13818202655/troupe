@@ -14,10 +14,14 @@ import (
 
 	"charm.land/bubbles/v2/spinner"
 	"charm.land/lipgloss/v2"
+	"github.com/charmbracelet/huh"
+	"github.com/google/uuid"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/credentials"
 	"github.com/zhu13818202655/troupe/pkg/provider"
 	"github.com/zhu13818202655/troupe/pkg/provider/anthropic"
+	copilot_oauth "github.com/zhu13818202655/troupe/pkg/provider/copilot_oauth"
 	"github.com/zhu13818202655/troupe/pkg/provider/google"
 	"github.com/zhu13818202655/troupe/pkg/provider/groq"
 	"github.com/zhu13818202655/troupe/pkg/provider/litellm"
@@ -29,15 +33,11 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/provider/poe"
 	"github.com/zhu13818202655/troupe/pkg/provider/sap"
 	"github.com/zhu13818202655/troupe/pkg/provider/xai"
-	copilot_oauth "github.com/zhu13818202655/troupe/pkg/provider/copilot_oauth"
 	xai_oauth "github.com/zhu13818202655/troupe/pkg/provider/xai_oauth"
 	sboxdocker "github.com/zhu13818202655/troupe/pkg/sandbox/docker"
 	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/zhu13818202655/troupe/pkg/store/entstore"
 	"github.com/zhu13818202655/troupe/pkg/store/pgutil"
-	"github.com/charmbracelet/huh"
-	"github.com/google/uuid"
-	_ "github.com/jackc/pgx/v5/stdlib"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -1687,7 +1687,7 @@ func handleDeploymentModeSetup(cfg *config.AppConfig) error {
 	err := huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[string]().
-				Title("How would you like to run Astonish?").
+				Title("How would you like to run Troupe?").
 				Description("Choose a database backend. You can change this later.").
 				Options(
 					huh.NewOption("SQLite — Multi-user, zero infrastructure, built-in auth (recommended)", "sqlite"),

@@ -535,8 +535,8 @@ func TestAppendPreScanIssues_AddsUncoveredFindings(t *testing.T) {
 	}
 	preScan := PreScanFindings{
 		DangerousPatterns: []DangerousHit{
-			{Line: 5, Match: "curl | sh", Reason: "Remote code execution"},  // covered by LLM
-			{Line: 10, Match: "rm -rf /", Reason: "Destructive removal"},    // NOT covered
+			{Line: 5, Match: "curl | sh", Reason: "Remote code execution"}, // covered by LLM
+			{Line: 10, Match: "rm -rf /", Reason: "Destructive removal"},   // NOT covered
 		},
 	}
 

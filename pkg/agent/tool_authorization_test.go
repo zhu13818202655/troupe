@@ -211,7 +211,7 @@ func TestFolderContainment_SessionGrant(t *testing.T) {
 }
 
 // TestFolderContainment_ExtraRoots verifies that directories passed as
-// extraRoots to NewSessionAuthPolicy (e.g. Astonish's own state directory) are
+// extraRoots to NewSessionAuthPolicy (e.g. Troupe's own state directory) are
 // implicitly in-scope: their subtrees are allowed without any grant, and no
 // grant is consumed on repeated access. This backs the fix that stops the agent
 // from prompting when it writes session transcripts / PLAN.md outside the
@@ -219,7 +219,7 @@ func TestFolderContainment_SessionGrant(t *testing.T) {
 func TestFolderContainment_ExtraRoots(t *testing.T) {
 	disableTmpAllowlist(t)
 	root := t.TempDir()
-	stateDir := t.TempDir() // stands in for the astonish config/state dir
+	stateDir := t.TempDir() // stands in for the troupe config/state dir
 	p := NewSessionAuthPolicy(root, stateDir)
 
 	planFile := filepath.Join(stateDir, "sessions", "code", "x.PLAN.md")

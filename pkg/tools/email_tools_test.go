@@ -14,10 +14,10 @@ type mockEmailClient struct {
 	sendCount atomic.Int64
 }
 
-func (m *mockEmailClient) Connect(_ context.Context) error   { return nil }
-func (m *mockEmailClient) Close() error                      { return nil }
-func (m *mockEmailClient) IsConnected() bool                 { return true }
-func (m *mockEmailClient) Address() string                   { return m.address }
+func (m *mockEmailClient) Connect(_ context.Context) error { return nil }
+func (m *mockEmailClient) Close() error                    { return nil }
+func (m *mockEmailClient) IsConnected() bool               { return true }
+func (m *mockEmailClient) Address() string                 { return m.address }
 func (m *mockEmailClient) ListMessages(_ context.Context, _ email.ListOpts) ([]email.MessageSummary, error) {
 	return nil, nil
 }

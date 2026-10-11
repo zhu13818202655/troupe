@@ -31,7 +31,7 @@ func TestHostMatches(t *testing.T) {
 		{"**.example.com", "api.example.com", true},
 		{"**.example.com", "deep.sub.example.com", true},
 		{"**.example.com", "a.b.c.d.example.com", true},
-		{"**.example.com", "example.com", true},  // suffix itself matches
+		{"**.example.com", "example.com", true}, // suffix itself matches
 		{"**.example.com", "notexample.com", false},
 		{"**.example.com", "fakeexample.com", false},
 
@@ -56,11 +56,11 @@ func TestHostMatches(t *testing.T) {
 
 func TestEffectivePolicy_Check(t *testing.T) {
 	tests := []struct {
-		name     string
-		policy   EffectivePolicy
-		host     string
-		port     uint32
-		want     PolicyDecision
+		name   string
+		policy EffectivePolicy
+		host   string
+		port   uint32
+		want   PolicyDecision
 	}{
 		{
 			name:   "no rules → unknown",

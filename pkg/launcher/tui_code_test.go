@@ -48,7 +48,7 @@ func captureEmit(out *[]events.Event, debug bool) func(string, map[string]any) {
 // after RunCodeTUI prepares the config, the sandbox must be off so tools run
 // directly on the host filesystem.
 func TestContentsToSessionEventsPreservesTurnContextMarker(t *testing.T) {
-	contextContent := genai.NewContentFromText("[Astonish Per-Turn Context — not user-authored]\n\ncontext", genai.RoleUser)
+	contextContent := genai.NewContentFromText("[Troupe Per-Turn Context — not user-authored]\n\ncontext", genai.RoleUser)
 	events := contentsToSessionEvents([]*genai.Content{contextContent})
 	if len(events) != 1 || !agent.IsTurnContextEvent(events[0]) {
 		t.Fatalf("compacted context event lost hidden marker: %#v", events)
@@ -1259,7 +1259,7 @@ func TestResumeSession_ApprovalSupersededToolCalls(t *testing.T) {
 	// 3. System event with awaiting_approval=true
 	if err := b.sessionSvc.AppendEvent(ctx, sess, &adksession.Event{
 		ID:     "e3",
-		Author: "astonish_code",
+		Author: "troupe_code",
 		LLMResponse: adkmodel.LLMResponse{
 			Content: genai.NewContentFromText("shell_command wants to access files outside the project", genai.RoleModel),
 		},
@@ -1428,7 +1428,7 @@ func TestResumeSession_ApprovalSupersededToolCalls_ContentField(t *testing.T) {
 	// 3. Approval prompt with awaiting_approval=true
 	if err := b.sessionSvc.AppendEvent(ctx, sess, &adksession.Event{
 		ID:     "e3",
-		Author: "astonish_code",
+		Author: "troupe_code",
 		LLMResponse: adkmodel.LLMResponse{
 			Content: genai.NewContentFromText("write_file wants to access /tmp/hello.txt", genai.RoleModel),
 		},
@@ -1995,10 +1995,10 @@ func TestRollback_ListSkipsTurnContextEvents(t *testing.T) {
 		ID:     "tc1",
 		Author: "user",
 		LLMResponse: adkmodel.LLMResponse{
-			Content: genai.NewContentFromText("[Astonish Per-Turn Context — not user-authored]\n\n## Session Task\n\nYou are in plan mode.", genai.RoleUser),
+			Content: genai.NewContentFromText("[Troupe Per-Turn Context — not user-authored]\n\n## Session Task\n\nYou are in plan mode.", genai.RoleUser),
 		},
 		Actions: adksession.EventActions{StateDelta: map[string]any{
-			"_astonish_turn_context": true,
+			"_troupe_turn_context": true,
 		}},
 	}
 	if err := fileStore.AppendEvent(ctx, sess, turnCtxEv); err != nil {
@@ -2687,7 +2687,7 @@ func TestResumeSession_ApprovalPromptTextSuppressed(t *testing.T) {
 	approvalPromptText := "╭──────────────────────────────────────╮\n│ 🛠  write_file                        │\n│ file_path: /tmp/test.txt             │\n│ content: hello                       │\n╰──────────────────────────────────────╯"
 	if err := b.sessionSvc.AppendEvent(ctx, sess, &adksession.Event{
 		ID:     "e4",
-		Author: "astonish_code",
+		Author: "troupe_code",
 		LLMResponse: adkmodel.LLMResponse{
 			Content: &genai.Content{
 				Role:  "model",
@@ -2858,7 +2858,7 @@ func TestResumeSession_AutoApprovedPromptTextSuppressed(t *testing.T) {
 	autoApprovedText := "╭──────────────────────────────────────╮\n│ 🛠  grep_search                       │\n│ pattern: test                        │\n╰──────────────────────────────────────╯"
 	if err := b.sessionSvc.AppendEvent(ctx, sess, &adksession.Event{
 		ID:     "e2",
-		Author: "astonish_code",
+		Author: "troupe_code",
 		LLMResponse: adkmodel.LLMResponse{
 			Content: &genai.Content{
 				Role:  "model",
@@ -3043,7 +3043,7 @@ func TestRespondSubAgentAuth_DenyPropagates(t *testing.T) {
 func TestLocalAgentBackendListLocalSkills(t *testing.T) {
 	b := &localAgentBackend{filesystemSkills: []skills.Skill{
 		{Name: "zeta", Description: "Zeta skill", Source: "project"},
-		{Name: "Generative-UI", Description: "Override", Source: "user", RequireBins: []string{"definitely-missing-astonish-test-bin"}},
+		{Name: "Generative-UI", Description: "Override", Source: "user", RequireBins: []string{"definitely-missing-troupe-test-bin"}},
 		{Name: "alpha", Description: "Alpha skill", Source: "extra"},
 	}}
 
@@ -3067,7 +3067,7 @@ func TestLocalAgentBackendListLocalSkills(t *testing.T) {
 	if got[2].Description != "Override" || got[2].Source != "user" {
 		t.Fatalf("filesystem skill should appear with its own metadata: %+v", got[2])
 	}
-	if got[2].Eligible || len(got[2].Missing) != 1 || got[2].Missing[0] != "definitely-missing-astonish-test-bin" {
+	if got[2].Eligible || len(got[2].Missing) != 1 || got[2].Missing[0] != "definitely-missing-troupe-test-bin" {
 		t.Fatalf("eligibility = %+v", got[2])
 	}
 }
@@ -3383,16 +3383,19 @@ func TestResumeSession_UnreadableTranscriptReturnsError(t *testing.T) {
 // It drives the exact function /sessions invokes and is strictly read-only.
 // Skipped when the local sessions directory or that session is absent.
 func TestResumeSession_RealPoisonedSession(t *testing.T) {
-	home, err := os.UserHomeDir()
+	// Mirror where the application actually keeps sessions instead of hard-coding
+	// the pre-rebrand directory name; on an existing install this still resolves
+	// to the legacy directory via GetConfigDir's state-aware fallback.
+	configDir, err := config.GetConfigDir()
 	if err != nil {
-		t.Skip("no home dir")
+		t.Skipf("no config dir: %v", err)
 	}
-	dir := filepath.Join(home, "Library", "Application Support", "astonish", "sessions", "code")
+	dir := filepath.Join(configDir, "sessions", "code")
 	if _, err := os.Stat(dir); err != nil {
 		t.Skipf("code sessions dir not present: %v", err)
 	}
 	const sessionID = "86509dd0-1571-407c-8031-aea4e1b90f67"
-	if _, err := os.Stat(filepath.Join(dir, "astonish_code", "local_user_f32806e58f42b514", sessionID+".jsonl")); err != nil {
+	if _, err := os.Stat(filepath.Join(dir, "troupe_code", "local_user_f32806e58f42b514", sessionID+".jsonl")); err != nil {
 		t.Skipf("target session not present: %v", err)
 	}
 

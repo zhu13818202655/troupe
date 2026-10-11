@@ -7,7 +7,7 @@ This page covers platform setup, org provisioning, user management, and authenti
 The recommended way to initialize the platform is via the setup wizard:
 
 ```bash
-astonish setup
+troupe setup
 ```
 
 The wizard handles backend selection (SQLite or PostgreSQL), database initialization, organization creation, admin account setup, and AI provider configuration in a single interactive flow.
@@ -15,8 +15,8 @@ The wizard handles backend selection (SQLite or PostgreSQL), database initializa
 For PostgreSQL deployments, you can also set the DSN via environment variable before running setup:
 
 ```bash
-export TROUPE_PLATFORM_DSN="postgres://admin:secret@db.acme.corp:5432/astonish_platform"
-astonish setup
+export TROUPE_PLATFORM_DSN="postgres://admin:secret@db.acme.corp:5432/troupe_platform"
+troupe setup
 ```
 
 ### Platform Initialization (Advanced)
@@ -24,7 +24,7 @@ astonish setup
 If you need to re-initialize or bootstrap an existing database:
 
 ```bash
-astonish platform init
+troupe platform init
 ```
 
 This creates the platform database schema and runs migrations. The DSN is read from the config file or `TROUPE_PLATFORM_DSN` environment variable.
@@ -34,37 +34,37 @@ This creates the platform database schema and runs migrations. The DSN is read f
 After setup, start the daemon:
 
 ```bash
-astonish daemon install    # Register as system service
-astonish daemon start      # Start the platform
+troupe daemon install    # Register as system service
+troupe daemon start      # Start the platform
 ```
 
 Studio is available at `http://localhost:9393`. For debugging or foreground operation:
 
 ```bash
-astonish daemon run        # Run in foreground (useful for debugging)
+troupe daemon run        # Run in foreground (useful for debugging)
 ```
 
 Other daemon commands:
 
 ```bash
-astonish daemon status     # Check if daemon is running
-astonish daemon stop       # Stop the daemon
-astonish daemon restart    # Restart the daemon
-astonish daemon logs       # View daemon logs
-astonish daemon uninstall  # Remove system service
+troupe daemon status     # Check if daemon is running
+troupe daemon stop       # Stop the daemon
+troupe daemon restart    # Restart the daemon
+troupe daemon logs       # View daemon logs
+troupe daemon uninstall  # Remove system service
 ```
 
 ## Organization Provisioning
 
 ```bash
 # Create an organization
-astonish platform org create --name "Acme Corp" --slug acme
+troupe platform org create --name "Acme Corp" --slug acme
 
 # With an owner assigned
-astonish platform org create --name "Acme Corp" --slug acme --owner-email alice@acme.corp
+troupe platform org create --name "Acme Corp" --slug acme --owner-email alice@acme.corp
 
 # List all organizations
-astonish platform org list
+troupe platform org list
 ```
 
 ## User Management
@@ -73,60 +73,60 @@ astonish platform org list
 
 ```bash
 # Invite a user to an org
-astonish platform org invite --org acme --email bob@acme.corp --role member
+troupe platform org invite --org acme --email bob@acme.corp --role member
 
 # Invite as admin with team assignment
-astonish platform org invite --org acme --email alice@acme.corp --role admin --team platform
+troupe platform org invite --org acme --email alice@acme.corp --role admin --team platform
 ```
 
 ### Managing Users
 
 ```bash
 # List users
-astonish platform user list
+troupe platform user list
 
 # Show user details
-astonish platform user show <user-id-or-email>
+troupe platform user show <user-id-or-email>
 
 # Disable user access (preserves data, revokes login)
-astonish platform user disable <user-id-or-email>
+troupe platform user disable <user-id-or-email>
 
 # Re-enable user
-astonish platform user enable <user-id-or-email>
+troupe platform user enable <user-id-or-email>
 
 # Promote user to platform admin
-astonish platform user promote <user-id-or-email>
+troupe platform user promote <user-id-or-email>
 
 # Demote from platform admin
-astonish platform user demote <user-id-or-email>
+troupe platform user demote <user-id-or-email>
 
 # Reset password
-astonish platform user set-password <user-id-or-email>
+troupe platform user set-password <user-id-or-email>
 
 # Delete user
-astonish platform user delete <user-id-or-email>
+troupe platform user delete <user-id-or-email>
 ```
 
 ### Other Platform Commands
 
 ```bash
 # Generate a JWT secret
-astonish platform gen-secret
+troupe platform gen-secret
 
 # Check platform status
-astonish platform status
+troupe platform status
 
 # Issue an API token for a user
-astonish platform issue-token --user <email> --org <slug>
+troupe platform issue-token --user <email> --org <slug>
 
 # Audit sandbox usage
-astonish platform sandbox-audit
+troupe platform sandbox-audit
 
 # Create, inspect, and verify compressed logical backup archives
-astonish platform backup create --output backup.troupe-backup
-astonish platform backup inspect backup.troupe-backup
-astonish platform backup verify backup.troupe-backup
-astonish platform restore backup.troupe-backup --dry-run
+troupe platform backup create --output backup.troupe-backup
+troupe platform backup inspect backup.troupe-backup
+troupe platform backup verify backup.troupe-backup
+troupe platform restore backup.troupe-backup --dry-run
 ```
 
 See [Backup & Recovery](./backup-recovery) for archive verification and the planned data portability workflow.
@@ -137,13 +137,13 @@ See [Backup & Recovery](./backup-recovery) for archive verification and the plan
 
 The default mode. Users authenticate with email/password. Passwords are hashed with bcrypt. Sessions use JWTs.
 
-Configured in `~/.config/astonish/config.yaml`:
+Configured in `~/.config/troupe/config.yaml`:
 
 ```yaml
 storage:
   auth:
     mode: builtin
-    jwt_secret: "your-jwt-secret"   # Generated by 'astonish platform gen-secret'
+    jwt_secret: "your-jwt-secret"   # Generated by 'troupe platform gen-secret'
 ```
 
 ### OIDC Federation
@@ -169,26 +169,26 @@ Users are auto-provisioned on first login when their email domain matches an org
 
 | Command | Description |
 |---------|-------------|
-| `astonish platform init` | Initialize/migrate platform database |
-| `astonish platform status` | Show platform status |
-| `astonish platform gen-secret` | Generate a JWT secret |
-| `astonish platform org create` | Provision new organization |
-| `astonish platform org list` | List all organizations |
-| `astonish platform org invite` | Invite user to organization |
-| `astonish platform user list` | List platform users |
-| `astonish platform user show` | Show user details |
-| `astonish platform user disable` | Suspend user access |
-| `astonish platform user enable` | Restore user access |
-| `astonish platform user promote` | Promote to platform admin |
-| `astonish platform user demote` | Demote from platform admin |
-| `astonish platform user set-password` | Reset user password |
-| `astonish platform user delete` | Delete user |
-| `astonish platform issue-token` | Generate API token |
-| `astonish platform sandbox-audit` | Audit sandbox resources |
-| `astonish platform backup create` | Export platform data to a compressed logical backup archive |
-| `astonish platform backup inspect` | Show backup archive metadata |
-| `astonish platform backup verify` | Validate backup archive checksums |
-| `astonish platform restore` | Recover a clean platform installation from a backup archive |
+| `troupe platform init` | Initialize/migrate platform database |
+| `troupe platform status` | Show platform status |
+| `troupe platform gen-secret` | Generate a JWT secret |
+| `troupe platform org create` | Provision new organization |
+| `troupe platform org list` | List all organizations |
+| `troupe platform org invite` | Invite user to organization |
+| `troupe platform user list` | List platform users |
+| `troupe platform user show` | Show user details |
+| `troupe platform user disable` | Suspend user access |
+| `troupe platform user enable` | Restore user access |
+| `troupe platform user promote` | Promote to platform admin |
+| `troupe platform user demote` | Demote from platform admin |
+| `troupe platform user set-password` | Reset user password |
+| `troupe platform user delete` | Delete user |
+| `troupe platform issue-token` | Generate API token |
+| `troupe platform sandbox-audit` | Audit sandbox resources |
+| `troupe platform backup create` | Export platform data to a compressed logical backup archive |
+| `troupe platform backup inspect` | Show backup archive metadata |
+| `troupe platform backup verify` | Validate backup archive checksums |
+| `troupe platform restore` | Recover a clean platform installation from a backup archive |
 
 ## Next Steps
 

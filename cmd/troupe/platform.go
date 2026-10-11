@@ -184,7 +184,7 @@ func handlePlatformInit(args []string) error {
 
 	ctx := context.Background()
 
-	fmt.Println("=== Astonish Platform Init ===")
+	fmt.Println("=== Troupe Platform Init ===")
 	fmt.Println()
 
 	// Connect to the admin database ("postgres") and keep this single connection
@@ -311,7 +311,7 @@ func handlePlatformInit(args []string) error {
 func printPlatformInitUsage() {
 	fmt.Println("usage: troupe platform init --host <host> --password <pass> [options]")
 	fmt.Println("")
-	fmt.Println("Initialize a new Astonish platform database.")
+	fmt.Println("Initialize a new Troupe platform database.")
 	fmt.Println("Creates the database, required roles, and runs all platform migrations.")
 	fmt.Println("")
 	fmt.Println("required:")
@@ -371,7 +371,7 @@ func handlePlatformStatus(args []string) error {
 	}
 	defer es.Close()
 
-	fmt.Println("=== Astonish Platform Status ===")
+	fmt.Println("=== Troupe Platform Status ===")
 	fmt.Println()
 	fmt.Println("Mode: platform (PostgreSQL)")
 	fmt.Println()
@@ -1394,7 +1394,7 @@ func handlePlatformGenSecret() error {
 func printPlatformUsage() {
 	fmt.Println("usage: troupe platform <command> [options]")
 	fmt.Println("")
-	fmt.Println("Manage the Astonish multi-tenant platform.")
+	fmt.Println("Manage the Troupe multi-tenant platform.")
 	fmt.Println("")
 	fmt.Println("commands:")
 	fmt.Println("  init              Initialize the platform database")

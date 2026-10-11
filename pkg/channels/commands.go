@@ -364,7 +364,7 @@ func jobsCommand() *Command {
 func authorizeCommand() *Command {
 	return &Command{
 		Name:        "authorize",
-		Description: "Authorize a device to access Astonish Studio",
+		Description: "Authorize a device to access Troupe Studio",
 		Handler: func(ctx context.Context, cc CommandContext) (string, error) {
 			if cc.AuthorizeFunc == nil {
 				return "Device authorization is not available. Studio auth is only active in daemon mode.", nil

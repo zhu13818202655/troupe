@@ -15,9 +15,9 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/execution"
 )
 
-// ValidateBearer validates an Astonish-issued OAuth access token and maps its
+// ValidateBearer validates an Troupe-issued OAuth access token and maps its
 // claims to the canonical execution principal. It deliberately trusts only the
-// current signing key or active, published Astonish signing keys; it never
+// current signing key or active, published Troupe signing keys; it never
 // fetches or accepts keys from an external identity provider.
 func (s *Server) ValidateBearer(ctx context.Context, bearer, resource string, requiredScopes []string, surface execution.Surface) (execution.Principal, error) {
 	if s == nil || s.store == nil || s.signing == nil {

@@ -1,6 +1,6 @@
 # pkg/api — AGENTS.md
 
-HTTP + SSE surface for Astonish Studio and the platform API. Handlers here are the boundary between the SPA/remote CLI and the rest of the Go runtime.
+HTTP + SSE surface for Troupe Studio and the platform API. Handlers here are the boundary between the SPA/remote CLI and the rest of the Go runtime.
 
 ## Scope
 - REST + SSE handlers under `/api/*` (registered via `api.RegisterRoutes`).
@@ -23,7 +23,7 @@ HTTP + SSE surface for Astonish Studio and the platform API. Handlers here are t
 
 1. The artifact event was emitted in the last turn.
 2. `fileType === "Markdown"`.
-3. `isReport === true`, set only when the agent emitted an `` ```astonish-report `` fence whose `path:` matches the artifact's path.
+3. `isReport === true`, set only when the agent emitted an `` ```troupe-report `` fence whose `path:` matches the artifact's path.
 
 **Do not widen the gate.** The gate exists because non-report edits (touching a stray `.md` while doing a task) must render as compact tiles, not full previews. The regression commits `b5310ae` and `ee2d47d` are the historical warning. Guarded by `TestE2E_Chat_PlainWriteFileNotReport` (CHAT-066) and the system-prompt contract test.
 

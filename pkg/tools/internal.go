@@ -938,7 +938,7 @@ func GetInternalTools() ([]tool.Tool, error) {
 }
 
 func ExecuteTool(ctx context.Context, name string, args map[string]interface{}, caller string) (any, error) {
-	// Set the current caller for cache scoping. Safe because astonish node
+	// Set the current caller for cache scoping. Safe because troupe node
 	// dispatches sequentially (one tool call at a time).
 	currentCaller = caller
 

@@ -36,7 +36,7 @@ func validDoc(t *testing.T) PlanDocumentInfo {
 	return PlanDocumentInfo{
 		Context:      "THE PROBLEM: users cannot X. THE APPROACH: do Y. BOUNDARIES: leave Z alone.",
 		WhatNotToDo:  "Do not change the Backend interface signatures.",
-		Verification: "docker inspect astonish-session-test && go test ./pkg/sandbox/docker/...",
+		Verification: "docker inspect troupe-session-test && go test ./pkg/sandbox/docker/...",
 	}
 }
 
@@ -48,7 +48,7 @@ func TestPathTouchesRunningSurface(t *testing.T) {
 		{"pkg/agent/plan.go", false},
 		{"pkg/sandbox/docker/backend.go", true},
 		{"./pkg/api/run_handler.go", true},
-		{"/Users/x/Projects/astonish/pkg/launcher/chat_factory.go", true},
+		{"/Users/x/Projects/troupe/pkg/launcher/chat_factory.go", true},
 		{"cmd/troupe/sandbox.go", true},
 		{"web/src/App.tsx", true},
 		{"docs/architecture/sandbox.md", false},
@@ -69,7 +69,7 @@ func TestValidateAnnouncedPlan_AcceptsLibraryUnitPhase(t *testing.T) {
 
 func TestValidateAnnouncedPlan_AcceptsBehaviorSlice(t *testing.T) {
 	steps := []PlanStepInfo{
-		validBehaviorStep("create-session", "pkg/sandbox/docker/session.go", "docker inspect astonish-session-test"),
+		validBehaviorStep("create-session", "pkg/sandbox/docker/session.go", "docker inspect troupe-session-test"),
 		validBehaviorStep("delete-incus", "pkg/sandbox/incus_backend.go", "grep -r pkg/sandbox/incus --include='*.go' . | wc -l"),
 	}
 	steps[1].Files = []PlanFileChange{{Path: "pkg/sandbox/incus_backend.go", Kind: "delete"}}
@@ -182,7 +182,7 @@ func TestValidateAnnouncedPlan_RequiresBehaviorPhaseForRunningSurface(t *testing
 	// A running-surface phase proven by a behavior verify is acceptable.
 	ok := []PlanStepInfo{
 		validLibStep("lib"),
-		validBehaviorStep("wire-tui", "pkg/launcher/tui_code.go", "./astonish --version"),
+		validBehaviorStep("wire-tui", "pkg/launcher/tui_code.go", "./troupe --version"),
 	}
 	if msg := ValidateAnnouncedPlan(doc, ok); msg != "" {
 		t.Fatalf("behavior-verified running-surface plan rejected: %s", msg)
@@ -193,7 +193,7 @@ func TestValidateAnnouncedPlan_RequiresBehaviorPhaseForRunningSurface(t *testing
 	bad := []PlanStepInfo{
 		validLibStep("lib"),
 		func() PlanStepInfo {
-			s := validBehaviorStep("wire-tui", "pkg/launcher/tui_code.go", "./astonish --version")
+			s := validBehaviorStep("wire-tui", "pkg/launcher/tui_code.go", "./troupe --version")
 			s.VerifyKind = VerifyKindUnit
 			return s
 		}(),

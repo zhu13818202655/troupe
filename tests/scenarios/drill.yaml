@@ -1,5 +1,5 @@
 # Drill View — E2E Scenario Catalog
-# Real user journeys exercised against a running Astonish platform.
+# Real user journeys exercised against a running Troupe platform.
 # Unit-level UI rendering tests (Vitest) are NOT tracked here.
 #
 # Status: covered | partial | missing

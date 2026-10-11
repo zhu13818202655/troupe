@@ -6,20 +6,20 @@
 > [openshell-sandbox-backend.md](openshell-sandbox-backend.md).
 >
 > Incus is removed. `sandbox.backend: incus` is a legacy alias for `docker`.
-> There is no `astonish-incus` image.
+> There is no `troupe-incus` image.
 
 ## Overview
 
-Astonish executes agent tool calls — file edits, shell commands, code
+Troupe executes agent tool calls — file edits, shell commands, code
 execution, MCP servers — inside isolated Linux containers rather than on the
 host. Local Studio and daemon use the same overlay contract as Kubernetes:
 
-- Session containers named `astonish-session-*` from
-  `ghcr.io/sap/astonish-sandbox-base`
+- Session containers named `troupe-session-*` from
+  `ghcr.io/sap/troupe-sandbox-base`
 - Template layers on the host (`LayersDir`)
 - Live upper in a named Docker volume
 - `fuse-overlayfs` (default) composes `/sandbox/rootfs`
-- Tools and the in-container browser run via `astonish-shell` chroot
+- Tools and the in-container browser run via `troupe-shell` chroot
 
 macOS runs that Docker engine in Colima or Docker Desktop. Linux uses a native
 `dockerd`. Same backend, same CloakBrowser path.
@@ -29,7 +29,7 @@ macOS runs that Docker engine in Colima or Docker Desktop. Linux uses a native
 ### Why Docker OverlayFS
 
 Incus (LXC) was the original local backend. It required a nested Incus daemon
-inside `ghcr.io/sap/astonish-incus` on macOS, and native Incus on Linux. That
+inside `ghcr.io/sap/troupe-incus` on macOS, and native Incus on Linux. That
 split is gone: both OSes create Docker session containers and compose the same
 overlay as the K8s sandbox-base entrypoint.
 
@@ -45,8 +45,8 @@ writable directory on top of a read-only template:
 ```
 Session rootfs = overlayfs(
   lowerdir = [@base :] custom-template layers    (read-only, shared)
-  upperdir = Docker volume astonish-session-*-overlay/upper
-  workdir  = Docker volume astonish-session-*-overlay/work
+  upperdir = Docker volume troupe-session-*-overlay/upper
+  workdir  = Docker volume troupe-session-*-overlay/work
 )
 composed at /sandbox/rootfs
 ```
@@ -59,7 +59,7 @@ composed at /sandbox/rootfs
 
 ### Why a custom NDJSON protocol
 
-Tools execute inside containers via `astonish node` — a headless tool
+Tools execute inside containers via `troupe node` — a headless tool
 execution server that speaks newline-delimited JSON over stdin/stdout.
 
 - **HTTP**: Requires networking and port management.
@@ -74,16 +74,16 @@ execution server that speaks newline-delimited JSON over stdin/stdout.
 ### Container lifecycle
 
 ```
-Template creation (`astonish sandbox init` / Studio Base Sandbox rebuild):
+Template creation (`troupe sandbox init` / Studio Base Sandbox rebuild):
   1. Ensure @base exists as an overlay layer
   2. Run BuildTemplate with ParentLayers: [@base]
   3. Install core tools, optional tools, then browser (CloakBrowser)
   4. Capture the overlay upper as a content-addressed layer
 
 Session creation (per chat session, on first tool call):
-  1. docker run --name astonish-session-* sandbox-base
+  1. docker run --name troupe-session-* sandbox-base
   2. Entrypoint composes overlay at /sandbox/rootfs
-  3. Launch `astonish node` inside the chroot
+  3. Launch `troupe node` inside the chroot
   4. Wait for ready signal over NDJSON
 
 Idle/cleanup:
@@ -106,13 +106,13 @@ mode, Postgres in platform mode).
 
 ### Binary / image refresh
 
-The session runs `ghcr.io/sap/astonish-sandbox-base`. The overlay holds user
+The session runs `ghcr.io/sap/troupe-sandbox-base`. The overlay holds user
 tools. Rebuilding `@base` does not rewrite running session uppers; new
 sessions pick up the new layer chain.
 
 ### Node protocol
 
-The `NodeClient` manages a persistent NDJSON connection to `astonish node`:
+The `NodeClient` manages a persistent NDJSON connection to `troupe node`:
 
 - Sequential dispatch (mutex-protected).
 - Auto-restart if the node process crashes.
@@ -127,7 +127,7 @@ and an idle watchdog.
 ### Cross-platform
 
 ```
-Linux:   Host --> dockerd --> astonish-session-* (overlay at /sandbox/rootfs)
+Linux:   Host --> dockerd --> troupe-session-* (overlay at /sandbox/rootfs)
 macOS:   Host --> Colima / Docker Desktop --> same
 Windows: Same as macOS via Docker Desktop / WSL2
 K8s:     pods + layers PVC (separate backend; same overlay contract)
@@ -146,7 +146,7 @@ MCP servers run inside the overlay via `ContainerMCPTransport`:
 | Setting | Docker OverlayFS | Kubernetes | OpenShell |
 |---|---|---|---|
 | Isolation | Docker container + overlay chroot | Pod + NetworkPolicy | Landlock + seccomp + L7 |
-| Org network | `astonish-org-<slug>` bridge | NetworkPolicy labels | Gateway policy |
+| Org network | `troupe-org-<slug>` bridge | NetworkPolicy labels | Gateway policy |
 | Browser | CloakBrowser in overlay via CDP | Same in-pod | OpenShell browser wire |
 
 On Docker Desktop / Colima the VM is an additional boundary. Nested Docker

@@ -12,15 +12,15 @@
 # failure.
 #
 # Required env:
-#   E2E_K8S_SANDBOX_NS  (default: astonishe2e-sandbox)
-#   E2E_K8S_LAYERS_PVC  (default: astonish-layers)
+#   E2E_K8S_SANDBOX_NS  (default: troupee2e-sandbox)
+#   E2E_K8S_LAYERS_PVC  (default: troupe-layers)
 #
 # Usage:
 #   scripts/verify-e2e-seed.sh
 set -euo pipefail
 
-NS="${E2E_K8S_SANDBOX_NS:-astonishe2e-sandbox}"
-PVC="${E2E_K8S_LAYERS_PVC:-astonish-layers}"
+NS="${E2E_K8S_SANDBOX_NS:-troupee2e-sandbox}"
+PVC="${E2E_K8S_LAYERS_PVC:-troupe-layers}"
 POD_NAME="e2e-seed-verify-$$"
 WAIT_TIMEOUT="${E2E_SEED_VERIFY_TIMEOUT:-90s}"
 

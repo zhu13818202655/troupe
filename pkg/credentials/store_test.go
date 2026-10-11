@@ -262,7 +262,7 @@ func TestStoreKeyRedactionWithHexInSurroundingText(t *testing.T) {
 	hexKey := strings.TrimSpace(string(data))
 
 	// Simulating tool output that includes the key surrounded by other text
-	toolOutput := "$ cat /home/user/.config/astonish/.store_key\n" + hexKey + "\n$"
+	toolOutput := "$ cat /home/user/.config/troupe/.store_key\n" + hexKey + "\n$"
 	redacted := store.Redactor().Redact(toolOutput)
 	if strings.Contains(redacted, hexKey) {
 		t.Errorf("hex key should not appear in redacted output, got:\n%s", redacted)

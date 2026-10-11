@@ -1,6 +1,6 @@
 # Data Hooks
 
-Data hooks connect Generative UI apps to live data sources, AI capabilities, and persistent storage. All hooks are available globally in any generated app — no imports needed (though you can import from `'astonish'` for clarity).
+Data hooks connect Generative UI apps to live data sources, AI capabilities, and persistent storage. All hooks are available globally in any generated app — no imports needed (though you can import from `'troupe'` for clarity).
 
 ## Overview
 
@@ -250,7 +250,7 @@ function SmartInventory() {
 
 ## Security
 
-- All network requests are proxied through the Astonish backend
+- All network requests are proxied through the Troupe backend
 - Credentials referenced via `@credential-name` are resolved server-side
 - The iframe sandbox prevents direct network access (`fetch` is blocked)
 - App code runs in a restricted Content Security Policy

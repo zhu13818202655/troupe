@@ -231,7 +231,7 @@ export default function TemplatesArea({ onNavigate, showToast }: TemplatesAreaPr
   useEffect(() => { load() }, [load])
 
   const notifyUpdated = useCallback(() => {
-    window.dispatchEvent(new CustomEvent('astonish:slides-updated'))
+    window.dispatchEvent(new CustomEvent('troupe:slides-updated'))
   }, [])
 
   const handleDuplicate = useCallback(async (tpl: SlidesTemplate) => {

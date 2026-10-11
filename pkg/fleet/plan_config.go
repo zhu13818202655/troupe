@@ -16,14 +16,14 @@ import (
 // settings like communication channel and artifact destinations.
 //
 // Fleet plans are created through an LLM-guided conversation (/fleet-plan command)
-// and stored as YAML files in ~/.config/astonish/fleet_plans/.
+// and stored as YAML files in ~/.config/troupe/fleet_plans/.
 // They can be launched exactly like regular fleets.
 type FleetPlan struct {
-	Name        string `yaml:"name" json:"name"`
-	Key         string `yaml:"key" json:"key"`
-	Description string `yaml:"description,omitempty" json:"description,omitempty"`
-	CreatedFrom      string `yaml:"created_from,omitempty" json:"created_from,omitempty"`           // base fleet key (informational)
-	SetupProfileKey  string `yaml:"setup_profile,omitempty" json:"setup_profile,omitempty"`         // setup profile used at creation
+	Name            string `yaml:"name" json:"name"`
+	Key             string `yaml:"key" json:"key"`
+	Description     string `yaml:"description,omitempty" json:"description,omitempty"`
+	CreatedFrom     string `yaml:"created_from,omitempty" json:"created_from,omitempty"`   // base fleet key (informational)
+	SetupProfileKey string `yaml:"setup_profile,omitempty" json:"setup_profile,omitempty"` // setup profile used at creation
 
 	// Full fleet config snapshot (agents, communication, settings).
 	// Note: uses yaml:"-" because MarshalYAML/UnmarshalYAML handle serialization
@@ -93,9 +93,9 @@ type FleetPlan struct {
 // alongside FleetPlan fields, avoiding the duplicate 'name'/'description'
 // keys that yaml:",inline" would produce.
 type fleetPlanYAML struct {
-	Name        string `yaml:"name"`
-	Key         string `yaml:"key"`
-	Description string `yaml:"description,omitempty"`
+	Name            string `yaml:"name"`
+	Key             string `yaml:"key"`
+	Description     string `yaml:"description,omitempty"`
 	CreatedFrom     string `yaml:"created_from,omitempty"`
 	SetupProfileKey string `yaml:"setup_profile,omitempty"`
 
@@ -362,7 +362,7 @@ func (p *FleetPlan) ResolveProjectSource() *ProjectSourceConfig {
 //
 //  1. Plan-level WorkspaceBaseDir (set by the user during plan creation)
 //  2. Template-level FleetConfig.WorkspaceBaseDir (defined in the fleet template YAML)
-//  3. Default: ~/astonish_projects
+//  3. Default: ~/troupe_projects
 //
 // The final path is <base_dir>/<project-name>, where project-name comes from
 // the first git_repo artifact's repo field (last segment), or the plan key.
@@ -381,7 +381,7 @@ func (p *FleetPlan) ResolveWorkspaceDir() string {
 		if err != nil {
 			homeDir = "/root"
 		}
-		baseDir = filepath.Join(homeDir, "astonish_projects")
+		baseDir = filepath.Join(homeDir, "troupe_projects")
 	}
 
 	// Expand ~ to home directory

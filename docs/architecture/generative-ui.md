@@ -2,9 +2,9 @@
 
 ## Overview
 
-Generative UI brings in-chat UI generation to Astonish -- the AI writes React components in response to user requests, renders them live in a sandboxed iframe, and supports iterative refinement through conversation. This is similar to what Claude Artifacts, ChatGPT Canvas, and Vercel v0 provide: the user describes a UI ("build me a sales dashboard"), the AI generates a working React component, and it renders immediately in the chat. The user can then refine it ("add a search bar", "make the chart a bar chart") through follow-up messages.
+Generative UI brings in-chat UI generation to Troupe -- the AI writes React components in response to user requests, renders them live in a sandboxed iframe, and supports iterative refinement through conversation. This is similar to what Claude Artifacts, ChatGPT Canvas, and Vercel v0 provide: the user describes a UI ("build me a sales dashboard"), the AI generates a working React component, and it renders immediately in the chat. The user can then refine it ("add a search bar", "make the chart a bar chart") through follow-up messages.
 
-Beyond ephemeral chat previews, generated UIs can be saved as **Apps** -- a new top-level concept alongside Flows, Fleet, and Drill. Saved apps persist as YAML definitions in `~/.config/astonish/apps/`, appear in a dedicated Apps tab in Studio, and can fetch live data through the Go backend proxy (leveraging existing MCP tools and HTTP APIs). Apps can also make AI calls using the same LLM as the main agent. This creates a natural progression: prototype in chat, refine interactively, save as a reusable app, connect to live data, add AI capabilities.
+Beyond ephemeral chat previews, generated UIs can be saved as **Apps** -- a new top-level concept alongside Flows, Fleet, and Drill. Saved apps persist as YAML definitions in `~/.config/troupe/apps/`, appear in a dedicated Apps tab in Studio, and can fetch live data through the Go backend proxy (leveraging existing MCP tools and HTTP APIs). Apps can also make AI calls using the same LLM as the main agent. This creates a natural progression: prototype in chat, refine interactively, save as a reusable app, connect to live data, add AI capabilities.
 
 ## Key Design Decisions
 
@@ -46,14 +46,14 @@ Libraries (React 19, ReactDOM, Sucrase, Recharts, Lucide React) are **pre-bundle
 
 ### Why a New "Apps" Concept Instead of Extending Flows
 
-Flows are YAML-defined node graphs executed by the AstonishAgent state machine. They model sequential processing: input → LLM → tool → conditional → output. Visual apps are fundamentally different:
+Flows are YAML-defined node graphs executed by the TroupeAgent state machine. They model sequential processing: input → LLM → tool → conditional → output. Visual apps are fundamentally different:
 
 - **Flows are backend execution graphs.** Apps are frontend React components.
 - **Flows have nodes and edges.** Apps have JSX source code and data sources.
 - **Flows run once per invocation.** Apps are persistent, interactive UIs.
 - **Flows use `{{variable}}` interpolation.** Apps use React state and hooks.
 
-Forcing apps into the flow schema would require either (a) a special "render JSX" node type that doesn't fit the state machine model, or (b) ignoring most of the flow infrastructure. A separate `~/.config/astonish/apps/` directory with its own YAML schema is cleaner, avoids confusion in the flow listing, and allows app-specific features (data sources, polling intervals, theming) without polluting the flow schema.
+Forcing apps into the flow schema would require either (a) a special "render JSX" node type that doesn't fit the state machine model, or (b) ignoring most of the flow infrastructure. A separate `~/.config/troupe/apps/` directory with its own YAML schema is cleaner, avoids confusion in the flow listing, and allows app-specific features (data sources, polling intervals, theming) without polluting the flow schema.
 
 The Apps tab sits alongside Chat, Flows, Fleet, and Drill in the top navigation, establishing apps as a first-class concept.
 
@@ -68,7 +68,7 @@ Apps need live data -- database queries, API calls, MCP tool invocations. Three 
 Backend proxy was chosen because:
 
 - **Security**: API keys and credentials never reach the iframe. The Go backend resolves credentials from the credential store server-side (via `@credential-name` suffix on sourceId URLs).
-- **MCP integration**: The proxy can invoke any registered MCP tool, giving apps access to databases, GitHub, Slack, and every other MCP server configured in Astonish -- without the iframe needing to know anything about MCP.
+- **MCP integration**: The proxy can invoke any registered MCP tool, giving apps access to databases, GitHub, Slack, and every other MCP server configured in Troupe -- without the iframe needing to know anything about MCP.
 - **CORS elimination**: The Go backend makes server-side HTTP requests, bypassing browser CORS restrictions entirely.
 - **Audit trail**: All data requests go through the backend, providing a single point for logging, rate limiting, and access control.
 - **SSRF / egress**: `http:` sources are fetched via sandbox `Exec` (`curl`) in the per-user App session (`app-mcp-{userID}`), not dialed from the Studio process. Network Policy PreSeed and OpenShell L7 + `cert_bundles` (corp CA / MITM trust) apply the same way as agent tools. Studio only resolves credentials, builds the request, and rejects non-`http(s)` schemes plus hard-blocked IP literals (loopback / link-local / metadata). Soft-private hosts (e.g. corp GHES on `10.x`) are allowed at the Studio gate; sandbox policy enforces allow/deny. Apps HTTP requires a configured sandbox backend. In-chat network grants do not apply to Apps.
@@ -96,13 +96,13 @@ User: "Build me a calculator app"
 ChatAgent: detects UI generation intent
   |
   v
-LLM generates JSX with ```astonish-app fence marker
+LLM generates JSX with ```troupe-app fence marker
   |
   v
 SSE stream: text events contain the fenced code block
   |
   v
-chat_runner.go: detects ```astonish-app, extracts code, emits app_preview SSE event
+chat_runner.go: detects ```troupe-app, extracts code, emits app_preview SSE event
   |
   v
 StudioChat.tsx: receives app_preview event, creates AppPreviewMessage
@@ -201,7 +201,7 @@ The custom module system maps these module names:
 - `'react-dom'`, `'react-dom/client'` → `window.ReactDOM`
 - `'recharts'` → `window.Recharts`
 - `'lucide-react'` → `window.LucideReact`
-- `'astonish'` → `{ useAppData, useAppAction, useAppAI }`
+- `'troupe'` → `{ useAppData, useAppAction, useAppAI }`
 
 The iframe uses `sandbox="allow-scripts allow-same-origin"`:
 - `allow-scripts`: Permits JavaScript execution.
@@ -229,7 +229,7 @@ map[string]any{
 }
 ```
 
-The event is emitted when the backend detects an `astonish-app` fenced code block in the LLM's streaming response. Detection happens in `chat_runner.go`: accumulated text is scanned for the fence markers, and when a complete block is found, the `app_preview` event is sent alongside the text event.
+The event is emitted when the backend detects an `troupe-app` fenced code block in the LLM's streaming response. Detection happens in `chat_runner.go`: accumulated text is scanned for the fence markers, and when a complete block is found, the `app_preview` event is sent alongside the text event.
 
 #### Frontend Message Type
 
@@ -251,7 +251,7 @@ This is added to the `ChatMsg` union in `chatTypes.ts`. In `StudioChat.tsx`, the
 The LLM is instructed (via the system prompt) to wrap generated UI code in a specific fence:
 
 ````
-```astonish-app
+```troupe-app
 import React, { useState } from 'react';
 
 export default function MyComponent() {
@@ -276,14 +276,14 @@ This dual-path approach (code fence in text + explicit SSE event) ensures the pr
 
 The system prompt uses a three-tier architecture:
 
-- **Tier 1 (always present)**: Critical rules embedded in the static system prompt (`system_prompt_builder.go`). Includes the `astonish-app` fence format, available libraries, import patterns, `useAppData`/`useAppAction`/`useAppAI` hook syntax, and the "no fetch()" rule.
+- **Tier 1 (always present)**: Critical rules embedded in the static system prompt (`system_prompt_builder.go`). Includes the `troupe-app` fence format, available libraries, import patterns, `useAppData`/`useAppAction`/`useAppAI` hook syntax, and the "no fetch()" rule.
 - **Tier 2 (vector search)**: Comprehensive guidance stored as a guidance document (`guidance_content.go`) and retrieved via memory search for "generative-ui". Includes full hook documentation, code examples, design system patterns, and refinement instructions.
 
 Key differences from the original design:
 - LLMs use standard ES `import` statements (`import React, { useState } from 'react'`), not global variables. Sucrase's `imports` transform converts these to `require()` calls.
 - Lucide icons are imported from `'lucide-react'`: `import { Search, Plus } from 'lucide-react'`
 - Recharts components are imported from `'recharts'`: `import { BarChart, Bar, XAxis, YAxis } from 'recharts'`
-- Data hooks are imported from `'astonish'`: `import { useAppData, useAppAI } from 'astonish'`
+- Data hooks are imported from `'troupe'`: `import { useAppData, useAppAI } from 'troupe'`
 
 #### Preview UX in Chat
 
@@ -408,7 +408,7 @@ session_id: abc-123-def-456  # originating chat session
 
 code: |
   import React, { useState } from 'react';
-  import { useAppData } from 'astonish';
+  import { useAppData } from 'troupe';
   import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
   export default function SalesDashboard() {
@@ -459,7 +459,7 @@ type DataSource struct {
 }
 ```
 
-Storage location: `~/.config/astonish/apps/{app_name}.yaml`
+Storage location: `~/.config/troupe/apps/{app_name}.yaml`
 
 All CRUD operations (`SaveApp`, `LoadApp`, `DeleteApp`, `ListApps`, `Slugify`) are in `pkg/apps/types.go`.
 
@@ -488,9 +488,9 @@ When the user clicks the "Save" button on the `AppPreviewCard`:
 1. An inline name input bar appears (pre-filled with the auto-detected component title).
 2. The user confirms (Enter or click Save), which sends `__app_save__:<name>` as a chat message.
 3. The backend's `ClassifyAppIntent` detects the save intent, extracting the custom name.
-4. The backend calls `apps.SaveApp()` to write the YAML to `~/.config/astonish/apps/{name}.yaml`.
+4. The backend calls `apps.SaveApp()` to write the YAML to `~/.config/troupe/apps/{name}.yaml`.
 5. An `app_saved` SSE event confirms the save (with `name` and `path`).
-6. A DOM event (`astonish:apps-updated`) refreshes the Apps tab listing.
+6. A DOM event (`troupe:apps-updated`) refreshes the Apps tab listing.
 
 Users can also save via natural language ("save this as Sales Dashboard"), which the LLM intent classifier routes to the save flow.
 
@@ -623,7 +623,7 @@ Messages between the iframe and parent page use a typed protocol:
 
 #### Pre-Injected Hooks
 
-The iframe runtime includes three pre-built hooks that abstract the postMessage protocol. They are available both as globals (`window.useAppData`) and via ES import (`import { useAppData } from 'astonish'`):
+The iframe runtime includes three pre-built hooks that abstract the postMessage protocol. They are available both as globals (`window.useAppData`) and via ES import (`import { useAppData } from 'troupe'`):
 
 **`useAppData(sourceId, options?)`** — Fetch data from a source.
 
@@ -665,7 +665,7 @@ const summary = await askAI('Summarize this data', { context: tableData });
 // summary is a string
 ```
 
-The AI hook uses a 2-minute timeout (vs 30s for data hooks, and 30s by default for action hooks — configurable via `{ timeout }`) since LLM calls can take longer. The backend handler (`POST /api/apps/ai`) uses the same LLM model configured for the main Astonish agent via `ChatManager`.
+The AI hook uses a 2-minute timeout (vs 30s for data hooks, and 30s by default for action hooks — configurable via `{ timeout }`) since LLM calls can take longer. The backend handler (`POST /api/apps/ai`) uses the same LLM model configured for the main Troupe agent via `ChatManager`.
 
 #### Polling and Streaming
 
@@ -687,7 +687,7 @@ For saved apps with server-side polling, the backend provides an SSE endpoint at
 
 #### App Export
 
-*Not yet implemented.* Planned: export as standalone HTML (single file with embedded runtime) or YAML definition (for sharing between Astonish instances).
+*Not yet implemented.* Planned: export as standalone HTML (single file with embedded runtime) or YAML definition (for sharing between Troupe instances).
 
 #### Multi-View Apps
 
@@ -744,7 +744,7 @@ The Apps tab includes a built-in CodeMirror editor for viewing and editing app s
 | `pkg/mcp/invoke.go` | MCP tool invocation helper used by the data proxy |
 | `web/src/components/chat/AppPreview.tsx` | Sandboxed iframe component: postMessage relay for data/action/AI requests, polling management, theme sync |
 | `web/src/components/chat/AppPreviewCard.tsx` | Chat message card: toolbar (fullscreen, code, save with name dialog), version navigation |
-| `web/src/components/chat/AppCodeIndicator.tsx` | Compact collapsed indicator for `astonish-app` code blocks in chat |
+| `web/src/components/chat/AppCodeIndicator.tsx` | Compact collapsed indicator for `troupe-app` code blocks in chat |
 | `web/src/components/AppsView.tsx` | Apps tab: list view, runner view with deep-linking (`#/apps/AppName`) |
 | `web/src/components/CodeDrawer.tsx` | Bottom panel code editor with CodeMirror JSX syntax highlighting |
 | `web/src/api/apps.ts` | API client: `fetchApps`, `fetchApp`, `saveApp`, `deleteApp`, `fetchAppData`, `fetchAppAction`, `fetchAppAI`, `connectAppStream` |
@@ -754,10 +754,10 @@ The Apps tab includes a built-in CodeMirror editor for viewing and editing app s
 
 - **Agent Engine**: The ChatAgent detects UI generation intent via the system prompt and guidance documents. The active app context is tracked per-session for refinement. When an active app exists, `ClassifyAppIntent()` uses an LLM call to determine whether the user wants to refine, save, or do something unrelated. The current source code is injected into the system prompt for refinement turns.
 - **Sessions**: App previews are persisted in the session JSONL transcript using prefix markers (`[app_preview]`), following the same pattern as distill previews. Session reload reconstructs app preview messages and version history. Session titles get a provisional value from the first user message immediately (before the agent turn), then a best-effort LLM refine may emit a second `session_title` before the SSE stream closes.
-- **MCP**: The data proxy endpoint invokes MCP tools via `mcp.InvokeTool()`. Any MCP server configured in Astonish is available as a data source for apps via the `mcp:<server>/<tool>` sourceId convention, providing access to databases, APIs, and external services.
+- **MCP**: The data proxy endpoint invokes MCP tools via `mcp.InvokeTool()`. Any MCP server configured in Troupe is available as a data source for apps via the `mcp:<server>/<tool>` sourceId convention, providing access to databases, APIs, and external services.
 - **A2A**: Apps can communicate with remote agents via the A2A protocol using the `a2a:<agentName>` sourceId convention. The backend loads agent configuration from the 3-tier platform cascade (platform → org → team), resolves credentials, fetches the agent card, and sends messages. This enables apps to orchestrate multi-agent workflows with external AI services.
-- **Credentials**: Data sources use the `@credential-name` suffix convention on sourceId URLs. The backend resolves credentials from the Astonish credential store (`pkg/credentials/store.go`) via `store.Resolve(name)`, which returns an auth header key/value pair. Credentials support API keys, Bearer tokens, Basic auth, and OAuth (client_credentials and authorization_code with auto-refresh). Credentials never reach the iframe.
-- **AI**: Apps can make one-shot LLM calls via the `useAppAI` hook. The backend handler (`POST /api/apps/ai`) uses the same model as the main Astonish agent (resolved via `ChatManager`). Calls are non-streaming with a 2-minute timeout. The LLM has no tool access -- apps should fetch data separately via `useAppData` and pass it as context.
+- **Credentials**: Data sources use the `@credential-name` suffix convention on sourceId URLs. The backend resolves credentials from the Troupe credential store (`pkg/credentials/store.go`) via `store.Resolve(name)`, which returns an auth header key/value pair. Credentials support API keys, Bearer tokens, Basic auth, and OAuth (client_credentials and authorization_code with auto-refresh). Credentials never reach the iframe.
+- **AI**: Apps can make one-shot LLM calls via the `useAppAI` hook. The backend handler (`POST /api/apps/ai`) uses the same model as the main Troupe agent (resolved via `ChatManager`). Calls are non-streaming with a 2-minute timeout. The LLM has no tool access -- apps should fetch data separately via `useAppData` and pass it as context.
 - **API & Studio**: REST endpoints for app CRUD and data/action/AI proxy. The Apps tab is a new top-level view in the Studio UI. The `TopBar` component has an "Apps" navigation item. Deep-linking via URL hash (`#/apps/AppName`) preserves app selection across page refreshes.
 - **Flows**: Apps and flows are independent concepts with separate storage and schemas. However, a flow could invoke an app (display it to the user) via a future `show_app` output node type, and an app could trigger a flow via the action system.
 - **Sandbox**: The iframe sandbox is browser-native (not Incus). However, data sources that invoke MCP tools may execute within sandbox containers if the MCP server runs in a container (via the existing `ContainerMCPTransport`).

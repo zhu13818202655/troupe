@@ -1,6 +1,6 @@
-# Contributing to Astonish
+# Contributing to Troupe
 
-Thank you for your interest in contributing to Astonish! This document provides the information you need to get started.
+Thank you for your interest in contributing to Troupe! This document provides the information you need to get started.
 
 ## Development Setup
 
@@ -16,7 +16,7 @@ Thank you for your interest in contributing to Astonish! This document provides 
 ```bash
 # Clone the repository
 git clone https://github.com/zhu13818202655/troupe.git
-cd astonish
+cd troupe
 
 # Build everything (UI + Go binary) — also installs git hooks
 make build-all
@@ -41,7 +41,7 @@ make lint                    # config verify + full lint (same as CI)
 # Run the CLI
 go run .
 
-# Run Astonish (production mode — serves built Studio UI)
+# Run Troupe (production mode — serves built Studio UI)
 make daemon
 
 # Run in dev mode (live UI reload on http://localhost:5173)
@@ -54,7 +54,7 @@ See [AGENTS.md](AGENTS.md) for a detailed breakdown. Key directories:
 
 | Directory | Description |
 |-----------|-------------|
-| `cmd/astonish/` | CLI entry points |
+| `cmd/troupe/` | CLI entry points |
 | `pkg/agent/` | Agent execution logic |
 | `pkg/api/` | HTTP handlers (REST API) |
 | `pkg/config/` | YAML config loading |

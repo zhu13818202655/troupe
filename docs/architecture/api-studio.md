@@ -2,7 +2,7 @@
 
 ## Overview
 
-Astonish provides a comprehensive REST API (51 files in `pkg/api/`) that powers the Studio web UI -- a React-based visual interface for chat, flow editing, fleet management, drill execution, settings, and more. The API uses Server-Sent Events (SSE) for real-time chat streaming and standard JSON REST endpoints for CRUD operations.
+Troupe provides a comprehensive REST API (51 files in `pkg/api/`) that powers the Studio web UI -- a React-based visual interface for chat, flow editing, fleet management, drill execution, settings, and more. The API uses Server-Sent Events (SSE) for real-time chat streaming and standard JSON REST endpoints for CRUD operations.
 
 ## Key Design Decisions
 
@@ -18,7 +18,7 @@ The SSE stream delivers multiple event types: text chunks (partial and complete)
 
 ### Why a Single-Binary Server
 
-The API server is embedded in the Astonish binary and served by the daemon. The React UI is built and embedded via Go's `embed` package. This means:
+The API server is embedded in the Troupe binary and served by the daemon. The React UI is built and embedded via Go's `embed` package. This means:
 
 - **Single deployment**: No separate frontend server, no CORS issues, no reverse proxy needed.
 - **Dev mode**: `make daemon-dev` runs the Vite dev server on port 5173 with hot reload, proxied to the Go API.
@@ -111,9 +111,9 @@ The Studio UI is built with React 19, Vite 7, and Tailwind CSS 4. Key components
 
 MCP tools are cached with background refresh to avoid slow MCP server queries on every request. The cache is warmed at startup and refreshed periodically.
 
-### API container image (`docker/astonish`)
+### API container image (`docker/troupe`)
 
-The published `ghcr.io/sap/astonish` image is the Studio/daemon runtime (not a sandbox). CI and Makefile host-cross-compile `astonish-linux-{amd64,arm64}` and only `COPY` the binary into the image.
+The published `ghcr.io/sap/troupe` image is the Studio/daemon runtime (not a sandbox). CI and Makefile host-cross-compile `troupe-linux-{amd64,arm64}` and only `COPY` the binary into the image.
 
 Runtime tools needed for **host-side** stdio MCP (`npx` / `uvx` when no sandbox is wired) are layered as prebuilt multi-arch artifacts rather than `apt install nodejs npm` + `pip install uv`:
 
@@ -121,7 +121,7 @@ Runtime tools needed for **host-side** stdio MCP (`npx` / `uvx` when no sandbox 
 - `uv` / `uvx` from `ghcr.io/astral-sh/uv` (pinned version in the Dockerfile)
 - Minimal apt: `ca-certificates`, `git`
 
-This avoids installing Node under QEMU on GitHub Actions multi-arch `linux/arm64` builds (the previous dominant cost in beta image jobs). Deps layers stay stable across code-only rebuilds; only the binary `COPY` invalidates. CI also uses a registry build cache at `ghcr.io/sap/astonish:buildcache`.
+This avoids installing Node under QEMU on GitHub Actions multi-arch `linux/arm64` builds (the previous dominant cost in beta image jobs). Deps layers stay stable across code-only rebuilds; only the binary `COPY` invalidates. CI also uses a registry build cache at `ghcr.io/sap/troupe:buildcache`.
 
 ## Key Files
 
@@ -156,5 +156,5 @@ This avoids installing Node under QEMU on GitHub Actions multi-arch `linux/arm64
 
 The unpacked Chrome extension (`extension/`) is another client of existing Studio APIs. It does not add routes.
 
-- OAuth Authorization Code + PKCE flow via `/oauth/authorize` and `/oauth/token` — the extension uses the built-in `astonish-chrome-extension` public client with a `chrome-extension://` redirect URI. Cookies (`astonish_access`) cannot be sent from `chrome-extension://`.
+- OAuth Authorization Code + PKCE flow via `/oauth/authorize` and `/oauth/token` — the extension uses the built-in `troupe-chrome-extension` public client with a `chrome-extension://` redirect URI. Cookies (`troupe_access`) cannot be sent from `chrome-extension://`.
 - `POST /api/studio/chat` SSE with `Authorization: Bearer` and optional `systemContext` (current page URL/title/body). See `docs/architecture/chrome-extension.md`.

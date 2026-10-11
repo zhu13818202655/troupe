@@ -11,13 +11,13 @@ import (
 // correctly deserializes the optional appName field.
 func TestStudioChatRequestDeserialization(t *testing.T) {
 	t.Run("with appName", func(t *testing.T) {
-		input := `{"message":"hello","appName":"astonish-extension"}`
+		input := `{"message":"hello","appName":"troupe-extension"}`
 		var req StudioChatRequest
 		if err := json.Unmarshal([]byte(input), &req); err != nil {
 			t.Fatalf("unmarshal: %v", err)
 		}
-		if req.AppName != "astonish-extension" {
-			t.Errorf("got AppName=%q, want %q", req.AppName, "astonish-extension")
+		if req.AppName != "troupe-extension" {
+			t.Errorf("got AppName=%q, want %q", req.AppName, "troupe-extension")
 		}
 		if req.Message != "hello" {
 			t.Errorf("got Message=%q, want %q", req.Message, "hello")
@@ -56,9 +56,9 @@ func TestStudioChatRequestDeserialization(t *testing.T) {
 // This prevents namespace squatting, path traversal, and unbounded key lengths.
 func TestValidAppName(t *testing.T) {
 	valid := []string{
-		"astonish",
-		"astonish-extension",
-		"astonish_code",
+		"troupe",
+		"troupe-extension",
+		"troupe_code",
 		"a",
 		"my-app",
 		"fleet-scheduler",
@@ -72,13 +72,13 @@ func TestValidAppName(t *testing.T) {
 	invalid := []string{
 		"",                       // empty
 		"../../../etc",           // path traversal
-		"Astonish",              // uppercase
-		"astonish extension",    // space
-		"-leading-dash",         // leading dash
-		"a;DROP TABLE sessions", // SQL injection attempt
-		"a/b",                   // path separator
-		"a\\b",                  // backslash
-		"a$b",                   // shell metachar
+		"Troupe",                 // uppercase
+		"troupe extension",       // space
+		"-leading-dash",          // leading dash
+		"a;DROP TABLE sessions",  // SQL injection attempt
+		"a/b",                    // path separator
+		"a\\b",                   // backslash
+		"a$b",                    // shell metachar
 		string(make([]byte, 65)), // too long (65 chars)
 	}
 	for _, name := range invalid {
@@ -93,13 +93,13 @@ func TestValidAppName(t *testing.T) {
 // StudioDeleteSessionHandler. This tests the actual resolution + validation
 // code path, not a separate closure.
 func TestAppNameQueryParamDefaulting(t *testing.T) {
-	// resolveAndValidate mimics the exact three-line pattern in every handler:
-	//   appName := r.URL.Query().Get("app")
+	// resolveAndValidate mimics the exact four-line pattern in every handler:
+	//   appName := normalizeAppName(r.URL.Query().Get("app"))
 	//   if appName == "" { appName = studioChatAppName }
 	//   if !validAppName.MatchString(appName) → error
 	resolveAndValidate := func(rawURL string) (string, bool) {
 		r := httptest.NewRequest(http.MethodGet, rawURL, nil)
-		appName := r.URL.Query().Get("app")
+		appName := normalizeAppName(r.URL.Query().Get("app"))
 		if appName == "" {
 			appName = studioChatAppName
 		}
@@ -107,15 +107,18 @@ func TestAppNameQueryParamDefaulting(t *testing.T) {
 	}
 
 	cases := []struct {
-		url     string
-		want    string
-		wantOK  bool
+		url    string
+		want   string
+		wantOK bool
 	}{
 		{"/api/studio/sessions", studioChatAppName, true},
 		{"/api/studio/sessions?app=", studioChatAppName, true},
-		{"/api/studio/sessions?app=astonish-extension", "astonish-extension", true},
+		{"/api/studio/sessions?app=troupe-extension", "troupe-extension", true},
+		{"/api/studio/sessions?app=troupe", studioChatAppName, true},
+		// Pre-rebrand app names are normalised to their current values.
 		{"/api/studio/sessions?app=astonish", studioChatAppName, true},
-		{"/api/studio/sessions?app=astonish_code", "astonish_code", true},
+		{"/api/studio/sessions?app=astonish-extension", "troupe-extension", true},
+		{"/api/studio/sessions?app=troupe_code", "troupe_code", true},
 		{"/api/studio/sessions?app=../../etc", "../../etc", false},
 		{"/api/studio/sessions?app=A", "A", false},
 		{"/api/studio/sessions?app=hello%20world", "hello world", false},
@@ -152,9 +155,9 @@ func TestEffectiveAppResolution(t *testing.T) {
 	}{
 		{"no AppName → default", StudioChatRequest{Message: "hi"}, studioChatAppName, true},
 		{"empty AppName → default", StudioChatRequest{Message: "hi", AppName: ""}, studioChatAppName, true},
-		{"extension AppName", StudioChatRequest{Message: "hi", AppName: "astonish-extension"}, "astonish-extension", true},
+		{"extension AppName", StudioChatRequest{Message: "hi", AppName: "troupe-extension"}, "troupe-extension", true},
 		{"traversal attempt rejected", StudioChatRequest{Message: "hi", AppName: "../../../etc"}, "../../../etc", false},
-		{"uppercase rejected", StudioChatRequest{Message: "hi", AppName: "Astonish"}, "Astonish", false},
+		{"uppercase rejected", StudioChatRequest{Message: "hi", AppName: "Troupe"}, "Troupe", false},
 		{"valid custom namespace", StudioChatRequest{Message: "hi", AppName: "my-namespace"}, "my-namespace", true},
 	}
 

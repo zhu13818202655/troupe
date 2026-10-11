@@ -2,7 +2,7 @@
 
 ## Overview
 
-Astonish manages authentication credentials (API keys, bearer tokens, passwords, OAuth flows, OpenStack Keystone) with a core design principle: **the LLM provider must never see raw secret values**. Credentials are stored encrypted at rest, referenced by placeholder tokens in conversation history, and substituted with real values only at the moment of tool execution.
+Troupe manages authentication credentials (API keys, bearer tokens, passwords, OAuth flows, OpenStack Keystone) with a core design principle: **the LLM provider must never see raw secret values**. Credentials are stored encrypted at rest, referenced by placeholder tokens in conversation history, and substituted with real values only at the moment of tool execution.
 
 This architecture has three layers of defense:
 
@@ -38,7 +38,7 @@ When users need to provide a new password or API key in chat, they can't use `{{
 
 ### Why AES-256-GCM Encryption
 
-Credentials are encrypted at rest using AES-256-GCM (authenticated encryption). The encryption key is auto-generated on first use and stored in `~/.config/astonish/.store_key` (hex-encoded). This provides:
+Credentials are encrypted at rest using AES-256-GCM (authenticated encryption). The encryption key is auto-generated on first use and stored in `~/.config/troupe/.store_key` (hex-encoded). This provides:
 
 - Confidentiality: Even if the credential file is copied, it can't be read without the key.
 - Integrity: GCM's authentication tag detects tampering.
@@ -183,7 +183,7 @@ Headless paths diverge by design:
 | **Team scheduled job** | Team only |
 | Fleet / unowned headless automation | Team only |
 
-Do **not** publish a personal OAuth/API credential to the team just to schedule automation — create a personal-scope job or invoke Astonish through a linked user channel instead. Publish to team only for shared service credentials used by team jobs, fleet, or other members. See `docs/architecture/daemon-scheduler.md` ("Why Dual-Scope Jobs").
+Do **not** publish a personal OAuth/API credential to the team just to schedule automation — create a personal-scope job or invoke Troupe through a linked user channel instead. Publish to team only for shared service credentials used by team jobs, fleet, or other members. See `docs/architecture/daemon-scheduler.md` ("Why Dual-Scope Jobs").
 
 ## Key Files
 
@@ -201,7 +201,7 @@ Do **not** publish a personal OAuth/API credential to the team just to schedule 
 
 ## Interactions
 
-- **Agent Engine**: BeforeToolCallback/AfterToolCallback in ChatAgent and AstonishAgent handle placeholder substitution and restoration.
+- **Agent Engine**: BeforeToolCallback/AfterToolCallback in ChatAgent and TroupeAgent handle placeholder substitution and restoration.
 - **Sessions**: Session persistence redacts credential values. RedactSession() handles retroactive cleanup.
 - **Tools**: `resolve_credential` returns placeholders. `http_request` accepts credential names and resolves internally. `save_credential` triggers retroactive redaction.
 - **API/SSE**: The SSE streaming handler applies Redactor to all text events before sending to the browser.

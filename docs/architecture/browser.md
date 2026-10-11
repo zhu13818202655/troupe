@@ -2,7 +2,7 @@
 
 ## Overview
 
-Astonish includes a comprehensive browser automation system built on Chrome DevTools Protocol (CDP) via the go-rod library. It provides the AI agent with the ability to navigate websites, fill forms, take screenshots, read page content, and interact with web applications -- all while employing extensive anti-detection measures to avoid being blocked as a bot.
+Troupe includes a comprehensive browser automation system built on Chrome DevTools Protocol (CDP) via the go-rod library. It provides the AI agent with the ability to navigate websites, fill forms, take screenshots, read page content, and interact with web applications -- all while employing extensive anti-detection measures to avoid being blocked as a bot.
 
 In sandboxed Studio chat, fleet, and drill sessions the browser runs **inside the session container** (CloakBrowser + KasmVNC + socat CDP bridge). CloakBrowser is a patched Chromium binary at `/home/browser/.cloakbrowser/*/chrome`. It is **not** the Debian `chromium` / `chromium-browser` / `google-chrome` package and is **not** on `PATH`. `which chromium` staying empty is expected and is not proof the overlay is unmounted. Agents must call `browser_navigate` to prove the capability. The host process drives go-rod over CDP; it does not launch host Chrome for sandboxed work. Host Chrome is only used for non-sandbox local runs.
 
@@ -10,7 +10,7 @@ In sandboxed Studio chat, fleet, and drill sessions the browser runs **inside th
 
 ### Why Headed Mode with Xvfb
 
-Most browser automation tools default to headless Chrome. Astonish defaults to **headed mode** running on a virtual display (Xvfb) on Linux servers. This was chosen because:
+Most browser automation tools default to headless Chrome. Troupe defaults to **headed mode** running on a virtual display (Xvfb) on Linux servers. This was chosen because:
 
 - **Better fingerprint**: Headless Chrome has detectable differences in WebGL rendering, plugin enumeration, and various JavaScript APIs. Headed Chrome with a virtual display is indistinguishable from a real user's browser.
 - **Fallback**: If Xvfb is unavailable, the system falls back to headless mode.
@@ -18,7 +18,7 @@ Most browser automation tools default to headless Chrome. Astonish defaults to *
 
 ### Why Multi-Layer Anti-Detection
 
-Web bot detection has become increasingly sophisticated. Astonish employs multiple layers of stealth:
+Web bot detection has become increasingly sophisticated. Troupe employs multiple layers of stealth:
 
 1. **go-rod/stealth JS evasions**: Injected via `EvalOnNewDocument` before any page scripts run. Patches `navigator.webdriver`, `navigator.plugins`, `chrome.runtime`, and other commonly checked properties.
 
@@ -76,7 +76,7 @@ Manager.GetOrLaunch():
   2. If none: launch Chrome
      - Try Xvfb display (Linux) or real display
      - Apply stealth flags (disable automation, set UA)
-     - Persistent user data dir (~/.config/astonish/browser/)
+     - Persistent user data dir (~/.config/troupe/browser/)
   3. Return browser instance
     |
     v
@@ -133,7 +133,7 @@ Invariants:
 - When resize is locked, KasmVNC uses `desktop.resolution` (package default **1024×768**). That yaml must be rewritten at VNC start to the configured viewport (default **1920×1080**), matching `-geometry`. Leaving only `-AcceptSetDesktopSize 0` without a matching resolution freezes sessions at 1024×768.
 - Launch geometry stays at the configured viewport: KasmVNC `-geometry`, yaml `desktop.resolution`, Chrome `--window-size`, and CDP `SetViewport` should match. `browser_resize` only changes CDP metrics. The KasmVNC web UI may show a smaller client canvas (e.g. ~960×540 under HiDPI scaling); `xdpyinfo` / recording probe is authoritative.
 - Only one recording at a time; `Cleanup` / reconnect finalize an orphan recording.
-- Sandbox recordings write to `/tmp/astonish-recordings/*.mp4` (downloadable via sandbox PullFile). Local recordings write under `recordings/`.
+- Sandbox recordings write to `/tmp/troupe-recordings/*.mp4` (downloadable via sandbox PullFile). Local recordings write under `recordings/`.
 - Local Linux requires `ffmpeg` + `xdpyinfo` (`x11-utils`) (+ Xvfb when headed without a physical display). Sandboxes install `ffmpeg` as a core tool (`CoreToolInstallCommands`); `x11-utils` comes with the browser stack.
 
 ### Tutorial recording polish

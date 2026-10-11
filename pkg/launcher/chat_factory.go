@@ -51,8 +51,8 @@ type ChatFactoryConfig struct {
 	// ahead of the configured filesystem cascade.
 	PlatformMode bool
 
-	// CodeMode indicates the local, single-user Astonish Code runtime (the
-	// `astonish code` TUI). It is mutually exclusive with PlatformMode.
+	// CodeMode indicates the local, single-user Troupe Code runtime (the
+	// `troupe code` TUI). It is mutually exclusive with PlatformMode.
 	//
 	// MCP servers are treated as first-class in Code mode: every configured
 	// MCP server's tools are injected directly onto the main thread (as
@@ -85,7 +85,7 @@ type ChatFactoryConfig struct {
 
 	// LoadProjectContext enables AGENTS.md discovery: when true, the factory
 	// walks upward from WorkspaceDir loading AGENTS.md (fallback CLAUDE.md) plus
-	// the global ~/.config/astonish/AGENTS.md, and injects the merged content
+	// the global ~/.config/troupe/AGENTS.md, and injects the merged content
 	// into the system prompt (see agent.LoadProjectContext). Used by code mode;
 	// platform mode uses per-team DB instructions instead.
 	LoadProjectContext bool
@@ -472,7 +472,7 @@ func newWiredChatAgent(ctx context.Context, cfg *ChatFactoryConfig) (*ChatFactor
 
 	// Credential tools → deferred category.
 	// Credentials require a platform vault (PG-backed or file-backed store) that
-	// is never present in Astonish Code mode, so all credential tools are no-ops
+	// is never present in Troupe Code mode, so all credential tools are no-ops
 	// there. Suppress them entirely so they are not advertised to the agent.
 	var credToolsSlice []tool.Tool
 	if !cfg.CodeMode {
@@ -509,7 +509,7 @@ func newWiredChatAgent(ctx context.Context, cfg *ChatFactoryConfig) (*ChatFactor
 	// Create memory tools → core category.
 	// Memory tools require a PG-backed store injected at request time by
 	// TenantMiddleware / ChatRunner.InjectMemoryStores. That injection never
-	// happens in Astonish Code mode (there is no platform context), so all
+	// happens in Troupe Code mode (there is no platform context), so all
 	// three tools are no-ops there and must not be registered — the agent
 	// would waste turns calling them only to receive "not available" responses.
 	if !cfg.CodeMode {
@@ -529,7 +529,7 @@ func newWiredChatAgent(ctx context.Context, cfg *ChatFactoryConfig) (*ChatFactor
 
 	// --- 2d. Initialize scheduler tools → deferred category ---
 	// Scheduler tools require a running scheduler daemon (platform service).
-	// They are not available in Astonish Code mode.
+	// They are not available in Troupe Code mode.
 	var schedToolsSlice []tool.Tool
 	if !cfg.CodeMode {
 		schedTools, schedErr := tools.GetSchedulerTools()
@@ -559,7 +559,7 @@ func newWiredChatAgent(ctx context.Context, cfg *ChatFactoryConfig) (*ChatFactor
 
 	// --- 2d-ii. Initialize distill_flow tool → deferred category ---
 	// Flow distillation is a platform service (requires LLM + flow registry).
-	// It is not available in Astonish Code mode.
+	// It is not available in Troupe Code mode.
 	var distillToolsSlice []tool.Tool
 	if !cfg.CodeMode {
 		distillTools, distillErr := tools.GetDistillTools()
@@ -783,7 +783,7 @@ func newWiredChatAgent(ctx context.Context, cfg *ChatFactoryConfig) (*ChatFactor
 				}
 			}
 
-			// Standalone (personal / Astonish Code) mode: if there is still no
+			// Standalone (personal / Troupe Code) mode: if there is still no
 			// cache, discover tools eagerly by starting the server on the host.
 			// This makes config-file MCP servers usable without a running daemon
 			// and without any manual "refresh" step. Discovery results are
@@ -795,7 +795,7 @@ func newWiredChatAgent(ctx context.Context, cfg *ChatFactoryConfig) (*ChatFactor
 			}
 
 			// Filter out excluded tools for standard servers (e.g., tavily_research
-			// is expensive and redundant with Astonish's delegation-based approach).
+			// is expensive and redundant with Troupe's delegation-based approach).
 			if excluded := config.GetExcludedTools(name); excluded != nil {
 				filtered := make([]cache.ToolEntry, 0, len(cachedTools))
 				for _, t := range cachedTools {
@@ -849,7 +849,7 @@ func newWiredChatAgent(ctx context.Context, cfg *ChatFactoryConfig) (*ChatFactor
 
 	// --- 3b. Initialize sandbox (session container isolation) ---
 	// When sandbox is enabled, all internal tools are wrapped with NodeTool
-	// proxies that route execution to an astonish node inside an Incus
+	// proxies that route execution to an troupe node inside an Incus
 	// container. Container creation is lazy — the first tool call triggers
 	// cloning from the template and starting the node process.
 	var sandboxNodePool *sandbox.NodeClientPool      // hoisted for leftover Incus-only tools
@@ -909,7 +909,7 @@ func newWiredChatAgent(ctx context.Context, cfg *ChatFactoryConfig) (*ChatFactor
 
 			b, backendCleanup, berr := sandbox.BackendFromAppConfigWithSessions(cfg.AppConfig, sessRegistry)
 			if berr != nil {
-				return nil, fmt.Errorf("sandbox is enabled but the %s backend is not available: %w\n\nTo disable sandbox, set 'sandbox.enabled: false' in ~/.config/astonish/config.yaml", kind, berr)
+				return nil, fmt.Errorf("sandbox is enabled but the %s backend is not available: %w\n\nTo disable sandbox, set 'sandbox.enabled: false' in ~/.config/troupe/config.yaml", kind, berr)
 			}
 
 			tplRegistry, tplErr := sandbox.NewTemplateRegistry()
@@ -1211,7 +1211,7 @@ func newWiredChatAgent(ctx context.Context, cfg *ChatFactoryConfig) (*ChatFactor
 	if len(slideToolsSlice) > 0 {
 		toolGroups["slides"] = &agent.ToolGroup{
 			Name:        "slides",
-			Description: "Create, read, write, list, and validate Astonish slide decks",
+			Description: "Create, read, write, list, and validate Troupe slide decks",
 			Tools:       slideToolsSlice,
 		}
 	}
@@ -1830,7 +1830,7 @@ func newWiredChatAgent(ctx context.Context, cfg *ChatFactoryConfig) (*ChatFactor
 			}
 		}
 
-		subAgentMgr.AppName = "astonish"
+		subAgentMgr.AppName = "troupe"
 		// Use SystemUserID as the fallback for child sessions.
 		// The per-request user ID from context (store.UserIDFromContext) takes
 		// precedence in sub_agent.go — this is only the factory-time default.
@@ -1962,7 +1962,7 @@ func newWiredChatAgent(ctx context.Context, cfg *ChatFactoryConfig) (*ChatFactor
 			}
 		}
 		// Wire sub-agent authorization gate for code-mode HITL.
-		// When the parent ChatAgent enforces authorization (astonish code, non-yolo),
+		// When the parent ChatAgent enforces authorization (troupe code, non-yolo),
 		// sub-agents must surface tool/folder authorization requests to the parent.
 		if chatAgent.EnforceAuthorization && !chatAgent.AutoApprove {
 			subAgentMgr.GetAuthPolicy = chatAgent.GetOrCreateAuthPolicy
@@ -2415,7 +2415,7 @@ func storeMCPServerToConfig(s *store.MCPServer) config.MCPServerConfig {
 
 // discoverAndCacheHostMCPTools starts an MCP server on the host, lists its
 // tools, and persists them to the file-based tools cache. It is used in
-// standalone (personal / Astonish Code) mode so config-file MCP servers are
+// standalone (personal / Troupe Code) mode so config-file MCP servers are
 // usable immediately, without a running daemon and without a manual refresh.
 //
 // Returns the discovered tools (also written to the cache), or nil on failure.

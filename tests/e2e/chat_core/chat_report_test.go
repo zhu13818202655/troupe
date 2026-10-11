@@ -16,7 +16,7 @@ import (
 
 // TestE2E_Chat_ReportArtifact verifies the report pipeline:
 //   - The agent writes a markdown file via write_file
-//   - The agent emits an ```astonish-report``` fence pointing at that file
+//   - The agent emits an ```troupe-report``` fence pointing at that file
 //   - An "artifact" SSE event is emitted with {path, tool_name}
 //   - A "report_marker" SSE event is emitted with {path, title}
 //   - GET /api/studio/sessions/{id} returns the artifact in artifacts[] with
@@ -35,7 +35,7 @@ func TestE2E_Chat_ReportArtifact(t *testing.T) {
 	h := e2eboot.Bootstrap(t)
 
 	// User-realistic prompt: ask for a report. The system prompt teaches
-	// the LLM the two-step contract (write_file + astonish-report fence).
+	// the LLM the two-step contract (write_file + troupe-report fence).
 	// We do NOT spell out the contract in the user message — if the LLM
 	// can't follow the system prompt for a plain "write me a report"
 	// request, the system prompt is the bug. The test resiliently skips
@@ -72,7 +72,7 @@ func TestE2E_Chat_ReportArtifact(t *testing.T) {
 			t.Fatal("sandbox infrastructure broken: write_file was called " +
 				"but every tool_result reports a sandbox/k8s scheduling " +
 				"failure. This is not a CHAT-033 regression — fix the " +
-				"cluster (kubectl get pods -n astonishe2e-sandbox).")
+				"cluster (kubectl get pods -n troupee2e-sandbox).")
 		case e2eboot.ToolSucceeded:
 			t.Fatal("write_file succeeded but no 'artifact' SSE event emitted — CHAT-033 regression")
 		}
@@ -108,17 +108,17 @@ func TestE2E_Chat_ReportArtifact(t *testing.T) {
 				Text string `json:"text"`
 			}
 			e2eboot.DecodeEventData(t, &ev, &td)
-			if strings.Contains(td.Text, "astonish-report") {
+			if strings.Contains(td.Text, "troupe-report") {
 				fenceSeen = true
 				break
 			}
 		}
 		if fenceSeen {
-			t.Fatal("agent emitted astonish-report fence in text but no " +
+			t.Fatal("agent emitted troupe-report fence in text but no " +
 				"report_marker SSE event was emitted — CHAT-067 regression " +
 				"in detectAndEmitReportMarkers")
 		}
-		t.Skip("LLM did not emit astonish-report fence — cannot test report marker pipeline")
+		t.Skip("LLM did not emit troupe-report fence — cannot test report marker pipeline")
 	}
 
 	var sseMarker struct {
@@ -177,7 +177,7 @@ func TestE2E_Chat_ReportArtifact(t *testing.T) {
 		t.Fatal("sandbox infrastructure broken: write_file was called " +
 			"but every tool_result reports a sandbox/k8s scheduling " +
 			"failure. This is not a CHAT-034/035 regression — fix the " +
-			"cluster (kubectl get pods -n astonishe2e-sandbox).")
+			"cluster (kubectl get pods -n troupee2e-sandbox).")
 	case e2eboot.ToolNotCalled:
 		// Should not happen here — we already verified an artifact event
 		// arrived above, which implies write_file was called. Treat
@@ -240,7 +240,7 @@ func TestE2E_Chat_ReportArtifact(t *testing.T) {
 
 // TestE2E_Chat_PlainWriteFileNotReport verifies the negative path of the
 // report gate: when the agent writes a non-markdown file (or any file
-// without an astonish-report fence), the artifact must NOT be flagged as
+// without an troupe-report fence), the artifact must NOT be flagged as
 // a report. This pins down the regression surface in the b5310ae loosening
 // — without this test, a future "any last-turn artifact embeds" mistake
 // would silently slip through.
@@ -250,11 +250,11 @@ func TestE2E_Chat_PlainWriteFileNotReport(t *testing.T) {
 	h := e2eboot.Bootstrap(t)
 
 	// Tell the agent to write a non-report file (a working script). We
-	// deliberately do NOT mention astonish-report so the LLM has no reason
+	// deliberately do NOT mention troupe-report so the LLM has no reason
 	// to emit the fence.
 	body := map[string]any{
 		"message": `Write a small Python script (under 10 lines) that prints "hello world" to /tmp/e2e-script-test.py using the write_file tool.
-This is a quick utility — just write the file and confirm. Do NOT use any astonish-report fence — this is a script, not a report.`,
+This is a quick utility — just write the file and confirm. Do NOT use any troupe-report fence — this is a script, not a report.`,
 		"autoApprove": true,
 	}
 	events := h.SSE(t, "/api/studio/chat", body, 120*time.Second)
@@ -300,17 +300,17 @@ This is a quick utility — just write the file and confirm. Do NOT use any asto
 				Text string `json:"text"`
 			}
 			e2eboot.DecodeEventData(t, &ev, &td)
-			if strings.Contains(td.Text, "astonish-report") {
+			if strings.Contains(td.Text, "troupe-report") {
 				fenceSeen = true
 				break
 			}
 		}
 		if !fenceSeen {
 			t.Fatal("backend emitted report_marker SSE event but agent text " +
-				"contained no astonish-report fence — false-positive marker " +
+				"contained no troupe-report fence — false-positive marker " +
 				"detection in detectAndEmitReportMarkers (CHAT-066 regression)")
 		}
-		t.Skip("LLM emitted an astonish-report fence anyway despite the prompt — cannot exercise CHAT-066 negative path this run")
+		t.Skip("LLM emitted an troupe-report fence anyway despite the prompt — cannot exercise CHAT-066 negative path this run")
 	}
 
 	// Wait for session to persist
@@ -345,7 +345,7 @@ This is a quick utility — just write the file and confirm. Do NOT use any asto
 
 // TestE2E_Chat_MarkdownWithMarkerIsReport is the symmetric positive
 // counterpart of CHAT-066: a markdown file written with an explicit
-// astonish-report fence MUST flip IsReport to true. Together with
+// troupe-report fence MUST flip IsReport to true. Together with
 // CHAT-066 these two tests pin the gate's behavior on both sides
 // without relying on the LLM happening to produce the right output.
 //
@@ -354,7 +354,7 @@ func TestE2E_Chat_MarkdownWithMarkerIsReport(t *testing.T) {
 	h := e2eboot.Bootstrap(t)
 
 	body := map[string]any{
-		"message":     "Write a 2-line report about TypeScript. Save it to /tmp/e2e-ts-summary.md using write_file, then emit an astonish-report fence with that path. Both steps are required.",
+		"message":     "Write a 2-line report about TypeScript. Save it to /tmp/e2e-ts-summary.md using write_file, then emit an troupe-report fence with that path. Both steps are required.",
 		"autoApprove": true,
 	}
 	events := h.SSE(t, "/api/studio/chat", body, 120*time.Second)
@@ -384,7 +384,7 @@ func TestE2E_Chat_MarkdownWithMarkerIsReport(t *testing.T) {
 
 	reportMarkerEvents := e2eboot.FindAllEvents(events, "report_marker")
 	if len(reportMarkerEvents) == 0 {
-		t.Skip("LLM did not emit astonish-report fence — cannot exercise CHAT-068 positive path this run")
+		t.Skip("LLM did not emit troupe-report fence — cannot exercise CHAT-068 positive path this run")
 	}
 
 	var marker struct {
@@ -472,7 +472,7 @@ func TestE2E_Chat_CrossUserArtifactDenied(t *testing.T) {
 			t.Fatal("sandbox infrastructure broken: alice's write_file was " +
 				"called but every tool_result reports a sandbox/k8s " +
 				"scheduling failure. CHAT-039 cannot be exercised — fix " +
-				"the cluster (kubectl get pods -n astonishe2e-sandbox).")
+				"the cluster (kubectl get pods -n troupee2e-sandbox).")
 		case e2eboot.ToolNotCalled, e2eboot.ToolSucceeded:
 			t.Skip("LLM did not produce an artifact — cannot test cross-user denial")
 		}

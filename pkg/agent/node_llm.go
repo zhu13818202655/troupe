@@ -58,7 +58,7 @@ func (b *callbackEventBuffer) drain() []*session.Event {
 }
 
 // executeLLMNode executes an LLM node with intelligent retry logic
-func (a *AstonishAgent) executeLLMNode(ctx agent.InvocationContext, node *config.Node, nodeName string, state session.State, yield func(*session.Event, error) bool) bool {
+func (a *TroupeAgent) executeLLMNode(ctx agent.InvocationContext, node *config.Node, nodeName string, state session.State, yield func(*session.Event, error) bool) bool {
 	// Clear any previous error state at the start
 	state.Set("_has_error", false)
 	state.Set("_last_error", "")
@@ -353,7 +353,7 @@ func (a *AstonishAgent) executeLLMNode(ctx agent.InvocationContext, node *config
 }
 
 // executeLLMNodeAttempt executes a single attempt of an LLM node using ADK's llmagent
-func (a *AstonishAgent) executeLLMNodeAttempt(ctx agent.InvocationContext, node *config.Node, nodeName string, state session.State, yield func(*session.Event, error) bool) (bool, error) {
+func (a *TroupeAgent) executeLLMNodeAttempt(ctx agent.InvocationContext, node *config.Node, nodeName string, state session.State, yield func(*session.Event, error) bool) (bool, error) {
 	// Apply per-node timeout to prevent indefinite hangs on stalled LLM calls.
 	// The timeout covers the entire attempt (LLM call + tool calls + processing).
 	// 10 minutes allows research-heavy tasks (e.g., browser automation with many
@@ -441,7 +441,7 @@ func (a *AstonishAgent) executeLLMNodeAttempt(ctx agent.InvocationContext, node 
 			if sess.ID() != "" {
 				appName := sess.AppName()
 				if appName == "" {
-					appName = "astonish"
+					appName = "troupe"
 				}
 				userID := sess.UserID()
 				if userID == "" {

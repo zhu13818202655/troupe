@@ -1355,42 +1355,42 @@ func handleFlowsRunRemote(args []string) error {
 					}
 				}
 
-		case "done":
-			// Turn complete
+			case "done":
+				// Turn complete
 
-		case "debug":
-			if debugMode {
-				var payload struct {
-					Type   string `json:"type"`
-					Tool   string `json:"tool"`
-					Args   string `json:"args"`
-					Result string `json:"result"`
-					// init fields
-					Provider string `json:"provider"`
-					Model    string `json:"model"`
-					Agent    string `json:"agent"`
-					Tools    int    `json:"tools"`
-				}
-				if jsonErr := parseJSON(event.Data, &payload); jsonErr == nil {
-					stopSpinner(false, false)
-					switch payload.Type {
-					case "init":
-						fmt.Fprintf(os.Stderr, "%s[debug] init: provider=%s model=%s agent=%s tools=%d%s\n",
-							launcher.ColorGray, payload.Provider, payload.Model, payload.Agent, payload.Tools, launcher.ColorReset)
-					case "tool_call":
-						fmt.Fprintf(os.Stderr, "%s[debug] tool_call: %s %s%s\n",
-							launcher.ColorGray, payload.Tool, payload.Args, launcher.ColorReset)
-					case "tool_response":
-						fmt.Fprintf(os.Stderr, "%s[debug] tool_response: %s %s%s\n",
-							launcher.ColorGray, payload.Tool, payload.Result, launcher.ColorReset)
-					default:
-						fmt.Fprintf(os.Stderr, "%s[debug] %s%s\n",
-							launcher.ColorGray, event.Data, launcher.ColorReset)
+			case "debug":
+				if debugMode {
+					var payload struct {
+						Type   string `json:"type"`
+						Tool   string `json:"tool"`
+						Args   string `json:"args"`
+						Result string `json:"result"`
+						// init fields
+						Provider string `json:"provider"`
+						Model    string `json:"model"`
+						Agent    string `json:"agent"`
+						Tools    int    `json:"tools"`
 					}
-					lineHasContent = false
+					if jsonErr := parseJSON(event.Data, &payload); jsonErr == nil {
+						stopSpinner(false, false)
+						switch payload.Type {
+						case "init":
+							fmt.Fprintf(os.Stderr, "%s[debug] init: provider=%s model=%s agent=%s tools=%d%s\n",
+								launcher.ColorGray, payload.Provider, payload.Model, payload.Agent, payload.Tools, launcher.ColorReset)
+						case "tool_call":
+							fmt.Fprintf(os.Stderr, "%s[debug] tool_call: %s %s%s\n",
+								launcher.ColorGray, payload.Tool, payload.Args, launcher.ColorReset)
+						case "tool_response":
+							fmt.Fprintf(os.Stderr, "%s[debug] tool_response: %s %s%s\n",
+								launcher.ColorGray, payload.Tool, payload.Result, launcher.ColorReset)
+						default:
+							fmt.Fprintf(os.Stderr, "%s[debug] %s%s\n",
+								launcher.ColorGray, event.Data, launcher.ColorReset)
+						}
+						lineHasContent = false
+					}
 				}
 			}
-		}
 		}
 		stream.Close()
 

@@ -106,7 +106,7 @@ func (b *Builder) ImageTag(spec BuildSpec) string {
 func ImageRef(registryURL, scope, combinedBody string) string {
 	h := sha256.Sum256([]byte(combinedBody))
 	tag := hex.EncodeToString(h[:])[:12]
-	return fmt.Sprintf("%s/astonish-sandbox-%s:%s", registryURL, sanitizeDNS(scope), tag)
+	return fmt.Sprintf("%s/troupe-sandbox-%s:%s", registryURL, sanitizeDNS(scope), tag)
 }
 
 // ContentHash returns the deterministic hash for a combined Dockerfile body.
@@ -127,7 +127,7 @@ func JobName(scope, combinedBody string) string {
 	h := sha256.Sum256([]byte(combinedBody))
 	hash := hex.EncodeToString(h[:])[:8]
 	// K8s names must be <= 63 chars, DNS-safe.
-	name := fmt.Sprintf("astonish-build-%s-%s", sanitizeDNS(scope), hash)
+	name := fmt.Sprintf("troupe-build-%s-%s", sanitizeDNS(scope), hash)
 	if len(name) > 63 {
 		name = name[:63]
 	}
@@ -138,7 +138,7 @@ func JobName(scope, combinedBody string) string {
 func ConfigMapName(scope, combinedBody string) string {
 	h := sha256.Sum256([]byte(combinedBody))
 	hash := hex.EncodeToString(h[:])[:8]
-	name := fmt.Sprintf("astonish-build-df-%s-%s", sanitizeDNS(scope), hash)
+	name := fmt.Sprintf("troupe-build-df-%s-%s", sanitizeDNS(scope), hash)
 	if len(name) > 63 {
 		name = name[:63]
 	}

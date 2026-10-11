@@ -1,6 +1,6 @@
 # AI Providers
 
-Astonish supports 12 AI providers out of the box. Providers are managed through Studio Settings and stored in the database, with API keys secured in the encrypted credential store.
+Troupe supports 12 AI providers out of the box. Providers are managed through Studio Settings and stored in the database, with API keys secured in the encrypted credential store.
 
 ## Supported Providers
 
@@ -29,7 +29,7 @@ The primary way to manage providers is through **Studio Settings → Providers**
 
 ## Cascade Resolution
 
-Astonish resolves provider **configuration** (API keys, endpoints, available providers) through the admin cascade, then applies personal and per-resource model overrides:
+Troupe resolves provider **configuration** (API keys, endpoints, available providers) through the admin cascade, then applies personal and per-resource model overrides:
 
 ```
 Platform (base) → Organization → Team → User default → Session / App pin
@@ -45,7 +45,7 @@ Platform (base) → Organization → Team → User default → Session / App pin
 
 ### How Resolution Works
 
-When a user sends a message, Astonish resolves which provider and model to use by applying layers in order:
+When a user sends a message, Troupe resolves which provider and model to use by applying layers in order:
 
 1. **Start with Platform settings** — Base defaults available to everyone.
 2. **Apply Organization settings** — Non-empty org values override platform.
@@ -95,7 +95,7 @@ API keys are stored securely — at the platform level they go into a separate e
 For initial configuration, the setup wizard walks you through provider setup interactively:
 
 ```bash
-astonish setup
+troupe setup
 ```
 
 This saves the provider to both the platform database and the local credential store.
@@ -196,7 +196,7 @@ Beyond Settings defaults, Studio lets you pin a model for a single conversation 
 |---------|-------|----------|
 | **Chat session** | Chat toolbar **Model** control | Pin before the first message or change mid-session. Persists for that session only. |
 | **App** | Apps → open an app → **Model** control next to the title | Pin which LLM that app uses when run or refined with AI. |
-| **CLI** | `astonish chat -p … -m …` | Pins onto a new session by default (see [Chat Commands](../cli/chat.md)). |
+| **CLI** | `troupe chat -p … -m …` | Pins onto a new session by default (see [Chat Commands](../cli/chat.md)). |
 
 Full resolution order for chat:
 

@@ -8,7 +8,7 @@ import (
 
 var ErrDocsNotFound = errors.New("docs content not found")
 
-// DeckManifest is the storage representation of an Astonish Slides deck.
+// DeckManifest is the storage representation of an Troupe Slides deck.
 type DeckManifest struct {
 	ID            string            `json:"id"`
 	Slug          string            `json:"slug"`

@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/gorilla/mux"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // --- Credential API types ---

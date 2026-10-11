@@ -9,7 +9,7 @@ import (
 )
 
 // placeholderLLM is a stand-in model.LLM used when an agent is constructed
-// before any provider/model has been configured (for example, `astonish code`
+// before any provider/model has been configured (for example, `troupe code`
 // launched on a fresh machine). It never talks to a real provider: any attempt
 // to generate content yields a helpful error instructing the user to configure
 // a model. It is meant to be swapped out via SwappableLLM.Swap once the user

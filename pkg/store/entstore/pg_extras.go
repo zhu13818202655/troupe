@@ -167,7 +167,7 @@ $$ LANGUAGE plpgsql`,
 
 	// --- Seed data: base layer + template ---
 	`INSERT INTO sandbox_layers (layer_id, parent_layer, cephfs_path, size_bytes, ref_count)
-	 VALUES ('@base', NULL, '/mnt/astonish-layers/@base', 0, 1)
+	 VALUES ('@base', NULL, '/mnt/troupe-layers/@base', 0, 1)
 	 ON CONFLICT (layer_id) DO NOTHING`,
 
 	`INSERT INTO sandbox_templates (id, slug, scope, owner_id, purpose, name, description, parent_template_id, top_layer_id, version)

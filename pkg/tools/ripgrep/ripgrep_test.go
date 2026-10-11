@@ -12,8 +12,11 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 	"testing"
+
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 // makeArchive builds a gzip tarball containing "<asset>/rg" with the given
@@ -155,12 +158,24 @@ func TestResolvePath_PrefersSystemRg(t *testing.T) {
 }
 
 func TestCacheDir_HonorsXDG(t *testing.T) {
-	t.Setenv("XDG_CONFIG_HOME", "/tmp/astonish-rg-xdg")
+	xdg := t.TempDir()
+	t.Setenv("XDG_CONFIG_HOME", xdg)
+
 	dir, err := CacheDir()
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := filepath.Join("/tmp/astonish-rg-xdg", "astonish", "bin")
+	// The cache must live under the caller's XDG root, not a hard-coded path.
+	if !strings.HasPrefix(dir, xdg+string(filepath.Separator)) {
+		t.Fatalf("CacheDir() = %q, want a path under XDG_CONFIG_HOME %q", dir, xdg)
+	}
+	// It must resolve through the shared config-dir helper so the cache cannot
+	// drift away from the rest of the application state.
+	cfgDir, err := config.GetConfigDir()
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := filepath.Join(cfgDir, "bin")
 	if dir != want {
 		t.Fatalf("CacheDir() = %q, want %q", dir, want)
 	}

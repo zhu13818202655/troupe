@@ -11,7 +11,7 @@ import (
 
 // ChatChannel implements Channel using an in-memory message list with
 // a condition variable for blocking reads. This is the "chat" channel type
-// for fleet sessions where the communication happens in the Astonish UI.
+// for fleet sessions where the communication happens in the Troupe UI.
 //
 // Human messages are posted by the API handler when the user sends a message.
 // Agent messages are posted by the session manager after agent activation.

@@ -33,7 +33,7 @@ func TestE2E_SandboxLayerChain(t *testing.T) {
 	// In shared/inspector mode (TROUPE_E2E_KEEP_ALIVE=1) this test is
 	// incompatible with the rest of the suite because it mutates global
 	// sandbox_templates rows ("base", "team-general") in the platform DB
-	// and the global astonish-layers PVC. Skip cleanly so the developer
+	// and the global troupe-layers PVC. Skip cleanly so the developer
 	// can still browse all the chat data; run this test in isolated mode.
 	if os.Getenv("TROUPE_E2E_KEEP_ALIVE") == "1" {
 		t.Skip("SandboxLayerChain mutates global sandbox state; run with `make test-e2e` (isolated mode) instead.")
@@ -304,7 +304,7 @@ func requireSandboxInfra(t *testing.T) {
 	}
 
 	// Check that required PVCs exist
-	for _, pvc := range []string{"astonish-layers", "astonish-uppers"} {
+	for _, pvc := range []string{"troupe-layers", "troupe-uppers"} {
 		out, err = exec.Command("kubectl", "get", "pvc", "-n", ns, pvc, "-o", "jsonpath={.metadata.name}").Output()
 		if err != nil || strings.TrimSpace(string(out)) != pvc {
 			t.Skipf("PVC %q not found in namespace %q — skipping sandbox layer-chain test", pvc, ns)

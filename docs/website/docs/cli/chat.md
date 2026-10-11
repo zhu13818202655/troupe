@@ -1,14 +1,14 @@
 # Chat Commands
 
-The `astonish chat` command starts an interactive agent session from the terminal.
+The `troupe chat` command starts an interactive agent session from the terminal.
 
 ## Usage
 
 ```bash
-astonish chat [flags]
+troupe chat [flags]
 ```
 
-Running `astonish chat` with no arguments starts a new interactive session using your default provider and model.
+Running `troupe chat` with no arguments starts a new interactive session using your default provider and model.
 
 ## Flags
 
@@ -27,48 +27,48 @@ Running `astonish chat` with no arguments starts a new interactive session using
 
 ```bash
 # Start a new chat with defaults
-astonish chat
+troupe chat
 
 # Chat with a specific provider and model (pins onto the session)
-astonish chat -p openai -m gpt-4o
+troupe chat -p openai -m gpt-4o
 
 # Same as above but ephemeral — model is NOT pinned
-astonish chat -p openai -m gpt-4o --no-pin
+troupe chat -p openai -m gpt-4o --no-pin
 
 # Resume the most recent session
-astonish chat -r
+troupe chat -r
 
 # Resume a specific session
-astonish chat -r abc123
+troupe chat -r abc123
 
 # Resume with a one-time model override (does NOT rewrite the existing pin)
-astonish chat --resume abc123 -m claude-sonnet-4
+troupe chat --resume abc123 -m claude-sonnet-4
 
 # Clear the model pin on a resumed session (falls back to cascade default)
-astonish chat --resume abc123 --clear-model
+troupe chat --resume abc123 --clear-model
 
 # Auto-approve all tool calls
-astonish chat --auto-approve
+troupe chat --auto-approve
 ```
 
 ## Subcommands
 
-### `astonish chat model <provider>:<model>`
+### `troupe chat model <provider>:<model>`
 
 Change or clear the model pin on the most recent session (or a specific session with `--session`).
 
 ```bash
 # Pin the last session to openai/gpt-4o
-astonish chat model openai:gpt-4o
+troupe chat model openai:gpt-4o
 
 # Clear the pin (restore cascade default)
-astonish chat model ""
+troupe chat model ""
 
 # Pin a specific session
-astonish chat model anthropic:claude-sonnet-4 --session abc123
+troupe chat model anthropic:claude-sonnet-4 --session abc123
 ```
 
-The argument uses a first-colon split, so model names containing colons (e.g., `openai:gpt-4o:2024-08-06`) are handled correctly. Both sides must be present; use an empty string (`astonish chat model ""`) only when clearing the pin.
+The argument uses a first-colon split, so model names containing colons (e.g., `openai:gpt-4o:2024-08-06`) are handled correctly. Both sides must be present; use an empty string (`troupe chat model ""`) only when clearing the pin.
 
 ## Model Pin Behavior
 
@@ -84,7 +84,7 @@ The terminal footer shows the active provider and the resolved concrete model wh
 
 Pasting up to three lines inserts the text directly into the composer. A paste becomes `[Pasted: N lines]` only when that paste itself has four or more lines — existing composer lines do not count, so pasting one line at a time never collapses. The full pasted content is restored when you press `Enter`. The placeholder is atomic: arrow keys jump over it, you cannot type inside it, and Backspace / `Ctrl+W` / `Alt+Backspace` remove the whole block at once.
 
-Pasting an image from the clipboard inserts `[image #1]` (then `#2`, `#3`, …). Image placeholders are also atomic tokens. When you press `Enter`, Astonish sends the images to the platform as chat attachments so multimodal models can see them, while the chat history keeps the `[image #N]` markers.
+Pasting an image from the clipboard inserts `[image #1]` (then `#2`, `#3`, …). Image placeholders are also atomic tokens. When you press `Enter`, Troupe sends the images to the platform as chat attachments so multimodal models can see them, while the chat history keeps the `[image #N]` markers.
 
 On Linux, image paste requires `wl-paste` (Wayland) or `xclip` (X11) on `PATH`. On macOS, the system pasteboard is used directly.
 
@@ -113,6 +113,6 @@ While in an active chat session, type `/` to access these commands:
 
 ## Network authorization prompts
 
-When a sandboxed command tries to reach a network endpoint that is not yet allowed by policy, the terminal shows a focused network authorization prompt. Press `Enter` or `y` to allow the specific endpoint, `b` to allow the suggested broader pattern when one is shown, or `n`/`Esc` to deny. The prompt closes immediately after your key press and the terminal shows progress while Astonish records the decision and, for approvals, asks the agent to retry the blocked command.
+When a sandboxed command tries to reach a network endpoint that is not yet allowed by policy, the terminal shows a focused network authorization prompt. Press `Enter` or `y` to allow the specific endpoint, `b` to allow the suggested broader pattern when one is shown, or `n`/`Esc` to deny. The prompt closes immediately after your key press and the terminal shows progress while Troupe records the decision and, for approvals, asks the agent to retry the blocked command.
 
 Type `exit` or `quit` to end the session.

@@ -506,19 +506,19 @@ func TestDecodeExitError(t *testing.T) {
 
 func TestWrapCommand(t *testing.T) {
 	cases := []struct {
-		name    string
-		cmd     []string
-		workDir string
-		env     map[string]string
-		wantLen int
-		mustHas []string
+		name     string
+		cmd      []string
+		workDir  string
+		env      map[string]string
+		wantLen  int
+		mustHas  []string
 		verbatim bool
 	}{
 		{
-			name:    "verbatim when no workdir and no env",
-			cmd:     []string{"echo", "hi"},
+			name:     "verbatim when no workdir and no env",
+			cmd:      []string{"echo", "hi"},
 			verbatim: true,
-			wantLen: 2,
+			wantLen:  2,
 		},
 		{
 			name:    "workdir only",

@@ -29,10 +29,10 @@ type StyleGuide struct {
 
 // TypeLevel represents one level in the typography hierarchy.
 type TypeLevel struct {
-	Role     string `json:"role"`           // h1, h2, h3, body, caption, label, eyebrow
-	FontSize int    `json:"fontSize"`       // logical px on 1920x1080 canvas
-	Weight   string `json:"weight"`         // normal, 500, 600, 700, 800
-	Font     string `json:"font"`           // font family (display or body)
+	Role     string `json:"role"`            // h1, h2, h3, body, caption, label, eyebrow
+	FontSize int    `json:"fontSize"`        // logical px on 1920x1080 canvas
+	Weight   string `json:"weight"`          // normal, 500, 600, 700, 800
+	Font     string `json:"font"`            // font family (display or body)
 	Color    string `json:"color,omitempty"` // typical color for this level
 	Usage    string `json:"usage,omitempty"` // when to use this level
 }

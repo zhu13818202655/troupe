@@ -179,7 +179,7 @@ func (pm *ProcessManager) Start(command, workDir string, rows, cols uint16) (*Pr
 	// EDITOR/VISUAL=true prevents commands that spawn a text editor (commit messages,
 	// interactive configs, etc.) from hanging — the agent cannot operate a text editor.
 	// TERM=xterm-256color ensures consistent terminal behavior regardless of how
-	// Astonish is launched.
+	// Troupe is launched.
 	//
 	// The command still runs in a real PTY, so genuinely interactive programs
 	// (REPLs, ssh, y/n prompts, TUIs) keep working and can be driven via the

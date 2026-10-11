@@ -20,19 +20,51 @@ type Provider struct {
 	*openai_provider.Provider
 }
 
+// NormalizeBaseURL canonicalizes a user-supplied OpenAI-compatible base URL to
+// the ".../v1" form the go-openai client expects.
+//
+// It is defensive on purpose: the previous suffix-only check turned
+// "http://host:8000/v1/" into "http://host:8000/v1/v1" (a 404 that is very hard
+// to diagnose) and appended "/v1" to full endpoint paths. Both are common when
+// operators copy a URL straight out of vLLM / LMDeploy / llama.cpp output.
+func NormalizeBaseURL(raw string) string {
+	baseURL := strings.TrimSpace(raw)
+	if baseURL == "" {
+		return ""
+	}
+	// Trailing slashes first: "http://h:8000/v1/" must not become "/v1/v1".
+	baseURL = strings.TrimRight(baseURL, "/")
+	// Already canonical.
+	if strings.HasSuffix(baseURL, "/v1") {
+		return baseURL
+	}
+	// Someone pasted a full endpoint path — strip back to the API root.
+	for _, suffix := range []string{"/chat/completions", "/models", "/embeddings"} {
+		if strings.HasSuffix(baseURL, suffix) {
+			baseURL = baseURL[:len(baseURL)-len(suffix)]
+			break
+		}
+	}
+	baseURL = strings.TrimRight(baseURL, "/")
+	if strings.HasSuffix(baseURL, "/v1") {
+		return baseURL
+	}
+	return baseURL + "/v1"
+}
+
 // NewProvider creates a new OpenAI Compatible provider.
-func NewProvider(apiKey, baseURL, modelName string, debug bool) model.LLM {
+//
+// maxTokens caps the per-request `max_completion_tokens`. Use 0 or a negative
+// value to omit the field entirely. Self-hosted stacks (vLLM, LMDeploy,
+// llama.cpp) reject requests whose max_completion_tokens exceeds their
+// max_model_len with HTTP 400, so a fixed 64000 is unusable for most local
+// models; see the max_output_tokens provider key in pkg/provider/factory.go.
+func NewProvider(apiKey, baseURL, modelName string, maxTokens int, debug bool) model.LLM {
 	config := openai.DefaultConfig(apiKey)
 
 	// Ensure baseURL has /v1 suffix
+	baseURL = NormalizeBaseURL(baseURL)
 	if baseURL != "" {
-		if !strings.HasSuffix(baseURL, "/v1") {
-			if strings.HasSuffix(baseURL, "/") {
-				baseURL = baseURL + "v1"
-			} else {
-				baseURL = baseURL + "/v1"
-			}
-		}
 		config.BaseURL = baseURL
 	}
 
@@ -45,7 +77,7 @@ func NewProvider(apiKey, baseURL, modelName string, debug bool) model.LLM {
 	client := openai.NewClientWithConfig(config)
 
 	return &Provider{
-		Provider: openai_provider.NewProviderWithMaxTokens(client, modelName, true, 64000),
+		Provider: openai_provider.NewProviderWithMaxTokens(client, modelName, true, maxTokens),
 	}
 }
 
@@ -63,14 +95,8 @@ func (p *Provider) GenerateContent(ctx context.Context, req *model.LLMRequest, s
 func ListModels(ctx context.Context, apiKey, baseURL string) ([]string, error) {
 	config := openai.DefaultConfig(apiKey)
 
+	baseURL = NormalizeBaseURL(baseURL)
 	if baseURL != "" {
-		if !strings.HasSuffix(baseURL, "/v1") {
-			if strings.HasSuffix(baseURL, "/") {
-				baseURL = baseURL + "v1"
-			} else {
-				baseURL = baseURL + "/v1"
-			}
-		}
 		config.BaseURL = baseURL
 	}
 

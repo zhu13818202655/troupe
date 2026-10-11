@@ -20,10 +20,10 @@ try {
   // centering — is identical to the HTML/PDF exports.
   pptx.defineLayout({ name: 'TROUPE_CANVAS', width: 1920 / 160, height: 1080 / 160 })
   pptx.layout = 'TROUPE_CANVAS'
-  pptx.author = scene.author || 'Astonish'
+  pptx.author = scene.author || 'Troupe'
   pptx.subject = scene.subject || ''
   pptx.title = scene.title || ''
-  pptx.company = 'Astonish'
+  pptx.company = 'Troupe'
   pptx.lang = 'en-US'
   // fontFace values flow into <a:latin typeface="..."> verbatim (pptxgenjs does
   // not escape the attribute). CSS font-family stacks — especially those pulled

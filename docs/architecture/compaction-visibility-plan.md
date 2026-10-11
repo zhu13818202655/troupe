@@ -67,7 +67,7 @@ So the spinner just says `Thinking…` while the compaction LLM call blocks, and
 2. **Honesty about memory:** after compaction, leave a **persistent, unobtrusive transcript marker** (e.g. a muted system line: `Context compacted — summarized N earlier messages (~before → ~after tokens). Older detail is condensed.`) so "it forgot" is explained as an intentional, visible step, not a bug.
 3. **Header truth:** the context figure should visibly drop right after compaction, reinforcing that memory was reclaimed on purpose.
 4. **Mode-agnostic:** the same event should flow through the local backend and the Studio SSE path so both the terminal and Studio Chat benefit. The event model is already shared, so we add one `Kind`.
-5. **No new invariants broken:** keep the `astonish-report` gate, tenant boundaries, and the "never delete a transcript entry" rule untouched. This is additive UI signalling only.
+5. **No new invariants broken:** keep the `troupe-report` gate, tenant boundaries, and the "never delete a transcript entry" rule untouched. This is additive UI signalling only.
 
 ## 5. Proposed approach
 
@@ -178,4 +178,4 @@ Visibility fixes the UX perception. To actually reduce how often the model "forg
 2. After compaction, a persistent, muted transcript line explains what happened, including a token before→after figure.
 3. The header context figure visibly drops right after compaction.
 4. With `OnCompaction` unset, behavior is byte-for-byte identical to today (regression guard test).
-5. Studio Chat shows an equivalent inline notice (parity), without touching the `astonish-report` gate or tenant boundaries.
+5. Studio Chat shows an equivalent inline notice (parity), without touching the `troupe-report` gate or tenant boundaries.

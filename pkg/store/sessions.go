@@ -80,7 +80,7 @@ type SessionMeta struct {
 // SessionStore manages chat sessions and their events.
 //
 // It embeds the ADK session.Service interface for compatibility with the
-// ADK runner, and adds Astonish-specific operations for session metadata,
+// ADK runner, and adds Troupe-specific operations for session metadata,
 // transcripts, and lifecycle management.
 type SessionStore interface {
 	// ADK session.Service — required for the ADK runner.

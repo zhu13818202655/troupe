@@ -15,13 +15,16 @@ import (
 func writeAppConfigFile(t *testing.T, yamlBody string) {
 	t.Helper()
 	tmpDir := t.TempDir()
-	var configDir string
 	if runtime.GOOS == "darwin" {
-		configDir = filepath.Join(tmpDir, "Library", "Application Support", "astonish")
 		t.Setenv("HOME", tmpDir)
 	} else {
-		configDir = filepath.Join(tmpDir, "astonish")
 		t.Setenv("XDG_CONFIG_HOME", tmpDir)
+	}
+	// Resolve the directory rather than hard-coding its name, so the fixture
+	// exercises the normal path instead of relying on the legacy-dir fallback.
+	configDir, err := config.GetConfigDir()
+	if err != nil {
+		t.Fatalf("GetConfigDir: %v", err)
 	}
 	if err := os.MkdirAll(configDir, 0o755); err != nil {
 		t.Fatalf("mkdir config dir: %v", err)

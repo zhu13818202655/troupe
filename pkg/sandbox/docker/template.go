@@ -48,7 +48,7 @@ func (db *DockerBackend) SeedBaseLayerFromImage(ctx context.Context) error {
 		return fmt.Errorf("sandbox/docker: docker pull %s: %w", image, err)
 	}
 
-	tmpName := "astonish-seed-base"
+	tmpName := "troupe-seed-base"
 	_, _ = runDocker(ctx, db.cfg.ContainerRuntimePath, "rm", "-f", tmpName)
 	if _, err := runDocker(ctx, db.cfg.ContainerRuntimePath, seedCreateArgs(tmpName, image)...); err != nil {
 		return fmt.Errorf("sandbox/docker: docker create seed: %w", err)
@@ -97,7 +97,7 @@ func seedCreateArgs(name, image string) []string {
 }
 
 // ReseedBaseLayerFromImage deletes the current @base layer and re-exports the
-// sandbox image. Used by `astonish sandbox refresh` / reset.
+// sandbox image. Used by `troupe sandbox refresh` / reset.
 func (db *DockerBackend) ReseedBaseLayerFromImage(ctx context.Context) error {
 	if err := ctx.Err(); err != nil {
 		return err
@@ -145,7 +145,7 @@ func (db *DockerBackend) BuildTemplate(ctx context.Context, spec sandbox.Templat
 	for k, v := range spec.Labels {
 		labels[k] = v
 	}
-	labels["astonish.io/purpose"] = "template-builder"
+	labels["troupe.io/purpose"] = "template-builder"
 	db.pruneDanglingOverlayVolumes(ctx)
 	if err := db.ensureParentLayers(ctx, spec.ParentLayers); err != nil {
 		return nil, err
@@ -252,7 +252,7 @@ func overlayAptPrepScript() string {
 		"  exit 100",
 		"fi",
 		"mkdir -p /etc/apt/apt.conf.d /etc/dpkg/dpkg.cfg.d /usr/sbin",
-		`cat > /etc/apt/apt.conf.d/99astonish-overlay <<'EOF'`,
+		`cat > /etc/apt/apt.conf.d/99troupe-overlay <<'EOF'`,
 		`APT::Sandbox::User "root";`,
 		`Dpkg::Use-Pty "false";`,
 		"EOF",

@@ -1,6 +1,6 @@
 # Slides
 
-Astonish Slides turns a conversation into a complete presentation. Use Chat to generate and refine the content, edit the result directly in Studio, save it to the Slides library, and present or export it when it is ready.
+Troupe Slides turns a conversation into a complete presentation. Use Chat to generate and refine the content, edit the result directly in Studio, save it to the Slides library, and present or export it when it is ready.
 
 Slides can work from a short prompt, a detailed brief, attached documents and images, research performed by the agent, or information from connected systems that the agent can access.
 
@@ -9,7 +9,7 @@ Slides can work from a short prompt, a detailed brief, attached documents and im
 ## How Slides Works
 
 1. Start from **Slides → Create Slide**, or ask for a presentation in **Chat**.
-2. Tell Astonish about the purpose, audience, source material, desired length, and visual style.
+2. Tell Troupe about the purpose, audience, source material, desired length, and visual style.
 3. Choose a built-in or imported template.
 4. Review the deck as it is generated, then request changes in Chat or edit existing objects on the canvas.
 5. Select **Save** to add the session draft to the Slides library.

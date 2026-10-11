@@ -1,4 +1,4 @@
-// Package email implements the Email channel adapter for Astonish.
+// Package email implements the Email channel adapter for Troupe.
 // It connects to an IMAP mailbox via polling, normalizes inbound emails,
 // and delivers outbound responses via SMTP with proper email threading.
 package email
@@ -229,7 +229,7 @@ func (e *EmailChannel) Send(ctx context.Context, target channels.Target, msg cha
 
 	outgoing := emailpkg.OutgoingMessage{
 		To:      []string{target.ChatID}, // ChatID is the recipient email address
-		Subject: "Re: Astonish",          // Will be overridden by Reply if threading
+		Subject: "Re: Troupe",            // Will be overridden by Reply if threading
 		Body:    msg.Text,
 	}
 

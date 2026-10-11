@@ -12,7 +12,7 @@
 //     provisioning, org networking etc. remain the caller's job (they
 //     live on Backend directly).
 //   - Per-call execution model: each Call() spawns a fresh
-//     `astonish node` process inside the sandbox via Backend.Exec,
+//     `troupe node` process inside the sandbox via Backend.Exec,
 //     feeds it exactly one NDJSON request on stdin, reads one response
 //     from stdout. This is slower than the persistent-NDJSON model used
 //     by Incus's *NodeClient (one process, many calls) but avoids the
@@ -56,7 +56,7 @@ import (
 // The NDJSON request/response shapes are defined once on the package in
 // node.go (nodeRequest / nodeResponse). backend_pool.go reuses them so
 // there is no drift between the Incus-bound *NodeClient path and the
-// backend-agnostic path below. Both talk to the same `astonish node`
+// backend-agnostic path below. Both talk to the same `troupe node`
 // server in cmd/troupe/node.go.
 
 // backendExecTimeout caps an individual per-tool Exec. Tools that need longer
@@ -302,7 +302,7 @@ func (c *backendNodeClient) provision(sessionID string) {
 // result. If BindSession has not been called (safety net), Call binds
 // synchronously first.
 //
-// Execution shape: one Backend.Exec per call, running `astonish node`.
+// Execution shape: one Backend.Exec per call, running `troupe node`.
 // Stdin carries a single NDJSON request; stdout carries the ready line plus
 // one NDJSON response. Stderr is logged but not propagated — in-sandbox
 // logs stay in-sandbox unless debug is explicitly wired.
@@ -349,7 +349,7 @@ func (c *backendNodeClient) Call(sessionID, toolName string, args map[string]int
 	defer cancel()
 
 	spec := ExecSpec{
-		Command: []string{"astonish", "node"},
+		Command: []string{"troupe", "node"},
 		Stdin:   bytes.NewReader(reqBytes),
 	}
 	res, err := c.backend.Exec(ctx, c.sessionID, spec)

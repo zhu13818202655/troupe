@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Studio Chat (`StudioChat.tsx`) is the primary user interface for Astonish. It orchestrates 17 sub-components, manages 35 state variables, handles 29 SSE event types from the backend, and renders 21 distinct message types. This document is the authoritative reference for how the pipeline works, how to extend it, and what rules must be followed.
+The Studio Chat (`StudioChat.tsx`) is the primary user interface for Troupe. It orchestrates 17 sub-components, manages 35 state variables, handles 29 SSE event types from the backend, and renders 21 distinct message types. This document is the authoritative reference for how the pipeline works, how to extend it, and what rules must be followed.
 
 **Target audience:** Developers adding new SSE event types, new rendering components, or modifying the report/app/artifact pipelines.
 
@@ -107,7 +107,7 @@ Tool messages stay separate in React state (and on the wire). At render time, `g
 - **Collapsed by default** — categorized human language (e.g. `Edited 2 files, explored 3 files, 2 searches`) plus optional `· N notes`. While streaming: live tool hints (`Running \`ls\` with shell_command`). Errors append after the categories.
 - **One activity fold** per contiguous tools+process-note run: `thinking` / `auto_approved` / `retry` at or before the last tool fold into muted process narration. Tools stay in a single collapsed block for the whole action.
 - **Agent text is never absorbed into process notes.** Within a soft+tool run (between hard breaks such as user messages), only the **latest** agent message is rendered as a sticky Agent bubble; earlier agents in that run are skipped so mid-turn tools do not remove the bubble—new agent text **replaces** the bubble content (stable React key per run). After the user sends a new message, prior runs are frozen.
-- Agent messages that contain an `astonish-app` fence still use the sticky latest-agent rule so `AppCodeIndicator` stays on the current agent chunk.
+- Agent messages that contain an `troupe-app` fence still use the sticky latest-agent rule so `AppCodeIndicator` stays on the current agent chunk.
 - **Hard breaks** always passthrough and split folds: `user`, `subtask_execution`, `plan`, `fleet_*`, `browser_handoff`, `app_*`, `distill_*`, `tutorial_*`, `artifact`, `approval`, `network_denial`, `image`, `error*`, `system`, and any unknown future type. Soft absorbable allowlist only: `agent` (interstitial / provisional), `thinking`, `auto_approved`, `retry`.
 - Expand the block for paired tool steps + notes; expand a step for full args/result JSON.
 - Source citation chips (`collectSourceUrls`) still walk raw `tool_result` messages — grouping is display-only. Report three-signal gate is unchanged.
@@ -286,13 +286,13 @@ Artifact content lookup is best-effort across three sources: local host path, li
 
 ## The Report Pipeline
 
-Reports use a **two-step contract** combining `write_file` (which produces the file on disk and an `artifact` SSE event) with an explicit `astonish-report` fence emitted in the agent's reply text. Both signals are required: the file is the *content*, the fence is the *intent*.
+Reports use a **two-step contract** combining `write_file` (which produces the file on disk and an `artifact` SSE event) with an explicit `troupe-report` fence emitted in the agent's reply text. Both signals are required: the file is the *content*, the fence is the *intent*.
 
-This design replaces an earlier heuristic ("any last-turn markdown artifact is a report"), which produced incorrect promotions whenever an agent edited a markdown file incidentally during a non-report task. It also replaces an even earlier alternative ("`astonish-report` fence carries the markdown content inline"), which was rejected because the file had to live on disk anyway for the Files panel, the artifact API, and PDF/DOCX export.
+This design replaces an earlier heuristic ("any last-turn markdown artifact is a report"), which produced incorrect promotions whenever an agent edited a markdown file incidentally during a non-report task. It also replaces an even earlier alternative ("`troupe-report` fence carries the markdown content inline"), which was rejected because the file had to live on disk anyway for the Files panel, the artifact API, and PDF/DOCX export.
 
 ```mermaid
 graph TD
-    A["LLM emits text +<br/>```astonish-report path: ... ``` fence"] --> B
+    A["LLM emits text +<br/>```troupe-report path: ... ``` fence"] --> B
     A2["LLM calls write_file(path, ...)"] --> C[artifact SSE event]
     B[Backend: detectAndEmitReportMarkers]
     B -->|fence path matches a same-turn artifact| D["report_marker SSE event<br/>{path, title}"]
@@ -313,7 +313,7 @@ A markdown artifact is promoted to harness-panel `EmbeddedFileViewer` rendering 
 
 1. The artifact event was emitted in the **last turn** (after the most recent user message). Earlier-turn edits never embed.
 2. `fileType === 'Markdown'`. Code, configs, scripts, JSON, etc. always render as `ArtifactCard`.
-3. `isReport === true`. This flips only when the agent emits an `astonish-report` fence whose `path` matches the artifact's path; the backend's `detectAndEmitReportMarkers` validates the match before emitting `report_marker`.
+3. `isReport === true`. This flips only when the agent emits an `troupe-report` fence whose `path` matches the artifact's path; the backend's `detectAndEmitReportMarkers` validates the match before emitting `report_marker`.
 
 Any markdown artifact failing any of these conditions falls back to the compact `ArtifactCard` download tile.
 
@@ -324,7 +324,7 @@ Any markdown artifact failing any of these conditions falls back to the compact 
 ### Fence shape
 
 ```
-` + "```" + `astonish-report
+` + "```" + `troupe-report
 path: /absolute/path/to/file.md
 title: Optional human-readable title
 ` + "```" + `
@@ -349,17 +349,17 @@ The frontend's playback `tryParseReportMarkerMessage` recognises the persisted t
 | Alternative | Why rejected |
 |---|---|
 | Agent message containing a long write_file → embed (the `b5310ae` heuristic) | False positives on incidental edits during multi-turn tasks. |
-| `astonish-report` fence carries inline markdown content (no `write_file`) | No file on disk → no Files panel, no artifact API, no PDF/DOCX export, no `EmbeddedFileViewer.fetchArtifactContent`. |
+| `troupe-report` fence carries inline markdown content (no `write_file`) | No file on disk → no Files panel, no artifact API, no PDF/DOCX export, no `EmbeddedFileViewer.fetchArtifactContent`. |
 | Single SSE event combining artifact + report-flag | Tools fire before agent text, so the fence is parsed *after* the artifact event has already been emitted. Splitting into two events keeps the per-event semantics clean and parallels `app_preview`. |
 | Frontend-only fence detection | Backend persistence and session-detail reload would re-derive state from raw text on every load — fragile and parser-coupled. The current split lets backend canonicalize once and persist the structured marker.
 
 ## The App Preview Pipeline
 
-Visual apps use a different pipeline from reports. The LLM wraps generated React JSX in an `astonish-app` code fence, which the backend detects and emits as an `app_preview` event.
+Visual apps use a different pipeline from reports. The LLM wraps generated React JSX in an `troupe-app` code fence, which the backend detects and emits as an `app_preview` event.
 
 ```mermaid
 graph TD
-    A["LLM generates text with<br/>```astonish-app fence"] --> B[Backend: detectAndEmitAppPreviews]
+    A["LLM generates text with<br/>```troupe-app fence"] --> B[Backend: detectAndEmitAppPreviews]
     B --> C["SSE: app_preview event<br/>{code, title, description, version}"]
     C --> D[Frontend: HarnessPanel / AppPreviewCard]
     D --> E[Sandboxed iframe<br/>Sucrase + React runtime]
@@ -370,17 +370,17 @@ graph TD
 
 ### Streaming progress indicator
 
-During streaming, the agent message contains a partial `astonish-app` fence. The render loop detects this with a regex:
+During streaming, the agent message contains a partial `troupe-app` fence. The render loop detects this with a regex:
 
 ```typescript
-const appFenceRe = /```astonish-app\s*\n([\s\S]*?)(?:\n```|$)/
+const appFenceRe = /```troupe-app\s*\n([\s\S]*?)(?:\n```|$)/
 ```
 
 When matched, it renders an `AppCodeIndicator` (pulsing "Generating app..." with expandable code view) instead of the raw fence text. After streaming completes, the `app_preview` event arrives and replaces the indicator with a stream `HarnessPlaceholder` plus the full `AppPreviewCard` in `HarnessPanel`.
 
-**Work-segment fold carve-out:** agent messages containing an `astonish-app` fence are never absorbed into activity process notes, so this indicator is not replaced by italic narration while code streams.
+**Work-segment fold carve-out:** agent messages containing an `troupe-app` fence are never absorbed into activity process notes, so this indicator is not replaced by italic narration while code streams.
 
-**This streaming interceptor is intentionally `astonish-app`-only.** Do not generalize it to other fence types without implementing the full backend event + frontend handler + ResultCard integration for that type.
+**This streaming interceptor is intentionally `troupe-app`-only.** Do not generalize it to other fence types without implementing the full backend event + frontend handler + ResultCard integration for that type.
 
 ## The Source Citations Pipeline
 
@@ -507,7 +507,7 @@ These rules were established through bugs and fixes. Violating them will break t
 ### Frontend heuristics vs backend events
 
 6. **Prefer backend events for new features** -- Frontend heuristics (like `collectSourceUrls`) exist for legacy reasons where the backend doesn't emit a dedicated event. For new features, emit a backend event rather than adding a frontend heuristic.
-7. **The `astonish-app` streaming interceptor is app-only** -- Do not generalize the fence regex to match other `astonish-*` patterns without implementing the complete pipeline (backend detection → SSE event → frontend handler → component rendering).
+7. **The `troupe-app` streaming interceptor is app-only** -- Do not generalize the fence regex to match other `troupe-*` patterns without implementing the complete pipeline (backend detection → SSE event → frontend handler → component rendering).
 
 ### Export
 

@@ -1,14 +1,14 @@
 
 ## Public inbound MCP tool loop
 
-`/api/mcp` is Astonish's **inbound** MCP server for OAuth-authenticated external
+`/api/mcp` is Troupe's **inbound** MCP server for OAuth-authenticated external
 clients. It is separate from the outbound MCP client integrations described in
 this document. Outbound servers configured under `mcp_servers` remain deferred
-tools for Astonish's native runtime; they are not public MCP methods.
+tools for Troupe's native runtime; they are not public MCP methods.
 
 ### Breaking contract change
 
-The former public `astonish_chat` tool has been removed with no alias,
+The former public `troupe_chat` tool has been removed with no alias,
 compatibility mode, or fallback. `tools/list` exposes exactly four tools:
 `get_agent_context`, `search_tools`, `describe_tools`, and `execute_tool`.
 
@@ -22,21 +22,21 @@ and final response.
 
 The returned instructions define tool provenance explicitly. Clients inspect the
 Available Skills before concluding that a capability is unavailable. When a skill
-matches, they find and invoke Astonish's `skill_lookup` through the progressive
+matches, they find and invoke Troupe's `skill_lookup` through the progressive
 operations, then find and invoke each tool named by the skill the same way. A name
 such as `http_request`, `shell_command`, or a browser tool means the tool in the
-Astonish catalog, not a similarly named client or host function. Missing local
+Troupe catalog, not a similarly named client or host function. Missing local
 binaries, environment variables, SDKs, or packages therefore say nothing about
-whether the Astonish capability is available.
+whether the Troupe capability is available.
 
 Credentials cross the protocol only by store name or placeholder. For example,
-the OpenStack skill directs the client to invoke Astonish's `http_request` with
+the OpenStack skill directs the client to invoke Troupe's `http_request` with
 `credential="openstack"`; the direct executor resolves that name from the
 request's personal-first credential store, substitutes it only for the protected
 call, restores arguments afterward, and redacts output before serialization. Raw
 credential values are not included in instructions, context tokens, schemas, or
-results. There is no `astonish_chat` or native-agent delegation fallback: the
-client retains its reasoning loop while Astonish owns tool execution and secrets.
+results. There is no `troupe_chat` or native-agent delegation fallback: the
+client retains its reasoning loop while Troupe owns tool execution and secrets.
 
 The opaque, short-lived token is server-side state bound to the OAuth principal,
 tenant, stable session ID, and runtime snapshot. It contains no secrets or

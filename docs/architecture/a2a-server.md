@@ -1,10 +1,10 @@
-# A2A Protocol — Astonish as Server
+# A2A Protocol — Troupe as Server
 
 ## Overview
 
-Astonish exposes an inbound Agent-to-Agent (A2A) JSON-RPC service at `/api/a2a`. Inbound A2A is a dedicated HTTP execution surface, not a messaging channel. It owns A2A task correlation, lifecycle, streaming, cancellation, ownership, and push delivery while reusing the existing agent execution pipeline through an explicit dispatcher boundary.
+Troupe exposes an inbound Agent-to-Agent (A2A) JSON-RPC service at `/api/a2a`. Inbound A2A is a dedicated HTTP execution surface, not a messaging channel. It owns A2A task correlation, lifecycle, streaming, cancellation, ownership, and push delivery while reusing the existing agent execution pipeline through an explicit dispatcher boundary.
 
-Outbound A2A is separate: Astonish can also connect to remote agents through `pkg/a2aclient` and A2A-agent configuration. This document covers only the inbound server.
+Outbound A2A is separate: Troupe can also connect to remote agents through `pkg/a2aclient` and A2A-agent configuration. This document covers only the inbound server.
 
 ## Architecture
 
@@ -12,7 +12,7 @@ Outbound A2A is separate: Astonish can also connect to remote agents through `pk
 flowchart LR
     Client[A2A client] --> Card[Public agent card]
     Client --> Endpoint[POST /api/a2a]
-    Endpoint --> OAuth[Astonish OAuth validation]
+    Endpoint --> OAuth[Troupe OAuth validation]
     OAuth --> Capability[Exact a2a capability]
     Capability --> Tenant[Principal and tenant resolution]
     Tenant --> Service[pkg/a2aserver.Service]
@@ -37,7 +37,7 @@ A2A does not implement `channels.Channel` and is not registered as a channel. Th
 | Endpoint | Authentication | Purpose |
 |---|---|---|
 | `GET /.well-known/agent-card.json` | Public | A2A discovery |
-| `POST /api/a2a` | Astonish OAuth bearer with `a2a` | JSON-RPC operations, including streaming responses |
+| `POST /api/a2a` | Troupe OAuth bearer with `a2a` | JSON-RPC operations, including streaming responses |
 
 The service retains the supported A2A operations for synchronous and return-immediately message handling, task retrieval, cancellation, push-notification configuration, and streaming. Requests retain the 1 MiB body limit.
 
@@ -72,7 +72,7 @@ Each real SSE event is flushed immediately. Comment-only `: keepalive` frames ar
 
 ## Authentication and authorization
 
-A2A accepts only access tokens issued by the installation's built-in Astonish OAuth server. The token must:
+A2A accepts only access tokens issued by the installation's built-in Troupe OAuth server. The token must:
 
 - pass strict signature, issuer, lifetime, and configured protected-resource audience validation;
 - contain the exact `a2a` scope;
@@ -118,7 +118,7 @@ The public Agent Card advertises the server endpoint and bearer security. Client
 ## Security invariants
 
 1. The public Agent Card never grants execution access.
-2. Every protocol call requires an Astonish-issued bearer token with exact `a2a` scope.
+2. Every protocol call requires an Troupe-issued bearer token with exact `a2a` scope.
 3. External IdP/JWKS tokens are not direct A2A credentials.
 4. Tenant identity comes from validated OAuth grant state, never request data.
 5. Task read, cancel, stream, and push operations enforce principal-and-tenant ownership.

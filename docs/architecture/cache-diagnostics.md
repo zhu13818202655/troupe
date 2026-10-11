@@ -10,7 +10,7 @@ Diagnostics are request-scoped. Enabling the browser-local Debug toggle adds a r
 
 ## Capture semantics
 
-Each request records a chronological lifecycle. Astonish preparation stages cover request/session preparation, memory embedding, guidance/general/tool retrieval, prompt/context persistence, and compaction when those paths execute. Every stage records start time, duration, and success or a bounded, credential-redacted failure. Failed preparation is retained even when no provider call occurs.
+Each request records a chronological lifecycle. Troupe preparation stages cover request/session preparation, memory embedding, guidance/general/tool retrieval, prompt/context persistence, and compaction when those paths execute. Every stage records start time, duration, and success or a bounded, credential-redacted failure. Failed preparation is retained even when no provider call occurs.
 
 Each provider round records:
 
@@ -20,7 +20,7 @@ Each provider round records:
 - normalized token usage and provider-reported cached-read token count when available;
 - a bounded, sanitized representation of the canonical ADK request.
 
-`captureLevel: canonical-adk` means the payload is captured immediately before the provider adapter receives it. It must not be described as exact HTTP wire JSON. Provider SDKs may still transform the request. A cache hit is provider-confirmed only when normalized usage metadata reports cached-read tokens. ADK does not expose a provider-neutral cache-write token field, so diagnostics do not report cache writes; zero cached-read tokens must not be interpreted as proof that the provider performed no cache write. Prefix counts are Astonish estimates and are displayed separately.
+`captureLevel: canonical-adk` means the payload is captured immediately before the provider adapter receives it. It must not be described as exact HTTP wire JSON. Provider SDKs may still transform the request. A cache hit is provider-confirmed only when normalized usage metadata reports cached-read tokens. ADK does not expose a provider-neutral cache-write token field, so diagnostics do not report cache writes; zero cached-read tokens must not be interpreted as proof that the provider performed no cache write. Prefix counts are Troupe estimates and are displayed separately.
 
 ## Secret and binary handling
 
@@ -30,4 +30,4 @@ Diagnostics never store transport headers. Before persistence, known credential 
 
 Diagnostics are separate from ADK transcript events so they cannot affect future model history. Personal and team session stores retain the latest 100 diagnostic records per session, including both preparation stages and provider rounds, and session deletion cascades to diagnostics. Rows are associated by ADK invocation ID and model-call number; the UI never infers turns from message position.
 
-`GET /api/studio/sessions/{id}/cache-diagnostics?invocationId=...` resolves the session through the authenticated request's tenant-scoped stores and requires platform-superadmin authorization. The cross-organization administrative endpoint under `/api/platform/admin/` additionally requires explicit scope identifiers. The Studio panel is available only to platform superadmins and shows a chronological Astonish-preparation versus provider-dispatch view, including explicit stage failures, sanitized payloads, truncation/elision notices, timing, usage, provider cache status, and the estimated stable prefix.
+`GET /api/studio/sessions/{id}/cache-diagnostics?invocationId=...` resolves the session through the authenticated request's tenant-scoped stores and requires platform-superadmin authorization. The cross-organization administrative endpoint under `/api/platform/admin/` additionally requires explicit scope identifiers. The Studio panel is available only to platform superadmins and shows a chronological Troupe-preparation versus provider-dispatch view, including explicit stage failures, sanitized payloads, truncation/elision notices, timing, usage, provider cache status, and the estimated stable prefix.

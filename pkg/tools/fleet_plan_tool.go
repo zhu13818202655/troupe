@@ -158,7 +158,7 @@ type SaveFleetPlanArgs struct {
 	CredentialInjection *SaveFleetPlanCredentialInjection `json:"credential_injection,omitempty" jsonschema:"How plan credentials are injected at fleet session start. env: map logical credentials to container environment variables. files: materialize credential fields to absolute paths inside the container (e.g., /root/app/config/credentials.yaml). Required for apps that read config files — store file payloads via save_credential (type raw_content, field content) and reference them here. Existing api_key/value mappings remain supported for old plans. GitHub-only plans get GH_TOKEN by default when omitted."`
 	// WorkspaceBaseDir overrides the base directory where project files are stored.
 	// The final workspace path will be <workspace_base_dir>/<repo-name or plan-key>.
-	// If omitted, the template's default is used (typically ~/astonish_projects).
+	// If omitted, the template's default is used (typically ~/troupe_projects).
 	// Deprecated: Use ProjectSource instead. Per-session workspaces are now created
 	// automatically from the project source. This field is kept for backward compat.
 	WorkspaceBaseDir string `json:"workspace_base_dir,omitempty" jsonschema:"Deprecated. Optional override for the base directory where project files are stored. Prefer project_source instead."`

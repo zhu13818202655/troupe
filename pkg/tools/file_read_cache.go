@@ -20,7 +20,7 @@ const (
 var cacheFilePath = defaultCacheFilePath
 
 // currentCaller identifies which agent is making the current tool call.
-// Set by ExecuteTool before dispatch. Safe because astonish node processes
+// Set by ExecuteTool before dispatch. Safe because troupe node processes
 // tool calls sequentially (one at a time). Used to scope cache dedup so
 // one agent's read doesn't produce "unchanged" for a different agent.
 var currentCaller string

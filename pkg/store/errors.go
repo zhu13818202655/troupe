@@ -13,7 +13,7 @@ import "errors"
 var ErrUnsupported = errors.New("operation not supported by this store implementation")
 
 // ErrBundledTemplateImmutable indicates an attempt to save or delete an
-// Astonish-shipped (embedded) fleet template key. Callers should clone to a
+// Troupe-shipped (embedded) fleet template key. Callers should clone to a
 // new key instead. Check with errors.Is(err, store.ErrBundledTemplateImmutable).
 var ErrBundledTemplateImmutable = errors.New("bundled fleet template is immutable; clone to a new key to customize")
 

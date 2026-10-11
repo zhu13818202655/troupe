@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
+	"github.com/sashabaranov/go-openai"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/provider/anthropic"
+	copilot_oauth "github.com/zhu13818202655/troupe/pkg/provider/copilot_oauth"
 	"github.com/zhu13818202655/troupe/pkg/provider/google"
 	"github.com/zhu13818202655/troupe/pkg/provider/groq"
 	"github.com/zhu13818202655/troupe/pkg/provider/litellm"
@@ -21,9 +24,7 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/provider/poe"
 	"github.com/zhu13818202655/troupe/pkg/provider/sap"
 	"github.com/zhu13818202655/troupe/pkg/provider/xai"
-	copilot_oauth "github.com/zhu13818202655/troupe/pkg/provider/copilot_oauth"
 	xai_oauth "github.com/zhu13818202655/troupe/pkg/provider/xai_oauth"
-	"github.com/sashabaranov/go-openai"
 	"google.golang.org/adk/model"
 )
 
@@ -363,14 +364,36 @@ func GetProvider(ctx context.Context, instanceName string, modelName string, cfg
 		if apiKey == "" {
 			return nil, fmt.Errorf("API key not set for OpenAI Compatible provider")
 		}
-		baseURL := instance["base_url"]
+		baseURL := strings.TrimSpace(instance["base_url"])
 		if baseURL == "" {
-			baseURL = "https://api.openai.com/v1"
+			// Previously this silently fell back to api.openai.com, which turned
+			// a typo or a missing key into a confusing 401 against OpenAI instead
+			// of pointing at the misconfigured instance. Erroring here matches
+			// TestProviderConnection (below) and the UI's own validation.
+			return nil, fmt.Errorf("base_url is required for OpenAI Compatible provider %q", instanceName)
 		}
 		if modelName == "" {
 			modelName = "gpt-4o"
 		}
-		return openai_compat.NewProvider(apiKey, baseURL, modelName, debugMode), nil
+		// max_completion_tokens: self-hosted stacks (vLLM, LMDeploy, llama.cpp)
+		// return HTTP 400 when it exceeds their max_model_len, so the historic
+		// hard-coded 64000 broke nearly every local model. Resolution order:
+		//   1. explicit `max_output_tokens` on the instance (0 or negative omits
+		//      the field entirely)
+		//   2. the configured context length, which is what operators already
+		//      set to their model's real max_model_len
+		//   3. legacy 64000, preserving previous behaviour
+		maxTokens := 64000
+		if raw := strings.TrimSpace(instance["max_output_tokens"]); raw != "" {
+			if n, err := strconv.Atoi(raw); err == nil {
+				maxTokens = n
+			} else {
+				slog.Warn("ignoring non-numeric max_output_tokens", "provider", instanceName, "value", raw)
+			}
+		} else if cfg != nil && cfg.General.ContextLength > 0 {
+			maxTokens = cfg.General.ContextLength
+		}
+		return openai_compat.NewProvider(apiKey, baseURL, modelName, maxTokens, debugMode), nil
 
 	default:
 		return nil, fmt.Errorf("unsupported provider type: %s", providerType)

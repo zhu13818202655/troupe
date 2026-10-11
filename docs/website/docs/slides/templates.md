@@ -1,6 +1,6 @@
 # Slides Templates
 
-Templates define the visual identity and available presentation treatments used by Astonish Slides. Choose a built-in design, create a personal variant, or import an existing PowerPoint template for your brand.
+Templates define the visual identity and available presentation treatments used by Troupe Slides. Choose a built-in design, create a personal variant, or import an existing PowerPoint template for your brand.
 
 ## Template Scopes
 
@@ -8,7 +8,7 @@ The **Slides → Templates** catalog can include templates from several scopes:
 
 | Badge | Availability | Management |
 |-------|--------------|------------|
-| **Built-in** | Included with Astonish | Immutable; duplicate to customize |
+| **Built-in** | Included with Troupe | Immutable; duplicate to customize |
 | **Platform** | Everyone on the platform | Managed by a platform administrator |
 | **Organization** | Members of the organization | Managed by an organization administrator or owner |
 | **Team** | Members of the current team | Managed by a team administrator |
@@ -20,7 +20,7 @@ In platform deployments, shared templates inherit downward. The catalog shows ev
 
 ## Choose a Template
 
-During presentation intake, choose a template from visual previews or let Astonish select one. Depending on the template, you may also choose:
+During presentation intake, choose a template from visual previews or let Troupe select one. Depending on the template, you may also choose:
 
 - A palette or color treatment.
 - A title or cover variant.
@@ -43,10 +43,10 @@ An imported file must:
 - Be no larger than 75 MiB.
 - Represent one template identity.
 
-Astonish extracts usable theme colors, fonts, logos and fixed brand elements, media, and representative layouts. Thumbnail generation is best effort, so a successful import can occasionally appear without every static preview.
+Troupe extracts usable theme colors, fonts, logos and fixed brand elements, media, and representative layouts. Thumbnail generation is best effort, so a successful import can occasionally appear without every static preview.
 
 ::: warning Import Fidelity
-Astonish treats the PowerPoint file as a source of brand identity and presentation patterns. It can reuse official cover and closing treatments while composing flexible body slides. The result is not guaranteed to reproduce every source slide or PowerPoint feature exactly.
+Troupe treats the PowerPoint file as a source of brand identity and presentation patterns. It can reuse official cover and closing treatments while composing flexible body slides. The result is not guaranteed to reproduce every source slide or PowerPoint feature exactly.
 :::
 
 Embedded fonts are recovered when possible. Unsupported font formats and individual embedded fonts larger than 4 MiB may be skipped; a compatible fallback font is used instead.

@@ -26,7 +26,7 @@ import (
 
 // Backend is the runtime abstraction over the sandbox tier. Implementations:
 //   - DockerBackend (pkg/sandbox/docker): local OverlayFS sessions
-//     (`astonish-session-*`) on Linux and macOS. Default when
+//     (`troupe-session-*`) on Linux and macOS. Default when
 //     sandbox.backend is empty, "docker", or the legacy alias "incus".
 //   - K8sSandboxBackend (pkg/sandbox/k8s): Kubernetes pods with a
 //     portable overlay strategy; content-addressed layer store on a PVC;

@@ -65,9 +65,9 @@ func TestClassifyAppIntent_MagicStrings(t *testing.T) {
 		{"__app_done__", AppIntentSave},
 		// Without LLM (nil), everything else defaults to refine
 		{"make the header blue", AppIntentRefine},
-		{"save it", AppIntentRefine},       // no LLM = defaults to refine (heuristics removed)
-		{"done", AppIntentRefine},           // no LLM = defaults to refine
-		{"looks good", AppIntentRefine},     // no LLM = defaults to refine
+		{"save it", AppIntentRefine},             // no LLM = defaults to refine (heuristics removed)
+		{"done", AppIntentRefine},                // no LLM = defaults to refine
+		{"looks good", AppIntentRefine},          // no LLM = defaults to refine
 		{"what's the weather?", AppIntentRefine}, // no LLM = defaults to refine
 	}
 
@@ -95,10 +95,10 @@ func TestClassifyAppIntent_WithLLM(t *testing.T) {
 	}{
 		{"make it blue", "REFINE", AppIntentRefine, ""},
 		{"I'm satisfied", "SAVE", AppIntentSave, ""},
-		{"I'm satisfied", "DONE", AppIntentSave, ""},  // LLM says DONE → maps to Save
+		{"I'm satisfied", "DONE", AppIntentSave, ""}, // LLM says DONE → maps to Save
 		{"what's the weather?", "UNRELATED", AppIntentUnrelated, ""},
-		{"something", "refine\n", AppIntentRefine, ""},              // lowercase + trailing newline
-		{"something", "UNKNOWN_RESPONSE", AppIntentRefine, ""},      // unknown → fallback to refine
+		{"something", "refine\n", AppIntentRefine, ""},         // lowercase + trailing newline
+		{"something", "UNKNOWN_RESPONSE", AppIntentRefine, ""}, // unknown → fallback to refine
 		{"save as Weather", "SAVE:Weather", AppIntentSave, "Weather"},
 		{"save it as My Dashboard", "SAVE:My Dashboard", AppIntentSave, "My Dashboard"},
 		{"call it Sales Tracker", "SAVE:Sales Tracker", AppIntentSave, "Sales Tracker"},
@@ -170,9 +170,9 @@ func TestBuildAppRefinementContext(t *testing.T) {
 		t.Error("context should contain modification history")
 	}
 
-	// Should instruct to output full component in astonish-app fence
-	if !strings.Contains(ctx, "```astonish-app") {
-		t.Error("context should instruct to use astonish-app fence")
+	// Should instruct to output full component in troupe-app fence
+	if !strings.Contains(ctx, "```troupe-app") {
+		t.Error("context should instruct to use troupe-app fence")
 	}
 }
 

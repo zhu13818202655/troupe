@@ -9,7 +9,7 @@ import (
 )
 
 // This file implements the code-mode authorization model: two independent
-// gates that make `astonish code` safe-by-default even though it runs tools
+// gates that make `troupe code` safe-by-default even though it runs tools
 // directly on the host (no sandbox).
 //
 //  1. Tool-execution authorization (Normal mode only). Read-only / navigation
@@ -77,7 +77,7 @@ type SessionAuthPolicy struct {
 	// are implicitly in-scope (paths under any of them are always allowed
 	// without a prompt), on top of root. Unlike pathSessionGrants these are
 	// fixed at construction and never depend on a user grant. They exist so the
-	// agent can freely read/write Astonish's own state (session transcripts,
+	// agent can freely read/write Troupe's own state (session transcripts,
 	// PLAN.md, workspaces, config) which live outside the project directory —
 	// prompting for those would be noise, and the agent writes there routinely.
 	allowedRoots []string

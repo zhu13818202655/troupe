@@ -1,6 +1,6 @@
 # web/src — AGENTS.md
 
-React 19 SPA for Astonish Studio. Mixed **TypeScript (`.ts`/`.tsx`)** and **legacy JSX (`.jsx`)** — new files should be `.tsx`.
+React 19 SPA for Troupe Studio. Mixed **TypeScript (`.ts`/`.tsx`)** and **legacy JSX (`.jsx`)** — new files should be `.tsx`.
 
 ## Scope
 - Entry: `main.tsx` (React root) and `App.tsx`.
@@ -25,7 +25,7 @@ React 19 SPA for Astonish Studio. Mixed **TypeScript (`.ts`/`.tsx`)** and **lega
 
 1. Emitted in the last turn (after the most recent user message).
 2. `fileType === 'Markdown'`.
-3. `isReport === true` (set by the backend when an `` ```astonish-report `` fence's `path:` matched the artifact path).
+3. `isReport === true` (set by the backend when an `` ```troupe-report `` fence's `path:` matched the artifact path).
 
 Anything failing any one of these renders as the compact `ArtifactCard`. **Do not widen the markdown report gate in the SPA.** If the backend regresses the marker, fix it in `pkg/api/chat_runner.go`, not by weakening the client check.
 
@@ -49,7 +49,7 @@ Agents doing any UI styling or shared-component work under `web/` must follow:
 5. **No hard-coded brand colors** for chrome/CTAs (`#a855f7`, `#805AD5`, `purple-*`, purple→blue gradients, etc.). Use `bg-primary` / `var(--brand*)` / pack tokens. Fixed status or multi-agent *identity* colors may stay non-brand when they distinguish roles.
 6. **New shipped pack:** light+dark CSS dictionaries (`REQUIRED_THEME_TOKENS`), `BRAND_THEME_META.shipped`, server allowlist in `pkg/api/brand_theme.go`, App Canvas **light + dark** entries in `themes/appCanvas.ts`. Client and server allowlists must match.
 7. **Do not mix** visual refresh with SSE/report-gate changes or React Flow behavior replacement.
-8. **Logo:** use `AstonishLogo` (tokenized), not hard-coded purple assets in chrome.
+8. **Logo:** use `TroupeLogo` (tokenized), not hard-coded purple assets in chrome.
 
 ### Generative UI (Apps) sandbox
 The Apps runtime runs user-described React apps in a sandboxed iframe with an opaque origin, communicating with the parent via `postMessage` and a SSRF-protected server-side proxy. Do not remove the iframe boundary or the origin isolation.

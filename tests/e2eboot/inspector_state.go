@@ -15,16 +15,16 @@ import (
 
 // InspectorStateFile is the path written by the inspector binary on startup
 // and read by the e2e test harness when TROUPE_E2E_KEEP_ALIVE=1.
-const InspectorStateFile = "/tmp/astonish-e2e-inspect.json"
+const InspectorStateFile = "/tmp/troupe-e2e-inspect.json"
 
 // InspectorSecretFile holds a per-run shared secret used to gate any future
 // admin endpoints on the inspector. Currently unused but reserved.
-const InspectorSecretFile = "/tmp/astonish-e2e-inspect.secret" //nolint:gosec // not a credential
+const InspectorSecretFile = "/tmp/troupe-e2e-inspect.secret" //nolint:gosec // not a credential
 
 // InspectorSuffix is the fixed Postgres-suffix used by the inspector.
-// Platform DB:  astonish_<suffix>_platform
+// Platform DB:  troupe_<suffix>_platform
 // Per-test orgs are <orgSlug>-<perTestSuffix> and live in DBs
-// astonish_<suffix>_<sanitized-org-slug>.
+// troupe_<suffix>_<sanitized-org-slug>.
 const InspectorSuffix = "e2einspect"
 
 // InspectorPort is the fixed TCP port the inspector StudioServer binds on.

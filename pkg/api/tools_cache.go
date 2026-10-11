@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/cache"
 	"github.com/zhu13818202655/troupe/pkg/common"
 	"github.com/zhu13818202655/troupe/pkg/config"
@@ -19,7 +20,6 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/sandbox/netpolicy"
 	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/zhu13818202655/troupe/pkg/tools"
-	"github.com/gorilla/mux"
 	"google.golang.org/adk/tool/mcptoolset"
 )
 

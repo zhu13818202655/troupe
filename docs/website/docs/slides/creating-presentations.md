@@ -1,6 +1,6 @@
 # Creating Presentations
 
-Create presentations through Chat so Astonish can gather requirements, use your source material, generate the complete deck, and refine it with you.
+Create presentations through Chat so Troupe can gather requirements, use your source material, generate the complete deck, and refine it with you.
 
 ## Start a Presentation
 
@@ -19,11 +19,11 @@ reduction, and end with a decision request.
 
 ## Guided Intake
 
-Astonish gathers the information needed to build a coherent deck. Depending on what your request already contains, it may ask about:
+Troupe gathers the information needed to build a coherent deck. Depending on what your request already contains, it may ask about:
 
 1. The audience and purpose.
 2. The approximate length, commonly a short, medium, or detailed deck.
-3. Whether you want to choose a template or let Astonish choose.
+3. Whether you want to choose a template or let Troupe choose.
 4. Template-specific options such as a cover, title treatment, palette, logo or image, and closing slide.
 
 Information already stated in your request does not need to be supplied again. Include the audience, goal, desired length, sources, and preferred template up front for the shortest intake.
@@ -72,7 +72,7 @@ The agent can only use systems, tools, and credentials available to the current 
 
 The deck preview appears in Chat as soon as creation starts. It displays **Generating slides…** until slide content arrives. Use the preview controls to move through the available slides while the agent continues working.
 
-Astonish validates and reviews the generated deck before treating it as complete. You can then refine it conversationally:
+Troupe validates and reviews the generated deck before treating it as complete. You can then refine it conversationally:
 
 ```text
 Make slide 3 more visual and move the implementation detail to an appendix.

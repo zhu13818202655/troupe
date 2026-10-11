@@ -66,7 +66,13 @@ func TestGetEffectiveProvidersHandler_MasksSecrets(t *testing.T) {
 	// Isolate config home so LoadAppConfig reads our fixture, not the user's.
 	cfgHome := t.TempDir()
 	t.Setenv("XDG_CONFIG_HOME", cfgHome)
-	appDir := filepath.Join(cfgHome, "astonish")
+	// Resolve the directory instead of hard-coding its name; hard-coding it
+	// would make this fixture exercise the legacy-dir fallback rather than the
+	// normal path.
+	appDir, err := config.GetConfigDir()
+	if err != nil {
+		t.Fatalf("GetConfigDir: %v", err)
+	}
 	if err := os.MkdirAll(appDir, 0o755); err != nil {
 		t.Fatalf("mkdir config: %v", err)
 	}
@@ -121,6 +127,7 @@ func TestGetEffectiveProvidersHandler_MasksSecrets(t *testing.T) {
 		t.Errorf("config.yaml provider source = %+v, want {local, read_only}", src)
 	}
 }
+
 // keyed by instance name, so the same config loaded by multiple pods yields a
 // single entry per name (the map naturally dedupes).
 func TestGetLocalProviders_DedupeByName(t *testing.T) {

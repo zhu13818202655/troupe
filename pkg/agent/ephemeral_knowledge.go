@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	turnContextStateKey  = "_astonish_turn_context"
-	systemPromptStateKey = "_astonish_system_prompt"
+	turnContextStateKey  = "_troupe_turn_context"
+	systemPromptStateKey = "_troupe_system_prompt"
 )
 
 // RenderExternalTurnContext renders the model-facing dynamic context without
@@ -67,7 +67,7 @@ func buildTurnContextContent(overrides *PromptOverrides, relevantTools, relevant
 	if len(sections) == 0 {
 		return nil
 	}
-	return genai.NewContentFromText("[Astonish Per-Turn Context — not user-authored]\n\n"+strings.Join(sections, "\n\n"), genai.RoleUser)
+	return genai.NewContentFromText("[Troupe Per-Turn Context — not user-authored]\n\n"+strings.Join(sections, "\n\n"), genai.RoleUser)
 }
 
 func newTurnContextEvent(content *genai.Content) *session.Event {
@@ -112,7 +112,7 @@ func IsTurnContextContent(content *genai.Content) bool {
 		return false
 	}
 	for _, part := range content.Parts {
-		if part != nil && strings.HasPrefix(part.Text, "[Astonish Per-Turn Context — not user-authored]\n") {
+		if part != nil && strings.HasPrefix(part.Text, "[Troupe Per-Turn Context — not user-authored]\n") {
 			return true
 		}
 	}

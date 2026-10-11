@@ -10,7 +10,7 @@ import (
 )
 
 // ProgressiveResultState is a stable machine-readable outcome for callers that
-// drive Astonish tools outside the native ChatAgent loop.
+// drive Troupe tools outside the native ChatAgent loop.
 type ProgressiveResultState string
 
 const (

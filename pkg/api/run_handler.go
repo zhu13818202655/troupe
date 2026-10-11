@@ -902,18 +902,18 @@ func HandleChat(w http.ResponseWriter, r *http.Request) {
 	requiredServers := getRequiredMCPServers(cfg, teamMCPStore, orgMCPStore, platformMCPStore)
 	_, mcpToolsets := sm.GetOrCreateMCPManager(ctx, req.SessionID, requiredServers, teamMCPStore, orgMCPStore, platformMCPStore)
 
-	// 5. Create Astonish Agent & ADK Agent
-	astonishAgent := agent.NewAstonishAgentWithToolsets(cfg, llm, internalTools, mcpToolsets)
-	astonishAgent.DebugMode = req.Debug    // Enable verbose debug output when requested
-	astonishAgent.IsWebMode = !req.CLIMode // CLI mode renders ANSI tool boxes; web mode uses markdown
-	astonishAgent.SessionService = sm.service
-	astonishAgent.AutoApprove = req.AutoApprove
+	// 5. Create Troupe Agent & ADK Agent
+	troupeAgent := agent.NewTroupeAgentWithToolsets(cfg, llm, internalTools, mcpToolsets)
+	troupeAgent.DebugMode = req.Debug    // Enable verbose debug output when requested
+	troupeAgent.IsWebMode = !req.CLIMode // CLI mode renders ANSI tool boxes; web mode uses markdown
+	troupeAgent.SessionService = sm.service
+	troupeAgent.AutoApprove = req.AutoApprove
 
 	// Wire credential redactor so secrets are masked in SSE output
 	if cs := tools.GetCredentialStore(); cs != nil {
-		astonishAgent.Redactor = cs.Redactor()
-		astonishAgent.CredentialStore = cs
-		astonishAgent.PendingSecrets = credentials.NewPendingVault(cs.Redactor())
+		troupeAgent.Redactor = cs.Redactor()
+		troupeAgent.CredentialStore = cs
+		troupeAgent.PendingSecrets = credentials.NewPendingVault(cs.Redactor())
 		// Inject Redactor into context so memory_save can Placeholderize()
 		ctx = credentials.WithRedactor(ctx, cs.Redactor())
 	}
@@ -923,22 +923,22 @@ func HandleChat(w http.ResponseWriter, r *http.Request) {
 		merged := store.NewMergedCredentialStore(svc.PersonalCredentials, svc.Credentials)
 		ctx = store.WithCredentialStore(ctx, merged)
 		// Wire agent-level resolver as fallback (in case context propagation fails)
-		astonishAgent.CredentialStore = credentials.NewStoreAdapter(merged)
-		if astonishAgent.PendingSecrets == nil {
-			astonishAgent.PendingSecrets = credentials.NewPendingVault(nil)
+		troupeAgent.CredentialStore = credentials.NewStoreAdapter(merged)
+		if troupeAgent.PendingSecrets == nil {
+			troupeAgent.PendingSecrets = credentials.NewPendingVault(nil)
 		}
 		// Hydrate redactor from PG store so credential values are masked in SSE
-		if astonishAgent.Redactor == nil {
-			astonishAgent.Redactor = credentials.NewRedactor()
-			ctx = credentials.WithRedactor(ctx, astonishAgent.Redactor)
+		if troupeAgent.Redactor == nil {
+			troupeAgent.Redactor = credentials.NewRedactor()
+			ctx = credentials.WithRedactor(ctx, troupeAgent.Redactor)
 		}
-		astonishAgent.Redactor.HydrateFromStore(merged)
+		troupeAgent.Redactor.HydrateFromStore(merged)
 	}
 
 	adkAgent, err := adkagent.New(adkagent.Config{
-		Name:        "astonish_agent",
+		Name:        "troupe_agent",
 		Description: cfg.Description,
-		Run:         astonishAgent.Run,
+		Run:         troupeAgent.Run,
 	})
 	if err != nil {
 		SendErrorSSE(w, flusher, fmt.Sprintf("Failed to create agent: %v", err))
@@ -951,7 +951,7 @@ func HandleChat(w http.ResponseWriter, r *http.Request) {
 	if !exists {
 		// Create new session
 		resp, err := sm.service.Create(ctx, &session.CreateRequest{
-			AppName: "astonish",
+			AppName: "troupe",
 			UserID:  req.SessionID,
 		})
 		if err != nil {
@@ -969,7 +969,7 @@ func HandleChat(w http.ResponseWriter, r *http.Request) {
 
 	// 7. Create Runner
 	rnr, err := runner.New(runner.Config{
-		AppName:        "astonish",
+		AppName:        "troupe",
 		Agent:          adkAgent,
 		SessionService: sm.service,
 	})

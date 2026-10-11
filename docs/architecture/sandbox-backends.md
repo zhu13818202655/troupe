@@ -9,7 +9,7 @@
 >
 > **Status (Incus removed).** Local sessions on macOS and Linux use Docker
 > OverlayFS (`pkg/sandbox/docker/`). `sandbox.backend: incus` is a legacy
-> alias for `docker`. There is no `astonish-incus` image. Kubernetes and
+> alias for `docker`. There is no `troupe-incus` image. Kubernetes and
 > OpenShell are unchanged as separate backends.
 >
 > **Status (Phase F shipped).**
@@ -18,7 +18,7 @@
 > plugin (production default), kernel overlayfs via `hostUsers: false`
 > (K8s 1.33+), `fuse-overlayfs` via `privileged: true` (dev/lab), or
 > Sysbox (`runtimeClassName: sysbox-runc`, kept for operators who
-> already run it). The same `astonish-sandbox-base` image and the
+> already run it). The same `troupe-sandbox-base` image and the
 > same Go binary serve all four. `pkg/sandbox/k8s/image.go`
 > auto-derives `imagePullPolicy` (`Always` for mutable tags such as
 > `dev`/`latest`/`edge`/`nightly`; `IfNotPresent` for immutable tags
@@ -48,9 +48,9 @@
 
 ## 1. Context & Motivation
 
-Astonish executes agent tool calls inside isolated Linux containers. Local Studio uses **Docker OverlayFS** as documented in `docs/architecture/sandbox.md`. That implementation works for single-host deployments — personal mode on a developer laptop, or platform mode on a single VM.
+Troupe executes agent tool calls inside isolated Linux containers. Local Studio uses **Docker OverlayFS** as documented in `docs/architecture/sandbox.md`. That implementation works for single-host deployments — personal mode on a developer laptop, or platform mode on a single VM.
 
-As Astonish transitions to an enterprise platform used by many teams within a company, the sandbox tier must acquire **cloud qualities**:
+As Troupe transitions to an enterprise platform used by many teams within a company, the sandbox tier must acquire **cloud qualities**:
 
 - **Resilience** -- no single point of failure in the application tier.
 - **Horizontal scalability** -- capacity grows by adding pods/nodes, not by vertical scaling.
@@ -65,9 +65,9 @@ The goal is capability parity: every operation that works on Docker OverlayFS wo
 
 ### Why elevated capabilities (and four ways to get them)
 
-Standard Kubernetes pods cannot do what Astonish sandboxes need:
+Standard Kubernetes pods cannot do what Troupe sandboxes need:
 
-- `mount -t overlay` from inside the pod (or `fuse-overlayfs` as a userspace equivalent) — required for Astonish's overlay template model.
+- `mount -t overlay` from inside the pod (or `fuse-overlayfs` as a userspace equivalent) — required for Troupe's overlay template model.
 - Run `systemd` as PID 1 (required for many sandbox workloads).
 - Run nested Docker (required when user tools use containerized services).
 - Install packages whose postinstall scripts use `mount`/`chroot`.
@@ -93,7 +93,7 @@ A naïvely privileged pod (`privileged: true`) has these capabilities but breaks
 
 Alternatives considered and rejected:
 
-- **gVisor** — blocks `mount`, breaks systemd, breaks nested Docker. Incompatible with Astonish's design.
+- **gVisor** — blocks `mount`, breaks systemd, breaks nested Docker. Incompatible with Troupe's design.
 - **Kata Containers** — VM isolation is stronger but requires nested virtualization on nodes (limits deployment targets) and does not solve the template-distribution problem. Overkill for the trusted/semi-trusted enterprise threat model.
 - **Privileged StatefulSet by default** — works but violates PSA posture and hands full node access to any sandbox-escape; only acceptable as the explicit dev/lab path 3.
 
@@ -103,7 +103,7 @@ A single `SandboxBackend` interface abstracts all sandbox operations. Three prod
 
 ```mermaid
 graph TB
-    Callers["Astonish Callers<br/>pkg/api/sandbox_handlers.go<br/>pkg/api/team_template_handlers.go<br/>pkg/agent (flow/tool exec)<br/>pkg/chat (chat runner)<br/>pkg/fleet (monitors)"]
+    Callers["Troupe Callers<br/>pkg/api/sandbox_handlers.go<br/>pkg/api/team_template_handlers.go<br/>pkg/agent (flow/tool exec)<br/>pkg/chat (chat runner)<br/>pkg/fleet (monitors)"]
 
     Callers --> Interface["SandboxBackend<br/>(interface)"]
 
@@ -121,17 +121,17 @@ graph TB
 
 | Mode | Backend |
 |------|---------|
-| Personal (`astonish daemon run`) | `DockerBackend` (empty / `docker` / legacy `incus`) |
-| Platform (`astonish daemon run`), `sandbox.backend: docker` | `DockerBackend` |
-| Platform (`astonish daemon run`), `sandbox.backend: k8s` | `K8sBackend` |
-| Platform (`astonish daemon run`), `sandbox.backend: openshell` | `OpenShellBackend` |
+| Personal (`troupe daemon run`) | `DockerBackend` (empty / `docker` / legacy `incus`) |
+| Platform (`troupe daemon run`), `sandbox.backend: docker` | `DockerBackend` |
+| Platform (`troupe daemon run`), `sandbox.backend: k8s` | `K8sBackend` |
+| Platform (`troupe daemon run`), `sandbox.backend: openshell` | `OpenShellBackend` |
 | Unit tests | `MockBackend` (in-memory) |
 
 The abstraction lives in `pkg/sandbox/backend.go`. Local sessions are `pkg/sandbox/docker/`. K8s code is under `pkg/sandbox/k8s/`. The OpenShell backend (`pkg/sandbox/openshell/`) delegates sandbox lifecycle to an NVIDIA OpenShell gateway deployed as a Helm subchart, gaining per-process Landlock/seccomp isolation and L7 egress policy enforcement on top of standard Kubernetes pod boundaries. See [`openshell-sandbox-backend.md`](openshell-sandbox-backend.md) for full details. Callers see only the interface. `sandbox.backend: incus` aliases to Docker.
 
 ## 3. `SandboxBackend` Interface Specification
 
-The interface encapsulates every operation Astonish performs against the sandbox tier. Concrete Go signatures will follow existing style in `pkg/sandbox/`; this is the conceptual contract.
+The interface encapsulates every operation Troupe performs against the sandbox tier. Concrete Go signatures will follow existing style in `pkg/sandbox/`; this is the conceptual contract.
 
 ### 3.1 Session lifecycle
 
@@ -258,7 +258,7 @@ Template creation, refresh, and deletion are interface operations on `SandboxBac
 
 `@base` is a **singleton per deployment**, materialized as a single row with `slug='base'`, `scope='global'`, `parent_template_id=NULL`, `is_default_for_scope=true`. It cannot be deleted. Only `superadmin` can edit it.
 
-First-run bootstrap (see §5.6) seeds `@base.top_layer_id` from a layer extracted from the prebuilt `astonish-sandbox-base:<version>` image.
+First-run bootstrap (see §5.6) seeds `@base.top_layer_id` from a layer extracted from the prebuilt `troupe-sandbox-base:<version>` image.
 
 **`@base` UUID normalization (Status: shipped).** The Go runtime refers to `@base` by the literal string `"@base"` (`sandbox.BaseTemplateID`), but the `sandbox_templates.id` column is `UUID NOT NULL`. The pgstore boundary normalizes both directions:
 
@@ -283,9 +283,9 @@ This lazy-refresh model is a deliberate safety property: a single `@base` edit c
 
 ## 4. Docker OverlayFS Backend (Local Default)
 
-Local sessions are `DockerBackend` in `pkg/sandbox/docker/`. `CreateSession` starts an `astonish-session-*` container from `ghcr.io/sap/astonish-sandbox-base`, composes overlay layers at `/sandbox/rootfs`, and records the session with `container_name`. Exec, file I/O, browser CDP, and template capture all go through that overlay. Persisted-upper host paths use Docker's structured `--mount` syntax because externally derived session IDs, including A2A IDs such as `a2a:direct:...`, may contain colons that are ambiguous in short `source:target` volume syntax. See `docs/architecture/sandbox.md`.
+Local sessions are `DockerBackend` in `pkg/sandbox/docker/`. `CreateSession` starts an `troupe-session-*` container from `ghcr.io/sap/troupe-sandbox-base`, composes overlay layers at `/sandbox/rootfs`, and records the session with `container_name`. Exec, file I/O, browser CDP, and template capture all go through that overlay. Persisted-upper host paths use Docker's structured `--mount` syntax because externally derived session IDs, including A2A IDs such as `a2a:direct:...`, may contain colons that are ambiguous in short `source:target` volume syntax. See `docs/architecture/sandbox.md`.
 
-Personal mode (`astonish daemon run`) uses this backend. Empty `sandbox.backend` and legacy `incus` both select Docker.
+Personal mode (`troupe daemon run`) uses this backend. Empty `sandbox.backend` and legacy `incus` both select Docker.
 
 Platform mode local/self-hosted deployments set `sandbox.backend: docker` (or leave it empty).
 
@@ -296,21 +296,21 @@ Platform mode local/self-hosted deployments set `sandbox.backend: docker` (or le
 ```mermaid
 graph TB
     subgraph Cluster["Kubernetes Cluster"]
-        subgraph NS1["Namespace: astonish (Helm release namespace)"]
+        subgraph NS1["Namespace: troupe (Helm release namespace)"]
             API1["API pod 1<br/>unprivileged<br/>default runtime"]
             API2["API pod 2<br/>unprivileged<br/>default runtime"]
             Worker["Worker pod<br/>unprivileged<br/>default runtime"]
         end
 
-        subgraph NS2["Namespace: astonish-sandbox"]
+        subgraph NS2["Namespace: troupe-sandbox"]
             Sess1["astn-sess-...<br/>Privilege path from §10<br/>Labels: org=my-org, team=general"]
             Sess2["astn-sess-...<br/>Privilege path from §10<br/>Labels: org=other, team=ops"]
             Fleet1["astn-fleet-...<br/>Privilege path from §10<br/>Labels: type=fleet"]
         end
 
         subgraph Storage["Storage"]
-            Layers["RWX PVC: astonish-layers<br/>/mnt/astonish-layers<br/>(RW in template-builder, RO in chat)"]
-            Uppers["RWX PVC: astonish-uppers<br/>/mnt/astonish-uppers<br/>(RW; persisted uppers for resume)"]
+            Layers["RWX PVC: troupe-layers<br/>/mnt/troupe-layers<br/>(RW in template-builder, RO in chat)"]
+            Uppers["RWX PVC: troupe-uppers<br/>/mnt/troupe-uppers<br/>(RW; persisted uppers for resume)"]
         end
 
         subgraph DB["PostgreSQL"]
@@ -334,7 +334,7 @@ graph TB
     SeedJob --> Layers
 ```
 
-Each sandbox pod also uses an `emptyDir` volume at `/var/astonish/overlay`
+Each sandbox pod also uses an `emptyDir` volume at `/var/troupe/overlay`
 for the overlay upper + work directories (must be on the same filesystem
 for `fuse-overlayfs` `renameat` to work).
 
@@ -342,26 +342,26 @@ for `fuse-overlayfs` `renameat` to work).
 
 - Chat sessions: `astn-sess-<sessionID>` (truncated to 27 chars after the prefix; DNS-1123 sanitized).
 - Fleet members: `astn-fleet-<plan>-<instance>`.
-- Template editor sessions: `astn-sess-<sessionID>` with label `astonish.io/purpose=team-template-editor`.
+- Template editor sessions: `astn-sess-<sessionID>` with label `troupe.io/purpose=team-template-editor`.
 - Layer-GC pods: `astn-layer-gc-<layerID-prefix>` (short-lived; see §5.6).
 - Helm seed Job pods: `{release}-sandbox-seed-...`.
 
 ### 5.2 Namespace model (decision Q2 = single namespace + labels)
 
-All sandbox pods — sessions, fleet members, and template editors — live in a single namespace. The Helm chart derives the name from `namespaces.prefix` (default `astonish`), yielding `astonish-sandbox`. Operators can override `namespaces.sandbox` directly when they need a non-derived name; the Go runtime accepts whatever the chart writes into `config.sandbox.kubernetes.namespace`.
+All sandbox pods — sessions, fleet members, and template editors — live in a single namespace. The Helm chart derives the name from `namespaces.prefix` (default `troupe`), yielding `troupe-sandbox`. Operators can override `namespaces.sandbox` directly when they need a non-derived name; the Go runtime accepts whatever the chart writes into `config.sandbox.kubernetes.namespace`.
 
 Isolation is via **labels + NetworkPolicy**:
 
-- `astonish.io/org` — organization slug
-- `astonish.io/team` — team slug
-- `astonish.io/session-id` — session identifier (for session pods)
-- `astonish.io/type` — `session` | `fleet` | `template-builder`
-- `astonish.io/template` — source template slug
-- `astonish.io/purpose` — `team-template-editor` (only set on team-template editor sessions; controls RW vs RO mount of the layers PVC)
+- `troupe.io/org` — organization slug
+- `troupe.io/team` — team slug
+- `troupe.io/session-id` — session identifier (for session pods)
+- `troupe.io/type` — `session` | `fleet` | `template-builder`
+- `troupe.io/template` — source template slug
+- `troupe.io/purpose` — `team-template-editor` (only set on team-template editor sessions; controls RW vs RO mount of the layers PVC)
 
 NetworkPolicy rules (applied namespace-wide):
 
-- Ingress: only from the `astonish` namespace (API/Worker pods) or from matching `astonish.io/org` labels (intra-org traffic between fleet members and sessions).
+- Ingress: only from the `troupe` namespace (API/Worker pods) or from matching `troupe.io/org` labels (intra-org traffic between fleet members and sessions).
 - Egress: DNS; registry for base image pulls; configured LLM/tool endpoints; explicit allow-list per org.
 - Cross-org ingress/egress denied by default.
 
@@ -373,44 +373,44 @@ This is decision Q2(b): simpler initial implementation; upgrade to namespace-per
 
 | Volume | Type | Mount | Mode | Purpose |
 |---|---|---|---|---|
-| `layers` | RWX PVC `astonish-layers` | `/mnt/astonish-layers` | RO (chat) / RW (template editor) | Shared content-addressed layer store + `@base/rootfs` |
-| `uppers` | RWX PVC `astonish-uppers` | `/mnt/astonish-uppers` | RW | Persisted uppers for resume after eviction |
-| `overlay` | `emptyDir` | `/var/astonish/overlay` | RW | Hosts both `upper/` and `work/` on the same filesystem |
+| `layers` | RWX PVC `troupe-layers` | `/mnt/troupe-layers` | RO (chat) / RW (template editor) | Shared content-addressed layer store + `@base/rootfs` |
+| `uppers` | RWX PVC `troupe-uppers` | `/mnt/troupe-uppers` | RW | Persisted uppers for resume after eviction |
+| `overlay` | `emptyDir` | `/var/troupe/overlay` | RW | Hosts both `upper/` and `work/` on the same filesystem |
 
-**Why a single `emptyDir` for both upperdir and workdir.** `fuse-overlayfs` performs `renameat(workdir, …, upperdir, …)` during directory copy-up. If `upper` and `work` lived on separate bind mounts — even from the same underlying device — the kernel would return `EXDEV`, because `renameat` refuses to cross mount boundaries. A single `emptyDir` with two subdirectories (`/var/astonish/overlay/upper` and `/var/astonish/overlay/work`) guarantees they share a mount.
+**Why a single `emptyDir` for both upperdir and workdir.** `fuse-overlayfs` performs `renameat(workdir, …, upperdir, …)` during directory copy-up. If `upper` and `work` lived on separate bind mounts — even from the same underlying device — the kernel would return `EXDEV`, because `renameat` refuses to cross mount boundaries. A single `emptyDir` with two subdirectories (`/var/troupe/overlay/upper` and `/var/troupe/overlay/work`) guarantees they share a mount.
 
-**RW vs RO layers PVC.** Chat-session pods mount `/mnt/astonish-layers` read-only. Team-template editor pods (label `astonish.io/purpose=team-template-editor`, see §5.17) mount it read-write so `SaveSessionAsTemplate` can stage the new layer directory directly without an intermediate exec channel.
+**RW vs RO layers PVC.** Chat-session pods mount `/mnt/troupe-layers` read-only. Team-template editor pods (label `troupe.io/purpose=team-template-editor`, see §5.17) mount it read-write so `SaveSessionAsTemplate` can stage the new layer directory directly without an intermediate exec channel.
 
-**Pod entrypoint** (`pkg/sandbox/k8s/overlay_entrypoint.go`, baked into `astonish-sandbox-base` at `/usr/local/bin/astonish-sandbox-entrypoint`):
+**Pod entrypoint** (`pkg/sandbox/k8s/overlay_entrypoint.go`, baked into `troupe-sandbox-base` at `/usr/local/bin/troupe-sandbox-entrypoint`):
 
 The entrypoint runs as PID 1 with the privilege path selected at chart-install time and performs, in order:
 
-1. **Resume path** — if `/mnt/astonish-uppers/<session-id>/upper.tar.zst` exists, stream it back into the local `emptyDir`:
+1. **Resume path** — if `/mnt/troupe-uppers/<session-id>/upper.tar.zst` exists, stream it back into the local `emptyDir`:
    ```sh
    tar --numeric-owner --xattrs --acls -I zstd \
-       -xf /mnt/astonish-uppers/<session-id>/upper.tar.zst \
-       -C /var/astonish/overlay/upper
+       -xf /mnt/troupe-uppers/<session-id>/upper.tar.zst \
+       -C /var/troupe/overlay/upper
    ```
-2. **Pre-seed first-level directories.** Create the top-level FS layout (`/proc /sys /dev /mnt /sandbox /var/astonish` and friends) inside `/var/astonish/overlay/upper` so subsequent bind mounts have valid mount points after the overlay is composed. This is what makes `chroot /sandbox/rootfs` resolve `/proc`, `/sys`, `/dev`, the layer PVC mounts, and the persisted-uppers mount.
+2. **Pre-seed first-level directories.** Create the top-level FS layout (`/proc /sys /dev /mnt /sandbox /var/troupe` and friends) inside `/var/troupe/overlay/upper` so subsequent bind mounts have valid mount points after the overlay is composed. This is what makes `chroot /sandbox/rootfs` resolve `/proc`, `/sys`, `/dev`, the layer PVC mounts, and the persisted-uppers mount.
 3. **Compose the overlay.** Build `lowerdir` from the layer chain (top-most layer first, so the leaf wins on conflicts):
    ```sh
    LOWER=$(echo "$TROUPE_LAYER_CHAIN" | awk -F, '{
        for (i = NF; i > 0; i--)
-           printf "/mnt/astonish-layers/%s/rootfs%s", $i, (i > 1 ? ":" : "")
+           printf "/mnt/troupe-layers/%s/rootfs%s", $i, (i > 1 ? ":" : "")
    }')
    fuse-overlayfs \
-       -o lowerdir=$LOWER,upperdir=/var/astonish/overlay/upper,workdir=/var/astonish/overlay/work,squash_to_root \
+       -o lowerdir=$LOWER,upperdir=/var/troupe/overlay/upper,workdir=/var/troupe/overlay/work,squash_to_root \
        /sandbox/rootfs
    ```
    `squash_to_root` flattens UID/GID inside the merged tree to 0/0 so user-namespaced pods see consistent ownership (apt/dpkg, systemd, etc. all expect root-owned `/etc`, `/usr`, …).
 4. **Bind kernel pseudo-filesystems** into the merged tree: `/proc`, `/sys`, `/dev`, `/dev/pts`, `/dev/shm` rebound at `/sandbox/rootfs/{proc,sys,dev,dev/pts,dev/shm}`.
 5. **Bind `/etc/resolv.conf`** from the host (pod) into the merged tree so DNS works without copy-up.
-6. **Bind the layer + uppers PVCs** under `/sandbox/rootfs/mnt/{astonish-layers,astonish-uppers}` so save/eviction tar pipelines running inside the chroot see them at the same paths.
-7. **`chroot /sandbox/rootfs`** and `exec /usr/local/bin/astonish node` (or `exec /sbin/init` if the template requires systemd). Before the chroot, the entrypoint bind-mounts the trusted base-image binary `/usr/local/bin/astonish-host` over `/sandbox/rootfs/usr/local/bin/astonish`; later `Backend.Exec` calls use the base-namespace `/usr/local/bin/astonish` wrapper to chroot into the same composed rootfs.
+6. **Bind the layer + uppers PVCs** under `/sandbox/rootfs/mnt/{troupe-layers,troupe-uppers}` so save/eviction tar pipelines running inside the chroot see them at the same paths.
+7. **`chroot /sandbox/rootfs`** and `exec /usr/local/bin/troupe node` (or `exec /sbin/init` if the template requires systemd). Before the chroot, the entrypoint bind-mounts the trusted base-image binary `/usr/local/bin/troupe-host` over `/sandbox/rootfs/usr/local/bin/troupe`; later `Backend.Exec` calls use the base-namespace `/usr/local/bin/troupe` wrapper to chroot into the same composed rootfs.
 
-**Sandbox binary loader contract.** The intended sandbox `astonish-host` build is static (`CGO_ENABLED=0`), but the `astonish-sandbox-base` image also creates `/lib/ld-musl-x86_64.so.1 -> x86_64-linux-gnu/ld-linux-x86-64.so.2` as a compatibility guard. Without that loader path, a dynamically linked musl binary bind-mounted into the chroot fails with exit `127` and no node handshake (`backend exec: no node response in stdout`) even though `/usr/local/bin/astonish` exists.
+**Sandbox binary loader contract.** The intended sandbox `troupe-host` build is static (`CGO_ENABLED=0`), but the `troupe-sandbox-base` image also creates `/lib/ld-musl-x86_64.so.1 -> x86_64-linux-gnu/ld-linux-x86-64.so.2` as a compatibility guard. Without that loader path, a dynamically linked musl binary bind-mounted into the chroot fails with exit `127` and no node handshake (`backend exec: no node response in stdout`) even though `/usr/local/bin/troupe` exists.
 
-**Browser-in-sandbox.** Direct K8s uses the same browser `Manager` callbacks as the other sandbox backends, but tunnels through `Backend.ExecStreaming` instead of Incus or OpenShell APIs. Browser tools first use the session pool's readiness barrier, which creates the sandbox on browser-first turns and waits for the pod's `Ready=True` condition before any browser exec. They then resolve the current chat session, launch CloakBrowser/Chromium inside `/sandbox/rootfs` via `/usr/local/bin/astonish-shell`, keep that exec stream open so the browser stack stays alive, and connect Rod to CDP through a `socat` tunnel on port `9222`. The PDF export browser manager is wired to the same K8s callbacks, using the session ID as the tunnel handle; it does not fall back to Incus or to a non-Chrome renderer. When KasmVNC is installed, the launcher uses `Xkasmvnc :0` and exposes the web handoff endpoint on port `6901`; otherwise it falls back to `Xvfb :99` for browser automation without visual handoff. The browser dependency catalog explicitly installs GLib/GObject (`libglib2.0-0` on Debian bookworm, `libglib2.0-0t64` on Ubuntu noble) because CloakBrowser is a standalone Chromium binary and apt cannot infer its shared-library dependencies.
+**Browser-in-sandbox.** Direct K8s uses the same browser `Manager` callbacks as the other sandbox backends, but tunnels through `Backend.ExecStreaming` instead of Incus or OpenShell APIs. Browser tools first use the session pool's readiness barrier, which creates the sandbox on browser-first turns and waits for the pod's `Ready=True` condition before any browser exec. They then resolve the current chat session, launch CloakBrowser/Chromium inside `/sandbox/rootfs` via `/usr/local/bin/troupe-shell`, keep that exec stream open so the browser stack stays alive, and connect Rod to CDP through a `socat` tunnel on port `9222`. The PDF export browser manager is wired to the same K8s callbacks, using the session ID as the tunnel handle; it does not fall back to Incus or to a non-Chrome renderer. When KasmVNC is installed, the launcher uses `Xkasmvnc :0` and exposes the web handoff endpoint on port `6901`; otherwise it falls back to `Xvfb :99` for browser automation without visual handoff. The browser dependency catalog explicitly installs GLib/GObject (`libglib2.0-0` on Debian bookworm, `libglib2.0-0t64` on Ubuntu noble) because CloakBrowser is a standalone Chromium binary and apt cannot infer its shared-library dependencies.
 
 **Rejected alternative.** A separate init container performing the overlay mount would require either a `hostPath` volume (rejected — violates Pod Security Admission `baseline`) or a CSI volume that supports `mountPropagation: Bidirectional` between init and main containers (complex; not all CSI drivers honour it). Doing the mount in the main container's PID 1 keeps the pod spec minimal and works with any CSI driver.
 
@@ -419,15 +419,15 @@ The entrypoint runs as PID 1 with the privilege path selected at chart-install t
 1. Resolve the requested template and its **layer chain**:
    - Read `sandbox_templates` row from PG; if `template_slug` is not supplied, apply default-template resolution (§5.13).
    - Walk `parent_template_id` from the chosen template up to the root (`@base`), collecting each ancestor's `top_layer_id`. Reverse to obtain bottom-up order.
-   - Verify every layer exists on the layers PVC at `/mnt/astonish-layers/<layer-id>/rootfs/`.
+   - Verify every layer exists on the layers PVC at `/mnt/troupe-layers/<layer-id>/rootfs/`.
    - Reject if chain depth > `sandbox.layers.maxChainDepth` (default 20; §5.11).
 2. Generate deterministic pod name: `astn-sess-<dns-safe-prefix>-<hash>` (`pkg/sandbox/k8s/session.go::podNameForSession`). The readable prefix is DNS-1123 sanitized and the hash suffix preserves uniqueness for channel session IDs that contain characters such as `:`, `@`, or `_`.
 3. Build `PodSpec`:
    - Privilege path from §10 (FUSE plugin / userns / privileged / Sysbox), driven by `sandbox.overlay.*` Helm values.
    - `imagePullPolicy` derived by `pkg/sandbox/k8s/image.go::imagePullPolicy()` (`Always` for mutable tags such as `dev`/`latest`/`edge`/`nightly`; `IfNotPresent` for digest pins and immutable tags).
-   - Namespace: configured sandbox namespace (default `astonish-sandbox`).
-   - Labels: `astonish.io/{org,team,session-id,type=session,template}`; optional `astonish.io/purpose=team-template-editor` for editor sessions. The `session-id` label is DNS-safe and may be hashed for channel sessions.
-   - Annotations: `astonish.io/created-by`, `astonish.io/created-at`, `astonish.io/session-id=<exact chat/channel session ID>`, `astonish.io/layer-chain=<comma-separated-ids>`.
+   - Namespace: configured sandbox namespace (default `troupe-sandbox`).
+   - Labels: `troupe.io/{org,team,session-id,type=session,template}`; optional `troupe.io/purpose=team-template-editor` for editor sessions. The `session-id` label is DNS-safe and may be hashed for channel sessions.
+   - Annotations: `troupe.io/created-by`, `troupe.io/created-at`, `troupe.io/session-id=<exact chat/channel session ID>`, `troupe.io/layer-chain=<comma-separated-ids>`.
    - Volumes: `layers` (RO or RW depending on purpose), `uppers` (RW), `overlay` (`emptyDir`).
    - Main container entrypoint as above; resource requests/limits from `sandbox.requests.*` and `sandbox.limits.*` (auto-derived from limits when requests are zero — see §6).
 4. **Self-heal step (Status: shipped).** Before returning, `CreateSession` verifies the pod actually exists in the cluster — not just in any cached registry entry. This protects against stale registry rows pointing at pods that were deleted out-of-band (e.g., node failure, manual `kubectl delete`); when the verification fails, the registry entry is dropped and the create proceeds normally.
@@ -438,13 +438,13 @@ The entrypoint runs as PID 1 with the privilege path selected at chart-install t
 **Start / Stop** (decision Q1(b) — evict via tar stream to the uppers PVC):
 
 - Sessions stay running while active. On idle timeout:
-  - Each session pod mounts only its own uppers PVC subdirectory at `/mnt/astonish-uppers`. Filesystem-safe session IDs use the session ID directly; channel IDs with punctuation (for example email thread IDs) use a deterministic `sid-<hash>` subdirectory. The full PVC root is not visible to the chrooted sandbox, so a session cannot enumerate or read another session's persisted upper directory through `/mnt/astonish-uppers`.
-  - `StopSession` first marks the row `evicting`, then persists the live pod's writable layer by streaming `/var/astonish/overlay/upper` to that mounted session subdirectory via
-    `tar --numeric-owner --xattrs --acls -I "zstd --adapt -T0" --exclude=/var/astonish/overlay/upper/mnt/astonish-uppers -C /var/astonish/overlay/upper -cf /mnt/astonish-uppers/upper.tar.zst.tmp . && mv .../upper.tar.zst.tmp .../upper.tar.zst`.
+  - Each session pod mounts only its own uppers PVC subdirectory at `/mnt/troupe-uppers`. Filesystem-safe session IDs use the session ID directly; channel IDs with punctuation (for example email thread IDs) use a deterministic `sid-<hash>` subdirectory. The full PVC root is not visible to the chrooted sandbox, so a session cannot enumerate or read another session's persisted upper directory through `/mnt/troupe-uppers`.
+  - `StopSession` first marks the row `evicting`, then persists the live pod's writable layer by streaming `/var/troupe/overlay/upper` to that mounted session subdirectory via
+    `tar --numeric-owner --xattrs --acls -I "zstd --adapt -T0" --exclude=/var/troupe/overlay/upper/mnt/troupe-uppers -C /var/troupe/overlay/upper -cf /mnt/troupe-uppers/upper.tar.zst.tmp . && mv .../upper.tar.zst.tmp .../upper.tar.zst`.
     Only after that capture succeeds does it delete the pod. If capture fails, the pod stays running so data is not lost.
   - The same persistence script is installed as a Kubernetes container `preStop` hook with a 90-second termination grace period. This covers manual `kubectl delete pod` and normal Kubernetes termination paths that bypass the backend's `StopSession` method.
   - Row in `sandbox_sessions` stays; status updates `evicting` → `evicted` and clears the pod binding after deletion. At eviction time, the original resolved layer chain is retained in the registry so resume does not silently fall back to plain `@base` for configured base/team-template sessions.
-- On next tool interaction, `StartSession` recreates the pod with the same `TROUPE_SESSION_ID`; the entrypoint resume step (above) streams `/mnt/astonish-uppers/upper.tar.zst` back into the local `emptyDir` before mounting the overlay. Resume latency: 1–5 s depending on upper-layer size.
+- On next tool interaction, `StartSession` recreates the pod with the same `TROUPE_SESSION_ID`; the entrypoint resume step (above) streams `/mnt/troupe-uppers/upper.tar.zst` back into the local `emptyDir` before mounting the overlay. Resume latency: 1–5 s depending on upper-layer size.
 - Isolation invariant: the persisted-upper path is derived only from the registry row's exact session ID. API callers never provide an upper path. Session IDs containing `/`, `.` or `..` are rejected before any pod/tar/cleanup script is built; other non-path-safe IDs are mapped through the deterministic hash described above, and cleanup deletes only that validated session subdirectory.
 
 This preserves Incus's "container exists but stopped, resume later" semantics while keeping each session's upper layer isolated under its own uppers-PVC directory.
@@ -454,7 +454,7 @@ This preserves Incus's "container exists but stopped, resume later" semantics wh
 1. Delete pod via the K8s API.
 2. Kubelet unmounts overlay and deletes the `emptyDir`-backed upper layer automatically.
 3. Delete any Services / Ingress rules for the session.
-4. Remove persisted upper (if previously evicted): `rm -rf /mnt/astonish-uppers/<session-id>/`.
+4. Remove persisted upper (if previously evicted): `rm -rf /mnt/troupe-uppers/<session-id>/`.
 5. Delete row from `sandbox_sessions`.
 6. Emit audit event.
 
@@ -462,7 +462,7 @@ This preserves Incus's "container exists but stopped, resume later" semantics wh
 
 **State** (`SessionState`):
 
-| K8s phase | Astonish state |
+| K8s phase | Troupe state |
 |---|---|
 | `Pending` | `creating` |
 | `Running` (Ready=true) | `running` |
@@ -483,7 +483,7 @@ This preserves Incus's "container exists but stopped, resume later" semantics wh
 
 - Same API with `tty=true&stdin=true`.
 - Resize via SPDY control frames (client-go `remotecommand.TerminalSize` channel).
-- Preserves Astonish's current PTY behavior (window-resize control frames in today's Incus websocket path).
+- Preserves Troupe's current PTY behavior (window-resize control frames in today's Incus websocket path).
 
 ### 5.5 File push / pull
 
@@ -513,16 +513,16 @@ Implemented in `pkg/sandbox/k8s/files.go`. Matches capability of Incus Files API
   - `version` (optimistic concurrency)
   - `is_default_for_scope` (at most one per scope, scope_ref_id)
   - `purpose` (`NULL` or `'fleet'`)
-- Layers live on the RWX layers PVC at `/mnt/astonish-layers/<sha256>/rootfs/` and are indexed in `sandbox_layers` (§5.11). A session composes the full chain as ordered lowerdirs (§5.3).
+- Layers live on the RWX layers PVC at `/mnt/troupe-layers/<sha256>/rootfs/` and are indexed in `sandbox_layers` (§5.11). A session composes the full chain as ordered lowerdirs (§5.3).
 - No template ever owns its layers exclusively -- layer lifetime is governed by reference counting (§5.12).
 
 **First-run bootstrap (Status: shipped as a Helm hook).**
 
-The `@base` template is seeded by a Helm `post-install,post-upgrade` Job (`{release}-sandbox-seed`) defined at `deploy/helm/astonish/templates/sandbox/seed-job.yaml`. The Job:
+The `@base` template is seeded by a Helm `post-install,post-upgrade` Job (`{release}-sandbox-seed`) defined at `deploy/helm/troupe/templates/sandbox/seed-job.yaml`. The Job:
 
-- Runs the same `astonish-sandbox-base` image used by sandbox pods, with `imagePullPolicy: IfNotPresent` hard-pinned (the chart's runtime auto-detection does not apply here — operators bump the chart, expecting determinism).
-- Mounts the `astonish-layers` PVC RW at `/mnt/astonish-layers`.
-- Tars its own rootfs (excluding `/proc /sys /dev /mnt /sandbox /var/astonish`) into `/mnt/astonish-layers/@base/rootfs/`.
+- Runs the same `troupe-sandbox-base` image used by sandbox pods, with `imagePullPolicy: IfNotPresent` hard-pinned (the chart's runtime auto-detection does not apply here — operators bump the chart, expecting determinism).
+- Mounts the `troupe-layers` PVC RW at `/mnt/troupe-layers`.
+- Tars its own rootfs (excluding `/proc /sys /dev /mnt /sandbox /var/troupe`) into `/mnt/troupe-layers/@base/rootfs/`.
 - **Idempotency guard:** if `@base/rootfs` exists and is non-empty, the Job exits 0 without re-tarring. To force a reseed, an operator clears `@base/rootfs/` (e.g., from a debug pod) and runs `helm upgrade`.
 - `helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded` — pods are auto-cleaned on success.
 - Hook weight `5` so it runs after PVCs/RBAC are ready.
@@ -537,9 +537,9 @@ Input: `parent_template_slug`, new `slug`, `scope`, `scope_ref_id`, optional `cu
 
 1. Resolve the parent's layer chain (walk `parent_template_id`).
 2. Create a short-lived **template-builder pod**:
-   - Privilege path from §10, label `astonish.io/type=template-builder`.
+   - Privilege path from §10, label `troupe.io/type=template-builder`.
    - Overlay composed from the parent's full layer chain as lowerdirs + fresh `emptyDir` upper.
-   - `/mnt/astonish-layers` mounted RW (builder is trusted).
+   - `/mnt/troupe-layers` mounted RW (builder is trusted).
 3. Exec customization commands in the builder pod (apt install, file copies, project clone, build steps — typical "ready-to-code" fleet template setup falls here).
 4. On success: run the in-pod tar-to-layer pipeline (see below), yielding a new content-addressed layer.
 5. In a single PG transaction: insert layer row, insert template row, increment ref_count on the new layer.
@@ -553,17 +553,17 @@ Input: live session ID, new `slug`, `scope`, `scope_ref_id`.
 
 The difference from `CreateTemplate` is that the content source is the **session's upper layer** (the user's effective changes since the template was composed). Parent is the session's current template.
 
-1. Session pod is running; `/mnt/astonish-layers` is mounted RW inside it (team-template editor sessions get this automatically via the `astonish.io/purpose=team-template-editor` label; see §5.17).
-2. Astonish exec's into the session pod and runs the in-pod tar-to-layer pipeline, streaming **only `/var/astonish/overlay/upper`** (not the merged view). The shipped script is bash with `pipefail`: two sequential tar streams (hash, then extract). It must **not** stage a full tar on `/tmp` (ENOSPC after a base-layer install) and must **not** use a fifo+tee pipeline (virtiofs rejects `mkfifo`; tee can deadlock/OOM Colima). Docker Desktop virtiofs also rejects xattrs/acls on extract; Docker captures with `--numeric-owner` only, Kubernetes/CephFS still uses `--xattrs --acls`.
+1. Session pod is running; `/mnt/troupe-layers` is mounted RW inside it (team-template editor sessions get this automatically via the `troupe.io/purpose=team-template-editor` label; see §5.17).
+2. Troupe exec's into the session pod and runs the in-pod tar-to-layer pipeline, streaming **only `/var/troupe/overlay/upper`** (not the merged view). The shipped script is bash with `pipefail`: two sequential tar streams (hash, then extract). It must **not** stage a full tar on `/tmp` (ENOSPC after a base-layer install) and must **not** use a fifo+tee pipeline (virtiofs rejects `mkfifo`; tee can deadlock/OOM Colima). Docker Desktop virtiofs also rejects xattrs/acls on extract; Docker captures with `--numeric-owner` only, Kubernetes/CephFS still uses `--xattrs --acls`.
    ```sh
    SHA=$(tar --numeric-owner --xattrs --acls --sort=name --mtime=@0 \
-       -C /var/astonish/overlay/upper -cf - . | sha256sum)
+       -C /var/troupe/overlay/upper -cf - . | sha256sum)
    tar --numeric-owner --xattrs --acls --sort=name --mtime=@0 \
-       -C /var/astonish/overlay/upper -cf - . \
-     | tar --numeric-owner -C /mnt/astonish-layers/__staging-<id>/rootfs -xf -
+       -C /var/troupe/overlay/upper -cf - . \
+     | tar --numeric-owner -C /mnt/troupe-layers/__staging-<id>/rootfs -xf -
    ```
    The helper is `pkg/sandbox.OverlayCaptureScript`, used by both Docker and Kubernetes. Docker emits SSE heartbeats while this copy runs so a silent minute does not look like a hang and does not drop the Studio stream.
-3. Rename staging directory to `/mnt/astonish-layers/<sha256>/`. If a directory with that sha already exists (content already stored as a layer under a different scope, for example), skip the rename and remove staging.
+3. Rename staging directory to `/mnt/troupe-layers/<sha256>/`. If a directory with that sha already exists (content already stored as a layer under a different scope, for example), skip the rename and remove staging.
 4. In a single PG transaction:
    - `INSERT INTO sandbox_layers ... ON CONFLICT DO NOTHING` — **deduplication falls out automatically**: identical upper contents produce identical sha256 and therefore reuse an existing layer.
    - `INSERT INTO sandbox_templates (slug, scope, parent_template_id=<session.template_id>, top_layer_id=<sha256>, ...)`.
@@ -580,7 +580,7 @@ Authorization: scope-appropriate actor required. `save-as-@base` is a privileged
 - `--numeric-owner` — required because user-namespaced pods remap UID/GID; textual user lookups on the shared PVC would not resolve.
 - `--xattrs --acls` — preserves `security.capability`, SELinux labels, and ACLs set by apt/dpkg.
 - Sparse files handled natively by GNU tar (`--sparse` added if profiling shows value).
-- `tar` (GNU with xattr support) and `zstd` must be present in `astonish-sandbox-base` image (they are).
+- `tar` (GNU with xattr support) and `zstd` must be present in `troupe-sandbox-base` image (they are).
 
 **RefreshTemplate (Status: stub — returns "not yet implemented").**
 
@@ -599,8 +599,8 @@ The original Round 2 design imagined a deferred reconciler. The shipped implemen
 3. Resolve the layer to free.
 4. Launch a GC pod named `astn-layer-gc-<layer-id-prefix>` in the sandbox namespace:
    - Image: `alpine:3.21` (small, fast pull).
-   - Mounts the `astonish-layers` PVC RW.
-   - Command: `rm -rf /mnt/astonish-layers/<layer-id>/`.
+   - Mounts the `troupe-layers` PVC RW.
+   - Command: `rm -rf /mnt/troupe-layers/<layer-id>/`.
    - `restartPolicy: Never`; `activeDeadlineSeconds` bounded.
 5. Wait for the GC pod to terminate `Succeeded`; delete it.
 6. In a single PG transaction:
@@ -619,7 +619,7 @@ The application-layer `reclaimLayerBytes` helper (`pkg/api/team_template_handler
 **Org networks** (decision Q2(b) — labels + NetworkPolicy):
 
 - `EnsureOrgNetwork(orgSlug)`:
-  - Apply/update a `NetworkPolicy` in the sandbox namespace that selects pods with `astonish.io/org=<slug>`.
+  - Apply/update a `NetworkPolicy` in the sandbox namespace that selects pods with `troupe.io/org=<slug>`.
   - Ingress: from same-org pods + from the control-plane namespace.
   - Egress: DNS, allowed external endpoints, same-org pods.
 - `DeleteOrgNetwork(orgSlug)`:
@@ -629,7 +629,7 @@ The application-layer `reclaimLayerBytes` helper (`pkg/api/team_template_handler
 **Port exposure:**
 
 - `ExposePort(sessionID, port, proto)`:
-  - Create a `Service` (ClusterIP) in the sandbox namespace named `sess-<sessionID>-<port>` with selector `astonish.io/session-id=<id>` and port mapping.
+  - Create a `Service` (ClusterIP) in the sandbox namespace named `sess-<sessionID>-<port>` with selector `troupe.io/session-id=<id>` and port mapping.
   - Optional: create an `Ingress` (Gateway) entry if external URL exposure is requested (org-configured base domain).
   - Returns `ExposedAddr` = in-cluster DNS + optional external URL.
 - `UnexposePort`:
@@ -644,13 +644,13 @@ The application-layer `reclaimLayerBytes` helper (`pkg/api/team_template_handler
 
 Naming: `astn-fleet-<plan>-<instance>`.
 
-Lifecycle is session-like (create pod, exec, destroy) with label `astonish.io/type=fleet`. `EnsureFleetContainer` is idempotent: check-then-create with optimistic concurrency.
+Lifecycle is session-like (create pod, exec, destroy) with label `troupe.io/type=fleet`. `EnsureFleetContainer` is idempotent: check-then-create with optimistic concurrency.
 
 `ListSessionContainers` filters pods by labels across `session` and `fleet` types.
 
 ### 5.9 RBAC
 
-`astonish` API/Worker ServiceAccount needs:
+`troupe` API/Worker ServiceAccount needs:
 
 - On the sandbox namespace:
   - `pods`: get, list, watch, create, delete, deletecollection
@@ -667,23 +667,23 @@ The Helm chart creates the `Role` and `RoleBinding` in the sandbox namespace bou
 
 ### 5.10 Observability
 
-- Session lifecycle events are logged through Astonish's existing event pipeline.
+- Session lifecycle events are logged through Troupe's existing event pipeline.
 - Backend health is exposed via `Health(ctx)` and surfaced in `/api/healthz`:
   - K8s API reachable
   - Sandbox namespace exists
   - Layers PVC mount accessible from at least one node (probe pod or DaemonSet)
-  - Base template present in the layers PVC (`/mnt/astonish-layers/@base/rootfs/`)
-- `kubectl logs` is available for support/debugging; Astonish also provides UI-accessible log retrieval via backend interface.
+  - Base template present in the layers PVC (`/mnt/troupe-layers/@base/rootfs/`)
+- `kubectl logs` is available for support/debugging; Troupe also provides UI-accessible log retrieval via backend interface.
 - Pod lifecycle events are watched (not polled) -- improvement over the current Incus polling model.
 
 ### 5.11 Layer store
 
-The layer store is the content-addressed backing for every template and every evicted session upper. It is shared across all Astonish pods via the same RWX PVC mount (CephFS / NFS / EFS / Manila / Azure Files), indexed in PG, and reclaimed by a combination of synchronous GC pods (§5.6) and an optional deferred reconciler (§5.12).
+The layer store is the content-addressed backing for every template and every evicted session upper. It is shared across all Troupe pods via the same RWX PVC mount (CephFS / NFS / EFS / Manila / Azure Files), indexed in PG, and reclaimed by a combination of synchronous GC pods (§5.6) and an optional deferred reconciler (§5.12).
 
 **Layout on the layers PVC:**
 
 ```
-/mnt/astonish-layers/
+/mnt/troupe-layers/
   @base/
     rootfs/         ← seeded by the Helm hook Job (§5.6)
   <sha256>/
@@ -697,20 +697,20 @@ The layer store is the content-addressed backing for every template and every ev
 
 - **Content-addressed.** Layer ID is `sha256sum` of the canonical tar stream produced during layer creation (fixed options: `tar --numeric-owner --xattrs --acls --sort=name --mtime=@0`). Two independent `SaveSessionAsTemplate` operations that produce byte-identical uppers resolve to the same `layer_id`; the second operation finds the existing row via `ON CONFLICT DO NOTHING` and reuses it.
 - **Immutable.** Once written, a layer's contents never change. Refreshes and edits produce a new layer; old layer remains until reclaimed.
-- **Shared across pods.** Every Astonish pod (control-plane + sandbox) mounts `/mnt/astonish-layers` (RO in chat-session pods, RW in template editor / builder / save pods). No per-pod caching; the PVC is the canonical location.
+- **Shared across pods.** Every Troupe pod (control-plane + sandbox) mounts `/mnt/troupe-layers` (RO in chat-session pods, RW in template editor / builder / save pods). No per-pod caching; the PVC is the canonical location.
 - **Ordered by `parent_layer_id`.** The layer DAG mirrors the template DAG but at content-addressed granularity. A layer may appear in many templates' chains (sharing is the default).
 
 **Chain-depth cap:**
 
-- Overlayfs (kernel and `fuse-overlayfs`) supports hundreds of lowerdirs on modern kernels, but practical limits vary with distro and kernel build. Astonish caps template-chain depth at **`sandbox.layers.maxChainDepth` (default 20)**.
+- Overlayfs (kernel and `fuse-overlayfs`) supports hundreds of lowerdirs on modern kernels, but practical limits vary with distro and kernel build. Troupe caps template-chain depth at **`sandbox.layers.maxChainDepth` (default 20)**.
 - Exceeding the cap on `CreateTemplate` / `SaveSessionAsTemplate` / `RefreshTemplate` is a validation error.
 - A **flatten job** (Phase E) walks the DAG, identifies chains approaching the cap, and merges them into a single new layer. Not yet implemented.
 
 **Operator introspection:**
 
 - `psql -c "SELECT layer_id, parent_layer_id, scope, ref_count, size_bytes FROM platform.sandbox_layers ORDER BY created_at DESC LIMIT 50"`
-- `ls /mnt/astonish-layers/` shows every layer dir.
-- `kubectl -n astonish-sandbox get pods -o=jsonpath='{.items[*].metadata.annotations.troupe\.io/layer-chain}'` shows which chain each running session uses.
+- `ls /mnt/troupe-layers/` shows every layer dir.
+- `kubectl -n troupe-sandbox get pods -o=jsonpath='{.items[*].metadata.annotations.troupe\.io/layer-chain}'` shows which chain each running session uses.
 
 **Orphan detection** (runs hourly inside the deferred GC reconciler when enabled; see §5.12):
 
@@ -748,20 +748,20 @@ Some reclamation patterns benefit from background batching: orphan detection (§
 - Runs on a schedule from `sandbox.kubernetes.gc.interval_minutes` (default 60).
 - Reclaims unreferenced layer rows after `sandbox.kubernetes.gc.layer_grace_hours` (default 24).
 - Reclaims uppers-PVC directories with no matching `sandbox_sessions` row only after `sandbox.kubernetes.gc.orphan_upper_grace_minutes` (default 60), so races during session creation/eviction do not become data loss.
-- Reclaims stale evicted or terminated session uppers after `sandbox.kubernetes.gc.evicted_upper_retention_hours` (default 336 / 14 days; set `evicted_upper_retention_disabled: true` to disable this retention sweep). This policy deletes `/mnt/astonish-uppers/<session-id>/` first and deletes the owning `sandbox_sessions` row only after the directory deletion succeeds.
+- Reclaims stale evicted or terminated session uppers after `sandbox.kubernetes.gc.evicted_upper_retention_hours` (default 336 / 14 days; set `evicted_upper_retention_disabled: true` to disable this retention sweep). This policy deletes `/mnt/troupe-uppers/<session-id>/` first and deletes the owning `sandbox_sessions` row only after the directory deletion succeeds.
 - Bounds upper cleanup with `sandbox.kubernetes.gc.max_upper_reclaims_per_cycle` (default 500) and batches stale upper directory deletion so one cycle cannot spawn one pod per stale session.
 - Skips pinned sessions, active states (`creating`, `running`, `resuming`, `evicting`), rows with a pod name, rows with live Running/Pending/Unknown K8s pods, non-K8s backend rows, and unsafe session IDs.
 - Cleans crashed template-builder staging directories, orphan session/fleet pods whose registry row disappeared, and old completed GC helper pods.
 
-**Retention semantics.** Stale evicted upper cleanup removes sandbox resumability, not chat history. The chat transcript, artifact metadata, and transcript fallback content remain in the session store. If the user later interacts with an old chat after its upper was reclaimed, Astonish creates a fresh sandbox from the template rather than restoring the old writable filesystem.
+**Retention semantics.** Stale evicted upper cleanup removes sandbox resumability, not chat history. The chat transcript, artifact metadata, and transcript fallback content remain in the session store. If the user later interacts with an old chat after its upper was reclaimed, Troupe creates a fresh sandbox from the template rather than restoring the old writable filesystem.
 
-**Grace period rationale.** Short-lived zero-ref or untracked-upper windows happen legitimately during template refreshes, manual rollbacks, and eviction/create races. The layer and orphan-upper grace periods are safety margins around those windows. The evicted-upper retention period is a production storage bound for the `astonish-uppers` RWX PVC.
+**Grace period rationale.** Short-lived zero-ref or untracked-upper windows happen legitimately during template refreshes, manual rollbacks, and eviction/create races. The layer and orphan-upper grace periods are safety margins around those windows. The evicted-upper retention period is a production storage bound for the `troupe-uppers` RWX PVC.
 
 ### 5.13 Default template resolution
 
 > **Status: design only.** The cascading resolver below is the Round 2 design. The shipped K8s backend currently resolves to `@base` directly when no template is supplied; the per-scope `is_default_for_scope` machinery (settable by org/team admins) is not yet wired into the chat / session creation paths. Templates are explicitly selected by callers in the team-template editor flow (§5.17) and by the chat UI when the user picks one. Implementing the resolver is a follow-up.
 
-When a user creates a session without specifying a template, Astonish resolves the default with a deterministic cascade. Resolution is performed in the calling code (chat / session API), not in the backend — backends do not know about orgs/teams/users.
+When a user creates a session without specifying a template, Troupe resolves the default with a deterministic cascade. Resolution is performed in the calling code (chat / session API), not in the backend — backends do not know about orgs/teams/users.
 
 ```go
 func resolveDefaultTemplate(user User) Template {
@@ -800,7 +800,7 @@ All setters use the partial unique index on `sandbox_templates (scope, COALESCE(
 
 ### 5.14 Cross-pod session continuity and PG event journal
 
-In a multi-pod Astonish deployment, any pod must be able to:
+In a multi-pod Troupe deployment, any pod must be able to:
 
 - **Create** a sandbox session (solved by shared PG + shared RWX PVC + shared K8s namespace; §5.3).
 - **Exec** against any session created by any pod (solved by shared K8s namespace; `pods/exec` is stateless).
@@ -846,12 +846,12 @@ ALTER TABLE chat_sessions
 
 1. Client connects to pod P: `GET /chat/<id>/stream?since=<client_last_seq>`.
 2. P queries: `SELECT * FROM chat_session_events WHERE chat_session_id = $1 AND seq > $2 ORDER BY seq`. Stream each event to the client.
-3. After replay, P opens a `LISTEN chat_session_<id>` on a shared listener connection (one per Astonish pod, multiplexed to all subscribed SSE handlers via an in-process pub/sub).
+3. After replay, P opens a `LISTEN chat_session_<id>` on a shared listener connection (one per Troupe pod, multiplexed to all subscribed SSE handlers via an in-process pub/sub).
 4. On each NOTIFY, P queries for events with `seq > last_delivered` and streams them.
 5. Client disconnect: close the SSE; drop the in-process subscription. Journal persists.
 6. If pod P dies, client reconnects (auto-retry in the SSE client) to any pod; new pod resumes from the client-supplied `since` or from `chat_sessions.last_seq` (whichever is authoritative per client protocol). No data loss; no duplicated events.
 
-**What this replaces.** Sticky sessions on Ingress are no longer required for correctness. They may still be used for latency reasons (reduced replay volume when the same pod keeps serving the same client) but Astonish does not assume them.
+**What this replaces.** Sticky sessions on Ingress are no longer required for correctness. They may still be used for latency reasons (reduced replay volume when the same pod keeps serving the same client) but Troupe does not assume them.
 
 **Retention.** `chat_session_events` rows are retained until the `chat_sessions.status` transitions to `'closed'`. On close, the rows are deleted by a cascading `DELETE FROM chat_session_events WHERE chat_session_id = $1` in the same transaction. No time-based retention beyond that (decision: until chat closes).
 
@@ -902,7 +902,7 @@ Team admins customize team templates through a dedicated editor session. The flo
 
 **Editor session pod.** When a team admin opens the editor, the API creates a sandbox session with:
 
-- `astonish.io/purpose=team-template-editor` (the only label that triggers RW mount of the layers PVC; see §5.2 / §5.3).
+- `troupe.io/purpose=team-template-editor` (the only label that triggers RW mount of the layers PVC; see §5.2 / §5.3).
 - A normal layer chain anchored at `@base` (or at the current team-template top layer, when one exists).
 - Pod name `astn-sess-<sessionID>` like any other session.
 
@@ -926,9 +926,9 @@ The editor session is a regular sandbox pod in every other respect: same image, 
 
 **`deleteTeamTemplateState` helper** removes the application-layer rows (template, session bindings, audit) in a single PG transaction.
 
-**Chroot shell wrapper.** The editor terminal (`pkg/api/sandbox_terminal.go`) connects via WebSocket and execs `astonish-shell` inside the pod. `astonish-shell` is a thin wrapper baked into the base image that:
+**Chroot shell wrapper.** The editor terminal (`pkg/api/sandbox_terminal.go`) connects via WebSocket and execs `troupe-shell` inside the pod. `troupe-shell` is a thin wrapper baked into the base image that:
 
-- Re-execs the trusted `astonish` binary inside the chroot (the same binary that runs as PID 1's payload).
+- Re-execs the trusted `troupe` binary inside the chroot (the same binary that runs as PID 1's payload).
 - Bind-mounts the host-layer binary over the overlay's wrapper so chroot entry and subsequent `Backend.Exec` tool calls resolve to the same trusted build.
 - Provides a stable command surface for the UI's "Open shell" button regardless of what the user has installed inside the overlay.
 
@@ -940,13 +940,13 @@ The editor session is a regular sandbox pod in every other respect: same image, 
 
 ### 6.1 Helm values (the authoritative shape)
 
-The Helm chart at `deploy/helm/astonish/values.yaml` is the source of truth for sandbox configuration. The schema below documents the keys that drive the K8s backend; non-sandbox keys are unchanged.
+The Helm chart at `deploy/helm/troupe/values.yaml` is the source of truth for sandbox configuration. The schema below documents the keys that drive the K8s backend; non-sandbox keys are unchanged.
 
 ```yaml
 # Namespace layout. One prefix drives all derived names; override
 # controlPlane / sandbox explicitly only when you need a non-derived name.
 namespaces:
-  prefix: astonish              # → controlPlane: astonish, sandbox: astonish-sandbox
+  prefix: troupe              # → controlPlane: troupe, sandbox: troupe-sandbox
   controlPlane: ""              # "" → "{prefix}"
   sandbox: ""                   # "" → "{prefix}-sandbox"
 
@@ -967,7 +967,7 @@ sandbox:
     create: true                # creates Role + RoleBinding in sandbox ns
 
   image:
-    repository: ghcr.io/sap/astonish-sandbox-base
+    repository: ghcr.io/sap/troupe-sandbox-base
     tag: dev                    # mutable tag → backend auto-uses Always
     pullPolicy: IfNotPresent    # used for runtime pods; seed Job overrides
 
@@ -987,11 +987,11 @@ sandbox:
     layers:
       size: 100Gi
       accessMode: ReadWriteMany
-      pvcName: astonish-layers
+      pvcName: troupe-layers
     uppers:
       size: 50Gi
       accessMode: ReadWriteMany
-      pvcName: astonish-uppers
+      pvcName: troupe-uppers
 
   # Deferred storage reconciler. Defaults shown here bound orphan/stale data
   # while keeping evicted sandboxes resumable for two weeks.
@@ -1034,7 +1034,7 @@ fuseDevicePlugin:
   nummaxdevices: 20
 ```
 
-The chart renders these into `config.yaml` (mounted as ConfigMap `astonish-config`) under `config.sandbox.*`. The Go runtime reads the rendered config; the Helm sandbox block is the single source of truth.
+The chart renders these into `config.yaml` (mounted as ConfigMap `troupe-config`) under `config.sandbox.*`. The Go runtime reads the rendered config; the Helm sandbox block is the single source of truth.
 
 ### 6.2 Environment variable overrides
 
@@ -1063,10 +1063,10 @@ When bumping a mutable tag like `:dev` in production, evict the node-level image
 
 ### 6.5 Personal mode invariants
 
-In personal mode (`astonish daemon run` with the default Docker backend and no PostgreSQL), the sandbox tier does not touch the content-addressed layer store, the cross-pod event journal, or a template DAG. Since `pkg/store/filestore/` was removed these hold by *absence*: the local JSON stores (`pkg/sandbox/tmplmeta`, `pkg/sandbox/session_store_local.go`) simply do not implement those interfaces, and the default-template resolver treats any `store.ErrUnsupported` as "skip". (Backend choice is config-driven and orthogonal to storage mode; K8s is used only when `sandbox.backend` is set to `k8s`.)
+In personal mode (`troupe daemon run` with the default Docker backend and no PostgreSQL), the sandbox tier does not touch the content-addressed layer store, the cross-pod event journal, or a template DAG. Since `pkg/store/filestore/` was removed these hold by *absence*: the local JSON stores (`pkg/sandbox/tmplmeta`, `pkg/sandbox/session_store_local.go`) simply do not implement those interfaces, and the default-template resolver treats any `store.ErrUnsupported` as "skip". (Backend choice is config-driven and orthogonal to storage mode; K8s is used only when `sandbox.backend` is set to `k8s`.)
 
 1. **Runtime backend is Docker OverlayFS.** `BackendFromAppConfig` selects Docker for empty / `docker` / legacy `incus`. Assumptions: local Docker engine (native on Linux; Colima/Desktop on macOS); local filesystem for registries; no Kubernetes dependency.
-2. **Sandbox state persists as local JSON.** Templates live in `~/.local/share/astonish/sandbox/templates.json` (`tmplmeta.TemplateRegistry`); sessions live in `sandbox_sessions.json` (`sandbox.localSessionStore`, which migrates any legacy `sessions.json` on first run). The entstore sandbox stores are Postgres-only, so even a SQLite deployment falls back to these local registries. No PostgreSQL is required.
+2. **Sandbox state persists as local JSON.** Templates live in `~/.local/share/troupe/sandbox/templates.json` (`tmplmeta.TemplateRegistry`); sessions live in `sandbox_sessions.json` (`sandbox.localSessionStore`, which migrates any legacy `sessions.json` on first run). The entstore sandbox stores are Postgres-only, so even a SQLite deployment falls back to these local registries. No PostgreSQL is required.
 3. **Templates remain flat.** The local template type `tmplmeta.TemplateMeta` has no `ParentTemplateID`, `TopLayerID`, or `scope` fields at all — there is no template DAG. Those DAG fields exist only on the platform `store.SandboxTemplate`.
 4. **Scope degenerates to personal.** The local JSON registry has no scope field; the default-template resolver synthesizes a single `personal`-scoped default, so there are no `org`/`team`/`global` templates.
 5. **`@base` exists, but its admin surface is platform-only.** The Docker backend seeds an `@base` rootfs locally, so the base template is a runtime concept in personal mode. What is platform-only is `@base` *configuration* (`SetBaseConfig`) and the `superadmin` role / admin API surface (§5.15); personal mode relies on the bundled default template and exposes no such admin operations.
@@ -1078,7 +1078,7 @@ These invariants are maintained by keeping the local stores (`pkg/sandbox/tmplme
 
 ## 7. Database Schema (Phase A Prerequisite)
 
-Two local JSON registries currently persist per host (`~/.local/share/astonish/sandbox/templates.json`, `sessions.json`). In platform mode they must move to PostgreSQL for cross-pod consistency. This is **required for any multi-pod deployment**, independent of backend choice.
+Two local JSON registries currently persist per host (`~/.local/share/troupe/sandbox/templates.json`, `sessions.json`). In platform mode they must move to PostgreSQL for cross-pod consistency. This is **required for any multi-pod deployment**, independent of backend choice.
 
 Round 2 of the design adds two new tables to support the content-addressed layer store (§5.11) and the cross-pod event journal (§5.14):
 
@@ -1096,7 +1096,7 @@ CREATE TABLE platform.sandbox_layers (
     size_bytes       BIGINT NOT NULL,
     scope            TEXT NOT NULL CHECK (scope IN ('global','org','team','personal')),
     scope_ref_id     UUID,                         -- org_id / team_id / user_id; NULL iff scope='global'
-    cephfs_path      TEXT NOT NULL,                -- mount path (e.g. /mnt/astonish-layers/<layer_id>); column name is historical — filesystem-agnostic
+    cephfs_path      TEXT NOT NULL,                -- mount path (e.g. /mnt/troupe-layers/<layer_id>); column name is historical — filesystem-agnostic
     created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by       UUID REFERENCES platform.users(id),
     ref_count        INT NOT NULL DEFAULT 0 CHECK (ref_count >= 0)
@@ -1271,15 +1271,15 @@ The existing `sandbox.TemplateRegistry` / `sandbox.SessionRegistry` types become
 
 | Capability | Docker OverlayFS backend | K8s backend |
 |---|---|---|
-| CreateSession | `docker run` `astonish-session-*` | `CreatePod` (privilege path from §10) with overlay entrypoint + self-heal verification (§5.3) |
+| CreateSession | `docker run` `troupe-session-*` | `CreatePod` (privilege path from §10) with overlay entrypoint + self-heal verification (§5.3) |
 | StartSession | restart session container + recompose overlay | Recreate pod + restore evicted upper via tar stream |
 | StopSession | `docker stop` | Stream upper to uppers PVC via tar+zstd + delete pod |
 | **DestroySession (container + data)** | `docker rm -f` + overlay volume | Delete pod + remove persisted upper |
 | SessionState | `docker inspect` | K8s pod phase |
-| Exec (non-interactive) | `docker exec` via astonish-shell | `remotecommand` (SPDY) |
+| Exec (non-interactive) | `docker exec` via troupe-shell | `remotecommand` (SPDY) |
 | Exec interactive (PTY + resize) | `docker exec -it` | SPDY + `TerminalSize` channel; chroot wrapper for editor terminals (§5.17) |
 | PushFile / PullFile | `docker cp` / tar-over-exec | tar-over-exec |
-| List containers | `docker ps` by `astonish-session-*` | `ListPods` by labels |
+| List containers | `docker ps` by `troupe-session-*` | `ListPods` by labels |
 | CreateTemplate | capture overlay upper to LayersDir | Template-builder pod + tar-stream to layers PVC |
 | **SaveSessionAsTemplate (no registry push)** | capture live upper as a content-addressed layer | sha256-addressed tar-stream of upper to `platform.sandbox_layers` (auto-dedup) |
 | **DeleteTemplate** | remove layer directory | PG row delete + ref_count decrement + **synchronous GC pod** that `rm -rf`s the layer dir before returning (§5.6) |
@@ -1288,7 +1288,7 @@ The existing `sandbox.TemplateRegistry` / `sandbox.SessionRegistry` types become
 | ExposePort | Docker published ports | Service + Ingress |
 | UnexposePort | remove device | delete Service |
 | Tunnel to service in container | socat via exec | socat via exec (identical) |
-| Fleet containers | `astn-fleet-` prefix | `astonish.io/type=fleet` label |
+| Fleet containers | `astn-fleet-` prefix | `troupe.io/type=fleet` label |
 | Session pinning | Registry field | Registry field (pgstore-backed; §5.16) |
 | Orphan pruning | registry vs `docker ps` | registry vs K8s list |
 | Idle timeout | Prune logic | Prune logic + evict-to-uppers-PVC via tar stream (eviction concurrency: §10) |
@@ -1313,16 +1313,16 @@ These guarantees are identical across both backends.
 ### On session delete
 
 - **Docker OverlayFS:** `docker rm -f` removes the session container and overlay volume. Registry row deleted.
-- **K8s:** `DeletePod` triggers containerd overlay unmount and `emptyDir` cleanup. If previously evicted, `rm -rf /mnt/astonish-uppers/<id>/` removes the persisted `upper.tar.zst`. Registry row deleted from `team_<slug>.sandbox_sessions`.
+- **K8s:** `DeletePod` triggers containerd overlay unmount and `emptyDir` cleanup. If previously evicted, `rm -rf /mnt/troupe-uppers/<id>/` removes the persisted `upper.tar.zst`. Registry row deleted from `team_<slug>.sandbox_sessions`.
 
 ### On template delete
 
 - **Docker OverlayFS:** remove the template layer directory from LayersDir.
-- **K8s:** template row deleted from `platform.sandbox_templates` + ref_count decrement on `top_layer_id`. Layer's directory `/mnt/astonish-layers/<layer_id>/` is removed by the **synchronous GC pod** (§5.6) before `DeleteTemplate` returns when ref_count reaches zero. Content survives as long as anything else (another template, an evicted session's upper_layer_id) still references it.
+- **K8s:** template row deleted from `platform.sandbox_templates` + ref_count decrement on `top_layer_id`. Layer's directory `/mnt/troupe-layers/<layer_id>/` is removed by the **synchronous GC pod** (§5.6) before `DeleteTemplate` returns when ref_count reaches zero. Content survives as long as anything else (another template, an evicted session's upper_layer_id) still references it.
 
 ### On org delete (cascade)
 
-- **Docker OverlayFS:** destroy all org session containers; delete `astonish-org-<slug>` network.
+- **Docker OverlayFS:** destroy all org session containers; delete `troupe-org-<slug>` network.
 - **K8s:** label selector `DELETE` on all pods; remove org's NetworkPolicy; remove per-session persisted uppers.
 
 ### On idle timeout
@@ -1332,10 +1332,10 @@ These guarantees are identical across both backends.
 
 ### On orphan prune
 
-- **Docker OverlayFS:** compare registry vs `docker ps` by `astonish-session-*` prefix; destroy orphans.
+- **Docker OverlayFS:** compare registry vs `docker ps` by `troupe-session-*` prefix; destroy orphans.
 - **K8s:** compare registry (pgstore) vs `ListPods` by labels; destroy orphans (pod delete, uppers PVC cleanup).
 
-**Invariant:** no code path deletes an Astonish entity without also deleting its backing sandbox resource. No backend implements any "soft delete." Every `DestroySession` / `DeleteTemplate` returns only after cleanup is complete and verified.
+**Invariant:** no code path deletes an Troupe entity without also deleting its backing sandbox resource. No backend implements any "soft delete." Every `DestroySession` / `DeleteTemplate` returns only after cleanup is complete and verified.
 
 ### Preservation requirements (tar pipelines)
 
@@ -1347,7 +1347,7 @@ All tar-stream operations (eviction, resume, CreateTemplate, SaveSessionAsTempla
 - **Sparse files** preserved where space saving is material (GNU tar `--sparse`; enabled on a per-profile basis if profiling shows benefit).
 - **Hard links** preserved (default GNU tar behavior).
 
-The prebuilt `astonish-sandbox-base` image MUST ship GNU tar with xattr/ACL support and `zstd`. The same requirement applies to any custom base templates operators may build.
+The prebuilt `troupe-sandbox-base` image MUST ship GNU tar with xattr/ACL support and `zstd`. The same requirement applies to any custom base templates operators may build.
 
 ## 10. Deployment Prerequisites
 
@@ -1363,7 +1363,7 @@ The prebuilt `astonish-sandbox-base` image MUST ship GNU tar with xattr/ACL supp
    | 3 | **Privileged** (current default for dev / Proxmox-LXC) | `mode: fuse`, `privileged: true` | PSA `privileged` on the sandbox namespace (set `sandbox.podSecurity: privileged` in values). No device plugin required. | Supported (current production default for the dev cluster) |
    | 4 | **Sysbox** (optional) | `mode: kernel`, `runtimeClassName: sysbox-runc` | Sysbox installed on sandbox nodes (`sysbox-deploy-k8s`). Kept for operators who already run Sysbox. | Supported |
 
-3. **Shared RWX filesystem** reachable via a RWX StorageClass (mounted into pods through the `astonish-layers` and `astonish-uppers` PVCs).
+3. **Shared RWX filesystem** reachable via a RWX StorageClass (mounted into pods through the `troupe-layers` and `troupe-uppers` PVCs).
    - Any provisioner that provides `ReadWriteMany` PVs with POSIX semantics: CephFS, NFS, EFS, Azure Files, OpenStack Manila, or equivalent.
    - Must support extended attributes, symlinks, and ACLs.
    - **Cinder / EBS / Azure Disk are not suitable.** These are block-storage services that provision RWO (ReadWriteOnce) volumes — only one node can attach at a time. The sandbox backend requires multi-node concurrent access. Use the corresponding *filesystem* service instead (Manila for OpenStack, EFS for AWS, Azure Files for AKS).
@@ -1372,21 +1372,21 @@ The prebuilt `astonish-sandbox-base` image MUST ship GNU tar with xattr/ACL supp
 5. **Node kernel** supports overlayfs (kernel path) or FUSE (fuse path). Linux ≥ 5.15 covers both; userns + `overlay -o userxattr` needs ≥ 5.11.
    - `overlay.max_lower` ≥ `sandbox.layers.maxChainDepth` (default 20). Distro defaults (500) are comfortably above; only an issue if an operator has tuned this down.
    - **Nested LXC nodes** (Proxmox dev clusters): kernel `mount -t overlay` is blocked regardless of in-container privileges. Use path 3 (Privileged + fuse).
-6. **Ingress controller** (optional, only for external port exposure from sandboxes). Ingress sticky sessions are **not** required for correctness in multi-pod Astonish (event journal §5.14 eliminates pod affinity); still permitted for latency reasons.
+6. **Ingress controller** (optional, only for external port exposure from sandboxes). Ingress sticky sessions are **not** required for correctness in multi-pod Troupe (event journal §5.14 eliminates pod affinity); still permitted for latency reasons.
 
 **Image-pull policy auto-detection.** `pkg/sandbox/k8s/image.go::imagePullPolicy()` derives `imagePullPolicy` per pod build: mutable tags (`dev`, `latest`, `edge`, `nightly`, `master`, `main`) → `Always`; digest pins and immutable tags → `IfNotPresent`. The Helm seed Job hard-pins `IfNotPresent` regardless. When iterating on a mutable tag like `:dev` in production, evict the kubelet's image cache (`crictl rmi <image>`) on each node so the next pod create pulls fresh bytes. See §6.4.
 
-### Astonish ships
+### Troupe ships
 
-- ~~Helm chart at `deploy/helm/astonish`~~ — **removed 2026-10-07**. It provided templates for the sandbox namespace, RBAC, RWX PVCs, base-layer seed Job, and an optional FUSE device plugin DaemonSet, driven by one per-environment values file. Being rebuilt.
-- Prebuilt base sandbox image: `ghcr.io/sap/astonish-sandbox-base:<version>` (GitHub Container Registry). Phase F: image bundles `fuse-overlayfs` and the overlay-mode dispatcher in the entrypoint.
+- ~~Helm chart at `deploy/helm/troupe`~~ — **removed 2026-10-07**. It provided templates for the sandbox namespace, RBAC, RWX PVCs, base-layer seed Job, and an optional FUSE device plugin DaemonSet, driven by one per-environment values file. Being rebuilt.
+- Prebuilt base sandbox image: `ghcr.io/sap/troupe-sandbox-base:<version>` (GitHub Container Registry). Phase F: image bundles `fuse-overlayfs` and the overlay-mode dispatcher in the entrypoint.
 - ~~ConfigMap/Secret templates for backend configuration~~ — removed with the chart; being rebuilt.
 - Pre-rendered ServiceAccount + Role bindings for the API/Worker to manage the sandbox namespace.
 
-### Astonish does NOT ship
+### Troupe does NOT ship
 
 - Sysbox (operator installs via upstream `sysbox-deploy-k8s` **only if they want path 4**; Phase F paths 1–3 don't need it).
-- A production-hardened FUSE device plugin (Astonish ships a reference manifest; operators should install the upstream smarter-device-manager Helm chart for production).
+- A production-hardened FUSE device plugin (Troupe ships a reference manifest; operators should install the upstream smarter-device-manager Helm chart for production).
 - The cluster RWX StorageClass (operator configures separately).
 - The Kubernetes cluster itself (operator provides).
 
@@ -1402,10 +1402,10 @@ Mass idle-eviction of many sessions concurrently can saturate the underlying RWX
 These controls apply symmetrically to `SaveSessionAsTemplate` operations during load spikes, though template saves are expected to be infrequent (human-driven UX events) and normally dominate neither queue depth nor metadata-path load.
 
 Metrics exposed in Phase E:
-- `astonish_sandbox_evictions_inflight`
-- `astonish_sandbox_eviction_queue_depth`
-- `astonish_sandbox_layers_write_latency_p99_ms`
-- `astonish_sandbox_eviction_backpressure_active` (gauge, 0/1)
+- `troupe_sandbox_evictions_inflight`
+- `troupe_sandbox_eviction_queue_depth`
+- `troupe_sandbox_layers_write_latency_p99_ms`
+- `troupe_sandbox_eviction_backpressure_active` (gauge, 0/1)
 
 ## 11. Phasing & Rollout
 
@@ -1462,25 +1462,25 @@ Build `K8sBackend` plus the layer store, GC, default-template resolver, event jo
 Status: shipped as of branch `feature/sandbox-k8s-backend`. Delivered
 artefacts:
 
-- Helm chart at `deploy/helm/astonish` (sandbox namespace, RBAC,
+- Helm chart at `deploy/helm/troupe` (sandbox namespace, RBAC,
   RWX PVCs, base-layer seed Job, optional FUSE device plugin)
   applied via `helm upgrade --install`. Values-file-driven; see
-  `deploy/helm/astonish/values-dev-proxmox.yaml` for a complete
+  `deploy/helm/troupe/values-dev-proxmox.yaml` for a complete
   dev-cluster example. In-process validation lives at
   `pkg/sandbox/k8s/manifest_deploy_test.go`; an opt-in integration
   test (`-tags integration`) shells out to `kubectl apply --dry-run=server`.
 - `docker/sandbox-base/Dockerfile`: cache-friendly runtime image for
-  `astonish-sandbox-base`. Host-cross-compiles the agent binary
+  `troupe-sandbox-base`. Host-cross-compiles the agent binary
   (`make build-linux` / `build-linux-arm64`) and generates the PID-1
   entrypoint (`make sandbox-entrypoint`); Docker only installs apt
   packages, builds the treesitter `.so`, and `COPY`s those artifacts.
   Layer order is stable→volatile (apt → treesitter → wrappers →
   entrypoint → binary) so routine code edits only rebuild the last
   COPY layers.
-- `cmd/astonish-sandbox-entrypoint-script`: standalone Go helper that
+- `cmd/troupe-sandbox-entrypoint-script`: standalone Go helper that
   emits `pkg/sandbox/k8s.EntrypointScript` to stdout (used by
   `make sandbox-entrypoint` and CI before the image build).
-- `astonish sandbox k8s-smoke` subcommand: end-to-end probe that runs
+- `troupe sandbox k8s-smoke` subcommand: end-to-end probe that runs
   CreateSession → Exec → PushFile → PullFile → SessionState → Stop →
   Destroy against the cluster pointed at by the operator's kubeconfig.
 - `pkg/sandbox/k8s.TemplatePersister` callback on `k8s.Config`: fires
@@ -1492,14 +1492,14 @@ artefacts:
   interfaces abstract over the legacy Incus `NodeClientPool` and a
   new per-call `backendPool` that drives any `SandboxBackend` via
   `Exec` with stdin-piped NDJSON requests against the sandbox-side
-  `astonish node` server. `SetupFlowSandbox` branches on
+  `troupe node` server. `SetupFlowSandbox` branches on
   `sandbox.backend`: the Incus path is unchanged; k8s/mock paths
   build the backend through `BackendFromAppConfig` and wrap the
   tool set with `WrapToolsWithPool`. Chat and fleet keep the
   concrete Incus pool verbatim (out of scope for this pass).
 - `docker/sandbox-base/Dockerfile` installs the host-built binary at
-  `/usr/local/bin/astonish-host` and a chroot wrapper at
-  `/usr/local/bin/astonish`; the entrypoint bind-mounts the host-layer
+  `/usr/local/bin/troupe-host` and a chroot wrapper at
+  `/usr/local/bin/troupe`; the entrypoint bind-mounts the host-layer
   binary over the overlay's wrapper before PID-1 handoff so both the
   chroot entry and subsequent `Backend.Exec` tool calls resolve to the
   same trusted build.
@@ -1507,7 +1507,7 @@ artefacts:
 Deferred to Phase E (intentionally out of scope for Phase D):
 
 - Helm-chart integration — **done in Phase F; chart removed 2026-10-07**.
-  The chart at `deploy/helm/astonish` covered both control plane and sandbox
+  The chart at `deploy/helm/troupe` covered both control plane and sandbox
   (namespace, RBAC, PVCs, seed hook, FUSE device plugin), driven by
   a single per-environment values file. Being rebuilt.
 - Operator-facing runbooks (`docs/deployment/kubernetes-sysbox.md`,
@@ -1546,8 +1546,8 @@ Status: shipped on `feature/sandbox-k8s-backend` (commits `4fa7ed6`, `cee00c8`, 
 - `@base` UUID normalization at the pgstore boundary (`a0000000-0000-4000-8000-000000000001`) (§3.9, §7).
 - Migration `platform/005_seed_base_template.sql` (seeds `@base` row).
 - Migration `platform/004_sandbox_ref_count_triggers.sql` (installed disabled-by-default).
-- Team-template editor lifecycle: Create / Save / Restore / Delete with synchronous reclamation, `astonish-shell` chroot wrapper, 1.5 s status polling up to 30 s (§5.17).
-- ~~Single Helm chart at `deploy/helm/astonish` covering both control plane and sandbox~~ — removed 2026-10-07; the configurable hyphen-only DNS-1123 namespace prefix (§6.1) is to be carried over when the deployment assets are rebuilt.
+- Team-template editor lifecycle: Create / Save / Restore / Delete with synchronous reclamation, `troupe-shell` chroot wrapper, 1.5 s status polling up to 30 s (§5.17).
+- ~~Single Helm chart at `deploy/helm/troupe` covering both control plane and sandbox~~ — removed 2026-10-07; the configurable hyphen-only DNS-1123 namespace prefix (§6.1) is to be carried over when the deployment assets are rebuilt.
 - `Makefile` fast targets: `push-dev-fast`, `push-sandbox-base-dev-fast`, `push-all-dev-fast` (auto-detect `DEV_ARCH`).
 - `apt` cosmetic-warning fix baked into the base image's `/etc/apt/apt.conf.d/00no-sandbox`; carried into `@base` deterministically by the seed Job.
 
@@ -1575,7 +1575,7 @@ Status: shipped on `feature/sandbox-k8s-backend` (commits `4fa7ed6`, `cee00c8`, 
 ### Integration
 
 - **Incus backend:** existing tests in `pkg/sandbox/*_test.go` continue to run.
-- **K8s backend -- canonical dev environment:** a 3-node K3s cluster running inside Incus LXC containers on the developer's machine. This reuses the existing Incus workflow and iterates far faster than `kind` or `minikube` for Astonish contributors. Install `sysbox-deploy-k8s` as usual. For initial iteration, a single-node NFS server (or `nfs-subdir-external-provisioner`) provides RWX PVs; Rook/CephFS on LXC is non-trivial and deferred to pre-merge validation. CI uses `kind` with the same RWX-PV shortcut (no CephFS). End-to-end on real RWX storage happens in the staging cluster (see End-to-end below). Tests exercise:
+- **K8s backend -- canonical dev environment:** a 3-node K3s cluster running inside Incus LXC containers on the developer's machine. This reuses the existing Incus workflow and iterates far faster than `kind` or `minikube` for Troupe contributors. Install `sysbox-deploy-k8s` as usual. For initial iteration, a single-node NFS server (or `nfs-subdir-external-provisioner`) provides RWX PVs; Rook/CephFS on LXC is non-trivial and deferred to pre-merge validation. CI uses `kind` with the same RWX-PV shortcut (no CephFS). End-to-end on real RWX storage happens in the staging cluster (see End-to-end below). Tests exercise:
   - session lifecycle (create / exec / files / destroy)
   - template create / save-as-template / delete
   - idle eviction + resume (tar-stream round-trip)
@@ -1620,11 +1620,11 @@ A ledger of options considered and declined, with reasoning, so future readers u
 |---|---|
 | **rsync for template save / idle-eviction** | rsync's cost on RWX filesystems is dominated by per-file metadata RPCs (`readdir`, `stat`, `setattr`, open/close). For typical sandbox contents (node_modules, venvs), that is 100k+ metadata round-trips. A single `tar \| zstd` stream is one sequential writer against the PVC, empirically 3-10× faster for cold copies. Delta rsync could beat tar on *iterative* re-saves of the same template, but template saves are infrequent human actions and the 1-5 s budget is already met. |
 | **Separate init container with `mountPropagation: Bidirectional`** | Requires the mount to live on a host-visible path; either `hostPath` (violates PSA `baseline`/`restricted`) or a CSI volume supporting bidirectional propagation (not universally available). Entrypoint-in-main-container avoids propagation entirely and works with any CSI. |
-| **Kata Containers** | Nested virtualization requirement (KVM on nodes). Hypervisor-per-sandbox CPU/memory overhead. Excessive isolation for the semi-trusted workloads Astonish runs. |
-| **gVisor** | Breaks mount operations, systemd, and nested Docker -- all capabilities Astonish flows rely on. Not viable as a default runtime for Astonish sandboxes. |
+| **Kata Containers** | Nested virtualization requirement (KVM on nodes). Hypervisor-per-sandbox CPU/memory overhead. Excessive isolation for the semi-trusted workloads Troupe runs. |
+| **gVisor** | Breaks mount operations, systemd, and nested Docker -- all capabilities Troupe flows rely on. Not viable as a default runtime for Troupe sandboxes. |
 | **Privileged pods (`privileged: true`)** | Violates Pod Security Admission `baseline` and `restricted` policies; unacceptable in enterprise K8s deployments. Sysbox provides the same functional capabilities via user-namespace remapping without requiring privileged mode. |
 | **Incus cluster inside Kubernetes pods** | No production-ready Helm chart or operator for running Incus clustered inside K8s. Operational burden of nested daemons (Incus + K8s scheduling conflicts, storage driver layering). Incus REST API is host-oriented, not pod-oriented. Investigated and abandoned in favor of native K8s pods. |
-| **External Incus VMs managed by Astonish** | Reintroduces a non-K8s tier operators must manage separately, contradicting the "no external infrastructure outside K8s" constraint. |
+| **External Incus VMs managed by Troupe** | Reintroduces a non-K8s tier operators must manage separately, contradicting the "no external infrastructure outside K8s" constraint. |
 | **OCI image registry push for SaveSessionAsTemplate** | Build → push → pull round-trip takes tens of seconds for non-trivial session contents; breaks the 1-5 s interactive UX budget. Direct tar-stream to the shared RWX PVC meets the budget without a registry. |
 | **Per-session Persistent Volumes (PVCs)** by default | Unnecessary for the ephemeral upper-layer model. PVC provisioning adds seconds to session creation and creates cleanup obligations. `emptyDir` on node-local disk is fast and cleaned up automatically. PVCs may be offered as an opt-in future feature for workloads requiring persistent scratch space. |
 | **Fully-managed Kubernetes (GKE Autopilot / EKS Fargate / AKS virtual nodes)** | These platforms prohibit DaemonSet-based node installs, preventing Sysbox deployment, and in most cases forbid node-mounted shared filesystems. Incompatible with the required runtime and storage model. |
@@ -1639,14 +1639,14 @@ Minor decisions that do not affect the overall design and will be resolved durin
 
 - Exact Go package layout under `pkg/sandbox/k8s/` (may split or merge modules based on file size).
 - Exact `zstd` tuning for tar pipelines: compression-level floor/ceiling for `--adapt`, thread count (`-T0` vs bounded), whether to enable `--sparse` by default. Decide during Phase E profiling against realistic upper-layer sizes.
-- Metric names for Prometheus exposition (draft names in §10 are indicative; final names follow Astonish conventions).
-- How Astonish surfaces K8s events to the UI (real-time feed vs pull-on-demand).
+- Metric names for Prometheus exposition (draft names in §10 are indicative; final names follow Troupe conventions).
+- How Troupe surfaces K8s events to the UI (real-time feed vs pull-on-demand).
 
 ### Warm pool (future work, forward-compatibility note)
 
 If median session-creation latency on the K8s backend becomes a UX complaint, a pre-warmed pod pool can be introduced **without** changing the `SandboxBackend` interface: `CreateSession` may, at the K8s backend's discretion, acquire a pre-created pod from a pool and rebind its labels/annotations rather than create-from-scratch. Callers remain unaware.
 
-Current expectation: Astonish sessions are minutes-to-hours scale (human chat flows), so just-in-time pod creation is adequate. The interface is deliberately written so pool sizing, pre-warm lifecycle, idle timeouts on pool members, and leak detection can be added later as an internal implementation concern of `K8sBackend`. No other package or API needs to change.
+Current expectation: Troupe sessions are minutes-to-hours scale (human chat flows), so just-in-time pod creation is adequate. The interface is deliberately written so pool sizing, pre-warm lifecycle, idle timeouts on pool members, and leak detection can be added later as an internal implementation concern of `K8sBackend`. No other package or API needs to change.
 
 Triggers that would motivate adding the warm pool:
 - p50 `CreateSession` latency > 3 s sustained.
@@ -1655,7 +1655,7 @@ Triggers that would motivate adding the warm pool:
 
 ## 14.1 Network Access: SSRF Protection and Private Networks
 
-When tools run **inside a sandbox container**, the sandbox's own network policy (OpenShell Landlock/seccomp, K8s NetworkPolicy, Docker org networks) is the security boundary. The Go-level SSRF protection (`checkSSRF()` in `pkg/tools/web_fetch.go`) that blocks requests to private/loopback IPs is therefore **automatically disabled** inside the sandbox node process (`cmd/astonish/node.go`).
+When tools run **inside a sandbox container**, the sandbox's own network policy (OpenShell Landlock/seccomp, K8s NetworkPolicy, Docker org networks) is the security boundary. The Go-level SSRF protection (`checkSSRF()` in `pkg/tools/web_fetch.go`) that blocks requests to private/loopback IPs is therefore **automatically disabled** inside the sandbox node process (`cmd/troupe/node.go`).
 
 This means:
 - **`http_request`** can reach internal/corporate APIs (e.g., OpenStack, internal microservices) when running inside a sandbox — the sandbox network policy controls what is reachable.
@@ -1664,10 +1664,10 @@ This means:
 
 ### Personal/CLI mode (no sandbox)
 
-For users running without a sandbox (e.g., `astonish chat` on a corporate laptop with VPN access to internal APIs), SSRF protection can be disabled via config:
+For users running without a sandbox (e.g., `troupe chat` on a corporate laptop with VPN access to internal APIs), SSRF protection can be disabled via config:
 
 ```yaml
-# ~/.config/astonish/config.yaml
+# ~/.config/troupe/config.yaml
 security:
   allow_private_networks: true
 ```

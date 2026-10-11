@@ -2,7 +2,7 @@
 
 ## Overview
 
-Astonish uses context compaction to manage finite model context windows during long sessions. When estimated token usage exceeds a configurable threshold (default 70%), older conversation history is summarized and replaced with a compact representation.
+Troupe uses context compaction to manage finite model context windows during long sessions. When estimated token usage exceeds a configurable threshold (default 70%), older conversation history is summarized and replaced with a compact representation.
 
 The compaction system is **mode-aware**: code mode produces structured summaries tracking files, tasks, and decisions; platform/chat mode uses a generic conversational summary.
 

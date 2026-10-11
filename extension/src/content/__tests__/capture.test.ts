@@ -109,7 +109,7 @@ describe('capture', () => {
     // one page-edit fence, not hunt for the kebab/Edit affordance itself.
     expect(ctx?.pageMap?.actions.some((action) => /\bstop\b/i.test(action))).toBe(true);
     expect(
-      ctx?.pageMap?.actions.some((action) => /one astonish-page-edit fence/i.test(action)),
+      ctx?.pageMap?.actions.some((action) => /one troupe-page-edit fence/i.test(action)),
     ).toBe(true);
     expect(ctx?.pageMap?.actions.some((action) => /the user'?s job/i.test(action))).toBe(true);
     // It must explicitly warn against page_click / page_query hunting for the kebab.

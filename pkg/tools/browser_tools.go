@@ -404,7 +404,7 @@ func getBrowserToolsWithGuard(mgr *browser.Manager, guard *browser.NavigationGua
 		Description: "Start recording the browser display to an MP4 file (ffmpeg x11grab of the " +
 			"live X display size). Call this before a scripted demo sequence. Only one recording " +
 			"at a time. Returns path plus actual capture width/height. Video is written under " +
-			"recordings/ (local) or /tmp/astonish-recordings/ (sandbox).",
+			"recordings/ (local) or /tmp/troupe-recordings/ (sandbox).",
 	}, safeBrowserFunc(BrowserStartRecording(mgr)))
 	if err != nil {
 		return nil, err

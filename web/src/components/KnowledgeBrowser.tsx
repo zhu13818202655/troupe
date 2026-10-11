@@ -392,7 +392,7 @@ function MemoryHealthPanel({ health, onRefresh, onReview, showAdvancedMap, onTog
           <div>
             <h2 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Memory Health</h2>
             <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
-              Astonish checks for memory improvements lazily when this page is opened. Fresh evaluations are reused for five days.
+              Troupe checks for memory improvements lazily when this page is opened. Fresh evaluations are reused for five days.
             </p>
             <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
               Last analyzed: {evaluated} · Next refresh after: {expires} · {health.generated ? 'Generated now' : 'Using recent evaluation'}

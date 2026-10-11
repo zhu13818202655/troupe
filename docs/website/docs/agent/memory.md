@@ -1,6 +1,6 @@
 # Memory
 
-Astonish provides persistent memory that survives across sessions. The agent stores, searches, and retrieves knowledge automatically, building a growing context base over time.
+Troupe provides persistent memory that survives across sessions. The agent stores, searches, and retrieves knowledge automatically, building a growing context base over time.
 
 ## How Memory Works
 
@@ -76,7 +76,7 @@ See [Three-Tier Memory](../platform/three-tier-memory.md) for details on how mem
 
 ## Scenario Cards
 
-For repeatable operational tasks, Astonish can consolidate memory into **scenario cards**. A scenario card is still stored as normal embedded memory and still participates in semantic search, but it has a structured shape:
+For repeatable operational tasks, Troupe can consolidate memory into **scenario cards**. A scenario card is still stored as normal embedded memory and still participates in semantic search, but it has a structured shape:
 
 - the shortest recommended successful path
 - the conditions where that path applies
@@ -86,11 +86,11 @@ For repeatable operational tasks, Astonish can consolidate memory into **scenari
 
 This helps the agent reuse the efficient path it learned instead of replaying trial-and-error steps. Temporary failures should be treated as cautions to re-check, not permanent “never use this” rules. Raw memory rows are temporary staging inputs: once they are incorporated into a card, or if they cannot form a useful card, they are deleted or discarded instead of staying as long-term scattered memory.
 
-Scenario cards are matched by scenario identity, not only by title or canonical key. Astonish extracts stable anchors such as system, service family, resource type, operation, environment, credential name, endpoint host family, API family, HTTP method, and URL path. This lets related labels such as “LBaaS” and “Octavia” merge into one OpenStack load-balancer card when the anchors agree, while still keeping different resources or environments separate.
+Scenario cards are matched by scenario identity, not only by title or canonical key. Troupe extracts stable anchors such as system, service family, resource type, operation, environment, credential name, endpoint host family, API family, HTTP method, and URL path. This lets related labels such as “LBaaS” and “Octavia” merge into one OpenStack load-balancer card when the anchors agree, while still keeping different resources or environments separate.
 
 ## Managing Memory in Studio
 
-Studio provides a visual interface for memory management. The main organization surface is **Memory Health**: when opened, Astonish checks whether the visible memories need consolidation, deduplication, or review. The check is lazy and on demand — there is no scheduled background job. If a recent evaluation is still fresh, Studio reuses it; after five days, the next visit runs a new evaluation.
+Studio provides a visual interface for memory management. The main organization surface is **Memory Health**: when opened, Troupe checks whether the visible memories need consolidation, deduplication, or review. The check is lazy and on demand — there is no scheduled background job. If a recent evaluation is still fresh, Studio reuses it; after five days, the next visit runs a new evaluation.
 
 - Browse all memory entries with search and filtering
 - View memory content, tags, and metadata

@@ -6,7 +6,7 @@
 // The OpenShell supervisor (sideloaded by the gateway into each sandbox pod)
 // enforces Landlock, seccomp, network namespace, and OCSF audit policies.
 //
-// Astonish is a *client* of the OpenShell gateway — it does NOT manage the
+// Troupe is a *client* of the OpenShell gateway — it does NOT manage the
 // gateway, supervisor, or Agent Sandbox controller. Those are deployed
 // independently using NVIDIA's official Helm chart.
 //
@@ -55,7 +55,7 @@ type Config struct {
 	AuthToken string
 
 	// SandboxImage is the container image for OpenShell sandbox pods.
-	// Default: "ghcr.io/sap/astonish-sandbox-openshell:latest"
+	// Default: "ghcr.io/sap/troupe-sandbox-openshell:latest"
 	SandboxImage string
 
 	// AppConfig stores the full OpenShell config from app_config.yaml.
@@ -67,7 +67,7 @@ func (c *Config) applyDefaults() {
 		c.GatewayAddr = "openshell.openshell.svc.cluster.local:8080"
 	}
 	if c.SandboxImage == "" {
-		c.SandboxImage = "ghcr.io/sap/astonish-sandbox-openshell:latest"
+		c.SandboxImage = "ghcr.io/sap/troupe-sandbox-openshell:latest"
 	}
 }
 

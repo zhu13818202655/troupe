@@ -9,8 +9,8 @@ import (
 
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // Build creates a ConfigMap with the generated Dockerfile and spawns a Kaniko
@@ -53,8 +53,8 @@ func (b *Builder) Build(ctx context.Context, spec BuildSpec, onProgress Progress
 			Namespace: b.cfg.Namespace,
 			Labels: map[string]string{
 				"app.kubernetes.io/component":  "image-builder",
-				"app.kubernetes.io/managed-by": "astonish",
-				"astonish.io/build-scope":      sanitizeDNS(spec.Scope),
+				"app.kubernetes.io/managed-by": "troupe",
+				"troupe.io/build-scope":        sanitizeDNS(spec.Scope),
 			},
 		},
 		Data: map[string]string{
@@ -79,8 +79,8 @@ func (b *Builder) Build(ctx context.Context, spec BuildSpec, onProgress Progress
 			Namespace: b.cfg.Namespace,
 			Labels: map[string]string{
 				"app.kubernetes.io/component":  "image-builder",
-				"app.kubernetes.io/managed-by": "astonish",
-				"astonish.io/build-scope":      sanitizeDNS(spec.Scope),
+				"app.kubernetes.io/managed-by": "troupe",
+				"troupe.io/build-scope":        sanitizeDNS(spec.Scope),
 			},
 		},
 		Spec: batchv1.JobSpec{
@@ -90,8 +90,8 @@ func (b *Builder) Build(ctx context.Context, spec BuildSpec, onProgress Progress
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
 						"app.kubernetes.io/component":  "image-builder",
-						"app.kubernetes.io/managed-by": "astonish",
-						"astonish.io/build-scope":      sanitizeDNS(spec.Scope),
+						"app.kubernetes.io/managed-by": "troupe",
+						"troupe.io/build-scope":        sanitizeDNS(spec.Scope),
 					},
 					Annotations: map[string]string{
 						// Skip Istio sidecar — Kaniko doesn't need mesh,
@@ -109,7 +109,7 @@ func (b *Builder) Build(ctx context.Context, spec BuildSpec, onProgress Progress
 							"--context=dir:///workspace",
 							fmt.Sprintf("--destination=%s", destImage),
 							"--cache=true",
-							fmt.Sprintf("--cache-repo=%s/astonish-cache", b.cfg.RegistryURL),
+							fmt.Sprintf("--cache-repo=%s/troupe-cache", b.cfg.RegistryURL),
 							"--snapshotMode=redo",
 							"--compressed-caching=false",
 						},

@@ -178,7 +178,7 @@ export interface ArtifactMessage {
   // EmbeddedFileViewer" gate in StudioChat — without it, the artifact
   // renders as the compact ArtifactCard download tile.
   isReport?: boolean
-  // Optional human-readable title pulled from the `astonish-report` fence's
+  // Optional human-readable title pulled from the `troupe-report` fence's
   // frontmatter (e.g., "Q4 Revenue Analysis"). Falls back to the file
   // basename in EmbeddedFileViewer when empty.
   reportTitle?: string
@@ -202,7 +202,7 @@ export interface SessionArtifact {
 
 // ---- Report marker (inline report gate signal) ----
 //
-// Emitted by the backend after detecting an ```astonish-report``` fence
+// Emitted by the backend after detecting an ```troupe-report``` fence
 // whose `path` matches a same-turn write_file/edit_file artifact. The
 // frontend uses this signal to flip the matching ArtifactMessage's
 // isReport flag so the chat embeds the file inline instead of showing a

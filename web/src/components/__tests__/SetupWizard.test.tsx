@@ -25,7 +25,7 @@ describe('SetupWizard', () => {
 
   it('renders the welcome step', async () => {
     render(<SetupWizard onComplete={onComplete} />)
-    expect(screen.getByText('Welcome to Astonish Studio')).toBeInTheDocument()
+    expect(screen.getByText('Welcome to Troupe Studio')).toBeInTheDocument()
     await act(async () => {
       await new Promise(resolve => setTimeout(resolve, 0))
     })

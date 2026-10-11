@@ -45,9 +45,9 @@ type dockerfileBodyResponse struct {
 // imageBuildStatusResponse is the response for build status endpoints.
 type imageBuildStatusResponse struct {
 	InProgress bool   `json:"in_progress"`
-	Status     string `json:"status,omitempty"`    // "building", "succeeded", "failed", ""
-	Image      string `json:"image,omitempty"`     // last built image
-	Error      string `json:"error,omitempty"`     // last error
+	Status     string `json:"status,omitempty"` // "building", "succeeded", "failed", ""
+	Image      string `json:"image,omitempty"`  // last built image
+	Error      string `json:"error,omitempty"`  // last error
 	JobName    string `json:"job_name,omitempty"`
 	StartedAt  string `json:"started_at,omitempty"`
 }

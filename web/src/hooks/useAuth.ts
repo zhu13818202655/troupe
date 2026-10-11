@@ -2,10 +2,23 @@ import { useState, useEffect, useCallback } from 'react'
 import { checkAuth, login as apiLogin, register as apiRegister, logout as apiLogout, refreshToken, getUserOrgs, switchOrg as apiSwitchOrg, type AuthUser, type AuthOrg, type UserOrg } from '../api/auth'
 
 // --- Org persistence in localStorage ---
-const ORG_STORAGE_KEY = 'astonish_active_org'
+const ORG_STORAGE_KEY = 'troupe_active_org'
+// Pre-rebrand key; read for backwards compatibility, then migrated.
+const LEGACY_ORG_STORAGE_KEY = 'astonish_active_org'
 
 function getStoredOrg(): string | null {
-  try { return localStorage.getItem(ORG_STORAGE_KEY) } catch { return null }
+  try {
+    const next = localStorage.getItem(ORG_STORAGE_KEY)
+    if (next !== null) return next
+    // Fall back to the legacy key, migrate the value, then drop the old entry.
+    const legacy = localStorage.getItem(LEGACY_ORG_STORAGE_KEY)
+    if (legacy !== null) {
+      localStorage.setItem(ORG_STORAGE_KEY, legacy)
+      localStorage.removeItem(LEGACY_ORG_STORAGE_KEY)
+      return legacy
+    }
+    return null
+  } catch { return null }
 }
 
 function setStoredOrg(slug: string | null) {

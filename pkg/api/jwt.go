@@ -67,7 +67,7 @@ func NewJWTIssuer(secret string, accessTTL, refreshTTL time.Duration) *JWTIssuer
 		key = make([]byte, 32)
 		if _, err := rand.Read(key); err != nil {
 			// Fallback to a hex-encoded timestamp (not ideal but functional)
-			key = []byte(fmt.Sprintf("astonish-fallback-%d", time.Now().UnixNano()))
+			key = []byte(fmt.Sprintf("troupe-fallback-%d", time.Now().UnixNano()))
 		}
 	}
 
@@ -82,7 +82,7 @@ func NewJWTIssuer(secret string, accessTTL, refreshTTL time.Duration) *JWTIssuer
 		secret:          key,
 		accessTokenTTL:  accessTTL,
 		refreshTokenTTL: refreshTTL,
-		issuer:          "astonish-platform",
+		issuer:          "troupe-platform",
 	}
 }
 

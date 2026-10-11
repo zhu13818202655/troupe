@@ -2,10 +2,10 @@
 
 ## Overview
 
-The agent execution engine is the core of Astonish -- it processes user messages, orchestrates LLM calls, manages tool execution, and produces responses. There are two distinct agent types serving different use cases:
+The agent execution engine is the core of Troupe -- it processes user messages, orchestrates LLM calls, manages tool execution, and produces responses. There are two distinct agent types serving different use cases:
 
 - **ChatAgent**: Open-ended conversational agent. No predefined flow. The LLM decides which tools to call and how to proceed. This is the primary mode used in Studio, console, and external channels.
-- **AstonishAgent**: Flow-based agent that follows YAML-defined node graphs with LLM nodes, tool nodes, and conditional branching. Used for deterministic, repeatable workflows.
+- **TroupeAgent**: Flow-based agent that follows YAML-defined node graphs with LLM nodes, tool nodes, and conditional branching. Used for deterministic, repeatable workflows.
 
 Both agents are built on top of **Google's Agent Development Kit (ADK)**, specifically wrapping ADK's `llmagent` for LLM interaction and `runner` for session-aware execution.
 
@@ -13,7 +13,7 @@ Both agents are built on top of **Google's Agent Development Kit (ADK)**, specif
 
 ### Why Wrap ADK Instead of Using It Directly
 
-ADK provides a solid foundation (session management, tool dispatch, streaming) but Astonish needs capabilities that ADK doesn't offer:
+ADK provides a solid foundation (session management, tool dispatch, streaming) but Troupe needs capabilities that ADK doesn't offer:
 
 - **Cache-stable execution**: Selected sessions freeze the system prompt and model-visible tool declarations while discovering deferred capabilities through a fixed bridge.
 - **Credential security**: Before/after tool callbacks must substitute and restore credential placeholders without leaking secrets into session history.
@@ -22,7 +22,7 @@ ADK provides a solid foundation (session management, tool dispatch, streaming) b
 - **Execution tracing**: Every tool call is recorded for flow distillation and memory reflection.
 - **Think-tag filtering**: Chain-of-thought content (`<think>` blocks) must be stripped from streaming output.
 
-ADK's callback system (BeforeToolCallbacks, AfterToolCallbacks, BeforeModelCallbacks) provides the extension points, but the coordination between them is Astonish-specific.
+ADK's callback system (BeforeToolCallbacks, AfterToolCallbacks, BeforeModelCallbacks) provides the extension points, but the coordination between them is Troupe-specific.
 
 ### Why a Three-Tier System Prompt
 
@@ -44,7 +44,7 @@ ADK processes tool calls sequentially within a single invocation (a for-loop, no
 
 ### Why Hybrid Tool Discovery
 
-Most agent frameworks require all tools to be declared upfront. With 60+ built-in tools plus MCP tools, this wastes context window tokens listing tools the user doesn't need. Instead, Astonish uses a two-layer approach:
+Most agent frameworks require all tools to be declared upfront. With 60+ built-in tools plus MCP tools, this wastes context window tokens listing tools the user doesn't need. Instead, Troupe uses a two-layer approach:
 
 - **Static tools**: A small core set (file ops, shell, memory) remains directly available.
 - **Fixed progressive bridge**: `search_tools` searches only the catalog, `describe_tools` returns selected schemas, and `execute_tool` invokes deferred tools. The model-visible declaration set does not grow during a turn.
@@ -102,9 +102,9 @@ User Message
    - Trace storage: execution trace saved for on-demand /distill
 ```
 
-### AstonishAgent Execution Flow
+### TroupeAgent Execution Flow
 
-The AstonishAgent follows a YAML-defined node graph:
+The TroupeAgent follows a YAML-defined node graph:
 
 ```
 YAML Flow Definition
@@ -168,7 +168,7 @@ When the cache-stable path is enabled, ChatAgent exposes a fixed declaration set
 
 ADK dispatches `execute_tool` through the normal callback chain. ChatAgent unwraps the selected tool identity and nested arguments inside every BeforeTool callback and the AfterTool callback, preserving mode and authorization gates, credential and pending-secret substitution/restoration, output redaction, execution tracing, image handling, and artifact capture. Request-scoped MCP and A2A catalogs are merged rather than replacing one another. Historical direct tool calls remain executable from transcript history, but no discovery result adds a new declaration.
 
-Before every model call, Astonish records secret-safe hashes of the system instruction and canonical ordered declarations, plus declaration count and whether either hash changed within the turn or session. These diagnostics expose cache instability without logging prompt or schema contents.
+Before every model call, Troupe records secret-safe hashes of the system instruction and canonical ordered declarations, plus declaration count and whether either hash changed within the turn or session. These diagnostics expose cache instability without logging prompt or schema contents.
 
 The semantic catalog is a required startup dependency when embeddings are configured. Schema migration, embedding initialization, and tool-vector-store initialization fail closed instead of advertising readiness with degraded retrieval. Background catalog refresh remains asynchronous after the lexical catalog is published, but request-time semantic embedding failures are returned explicitly and are never retried or converted into BM25-only results.
 
@@ -264,7 +264,7 @@ CLI flags `-p`/`-m` pin by default onto new sessions. Use `--no-pin` to restore 
 |---|---|
 | `pkg/agent/chat_agent.go` | ChatAgent struct definition, fields, image/flow output side-channels |
 | `pkg/agent/chat_agent_run.go` | ChatAgent.Run() -- the main execution loop with all phases |
-| `pkg/agent/astonish_agent.go` | AstonishAgent struct, flow state machine, approval handling |
+| `pkg/agent/troupe_agent.go` | TroupeAgent struct, flow state machine, approval handling |
 | `pkg/agent/node_llm.go` | LLM node execution for flows, callback wiring, retry logic |
 | `pkg/agent/sub_agent.go` | SubAgentManager, SubAgentTask, tool groups, concurrent delegation |
 | `pkg/agent/system_prompt_builder.go` | Three-tier system prompt construction |
@@ -288,6 +288,6 @@ CLI flags `-p`/`-m` pin by default onto new sessions. Use `--no-pin` to restore 
 - **Credentials**: BeforeToolCallback substitutes `{{CREDENTIAL:...}}` placeholders; AfterToolCallback restores them. PendingVault handles `<<<SECRET_N>>>` tokens.
 - **Sessions**: The `SessionService` persists conversation history. Context compaction rewrites history when the window fills.
 - **Memory**: Auto-knowledge retrieval queries the vector store before each turn. Memory reflection saves knowledge after turns.
-- **Flows**: The `FlowDistiller` converts execution traces into YAML flow definitions. `AstonishAgent` executes those flows.
+- **Flows**: The `FlowDistiller` converts execution traces into YAML flow definitions. `TroupeAgent` executes those flows.
 - **Channels**: Channel-specific hints are injected into the system prompt. Image side-channels deliver screenshots to Telegram/email.
 - **Fleet**: Fleet agents use `SubAgentManager` with custom prompts, override tools, and dedicated sandbox containers.

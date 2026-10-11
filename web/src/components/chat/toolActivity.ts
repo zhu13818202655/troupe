@@ -180,13 +180,13 @@ export function isSoftNote(msg: ChatMsg): boolean {
   return isSoftNoteType(msg.type)
 }
 
-/** True when content hosts (or is streaming into) an astonish-app fence. */
+/** True when content hosts (or is streaming into) a troupe-app (legacy astonish-app) fence. */
 export function hasAppFence(content: string): boolean {
-  return /```astonish-app\b/.test(content)
+  return /```(?:troupe-app|astonish-app)\b/.test(content)
 }
 
 /**
- * Agent messages with an astonish-app fence must stay passthrough so
+ * Agent messages with a troupe-app fence must stay passthrough so
  * AppCodeIndicator ("Generating app...") can render during streaming.
  */
 export function isAppProgressAgent(msg: ChatMsg): boolean {

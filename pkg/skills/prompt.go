@@ -20,7 +20,7 @@ func BuildSkillIndex(skills []Skill) string {
 // with ExcludeFromCodeMode (e.g. generative-ui) are omitted from the
 // "Available Skills" section of the coding agent's system prompt.
 // This prevents the coding agent from being directed to generate
-// Studio-only artifacts such as astonish-app fences.
+// Studio-only artifacts such as troupe-app fences.
 func BuildCodeSkillIndex(skills []Skill) string {
 	return buildSkillIndex(skills, BuiltinSkillsForCode())
 }

@@ -7,9 +7,9 @@ import (
 	"net/url"
 	"sort"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/a2aclient"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 )
 
 // A2AAgentListItem represents an A2A agent in listing responses.

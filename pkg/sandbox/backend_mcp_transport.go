@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 // BackendMCPTransport implements mcp.Transport by running the MCP server
@@ -85,17 +85,17 @@ func (t *BackendMCPTransport) Connect(ctx context.Context) (mcp.Connection, erro
 	//
 	// K8s: kubectl exec lands in the pod's base namespace (bare Debian),
 	//   not PID 1's chroot (/sandbox/rootfs where runtimes like Node.js,
-	//   Python etc. are installed). The astonish-shell wrapper does
+	//   Python etc. are installed). The troupe-shell wrapper does
 	//   `exec chroot /sandbox/rootfs "$@"` to enter the composed overlay.
 	//
 	// Incus: the overlay IS the container's root filesystem — no chroot
 	//   needed. Commands execute directly in the correct namespace.
-	//   Using astonish-shell here would be WRONG because the fallback
+	//   Using troupe-shell here would be WRONG because the fallback
 	//   path (when /sandbox/rootfs doesn't exist) discards all arguments
 	//   and just launches /bin/bash -l.
 	execCmd := resolved
 	if t.backend.Kind() == BackendKindK8s {
-		execCmd = append([]string{"/usr/local/bin/astonish-shell"}, resolved...)
+		execCmd = append([]string{"/usr/local/bin/troupe-shell"}, resolved...)
 	}
 
 	stream, err := t.backend.ExecStreaming(ctx, t.sessionID, ExecStreamSpec{

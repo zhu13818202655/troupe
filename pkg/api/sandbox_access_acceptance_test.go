@@ -18,7 +18,7 @@ func TestSandboxAccessAcceptance(t *testing.T) {
 		SessionID:     "chat-mate",
 		ChatSessionID: "chat-mate",
 		Backend:       "docker",
-		ContainerName: "astonish-session-mate",
+		ContainerName: "troupe-session-mate",
 		TemplateID:    sandbox.BaseTemplateID,
 		State:         store.SandboxSessionStateRunning,
 	}); err != nil {

@@ -14,7 +14,7 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/codeintel/native"
 )
 
-const DefaultLibraryPath = "/usr/lib/astonish/libastonish-treesitter.so"
+const DefaultLibraryPath = "/usr/lib/troupe/libtroupe-treesitter.so"
 
 var ErrLibraryUnavailable = errors.New("tree-sitter library unavailable")
 
@@ -147,7 +147,7 @@ func resolveLibraryPath() (string, error) {
 // candidateLibraryPaths returns pre-built library locations to try before
 // building from source, in priority order.
 func candidateLibraryPaths() []string {
-	names := []string{"libastonish-treesitter.so", "libastonish-treesitter.dylib"}
+	names := []string{"libtroupe-treesitter.so", "libtroupe-treesitter.dylib"}
 	var paths []string
 	// Next to the executable (portable installs ship the .so alongside).
 	if exe, err := os.Executable(); err == nil {

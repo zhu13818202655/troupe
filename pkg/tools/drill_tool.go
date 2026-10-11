@@ -1092,7 +1092,7 @@ func GetDrillTools() ([]tool.Tool, error) {
 		Name: "list_drills",
 		Description: "List drill suites and their drills. Shows names, descriptions, tags, and step counts. " +
 			"Use without arguments to list all suites, or pass suite_name to list drills in a specific suite. " +
-			"Drill files are managed by Astonish on the host — they are NOT accessible via read_file or shell_command in sandboxes.",
+			"Drill files are managed by Troupe on the host — they are NOT accessible via read_file or shell_command in sandboxes.",
 	}, listDrills)
 	if err != nil {
 		return nil, fmt.Errorf("create list_drills tool: %w", err)
@@ -1103,7 +1103,7 @@ func GetDrillTools() ([]tool.Tool, error) {
 		Description: "Read a drill's YAML content or a suite's overview. Pass a drill name to get its raw YAML " +
 			"(useful for understanding existing patterns or preparing edits). Pass a suite name to get a formatted " +
 			"overview of the suite config, services, and all drill summaries. " +
-			"Drill files are managed by Astonish on the host — use this tool instead of read_file to access drill content.",
+			"Drill files are managed by Troupe on the host — use this tool instead of read_file to access drill content.",
 	}, readDrill)
 	if err != nil {
 		return nil, fmt.Errorf("create read_drill tool: %w", err)
@@ -1114,7 +1114,7 @@ func GetDrillTools() ([]tool.Tool, error) {
 		Description: "Edit an existing drill file. Replaces the drill's YAML content with the provided YAML. " +
 			"The drill must already exist (use save_drill to create new drills). " +
 			"Typical workflow: read_drill to get current YAML → modify assertions/steps → edit_drill to save changes. " +
-			"Drill files are managed by Astonish on the host — use this tool instead of write_file to edit drill content.",
+			"Drill files are managed by Troupe on the host — use this tool instead of write_file to edit drill content.",
 	}, editDrill)
 	if err != nil {
 		return nil, fmt.Errorf("create edit_drill tool: %w", err)

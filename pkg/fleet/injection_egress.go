@@ -26,7 +26,7 @@ func ApplyOptionalCredentialEgress(ctx context.Context, gateway openshell.Gatewa
 			epCopy := ep
 			ops = append(ops, openshell.PolicyMergeOp{
 				Type:     openshell.PolicyMergeAddEndpoint,
-				RuleName: "astonish-egress",
+				RuleName: "troupe-egress",
 				Endpoint: &epCopy,
 			})
 		}

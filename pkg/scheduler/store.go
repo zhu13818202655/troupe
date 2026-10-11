@@ -1,4 +1,4 @@
-// Package scheduler implements a job scheduler for Astonish.
+// Package scheduler implements a job scheduler for Troupe.
 // It supports two execution modes: "routine" (run a flow with fixed params)
 // and "adaptive" (LLM-driven agentic chat turn with stored instructions).
 package scheduler
@@ -177,13 +177,13 @@ func NewStore(path string) (*Store, error) {
 }
 
 // DefaultStorePath returns the default job store path:
-// ~/.config/astonish/scheduler/jobs.json
+// ~/.config/troupe/scheduler/jobs.json
 func DefaultStorePath() (string, error) {
 	configDir, err := os.UserConfigDir()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(configDir, "astonish", "scheduler", "jobs.json"), nil
+	return filepath.Join(configDir, "troupe", "scheduler", "jobs.json"), nil
 }
 
 // List returns a copy of all jobs.

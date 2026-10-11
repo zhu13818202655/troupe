@@ -123,7 +123,7 @@ func buildStructuredBlocks(text string) []slack.Block {
 
 	if table := markdownTableBlock(lines); table != nil {
 		blocks = append(blocks, table)
-		blocks = append(blocks, contextBlock("Astonish · table summary"))
+		blocks = append(blocks, contextBlock("Troupe · table summary"))
 		return blocks
 	}
 
@@ -134,7 +134,7 @@ func buildStructuredBlocks(text string) []slack.Block {
 			}
 			blocks = append(blocks, statusCountFieldSection(groups))
 			blocks = append(blocks, table)
-			blocks = append(blocks, contextBlock("Astonish · table summary"))
+			blocks = append(blocks, contextBlock("Troupe · table summary"))
 			return blocks
 		}
 
@@ -151,7 +151,7 @@ func buildStructuredBlocks(text string) []slack.Block {
 			}
 			blocks = append(blocks, statusGroupBlocks(group)...)
 		}
-		blocks = append(blocks, contextBlock("Astonish · structured Slack summary"))
+		blocks = append(blocks, contextBlock("Troupe · structured Slack summary"))
 		return blocks
 	}
 
@@ -161,7 +161,7 @@ func buildStructuredBlocks(text string) []slack.Block {
 			blocks = append(blocks, sectionBlock("*Summary*"))
 		}
 		blocks = append(blocks, fieldSections(fields)...)
-		blocks = append(blocks, contextBlock("Astonish · structured Slack summary"))
+		blocks = append(blocks, contextBlock("Troupe · structured Slack summary"))
 		if len(blocks) <= maxBlocksPerMessage {
 			return blocks
 		}
@@ -280,7 +280,7 @@ func markdownTableBlock(lines []string) slack.Block {
 		if len(headers) < 2 || len(headers) > 6 {
 			return nil
 		}
-		table := slack.NewTableBlock("astonish_markdown_table").WithColumnSettings(tableColumnSettings(len(headers))...)
+		table := slack.NewTableBlock("troupe_markdown_table").WithColumnSettings(tableColumnSettings(len(headers))...)
 		table.AddRow(tableCells(headers)...)
 		for _, line := range lines[i+2:] {
 			if !strings.Contains(line, "|") {
@@ -323,7 +323,7 @@ func groupedListTableBlock(groups []statusGroup) slack.Block {
 		return nil
 	}
 
-	table := slack.NewTableBlock("astonish_grouped_list_table").WithColumnSettings(tableColumnSettings(3)...)
+	table := slack.NewTableBlock("troupe_grouped_list_table").WithColumnSettings(tableColumnSettings(3)...)
 	table.AddRow(
 		slack.NewTableRawTextCell("Group"),
 		slack.NewTableRawTextCell("Item"),
@@ -430,7 +430,7 @@ func sectionBlock(text string) slack.Block {
 }
 
 func contextBlock(text string) slack.Block {
-	return slack.NewContextBlock("astonish_context", slack.NewTextBlockObject(slack.MarkdownType, truncateText(text, maxContextTextLength), false, false))
+	return slack.NewContextBlock("troupe_context", slack.NewTextBlockObject(slack.MarkdownType, truncateText(text, maxContextTextLength), false, false))
 }
 
 func stripMrkdwn(text string) string {

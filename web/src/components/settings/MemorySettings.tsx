@@ -130,11 +130,11 @@ export default function MemorySettings({ config, onSaved }: { config: Record<str
                   type="text"
                   value={form.memory_dir}
                   onChange={(e) => setForm({ ...form, memory_dir: e.target.value })}
-                  placeholder="~/.config/astonish/memory/ (default)"
+                  placeholder="~/.config/troupe/memory/ (default)"
                   className="bg-background font-mono"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Directory containing memory markdown files. Default: ~/.config/astonish/memory/.
+                  Directory containing memory markdown files. Default: ~/.config/troupe/memory/.
                 </p>
               </div>
               <div className="space-y-2">
@@ -144,11 +144,11 @@ export default function MemorySettings({ config, onSaved }: { config: Record<str
                   type="text"
                   value={form.vector_dir}
                   onChange={(e) => setForm({ ...form, vector_dir: e.target.value })}
-                  placeholder="~/.config/astonish/memory/vectors/ (default)"
+                  placeholder="~/.config/troupe/memory/vectors/ (default)"
                   className="bg-background font-mono"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Directory for vector index storage. Default: ~/.config/astonish/memory/vectors/.
+                  Directory for vector index storage. Default: ~/.config/troupe/memory/vectors/.
                 </p>
               </div>
             </CardContent>
@@ -196,7 +196,7 @@ export default function MemorySettings({ config, onSaved }: { config: Record<str
                   </div>
                   <div className="font-mono text-sm text-foreground">sentence-transformers/all-MiniLM-L6-v2</div>
                   <div className="mt-1 text-xs text-muted-foreground">
-                    384-dimensional vectors, ~23 MB. Same model used by ChromaDB. Stored at ~/.config/astonish/models/.
+                    384-dimensional vectors, ~23 MB. Same model used by ChromaDB. Stored at ~/.config/troupe/models/.
                   </div>
                 </div>
               )}

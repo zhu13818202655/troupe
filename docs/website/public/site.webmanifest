@@ -1,9 +1,9 @@
 {
-  "name": "Astonish",
-  "short_name": "Astonish",
+  "name": "Troupe",
+  "short_name": "Troupe",
   "icons": [
     {
-      "src": "/astonish/astonish-logo.svg",
+      "src": "/astonish/troupe-logo.svg",
       "type": "image/svg+xml",
       "sizes": "any"
     }

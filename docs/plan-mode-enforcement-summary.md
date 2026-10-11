@@ -49,7 +49,7 @@ if planMode:
 The design mirrors the existing `CheckTutorialDrillToolGate` hard-block pattern — no new
 runtime path was forked.
 
-> **Related: Normal-mode authorization reuses this allow-list.** `astonish code` also adds a
+> **Related: Normal-mode authorization reuses this allow-list.** `troupe code` also adds a
 > Normal-mode (non-plan) authorization gate that reuses the **same `agent.SafeTools` list** as an
 > *auto-allow baseline* rather than a hard block: safe/read-only tools run freely, but a
 > non-whitelisted tool pauses for the user's authorization (Allow / Always Allow /
@@ -109,7 +109,7 @@ Result: `go build ./...` clean, Go tests for `pkg/{api,agent,tui,launcher,client
 Beyond the "no changes" rule, `agent.PlanModeSystemContext` (source of truth in
 `pkg/agent/tool_categories.go`, mirrored byte-for-byte by `planModeSystemContext` in
 `pkg/tui/app.go`) teaches four disciplines so plans are **complete and approvable**, not partial
-sketches — inspired by mature planning agents but adapted to Astonish's structural tools:
+sketches — inspired by mature planning agents but adapted to Troupe's structural tools:
 
 1. **Investigate thoroughly.** Orient with `repo_map`, read the actual declaration of each symbol
    with `code_definition`, enumerate **all** call sites with `code_references`, and read the real
@@ -184,7 +184,7 @@ plan to a **per-session `PLAN.md`**.
 - **Cleanup on delete:** the sidecar is removed when its session is deleted, so plan files never
   outlive their session on disk. `localAgentBackend.DeleteSession` (`pkg/launcher/tui_code.go`)
   removes the parent and any child-session sidecars via `removePlanFile`, and the CLI
-  (`astonish sessions delete` / `sessions clear` in `cmd/astonish/sessions.go`) removes them via
+  (`troupe sessions delete` / `sessions clear` in `cmd/troupe/sessions.go`) removes them via
   the shared `removeSessionFiles` helper (`sessionSidecarSuffixes = {".jsonl", ".PLAN.md"}`).
   All removals are best-effort — a missing file is not an error.
 

@@ -1,4 +1,4 @@
-// Package a2achan implements the A2A protocol channel adapter for Astonish.
+// Package a2achan implements the A2A protocol channel adapter for Troupe.
 package a2achan
 
 import (
@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// SessionKey generates an Astonish session key for an A2A conversation.
+// SessionKey generates an Troupe session key for an A2A conversation.
 //
 // When identity is propagated (a real user), the session key uses the user ID
 // so the same user has session continuity regardless of which agent acts on

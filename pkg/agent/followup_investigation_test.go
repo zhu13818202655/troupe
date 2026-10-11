@@ -19,7 +19,7 @@ func TestIsFailedFixFollowup(t *testing.T) {
 		"the previous fix didn't stick",
 		"still broken on restore",
 		"this doesn't work",
-		"Error: No such object: astonish-session",
+		"Error: No such object: troupe-session",
 		"how do you considered as completed when all phases completed",
 		"undefined: OptionalTool",
 		"build failed",
@@ -67,7 +67,7 @@ func TestIsLiveSurfaceFollowup(t *testing.T) {
 		"is the overlayfs mounted",
 		"in the session the binary is missing",
 		"CloakBrowser chrome segfault",
-		"astonish-session-c1b27dfb is up",
+		"troupe-session-c1b27dfb is up",
 		"chromium is not installed",
 	}
 	for _, s := range yes {

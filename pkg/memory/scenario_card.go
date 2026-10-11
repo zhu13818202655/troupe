@@ -42,7 +42,10 @@ type ScenarioCard struct {
 }
 
 func IsScenarioCard(result store.MemorySearchResult) bool {
-	return strings.Contains(result.Category, "scenario_card") || strings.Contains(result.Snippet, "astonish_memory_type: scenario_card")
+	// 同时匹配新旧 memory_type 标记，兼容旧品牌时期写入的存量记忆。
+	return strings.Contains(result.Category, "scenario_card") ||
+		strings.Contains(result.Snippet, "troupe_memory_type: scenario_card") ||
+		strings.Contains(result.Snippet, "astonish_memory_type: scenario_card")
 }
 
 func NormalizeScenarioKey(s string) string {
@@ -136,7 +139,7 @@ func RenderScenarioCard(card ScenarioCard) string {
 	}
 	var b strings.Builder
 	b.WriteString("---\n")
-	writeYAMLScalar(&b, "astonish_memory_type", "scenario_card")
+	writeYAMLScalar(&b, "troupe_memory_type", "scenario_card")
 	writeYAMLScalar(&b, "card_type", ScenarioCardType)
 	writeYAMLScalar(&b, "canonical_key", card.CanonicalKey)
 	writeYAMLScalar(&b, "status", card.Status)
@@ -166,7 +169,9 @@ func RenderScenarioCard(card ScenarioCard) string {
 }
 
 func ParseScenarioCard(content string) (ScenarioCard, bool) {
-	if !strings.Contains(content, "astonish_memory_type: scenario_card") {
+	// 同时接受新旧 memory_type 标记，兼容旧品牌时期写入的存量记忆。
+	if !strings.Contains(content, "troupe_memory_type: scenario_card") &&
+		!strings.Contains(content, "astonish_memory_type: scenario_card") {
 		return ScenarioCard{}, false
 	}
 	card := ScenarioCard{Status: ScenarioCardStatusDraft, Category: ScenarioCardCategory}

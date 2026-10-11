@@ -15,11 +15,11 @@ func TestGenerateDockerfile(t *testing.T) {
 	}{
 		{
 			name:         "platform only",
-			baseImage:    "ghcr.io/sap/astonish-sandbox-openshell:dev",
+			baseImage:    "ghcr.io/sap/troupe-sandbox-openshell:dev",
 			platformBody: "USER root\nRUN apt-get update && apt-get install -y curl\nUSER sandbox",
 			teamBody:     "",
 			wantLines: []string{
-				"FROM ghcr.io/sap/astonish-sandbox-openshell:dev",
+				"FROM ghcr.io/sap/troupe-sandbox-openshell:dev",
 				"# --- Platform recipe ---",
 				"USER root",
 				"RUN apt-get update && apt-get install -y curl",
@@ -121,14 +121,14 @@ func TestImageRef(t *testing.T) {
 			registryURL:  "ghcr.io/sap",
 			scope:        "base",
 			combinedBody: CombinedBody("RUN apt-get install -y curl git", ""),
-			wantPrefix:   "ghcr.io/sap/astonish-sandbox-base:",
+			wantPrefix:   "ghcr.io/sap/troupe-sandbox-base:",
 		},
 		{
 			name:         "ghcr team",
 			registryURL:  "ghcr.io/org",
 			scope:        "frontend",
 			combinedBody: CombinedBody("", "RUN npm install -g typescript"),
-			wantPrefix:   "ghcr.io/org/astonish-sandbox-frontend:",
+			wantPrefix:   "ghcr.io/org/troupe-sandbox-frontend:",
 		},
 	}
 
@@ -201,8 +201,8 @@ func TestJobName(t *testing.T) {
 	if len(name) > 63 {
 		t.Errorf("JobName too long: %d chars", len(name))
 	}
-	if !strings.HasPrefix(name, "astonish-build-my-team-") {
-		t.Errorf("JobName = %q, want prefix 'astonish-build-my-team-'", name)
+	if !strings.HasPrefix(name, "troupe-build-my-team-") {
+		t.Errorf("JobName = %q, want prefix 'troupe-build-my-team-'", name)
 	}
 }
 

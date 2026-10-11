@@ -64,7 +64,7 @@ func handleChatCommand(args []string) error {
 	// Chat always uses the authenticated platform client (Studio SSE).
 	// Local/in-process chat has been removed.
 	if !client.IsRemoteMode() {
-		return fmt.Errorf("not logged in to a platform\nRun: troupe login <url>\n\nChat requires an authenticated Astonish platform (local install or cloud)")
+		return fmt.Errorf("not logged in to a platform\nRun: troupe login <url>\n\nChat requires an authenticated Troupe platform (local install or cloud)")
 	}
 
 	flags, err := parseChatFlags(args)
@@ -190,7 +190,7 @@ func printModelResult(sessionID, pinnedProvider, pinnedModel, effectiveProvider,
 func printChatUsage() {
 	fmt.Println("usage: troupe chat [options]")
 	fmt.Println("")
-	fmt.Println("Start an interactive chat session against your Astonish platform.")
+	fmt.Println("Start an interactive chat session against your Troupe platform.")
 	fmt.Println("Requires authentication: troupe login <url>")
 	fmt.Println("")
 	fmt.Println("options:")

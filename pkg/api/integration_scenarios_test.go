@@ -231,14 +231,14 @@ func TestIntegration_X9_AnnouncePlanSuppressed(t *testing.T) {
 }
 
 // TestIntegration_X10_AppPreviewDetection verifies that code fences with
-// ```astonish-app are detected post-run and emitted as app_preview events.
+// ```troupe-app are detected post-run and emitted as app_preview events.
 func TestIntegration_X10_AppPreviewDetection(t *testing.T) {
 	appCode := `import React from 'react';
 
 export default function SalesDashboard() {
   return <div>Sales Dashboard</div>;
 }`
-	responseText := "Here's your app:\n\n```astonish-app\n" + appCode + "\n```\n\nEnjoy!"
+	responseText := "Here's your app:\n\n```troupe-app\n" + appCode + "\n```\n\nEnjoy!"
 
 	mockLLM := NewMockLLM(TextTurn(responseText))
 	env := setupIntegrationTest(t, mockLLM, nil)

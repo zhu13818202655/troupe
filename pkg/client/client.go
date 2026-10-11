@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// Client is an HTTP client for communicating with a remote Astonish server.
+// Client is an HTTP client for communicating with a remote Troupe server.
 // It handles JWT auth headers, automatic token refresh, and org/team context.
 type Client struct {
 	baseURL    string
@@ -43,7 +43,7 @@ func New() (*Client, error) {
 		return nil, fmt.Errorf("load tokens: %w", err)
 	}
 	if tokens == nil {
-		return nil, fmt.Errorf("no stored tokens; run 'astonish login' first")
+		return nil, fmt.Errorf("no stored tokens; run 'troupe login' first")
 	}
 
 	return &Client{
@@ -93,7 +93,7 @@ func (c *Client) Do(method, path string, body any) (*http.Response, error) {
 	if resp.StatusCode == http.StatusUnauthorized && c.cached != nil {
 		resp.Body.Close()
 		if refreshErr := c.refresh(); refreshErr != nil {
-			return nil, fmt.Errorf("session expired: %w (run 'astonish login' to re-authenticate)", refreshErr)
+			return nil, fmt.Errorf("session expired: %w (run 'troupe login' to re-authenticate)", refreshErr)
 		}
 		// Retry with new token
 		return c.doOnce(method, path, body)
@@ -140,7 +140,7 @@ func (c *Client) SSE(method, path string, body any) (*SSEStream, error) {
 	if resp.StatusCode == http.StatusUnauthorized && c.cached != nil {
 		resp.Body.Close()
 		if refreshErr := c.refresh(); refreshErr != nil {
-			return nil, fmt.Errorf("session expired: %w (run 'astonish login' to re-authenticate)", refreshErr)
+			return nil, fmt.Errorf("session expired: %w (run 'troupe login' to re-authenticate)", refreshErr)
 		}
 		// Rebuild request with new token
 		req, err = c.buildRequest(method, path, body)

@@ -10,7 +10,7 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/sandbox"
 )
 
-const treeSitterLibPath = "/usr/lib/astonish/libastonish-treesitter.so"
+const treeSitterLibPath = "/usr/lib/troupe/libtroupe-treesitter.so"
 
 func TestTreeSitterLibraryPathContract(t *testing.T) {
 	if sandbox.TreeSitterLibraryDestPath != treeSitterLibPath {
@@ -24,7 +24,7 @@ func TestTreeSitterLibraryPathContract(t *testing.T) {
 	}
 
 	dockerfile := readSandboxBaseDockerfile(t)
-	wantCopy := "COPY --from=treesitter-builder /tmp/libastonish-treesitter.so " + treeSitterLibPath
+	wantCopy := "COPY --from=treesitter-builder /tmp/libtroupe-treesitter.so " + treeSitterLibPath
 	if !strings.Contains(dockerfile, wantCopy) {
 		t.Fatalf("sandbox-base Dockerfile must COPY library to %s; missing:\n%s", treeSitterLibPath, wantCopy)
 	}

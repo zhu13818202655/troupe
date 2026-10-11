@@ -1,6 +1,6 @@
-# Google ADK Integration in Astonish
+# Google ADK Integration in Troupe
 
-This document explains how the Google Agent Development Kit (ADK) is used in the Astonish project, its role, architecture, and the benefits it provides.
+This document explains how the Google Agent Development Kit (ADK) is used in the Troupe project, its role, architecture, and the benefits it provides.
 
 ## What is Google ADK?
 
@@ -12,7 +12,7 @@ This document explains how the Google Agent Development Kit (ADK) is used in the
 - **Tool Integration**: Native support for function calling and MCP (Model Context Protocol)
 - **Runner System**: Execution engine for running agent flows
 
-Astonish uses **ADK v0.2.0** (`google.golang.org/adk`) as its foundational framework.
+Troupe uses **ADK v0.2.0** (`google.golang.org/adk`) as its foundational framework.
 
 ---
 
@@ -20,10 +20,10 @@ Astonish uses **ADK v0.2.0** (`google.golang.org/adk`) as its foundational frame
 
 ```mermaid
 graph TB
-    subgraph "Astonish Application"
+    subgraph "Troupe Application"
         CLI["CLI / Web UI"]
         Launcher["Launcher<br/>(console.go, web.go)"]
-        AstonishAgent["AstonishAgent<br/>(Flow Executor)"]
+        TroupeAgent["TroupeAgent<br/>(Flow Executor)"]
     end
 
     subgraph "Google ADK Layer"
@@ -52,8 +52,8 @@ graph TB
     Launcher --> ADKAgent
     ADKAgent --> Runner
     Runner --> Session
-    ADKAgent -->|wraps| AstonishAgent
-    AstonishAgent --> LLMAgent
+    ADKAgent -->|wraps| TroupeAgent
+    TroupeAgent --> LLMAgent
     LLMAgent --> Google
     LLMAgent --> Anthropic
     LLMAgent --> OpenAI
@@ -76,11 +76,11 @@ The `agent` package provides the core abstractions for building agents.
 // From pkg/launcher/console.go
 import adkagent "google.golang.org/adk/agent"
 
-// Create ADK agent wrapper around AstonishAgent
+// Create ADK agent wrapper around TroupeAgent
 adkAgent, err := adkagent.New(adkagent.Config{
-    Name:        "astonish_agent",
+    Name:        "troupe_agent",
     Description: cfg.AgentConfig.Description,
-    Run:         astonishAgent.Run,  // Custom flow execution
+    Run:         troupeAgent.Run,  // Custom flow execution
 })
 ```
 
@@ -96,7 +96,7 @@ adkAgent, err := adkagent.New(adkagent.Config{
 The `llmagent` package handles LLM interactions with native function calling.
 
 ```go
-// From pkg/agent/astonish_agent.go
+// From pkg/agent/troupe_agent.go
 import "google.golang.org/adk/agent/llmagent"
 
 // Create ADK llmagent for this node
@@ -258,7 +258,7 @@ sequenceDiagram
     participant User
     participant Console as Console Launcher
     participant Runner as ADK Runner
-    participant Agent as AstonishAgent
+    participant Agent as TroupeAgent
     participant LLMAgent as ADK llmagent
     participant Provider as LLM Provider
     participant Tools as Tool System
@@ -291,7 +291,7 @@ sequenceDiagram
 ## Benefits of Using ADK
 
 ### 1. **Provider Abstraction**
-Write once, run with any LLM. Astonish supports:
+Write once, run with any LLM. Troupe supports:
 - Google Gemini (native via `adk/model/gemini`)
 - Anthropic Claude
 - OpenAI GPT
@@ -346,13 +346,13 @@ Key files using ADK:
 
 | File | ADK Usage |
 |------|-----------|
-| [pkg/launcher/console.go](file:///Users/I851355/Projects/astonish/pkg/launcher/console.go) | Agent creation, Runner, Session |
-| [pkg/agent/astonish_agent.go](file:///Users/I851355/Projects/astonish/pkg/agent/astonish_agent.go) | llmagent, tool.Tool, session.State |
-| [pkg/mcp/manager.go](file:///Users/I851355/Projects/astonish/pkg/mcp/manager.go) | mcptoolset for MCP integration |
-| [pkg/provider/google/google.go](file:///Users/I851355/Projects/astonish/pkg/provider/google/google.go) | Native Gemini via adk/model/gemini |
-| [pkg/provider/anthropic/anthropic.go](file:///Users/I851355/Projects/astonish/pkg/provider/anthropic/anthropic.go) | Implements model.LLM interface |
-| [pkg/planner/react.go](file:///Users/I851355/Projects/astonish/pkg/planner/react.go) | ReAct fallback using ADK types |
-| [pkg/tools/internal.go](file:///Users/I851355/Projects/astonish/pkg/tools/internal.go) | Tool definitions using functiontool |
+| [pkg/launcher/console.go](file:///Users/I851355/Projects/troupe/pkg/launcher/console.go) | Agent creation, Runner, Session |
+| [pkg/agent/troupe_agent.go](file:///Users/I851355/Projects/troupe/pkg/agent/troupe_agent.go) | llmagent, tool.Tool, session.State |
+| [pkg/mcp/manager.go](file:///Users/I851355/Projects/troupe/pkg/mcp/manager.go) | mcptoolset for MCP integration |
+| [pkg/provider/google/google.go](file:///Users/I851355/Projects/troupe/pkg/provider/google/google.go) | Native Gemini via adk/model/gemini |
+| [pkg/provider/anthropic/anthropic.go](file:///Users/I851355/Projects/troupe/pkg/provider/anthropic/anthropic.go) | Implements model.LLM interface |
+| [pkg/planner/react.go](file:///Users/I851355/Projects/troupe/pkg/planner/react.go) | ReAct fallback using ADK types |
+| [pkg/tools/internal.go](file:///Users/I851355/Projects/troupe/pkg/tools/internal.go) | Tool definitions using functiontool |
 
 ---
 
@@ -392,7 +392,7 @@ graph LR
 
 ## Summary
 
-Google ADK serves as the **foundational framework** for Astonish, providing:
+Google ADK serves as the **foundational framework** for Troupe, providing:
 
 | Capability | ADK Component | Benefit |
 |------------|---------------|---------|
@@ -402,4 +402,4 @@ Google ADK serves as the **foundational framework** for Astonish, providing:
 | Tool Calling | `tool.Tool`, `mcptoolset` | Native function calling + MCP |
 | Structured Output | `genai.Schema` | Type-safe responses |
 
-By leveraging ADK, Astonish focuses on its unique value—**visual flow design**—while relying on production-grade infrastructure for agent execution.
+By leveraging ADK, Troupe focuses on its unique value—**visual flow design**—while relying on production-grade infrastructure for agent execution.

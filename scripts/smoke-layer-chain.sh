@@ -12,11 +12,11 @@
 # Prerequisites:
 #   - kubectl configured with access to the target cluster
 #   - TROUPE_TEST_TOKEN env var set to a valid Bearer token for the API
-#   - TROUPE_API_URL env var (default: https://devastonish.local.muxpie.com)
-#   - TROUPE_SANDBOX_NS env var (default: astonish-sandbox)
+#   - TROUPE_API_URL env var (default: https://devtroupe.local.muxpie.com)
+#   - TROUPE_SANDBOX_NS env var (default: troupe-sandbox)
 #
 # Usage:
-#   export TROUPE_TEST_TOKEN=$(astonish platform issue-token --server $URL)
+#   export TROUPE_TEST_TOKEN=$(troupe platform issue-token --server $URL)
 #   ./scripts/smoke-layer-chain.sh
 #
 set -euo pipefail
@@ -25,14 +25,14 @@ set -euo pipefail
 # Configuration
 # ---------------------------------------------------------------------------
 
-API_URL="${TROUPE_API_URL:-https://devastonish.local.muxpie.com}"
-SANDBOX_NS="${TROUPE_SANDBOX_NS:-astonish-sandbox}"
+API_URL="${TROUPE_API_URL:-https://devtroupe.local.muxpie.com}"
+SANDBOX_NS="${TROUPE_SANDBOX_NS:-troupe-sandbox}"
 TOKEN="${TROUPE_TEST_TOKEN:-}"
 TEAM_SLUG="${TROUPE_TEST_TEAM:-general}"
 
 if [ -z "$TOKEN" ]; then
   echo "ERROR: TROUPE_TEST_TOKEN is required." >&2
-  echo "Obtain one with: astonish platform issue-token --server $API_URL" >&2
+  echo "Obtain one with: troupe platform issue-token --server $API_URL" >&2
   exit 1
 fi
 
@@ -51,7 +51,7 @@ api_post() {
   curl -s -X POST \
     -H "Authorization: Bearer $TOKEN" \
     -H "Content-Type: application/json" \
-    -H "X-Astonish-Team: $TEAM_SLUG" \
+    -H "X-Troupe-Team: $TEAM_SLUG" \
     -d "$body" \
     "$API_URL$path"
 }
@@ -60,7 +60,7 @@ api_delete() {
   local path="$1"
   curl -s -X DELETE \
     -H "Authorization: Bearer $TOKEN" \
-    -H "X-Astonish-Team: $TEAM_SLUG" \
+    -H "X-Troupe-Team: $TEAM_SLUG" \
     "$API_URL$path"
 }
 
@@ -136,7 +136,7 @@ trap "rm -f $SSE_OUTPUT" EXIT
 curl -s -N -X POST \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -H "X-Astonish-Team: $TEAM_SLUG" \
+  -H "X-Troupe-Team: $TEAM_SLUG" \
   -d '{"message":"Run this shell command and show the output: echo SMOKE_TEST_OK"}' \
   "$API_URL/api/studio/chat" \
   --max-time 30 \

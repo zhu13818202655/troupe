@@ -11,7 +11,7 @@ import (
 	"google.golang.org/adk/session"
 )
 
-func (a *AstonishAgent) getNode(name string) (*config.Node, bool) {
+func (a *TroupeAgent) getNode(name string) (*config.Node, bool) {
 	for i := range a.Config.Nodes {
 		if a.Config.Nodes[i].Name == name {
 			return &a.Config.Nodes[i], true
@@ -20,7 +20,7 @@ func (a *AstonishAgent) getNode(name string) (*config.Node, bool) {
 	return nil, false
 }
 
-func (a *AstonishAgent) getNextNode(current string, state session.State) (string, error) {
+func (a *TroupeAgent) getNextNode(current string, state session.State) (string, error) {
 	for _, item := range a.Config.Flow {
 		if item.From == current {
 			if item.To != "" {
@@ -42,7 +42,7 @@ func (a *AstonishAgent) getNextNode(current string, state session.State) (string
 	return "", fmt.Errorf("no transition found from node: %s", current)
 }
 
-func (a *AstonishAgent) evaluateCondition(condition string, state session.State) bool {
+func (a *TroupeAgent) evaluateCondition(condition string, state session.State) bool {
 	// Handle simple "true" condition
 	if condition == "true" {
 		return true
@@ -64,7 +64,7 @@ func (a *AstonishAgent) evaluateCondition(condition string, state session.State)
 }
 
 // stateToMap converts session.State to map[string]interface{}
-func (a *AstonishAgent) stateToMap(state session.State) map[string]interface{} {
+func (a *TroupeAgent) stateToMap(state session.State) map[string]interface{} {
 	stateMap := make(map[string]interface{})
 
 	// Use the All() iterator to get all key-value pairs
@@ -75,7 +75,7 @@ func (a *AstonishAgent) stateToMap(state session.State) map[string]interface{} {
 	return stateMap
 }
 
-func (a *AstonishAgent) renderString(tmpl string, state session.State) string {
+func (a *TroupeAgent) renderString(tmpl string, state session.State) string {
 	// Use a regex that captures content inside {} but not nested {}
 	// This allows for expressions like {comment["patch"]}
 	re := regexp.MustCompile(`\{([^{}]+)\}`)
@@ -141,7 +141,7 @@ func (a *AstonishAgent) renderString(tmpl string, state session.State) string {
 //
 // Only state variables INSIDE credential placeholders are resolved — the rest
 // of raw_context remains untouched to preserve shell syntax (${}, awk {}, etc.).
-func (a *AstonishAgent) resolveCredentialVarsInRawContext(raw string, state session.State) string {
+func (a *TroupeAgent) resolveCredentialVarsInRawContext(raw string, state session.State) string {
 	// Match {{CREDENTIAL:{var}:field}} — nested state var inside credential placeholder.
 	// The outer pattern is {{CREDENTIAL: ... : ... }} where the first segment
 	// contains {state_var} that needs resolution.
@@ -168,7 +168,7 @@ func (a *AstonishAgent) resolveCredentialVarsInRawContext(raw string, state sess
 	})
 }
 
-func (a *AstonishAgent) cleanAndFixJson(input string) string {
+func (a *TroupeAgent) cleanAndFixJson(input string) string {
 	trimmed := strings.TrimSpace(input)
 
 	// Find the first JSON object or array start character
@@ -259,7 +259,7 @@ func getKeysStr(m map[string]string) []string {
 }
 
 // emitNodeTransition emits a node transition event
-func (a *AstonishAgent) emitNodeTransition(nodeName string, state session.State, yield func(*session.Event, error) bool) bool {
+func (a *TroupeAgent) emitNodeTransition(nodeName string, state session.State, yield func(*session.Event, error) bool) bool {
 	if nodeName == "END" {
 		event := &session.Event{
 			Actions: session.EventActions{

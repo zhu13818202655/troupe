@@ -1,6 +1,6 @@
 # E2E Scenario Coverage Catalog
 
-This directory is the **source of truth** for E2E test scenarios — real user journeys exercised against a running Astonish platform with real database, real server, and real LLM.
+This directory is the **source of truth** for E2E test scenarios — real user journeys exercised against a running Troupe platform with real database, real server, and real LLM.
 
 **This catalog does NOT track unit tests or frontend Vitest tests.** Those have their own coverage tools (`npm run test:coverage`, `go test -cover`).
 

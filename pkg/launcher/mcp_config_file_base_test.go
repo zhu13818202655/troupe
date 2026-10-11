@@ -61,13 +61,17 @@ func (m *memMCPStore) UpdateCachedTools(_ context.Context, name string, tools js
 func writeMCPConfigFile(t *testing.T, jsonBody string) {
 	t.Helper()
 	tmpDir := t.TempDir()
-	var configDir string
 	if runtime.GOOS == "darwin" {
-		configDir = filepath.Join(tmpDir, "Library", "Application Support", "astonish")
 		t.Setenv("HOME", tmpDir)
 	} else {
-		configDir = filepath.Join(tmpDir, "astonish")
 		t.Setenv("XDG_CONFIG_HOME", tmpDir)
+	}
+	// Resolve the directory rather than hard-coding its name: the fixture must
+	// land where the code under test actually looks, otherwise the file is
+	// silently ignored and the test passes for the wrong reason.
+	configDir, err := config.GetConfigDir()
+	if err != nil {
+		t.Fatalf("GetConfigDir: %v", err)
 	}
 	if err := os.MkdirAll(configDir, 0o755); err != nil {
 		t.Fatalf("mkdir config dir: %v", err)

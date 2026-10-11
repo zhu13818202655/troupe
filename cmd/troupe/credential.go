@@ -7,9 +7,9 @@ import (
 	"strings"
 	"text/tabwriter"
 
+	"github.com/charmbracelet/huh"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/credentials"
-	"github.com/charmbracelet/huh"
 )
 
 // printSecretField writes a labeled credential field to stdout.

@@ -17,18 +17,18 @@ type ListTeamMembersArgs struct {
 
 // TeamMemberInfo represents a team member with their linked channel types.
 type TeamMemberInfo struct {
-	UserID          string   `json:"user_id"`
-	DisplayName     string   `json:"display_name"`
-	Email           string   `json:"email"`
-	Role            string   `json:"role"`
-	LinkedChannels  []string `json:"linked_channels"`  // channel types with active links (e.g., ["telegram", "email"])
+	UserID         string   `json:"user_id"`
+	DisplayName    string   `json:"display_name"`
+	Email          string   `json:"email"`
+	Role           string   `json:"role"`
+	LinkedChannels []string `json:"linked_channels"` // channel types with active links (e.g., ["telegram", "email"])
 }
 
 // ListTeamMembersResult is the output of the list_team_members tool.
 type ListTeamMembersResult struct {
 	Members []TeamMemberInfo `json:"members"`
-	Count   int             `json:"count"`
-	Message string          `json:"message,omitempty"`
+	Count   int              `json:"count"`
+	Message string           `json:"message,omitempty"`
 }
 
 func listTeamMembers(ctx tool.Context, args ListTeamMembersArgs) (ListTeamMembersResult, error) {

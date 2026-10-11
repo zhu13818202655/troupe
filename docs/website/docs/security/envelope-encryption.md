@@ -1,6 +1,6 @@
 # Envelope Encryption
 
-Astonish uses a two-tier envelope encryption scheme to protect stored credentials. This architecture ensures that a database compromise alone cannot expose secrets, and that key rotation does not require re-encrypting every credential.
+Troupe uses a two-tier envelope encryption scheme to protect stored credentials. This architecture ensures that a database compromise alone cannot expose secrets, and that key rotation does not require re-encrypting every credential.
 
 ## Architecture
 
@@ -41,11 +41,11 @@ openssl rand -hex 32
 
 This produces a 256-bit (32-byte) key encoded as 64 hexadecimal characters.
 
-In Kubernetes, store this in a Secret and reference it in the Helm values. For non-containerized deployments, Astonish can also auto-generate and store the key in a local file (`.store_key`) with `0600` permissions.
+In Kubernetes, store this in a Secret and reference it in the Helm values. For non-containerized deployments, Troupe can also auto-generate and store the key in a local file (`.store_key`) with `0600` permissions.
 
 ### Per-Org DEK
 
-When an organization first stores a credential, Astonish generates a random 256-bit DEK and stores it wrapped (encrypted) by the master KEK in the `org_encryption_keys` table. The plaintext DEK exists only in memory during request processing.
+When an organization first stores a credential, Troupe generates a random 256-bit DEK and stores it wrapped (encrypted) by the master KEK in the `org_encryption_keys` table. The plaintext DEK exists only in memory during request processing.
 
 ### Encryption Algorithm
 
@@ -53,7 +53,7 @@ All encryption uses **AES-256-GCM** with random 96-bit nonces. GCM provides both
 
 ## Credential Resolution
 
-When an agent needs a credential at runtime, Astonish resolves it using a **personal-first with team fallback** strategy:
+When an agent needs a credential at runtime, Troupe resolves it using a **personal-first with team fallback** strategy:
 
 1. Check for a personal credential owned by the requesting user.
 2. If not found, check team-level credentials for teams the user belongs to.

@@ -1,4 +1,4 @@
-// Package store defines the abstract storage interfaces for Astonish.
+// Package store defines the abstract storage interfaces for Troupe.
 //
 // The store layer provides a database-agnostic abstraction over all persistent
 // data operations. Two implementations are planned:

@@ -55,7 +55,7 @@ func SendSMTP(cfg *Config, msg OutgoingMessage, extraHeaders map[string]string) 
 
 	if hasAttachments {
 		// Outer boundary: multipart/mixed
-		mixedBoundary := fmt.Sprintf("==astonish_mixed_%d==", time.Now().UnixNano())
+		mixedBoundary := fmt.Sprintf("==troupe_mixed_%d==", time.Now().UnixNano())
 		buf.WriteString(fmt.Sprintf("Content-Type: multipart/mixed; boundary=\"%s\"\r\n", mixedBoundary))
 		buf.WriteString("\r\n")
 
@@ -234,7 +234,7 @@ func encodeQuotedPrintable(text string) string {
 func writeBodyPart(buf *strings.Builder, msg OutgoingMessage) {
 	if msg.HTML != "" {
 		// Multipart alternative: text + HTML
-		altBoundary := fmt.Sprintf("==astonish_alt_%d==", time.Now().UnixNano())
+		altBoundary := fmt.Sprintf("==troupe_alt_%d==", time.Now().UnixNano())
 		buf.WriteString(fmt.Sprintf("Content-Type: multipart/alternative; boundary=\"%s\"\r\n", altBoundary))
 		buf.WriteString("\r\n")
 

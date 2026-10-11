@@ -56,7 +56,7 @@ function PreparationStage({ round }: { round: CacheDiagnosticRound }) {
   return (
     <section className={cn('min-w-0 rounded-lg border bg-card p-2.5 sm:p-3', failed ? 'border-destructive/40' : 'border-border')}>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div><h4 className="text-sm font-semibold text-foreground">{stageLabel(round.stage)}</h4><p className="text-xs text-muted-foreground">Astonish preparation</p></div>
+        <div><h4 className="text-sm font-semibold text-foreground">{stageLabel(round.stage)}</h4><p className="text-xs text-muted-foreground">Troupe preparation</p></div>
         <span className={cn('rounded-full border px-2 py-0.5 text-xs font-medium', failed ? 'border-destructive/30 bg-destructive/10 text-destructive' : 'border-green-500/30 bg-green-500/10 text-green-600 dark:text-green-400')}>{failed ? 'Failed' : 'Completed'}</span>
       </div>
       <div className="mt-2 text-xs text-muted-foreground">Duration: {milliseconds(round.duration)}</div>
@@ -108,7 +108,7 @@ export default function CacheDiagnosticsPanel({ sessionId, invocationId }: { ses
   const rounds = [...diagnostics.rounds].sort((a, b) => new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime())
   return (
     <div className="mt-2 min-w-0 space-y-2 rounded-lg border border-border bg-muted/20 p-2 sm:p-3" data-testid="cache-diagnostics-panel">
-      <div className="px-1"><h3 className="text-sm font-semibold text-foreground">Request lifecycle</h3><p className="text-xs text-muted-foreground">Chronological Astonish preparation and provider dispatch.</p></div>
+      <div className="px-1"><h3 className="text-sm font-semibold text-foreground">Request lifecycle</h3><p className="text-xs text-muted-foreground">Chronological Troupe preparation and provider dispatch.</p></div>
       {rounds.map((round, index) => round.kind === 'preparation'
         ? <PreparationStage key={`${round.stage}-${round.startedAt}-${index}`} round={round} />
         : <ProviderRound key={`provider-${round.call}-${round.startedAt}`} round={round} />)}

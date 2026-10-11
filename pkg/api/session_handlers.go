@@ -16,6 +16,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/apps"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/credentials"
@@ -24,7 +25,6 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/sandbox"
 	persistentsession "github.com/zhu13818202655/troupe/pkg/session"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 	"google.golang.org/adk/session"
 )
 
@@ -67,7 +67,7 @@ func StudioSessionsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Optional ?app= query parameter to filter sessions by app name.
 	// Defaults to studioChatAppName for backward compatibility.
-	appName := r.URL.Query().Get("app")
+	appName := normalizeAppName(r.URL.Query().Get("app"))
 	if appName == "" {
 		appName = studioChatAppName
 	}
@@ -148,7 +148,7 @@ func StudioSessionHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Optional ?app= query parameter to filter by app name.
 	// Defaults to studioChatAppName for backward compatibility.
-	appName := r.URL.Query().Get("app")
+	appName := normalizeAppName(r.URL.Query().Get("app"))
 	if appName == "" {
 		appName = studioChatAppName
 	}
@@ -220,7 +220,7 @@ func StudioSessionHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		messages := eventsToMessages(getResp.Session.Events(), redactor)
 		artifacts := collectArtifacts(getResp.Session.Events())
-		// Project persisted astonish-report fences onto matching artifacts so
+		// Project persisted troupe-report fences onto matching artifacts so
 		// the frontend can decide which markdown files to embed inline.
 		artifacts = joinReportMarkers(artifacts, collectReportMarkers(getResp.Session.Events()))
 		totalUsage := collectUsage(getResp.Session.Events())
@@ -312,7 +312,7 @@ func StudioSessionHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Collect file artifacts from write_file/edit_file tool calls
 	artifacts := collectArtifacts(getResp.Session.Events())
-	// Project persisted astonish-report fences onto matching artifacts so
+	// Project persisted troupe-report fences onto matching artifacts so
 	// the frontend can decide which markdown files to embed inline.
 	artifacts = joinReportMarkers(artifacts, collectReportMarkers(getResp.Session.Events()))
 
@@ -680,7 +680,7 @@ func StudioDeleteSessionHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Optional ?app= query parameter to filter by app name.
 	// Defaults to studioChatAppName for backward compatibility.
-	appName := r.URL.Query().Get("app")
+	appName := normalizeAppName(r.URL.Query().Get("app"))
 	if appName == "" {
 		appName = studioChatAppName
 	}

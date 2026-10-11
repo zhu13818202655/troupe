@@ -69,8 +69,8 @@ func SkillsFromCapabilities(capabilities CapabilitySet) []Skill {
 	if len(internalTools) > 0 {
 		names := sortedCapabilityNames(internalTools)
 		skills = append(skills, newCardSkill(
-			"astonish-core",
-			"Astonish Assistant",
+			"troupe-core",
+			"Troupe Assistant",
 			fmt.Sprintf("Uses built-in tools for: %s.", strings.Join(names, ", ")),
 			[]string{"assistant", "tools"},
 			names,
@@ -228,7 +228,7 @@ func BuildAgentCard(cfg AgentCardConfig, skills []Skill) *AgentCard {
 			},
 		},
 		Provider: &AgentProvider{
-			Organization: "Astonish",
+			Organization: "Troupe",
 			URL:          cfg.BaseURL,
 		},
 		Capabilities: &AgentCapabilities{

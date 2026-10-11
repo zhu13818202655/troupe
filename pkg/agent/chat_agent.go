@@ -117,8 +117,8 @@ type ChatAgent struct {
 	uiEventBySession map[string]func(*session.Event)
 	uiEventMu        sync.RWMutex
 
-	// Internal: reuse AstonishAgent for approval formatting
-	approvalHelper *AstonishAgent
+	// Internal: reuse TroupeAgent for approval formatting
+	approvalHelper *TroupeAgent
 
 	// Internal: per-session execution traces for on-demand /distill
 	traceHistory         map[string][]*ExecutionTrace // keyed by session ID
@@ -178,7 +178,7 @@ type ChatAgent struct {
 	activeApps  map[string]*ActiveApp // keyed by session ID
 	activeAppMu sync.Mutex
 
-	// Code-mode authorization (astonish code). When EnforceAuthorization is
+	// Code-mode authorization (troupe code). When EnforceAuthorization is
 	// true, tools that are not in the read-only whitelist (agent.SafeTools)
 	// require explicit user authorization to run, and filesystem paths outside
 	// WorkingDir require folder-access authorization. Both are enforced by
@@ -225,10 +225,10 @@ func (c *ChatAgent) GetOrCreateAuthPolicy(sessionID string) *SessionAuthPolicy {
 	if existing, ok := c.authPolicies.Load(sessionID); ok {
 		return existing.(*SessionAuthPolicy)
 	}
-	// Whitelist Astonish's own state directory (session transcripts, PLAN.md,
+	// Whitelist Troupe's own state directory (session transcripts, PLAN.md,
 	// per-session workspaces, config) so routine writes there never prompt for
 	// folder access — that directory lives outside the project root but is
-	// owned by Astonish, not the user. Best-effort: if the config dir can't be
+	// owned by Troupe, not the user. Best-effort: if the config dir can't be
 	// resolved the policy simply omits it (no extra allowance).
 	var extraRoots []string
 	if cfgDir, err := config.GetConfigDir(); err == nil && cfgDir != "" {
@@ -306,7 +306,7 @@ type DistillReview struct {
 // reconstruction across daemon restarts.
 type DistillSession struct {
 	SessionID string // persistent session key (e.g. "telegram:direct:12345")
-	AppName   string // ADK app name (always "astonish")
+	AppName   string // ADK app name (always "troupe")
 	UserID    string // ADK user ID for session lookup
 }
 
@@ -331,7 +331,7 @@ func NewChatAgent(llm model.LLM, internalTools []tool.Tool, toolsets []tool.Tool
 		DebugMode:                   debugMode,
 		AutoApprove:                 autoApprove,
 		PreProviderRetrievalTimeout: config.DefaultPreProviderRetrievalTimeoutSeconds * time.Second,
-		approvalHelper:              &AstonishAgent{LLM: llm, AutoApprove: autoApprove},
+		approvalHelper:              &TroupeAgent{LLM: llm, AutoApprove: autoApprove},
 		traceHistory:                make(map[string][]*ExecutionTrace),
 		pendingDistill:              make(map[string]*distillPreview),
 		pendingDistillReview:        make(map[string]*DistillReview),

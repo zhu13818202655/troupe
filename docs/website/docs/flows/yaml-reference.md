@@ -1,6 +1,6 @@
 # YAML Reference
 
-This page documents the complete schema for Astonish flow YAML files. Flows are validated against this schema at load time — invalid flows produce clear error messages pointing to the offending field.
+This page documents the complete schema for Troupe flow YAML files. Flows are validated against this schema at load time — invalid flows produce clear error messages pointing to the offending field.
 
 ## Top-Level Structure
 
@@ -232,7 +232,7 @@ Flows are validated automatically when imported or saved. You can also validate 
 
 ```bash
 # Import and validate a flow file
-astonish flows import ./my-flow.yaml
+troupe flows import ./my-flow.yaml
 ```
 
 In Studio, the visual flow editor validates in real-time as you build the flow, highlighting errors inline.

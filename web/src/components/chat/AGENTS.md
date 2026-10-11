@@ -21,7 +21,7 @@ A markdown artifact enters the report harness only when all three signals hold:
 
 1. it was emitted after the most recent user message (last turn);
 2. `fileType === 'Markdown'`;
-3. `isReport === true`, set by the backend/`report_marker` contract when an ``astonish-report`` fence path matches the artifact.
+3. `isReport === true`, set by the backend/`report_marker` contract when an ``troupe-report`` fence path matches the artifact.
 
 Never widen this gate. A failure of any signal renders the compact `ArtifactCard`; fix missing report metadata in `pkg/api/chat_runner.go`, not with filename/content heuristics.
 

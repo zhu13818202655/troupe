@@ -1,10 +1,10 @@
 # A2A Protocol Integration — Historical Research and Superseded Decision
 
-> **Historical record.** The channel-adapter decision below is superseded. Inbound A2A is now the endpoint-owned `pkg/a2aserver` service at `/api/a2a`, protected exclusively by Astonish OAuth with exact `a2a` scope. It is not a `channels.Channel`, does not use `channels.a2a`, trusted external issuers, allowed agents, or `UserChannel(a2a, ...)`. Outbound A2A remains separate. See [A2A Server](./a2a-server.md) and [OAuth Authorization](./oauth-authorization.md).
+> **Historical record.** The channel-adapter decision below is superseded. Inbound A2A is now the endpoint-owned `pkg/a2aserver` service at `/api/a2a`, protected exclusively by Troupe OAuth with exact `a2a` scope. It is not a `channels.Channel`, does not use `channels.a2a`, trusted external issuers, allowed agents, or `UserChannel(a2a, ...)`. Outbound A2A remains separate. See [A2A Server](./a2a-server.md) and [OAuth Authorization](./oauth-authorization.md).
 
 ## Executive Summary
 
-This document captures the research findings on the A2A (Agent-to-Agent) protocol and the architectural decision to implement Astonish as an A2A Server using the existing Channel adapter pattern.
+This document captures the research findings on the A2A (Agent-to-Agent) protocol and the architectural decision to implement Troupe as an A2A Server using the existing Channel adapter pattern.
 
 **Decision: Implement A2A Server as a Channel adapter (`pkg/channels/a2a/`). Defer A2A Client to a future initiative.**
 
@@ -53,7 +53,7 @@ A2A enables AI agents built on different frameworks, by different vendors, to co
 
 ### The fit
 
-The A2A Server role maps directly to Astonish's `Channel` interface:
+The A2A Server role maps directly to Troupe's `Channel` interface:
 
 1. **External platform sends message** → External agent sends `SendMessage` via JSON-RPC
 2. **Adapter normalizes** → A2A Parts extracted into `InboundMessage`
@@ -96,7 +96,7 @@ The channel pattern gives us all of this for free. The A2A-specific concerns (ta
 
 **In scope (this initiative):**
 - A2A Server: receive tasks from external agents
-- Agent Card: advertise Astonish capabilities
+- Agent Card: advertise Troupe capabilities
 - Task lifecycle: manage state machine for incoming tasks
 - Push notifications: async callback delivery
 - Streaming: SSE response streaming
@@ -105,7 +105,7 @@ The channel pattern gives us all of this for free. The A2A-specific concerns (ta
 - Multi-tenant: map agent identity to team context
 
 **Out of scope (future initiative):**
-- A2A Client: Astonish calling external agents
+- A2A Client: Troupe calling external agents
 - Agent discovery: finding and connecting to remote agents
 - `delegate_to_agent` tool: LLM-driven delegation to external agents
 - Agent registry: catalog of known external agents
@@ -114,7 +114,7 @@ The server role already provides **two-way communication** within a task:
 - Client sends message → Server processes → Server returns result (sync or async callback)
 - Multi-turn: Server requests input → Client provides → Server continues
 
-This is complete bidirectional interaction. The "client" role is about Astonish *initiating* tasks to other agents — a fundamentally different concern.
+This is complete bidirectional interaction. The "client" role is about Troupe *initiating* tasks to other agents — a fundamentally different concern.
 
 ## Implementation Plan (High-Level)
 
@@ -126,7 +126,7 @@ This is complete bidirectional interaction. The "client" role is about Astonish 
 ### Phase 2: Channel Adapter (`pkg/channels/a2a/`)
 - `A2AChannel` implementing `Channel` interface
 - Message normalization (Parts → InboundMessage, OutboundMessage → Task result)
-- Session key mapping (contextId ↔ Astonish sessions)
+- Session key mapping (contextId ↔ Troupe sessions)
 
 ### Phase 3: HTTP Layer (`pkg/api/`)
 - Agent Card endpoint (`/.well-known/agent-card.json`)
@@ -151,7 +151,7 @@ This is complete bidirectional interaction. The "client" role is about Astonish 
 |---|---|
 | `a2aproject/a2a-go/v2` | Official SDK, A2A v1.0 compliant, Apache 2.0, multi-transport |
 | JSON-RPC 2.0 (primary) | A2A spec's primary binding; simplest HTTP integration |
-| Existing SSE infra | Astonish already streams via SSE for Studio Chat |
+| Existing SSE infra | Troupe already streams via SSE for Studio Chat |
 | In-memory TaskStore (personal) | Simple, no extra deps for single-user mode |
 | DB-backed TaskStore (platform) | Durability, audit, multi-instance support |
 
@@ -162,7 +162,7 @@ Major platforms already integrating A2A:
 - LangChain, Atlassian (Rovo), PayPal, UiPath, NVIDIA
 - 150+ organizations in the Linux Foundation governance
 
-Implementing A2A Server makes Astonish **discoverable and callable** by any agent in this ecosystem — a significant interoperability advantage.
+Implementing A2A Server makes Troupe **discoverable and callable** by any agent in this ecosystem — a significant interoperability advantage.
 
 ## References
 

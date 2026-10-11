@@ -3,7 +3,7 @@
  * Covers teams, app sharing, memories, and audit queries.
  * All endpoints require authentication (cookie-based JWT).
  *
- * Team-scoped requests use teamFetch() which injects the X-Astonish-Team
+ * Team-scoped requests use teamFetch() which injects the X-Troupe-Team
  * header so the backend resolves the correct team context.
  */
 

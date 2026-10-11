@@ -77,12 +77,12 @@ func (m *drillAddMemFlowStore) DeleteFlow(_ context.Context, name string) error 
 	return nil
 }
 
-func (m *drillAddMemFlowStore) GetTaps(_ context.Context) []store.FlowTap             { return nil }
+func (m *drillAddMemFlowStore) GetTaps(_ context.Context) []store.FlowTap { return nil }
 func (m *drillAddMemFlowStore) AddTap(_ context.Context, _ string, _ string) (string, error) {
 	return "", fmt.Errorf("not implemented")
 }
 func (m *drillAddMemFlowStore) RemoveTap(_ context.Context, _ string) error { return nil }
-func (m *drillAddMemFlowStore) GetStoreDir(_ context.Context) string       { return "" }
+func (m *drillAddMemFlowStore) GetStoreDir(_ context.Context) string        { return "" }
 
 func TestResolveDrillAddWizard_LoadsFromTeamStore(t *testing.T) {
 	fs := newDrillAddMemFlowStore()

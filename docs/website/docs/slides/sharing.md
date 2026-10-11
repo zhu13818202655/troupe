@@ -49,7 +49,7 @@ A publish or fork operation cannot replace an existing destination deck with the
 
 **Publish to Team** and **Fork to Personal** appear only in platform mode and only for the appropriate source scope. Team membership and tenant boundaries determine which decks are visible and which destination is used.
 
-For the general sharing model across Astonish resources, see [Publish & Fork](../platform/publish-and-fork.md).
+For the general sharing model across Troupe resources, see [Publish & Fork](../platform/publish-and-fork.md).
 
 ## Next Steps
 

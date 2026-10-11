@@ -63,7 +63,7 @@ func networkAuthorizationFromMCPError(err error, serverCfg config.MCPServerConfi
 	}
 	return &MCPNetworkAuthorization{
 		Required: true,
-		Message:  "This MCP server needs outbound network access before Astonish can install or start it.",
+		Message:  "This MCP server needs outbound network access before Troupe can install or start it.",
 		Denials:  denials,
 		Hints:    hints,
 	}

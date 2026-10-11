@@ -103,7 +103,7 @@ func buildAndTemplateID() sandbox.TemplateBuildSpec {
 			"1111111111111111111111111111111111111111111111111111111111111111",
 		},
 		Steps:  []string{"apt-get install -y jq", "pip install requests"},
-		Labels: map[string]string{"astonish.io/extra": "yes"},
+		Labels: map[string]string{"troupe.io/extra": "yes"},
 	}
 }
 
@@ -128,8 +128,8 @@ func TestBuildTemplateBuilderPodManifest_LabelsAndAnnotations(t *testing.T) {
 	if got := pod.Labels[labelTemplate]; got != "python-dev" {
 		t.Errorf("label[%s] = %q, want %q", labelTemplate, got, "python-dev")
 	}
-	if got := pod.Labels["astonish.io/extra"]; got != "yes" {
-		t.Errorf("custom label[astonish.io/extra] = %q, want yes", got)
+	if got := pod.Labels["troupe.io/extra"]; got != "yes" {
+		t.Errorf("custom label[troupe.io/extra] = %q, want yes", got)
 	}
 	if _, ok := pod.Annotations[annotationCreatedAt]; !ok {
 		t.Errorf("missing annotation %s", annotationCreatedAt)
@@ -206,7 +206,7 @@ func TestBuildTemplateBuilderPodManifest_ContainerShape(t *testing.T) {
 		t.Errorf("image = %q, want %q", c.Image, b.cfg.SandboxImage)
 	}
 	// Command must be empty — the builder uses the image's ENTRYPOINT
-	// (astonish-sandbox-entrypoint) which composes the overlay, then
+	// (troupe-sandbox-entrypoint) which composes the overlay, then
 	// execs into TROUPE_HANDOFF (/bin/sleep infinity).
 	if len(c.Command) != 0 {
 		t.Errorf("container Command = %v, want empty (use image ENTRYPOINT)", c.Command)
@@ -269,13 +269,13 @@ func TestParentLayerOf(t *testing.T) {
 // ---------------------------------------------------------------------------
 
 func TestBuildCaptureScript_ContainsCanonicalPipeline(t *testing.T) {
-	s := buildCaptureScript("/mnt/astonish-layers", "bid-123")
+	s := buildCaptureScript("/mnt/troupe-layers", "bid-123")
 	mustContain := []string{
 		"set -euo pipefail",
 		"trap cleanup EXIT",
-		"/mnt/astonish-layers/__staging-bid-123",
+		"/mnt/troupe-layers/__staging-bid-123",
 		"tar --numeric-owner --xattrs --acls --sort=name --mtime=@0",
-		"/var/astonish/overlay/upper",
+		"/var/troupe/overlay/upper",
 		"sha256sum",
 		"mv \"$STAGING\" \"$LAYERS_DIR/$SHA\"",
 		"echo \"SHA=$SHA\"",

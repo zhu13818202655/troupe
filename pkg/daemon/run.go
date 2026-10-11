@@ -860,7 +860,7 @@ func Run(cfg RunConfig) error {
 
 	// reloadChannels re-reads config, stops existing channels, and starts new
 	// ones. Called by the POST /api/channels/reload endpoint so that CLI
-	// commands like "astonish channels setup telegram" can activate changes
+	// commands like "troupe channels setup telegram" can activate changes
 	// without a full daemon restart.
 	var reloadMu sync.Mutex
 	reloadChannels := func() error {
@@ -1379,7 +1379,7 @@ func Run(cfg RunConfig) error {
 			if csErr == nil {
 				gcNamespace := appCfg.Sandbox.Kubernetes.Namespace
 				if gcNamespace == "" {
-					gcNamespace = "astonish-sandbox"
+					gcNamespace = "troupe-sandbox"
 				}
 				evictedRetention, evictedRetentionEnabled := appCfg.Sandbox.Kubernetes.K8sEvictedUpperRetention()
 				if !evictedRetentionEnabled {
@@ -1728,7 +1728,7 @@ func Run(cfg RunConfig) error {
 	}()
 
 	// Print to stdout for foreground mode
-	fmt.Printf("Astonish daemon running (pid: %d, port: %d)\n", os.Getpid(), port)
+	fmt.Printf("Troupe daemon running (pid: %d, port: %d)\n", os.Getpid(), port)
 	if logger.filePath == "" {
 		fmt.Printf("Log: stdout\n")
 	} else {

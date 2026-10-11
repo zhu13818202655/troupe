@@ -651,7 +651,7 @@ func (m *minimalToolContext) AgentName() string {
 }
 
 func (m *minimalToolContext) AppName() string {
-	return "astonish"
+	return "troupe"
 }
 
 func (m *minimalToolContext) Artifacts() agent.Artifacts {

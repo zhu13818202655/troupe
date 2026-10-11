@@ -1,6 +1,6 @@
 # Config Reference
 
-Astonish always runs in platform mode, whether backed by SQLite (lightweight local) or PostgreSQL (scalable cloud). Configuration is split between two locations:
+Troupe always runs in platform mode, whether backed by SQLite (lightweight local) or PostgreSQL (scalable cloud). Configuration is split between two locations:
 
 - **`config.yaml`** — System-level infrastructure settings (daemon, browser, sandbox, sessions, memory, etc.) shared across all tenants. In Kubernetes, this is rendered from the Helm ConfigMap.
 - **Database** — Tenant-specific settings (providers, models, tools, credentials) managed through Studio Settings with a 3-tier cascade (Platform → Org → Team).
@@ -66,7 +66,7 @@ Providers are merged additively across tiers — each tier can add new providers
 
 ## `config.yaml` — System-Level Settings
 
-These settings live in `~/.config/astonish/config.yaml` and are shared across all tenants on the same instance. In Kubernetes, they come from the Helm ConfigMap.
+These settings live in `~/.config/troupe/config.yaml` and are shared across all tenants on the same instance. In Kubernetes, they come from the Helm ConfigMap.
 
 Changing these settings requires org admin or platform admin privileges in cloud deployments.
 
@@ -75,7 +75,7 @@ Changing these settings requires org admin or platform admin privileges in cloud
 storage:
   backend: "sqlite"            # sqlite | postgres
   sqlite:
-    data_dir: ""               # Default: ~/.local/share/astonish
+    data_dir: ""               # Default: ~/.local/share/troupe
   postgres:
     platform_dsn: ""           # PostgreSQL connection string
     instance_suffix: ""        # Database name suffix
@@ -101,7 +101,7 @@ storage:
 # Daemon (Studio web server)
 daemon:
   port: 9393
-  log_dir: ""                  # Default: ~/.config/astonish/logs/ when logging to files
+  log_dir: ""                  # Default: ~/.config/troupe/logs/ when logging to files
   # Log destination is selected by TROUPE_LOG_DEST=file|stdout.
   # Default: file in local/default mode, stdout in TROUPE_MODE=api|worker.
   auth:
@@ -205,14 +205,14 @@ sandbox:
     idle_timeout_minutes: 10
   kubernetes:                  # Only for backend: k8s
     namespace: "troupe-sandboxes"
-    sandbox_image: "ghcr.io/sap/astonish-sandbox-base:latest"
+    sandbox_image: "ghcr.io/sap/troupe-sandbox-base:latest"
     overlay_mode: "fuse"       # fuse | kernel | auto
-    layers_pvc_name: "astonish-layers"
-    uppers_pvc_name: "astonish-uppers"
+    layers_pvc_name: "troupe-layers"
+    uppers_pvc_name: "troupe-uppers"
   openshell:                   # Only for backend: openshell
     gateway_addr: ""
     gateway_tls: true
-    sandbox_image: "ghcr.io/sap/astonish-sandbox-openshell:latest"
+    sandbox_image: "ghcr.io/sap/troupe-sandbox-openshell:latest"
     network_policy:
       presets: ["default"]
       extra_endpoints: []
@@ -250,8 +250,8 @@ sandbox:
     cpu: 2
     processes: 500
   kubernetes:
-    namespace: "astonish-sandbox"
-    sandbox_image: "ghcr.io/sap/astonish-sandbox-base:latest"
+    namespace: "troupe-sandbox"
+    sandbox_image: "ghcr.io/sap/troupe-sandbox-base:latest"
     overlay_mode: "fuse"
 ```
 
@@ -269,10 +269,10 @@ storage:
 
 ## Initial Setup
 
-The `astonish setup` wizard creates the initial configuration:
+The `troupe setup` wizard creates the initial configuration:
 
 ```bash
-astonish setup
+troupe setup
 ```
 
 This walks you through selecting a storage backend (SQLite or PostgreSQL), configuring your first AI provider, and bootstrapping the platform database with an initial organization and admin user.
@@ -285,6 +285,6 @@ This walks you through selecting a storage backend (SQLite or PostgreSQL), confi
 | MCP servers | Studio Settings → MCP Servers (stored in DB) |
 | Credentials | Studio Settings → Credentials (encrypted in DB) |
 | Browser, daemon, sandbox | Studio Settings → System sections (writes to config.yaml, requires admin) |
-| Infrastructure (storage, auth) | Helm values (Kubernetes) or `astonish setup` (local) |
+| Infrastructure (storage, auth) | Helm values (Kubernetes) or `troupe setup` (local) |
 
 See [Providers](./providers.md) for supported AI backends and [MCP Servers](./mcp-servers.md) for tool extension.

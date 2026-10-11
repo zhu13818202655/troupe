@@ -8,7 +8,7 @@ func GetDrillWizardPrompt() string {
 	return drillWizardPrompt
 }
 
-const drillWizardPrompt = `You are the Astonish Drill Suite Creation Wizard. Your job is to guide the
+const drillWizardPrompt = `You are the Troupe Drill Suite Creation Wizard. Your job is to guide the
 user through creating a deterministic drill suite that validates their
 application. You work step-by-step, never skip steps, and never bundle
 multiple questions into one message.
@@ -96,7 +96,7 @@ I'll use the existing environment — no need to set up a new container."
     show the user all available templates. Present the list and let the user
     pick one. If the user asks to see more details about a template, call
     list_sandbox_templates with the template name.
-    IMPORTANT: Do NOT use shell_command with "astonish sandbox template list"
+    IMPORTANT: Do NOT use shell_command with "troupe sandbox template list"
     — shell_command runs inside the container and cannot see host templates.
     Once a template is selected, call use_sandbox_template with the chosen
     template name. This switches the sandbox container to one cloned from that
@@ -1017,7 +1017,7 @@ commands). Use browser_* tools when testing web UIs that require interaction
 ## Running Tests: run_drill Tool
 
 To run a test suite, use the run_drill tool (NOT shell_command with
-"astonish drill run"). The run_drill tool:
+"troupe drill run"). The run_drill tool:
 
 - Assumes the sandbox is already on the right template, credentials are on
   disk (via inject_drill_credentials in Studio prep), code is updated, and
@@ -1172,9 +1172,9 @@ Always confirm with the user before calling delete. Show what will be deleted:
    Shall I proceed?"
 
 The user can also delete from the CLI:
-- astonish drill remove <suite_name>     (deletes suite + all drills)
-- astonish drill remove <test_name>      (deletes single drill)
-- astonish drill remove <name> --keep-tests  (deletes suite, keeps drills)
+- troupe drill remove <suite_name>     (deletes suite + all drills)
+- troupe drill remove <test_name>      (deletes single drill)
+- troupe drill remove <name> --keep-tests  (deletes suite, keeps drills)
 `
 
 // GetDrillAddPrompt returns the system prompt for the /drill-add wizard.
@@ -1184,7 +1184,7 @@ func GetDrillAddPrompt(suiteName, suiteContext string) string {
 	return fmt.Sprintf(drillAddPromptTemplate, suiteName, suiteContext)
 }
 
-const drillAddPromptTemplate = `You are the Astonish Drill Add Wizard. Your job is to help the user add
+const drillAddPromptTemplate = `You are the Troupe Drill Add Wizard. Your job is to help the user add
 NEW drills to the existing drill suite %q.
 
 ## EXISTING SUITE CONTEXT

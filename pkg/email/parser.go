@@ -368,7 +368,7 @@ func ExtractSenderDomain(from string) string {
 // BuildMessageID creates a unique Message-ID header value.
 func BuildMessageID(domain string) string {
 	if domain == "" {
-		domain = "astonish.local"
+		domain = "troupe.local"
 	}
 	return fmt.Sprintf("<%s@%s>", randomID(), domain)
 }

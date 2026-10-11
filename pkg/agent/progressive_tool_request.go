@@ -14,7 +14,7 @@ type toolWithDeclaration interface {
 
 // packToolIntoRequest adds a tool to an LLM request for both dispatch and
 // schema declaration. This replicates the logic from ADK's internal PackTool
-// (toolutils.go) and Astonish's NodeTool.ProcessRequest.
+// (toolutils.go) and Troupe's NodeTool.ProcessRequest.
 func packToolIntoRequest(req *model.LLMRequest, t tool.Tool) {
 	if req.Tools == nil {
 		req.Tools = make(map[string]any)

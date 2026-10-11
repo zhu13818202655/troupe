@@ -56,13 +56,13 @@ post_mcp() {
     --data "$payload"
 }
 
-initialize="$(post_mcp '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"astonish-curl-smoke","version":"1.0"}}}')"
+initialize="$(post_mcp '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"troupe-curl-smoke","version":"1.0"}}}')"
 printf '%s' "$initialize" | python3 -c '
 import json, sys
 body = json.load(sys.stdin)
 result = body.get("result", {})
-if result.get("serverInfo", {}).get("name") != "astonish":
-    raise SystemExit("error: initialize did not identify the Astonish MCP server")
+if result.get("serverInfo", {}).get("name") != "troupe":
+    raise SystemExit("error: initialize did not identify the Troupe MCP server")
 if result.get("protocolVersion") != "2025-03-26":
     raise SystemExit("error: MCP protocol negotiation failed")
 '

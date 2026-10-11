@@ -40,14 +40,14 @@ func RunWeb(ctx context.Context, cfg *WebConfig) error {
 		return fmt.Errorf("failed to initialize internal tools: %w", err)
 	}
 
-	// Create Astonish agent
-	astonishAgent := agent.NewAstonishAgent(cfg.AgentConfig, llm, internalTools)
+	// Create Troupe agent
+	troupeAgent := agent.NewTroupeAgent(cfg.AgentConfig, llm, internalTools)
 
 	// Create ADK agent wrapper
 	adkAgent, err := adkagent.New(adkagent.Config{
-		Name:        "astonish_agent",
+		Name:        "troupe_agent",
 		Description: cfg.AgentConfig.Description,
-		Run:         astonishAgent.Run,
+		Run:         troupeAgent.Run,
 	})
 	if err != nil {
 		return fmt.Errorf("failed to create ADK agent: %w", err)

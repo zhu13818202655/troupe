@@ -114,7 +114,7 @@ func execAppHTTPCurl(ctx context.Context, backend sandbox.Backend, sessionID, me
 
 func appHTTPCurlCommand(kind sandbox.BackendKind, cmd []string) []string {
 	if kind == sandbox.BackendKindK8s {
-		return append([]string{"/usr/local/bin/astonish-shell"}, cmd...)
+		return append([]string{"/usr/local/bin/troupe-shell"}, cmd...)
 	}
 	return cmd
 }

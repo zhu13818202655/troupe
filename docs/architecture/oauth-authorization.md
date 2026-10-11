@@ -2,14 +2,14 @@
 
 ## Purpose
 
-Astonish needs a standards-based authorization boundary for machine clients, MCP hosts, delegated agents, and other relying parties without coupling execution security to any one human-login provider. The built-in OAuth authorization server issues Astonish credentials whose tenant, client, user, delegation, resource, and scope semantics Astonish controls. Those credentials are translated into the same canonical `execution.Principal` used by Studio, linked channels, A2A, code mode, and future transports.
+Troupe needs a standards-based authorization boundary for machine clients, MCP hosts, delegated agents, and other relying parties without coupling execution security to any one human-login provider. The built-in OAuth authorization server issues Troupe credentials whose tenant, client, user, delegation, resource, and scope semantics Troupe controls. Those credentials are translated into the same canonical `execution.Principal` used by Studio, linked channels, A2A, code mode, and future transports.
 
 This architecture deliberately separates two concerns:
 
 1. **Upstream authentication** proves who a human is. Built-in email/password, SAP Cloud Identity Services (IAS), Keycloak, OIDC, and future SAML adapters belong here.
-2. **Downstream authorization** grants an application or workload constrained access to Astonish. The built-in OAuth server belongs here and always issues Astonish-signed access tokens.
+2. **Downstream authorization** grants an application or workload constrained access to Troupe. The built-in OAuth server belongs here and always issues Troupe-signed access tokens.
 
-An external identity provider does not become an implicit Astonish token issuer. Astonish first validates the upstream login, resolves the user and tenant memberships, and then issues its own narrowly scoped credential. This prevents external claim vocabulary, key rotation, token lifetimes, and provider-specific policy from leaking into every execution surface.
+An external identity provider does not become an implicit Troupe token issuer. Troupe first validates the upstream login, resolves the user and tenant memberships, and then issues its own narrowly scoped credential. This prevents external claim vocabulary, key rotation, token lifetimes, and provider-specific policy from leaking into every execution surface.
 
 ## System boundary
 
@@ -25,8 +25,8 @@ flowchart LR
     Client[OAuth client / MCP host / agent] --> Protocol[OAuth protocol endpoints]
     SessionValidator --> Protocol
     Protocol --> OAuthStore
-    Protocol --> Signer[Astonish signing key]
-    Signer --> AccessToken[Astonish access token]
+    Protocol --> Signer[Troupe signing key]
+    Signer --> AccessToken[Troupe access token]
 
     AccessToken --> Validator[Strict bearer validator]
     Validator --> Principal[execution.Principal]
@@ -60,14 +60,14 @@ OAuth clients bind a machine credential to a specific organization and team. Cre
 
 ### Trusted issuers
 
-The built-in bearer validator trusts only the configured Astonish issuer and only keys owned by that Astonish installation. A token is accepted only when all of the following hold:
+The built-in bearer validator trusts only the configured Troupe issuer and only keys owned by that Troupe installation. A token is accepted only when all of the following hold:
 
 - The HTTP credential uses Bearer syntax.
 - The JWT algorithm is exactly RS256.
 - The JWT has a non-empty `kid`.
-- `kid` selects the current in-memory signing key or an active, non-expired persisted Astonish signing key.
+- `kid` selects the current in-memory signing key or an active, non-expired persisted Troupe signing key.
 - The signature verifies with that key.
-- `iss` exactly matches the configured Astonish issuer.
+- `iss` exactly matches the configured Troupe issuer.
 - `aud` contains the intended resource.
 - `exp` exists and is valid.
 - `nbf`, when present, is not in the future.
@@ -77,7 +77,7 @@ The built-in bearer validator trusts only the configured Astonish issuer and onl
 
 Unknown algorithms, missing or unknown key IDs, external issuers, malformed JWKs, invalid signatures, missing expiration, invalid time windows, resource mismatch, and incomplete tenant claims fail closed.
 
-External IdP tokens are not accepted by this validator. A separate protocol adapter may validate an external token for an upstream login or a specifically configured inbound integration, but it must resolve that identity into Astonish policy before execution. It must not silently add external keys to the built-in OAuth trust set.
+External IdP tokens are not accepted by this validator. A separate protocol adapter may validate an external token for an upstream login or a specifically configured inbound integration, but it must resolve that identity into Troupe policy before execution. It must not silently add external keys to the built-in OAuth trust set.
 
 ### Canonical principals
 
@@ -89,7 +89,7 @@ Successful validation produces `execution.Principal`, never an unstructured clai
 - `Subject`: effective user for user grants.
 - `Actor`: delegated workload from `act.sub`, when present.
 - `ClientID`: OAuth client identity.
-- `Issuer`: Astonish issuer.
+- `Issuer`: Troupe issuer.
 - `OrgSlug` and `TeamSlug`: tenant selection.
 - `Scopes`: granted capabilities.
 - `Authenticated`: explicit trust marker.
@@ -110,15 +110,15 @@ The server publishes OAuth authorization-server metadata and protected-resource 
 |---|---|---|
 | `/.well-known/oauth-authorization-server` | Authorization-server discovery | Public |
 | `/.well-known/oauth-protected-resource` | Protected-resource metadata | Public |
-| `/oauth/authorize` | Authorization Code request | Active Astonish platform session |
+| `/oauth/authorize` | Authorization Code request | Active Troupe platform session |
 | `/oauth/token` | Code, refresh, or client-credentials exchange | Client rules depend on grant and client type |
 | `/oauth/jwks` | Current public signing key set | Public |
 | `/oauth/revoke` | Refresh-token-family revocation | Authenticated client |
 | `/oauth/introspect` | Token state inspection | Authenticated client |
 | `/api/oauth/*` | Personal client management and discovery view | Authenticated owner; server enforces owner and tenant membership |
-| `/api/studio/*` | Studio chat, sessions, and extension-facing APIs | Cookie/platform JWT, or a valid Astonish OAuth bearer with exact `chat`. The first-party CLI (`astonish login`) and Chrome extension obtain this bearer through Authorization Code + PKCE. |
-| `/api/mcp` | Protected Streamable HTTP MCP server; four-tool client-owned loop (`get_agent_context`, `search_tools`, `describe_tools`, `execute_tool`) | Valid Astonish bearer token with exact `tool:execute`; this does not grant `chat` |
-| `/api/a2a` | Protected inbound A2A JSON-RPC server | Valid Astonish bearer token with exact `a2a` |
+| `/api/studio/*` | Studio chat, sessions, and extension-facing APIs | Cookie/platform JWT, or a valid Troupe OAuth bearer with exact `chat`. The first-party CLI (`troupe login`) and Chrome extension obtain this bearer through Authorization Code + PKCE. |
+| `/api/mcp` | Protected Streamable HTTP MCP server; four-tool client-owned loop (`get_agent_context`, `search_tools`, `describe_tools`, `execute_tool`) | Valid Troupe bearer token with exact `tool:execute`; this does not grant `chat` |
+| `/api/a2a` | Protected inbound A2A JSON-RPC server | Valid Troupe bearer token with exact `a2a` |
 | `/.well-known/agent-card.json` | Inbound A2A Agent Card discovery | Public |
 
 Protocol routes are mounted outside the SPA fallback and remain subject to global HTTP security and rate-limiting middleware. The authorization endpoint independently validates the existing platform session; public route registration does not make authorization anonymous.
@@ -130,7 +130,7 @@ OAuth clients are user-owned platform records bound to an organization and optio
 - Stable `client_id` and display name.
 - Public or confidential client type.
 - Secret hash for confidential clients; plaintext secrets are never persisted.
-- Exact redirect URI allowlist. The first-party CLI client (`astonish-cli`) is an exception: it is a public native client and may use an RFC 8252 loopback redirect of the form `http://127.0.0.1|localhost|::1:<ephemeral-port>/oauth/callback`. The first-party Chrome extension remains pinned to its packaged extension redirect URI.
+- Exact redirect URI allowlist. The first-party CLI client (`troupe-cli`) is an exception: it is a public native client and may use an RFC 8252 loopback redirect of the form `http://127.0.0.1|localhost|::1:<ephemeral-port>/oauth/callback`. The first-party Chrome extension remains pinned to its packaged extension redirect URI.
 - Allowed grant types.
 - Allowed protected resources.
 - Allowed scopes.
@@ -150,12 +150,12 @@ Authorization Code is the human-delegated flow for public or confidential relyin
 sequenceDiagram
     participant C as OAuth client
     participant B as User agent
-    participant A as Astonish OAuth server
+    participant A as Troupe OAuth server
     participant S as Platform session validator
     participant DB as OAuth store
 
     C->>B: Open /oauth/authorize with state and S256 challenge
-    B->>A: Authorization request + Astonish session
+    B->>A: Authorization request + Troupe session
     A->>DB: Load active client
     A->>A: Validate redirect, grant, scopes, resources, PKCE
     A->>S: Resolve active user and tenant
@@ -170,7 +170,7 @@ sequenceDiagram
     A-->>C: RS256 access token + optional refresh token
 ```
 
-S256 PKCE is mandatory. Authorization codes are random, stored only as hashes, short-lived, bound to client and redirect URI, and consumed atomically. Reuse fails. Requested scopes and resources are intersected with the client allowlists. The resulting token carries resolved Astonish tenant identity, not arbitrary tenant values supplied by the client.
+S256 PKCE is mandatory. Authorization codes are random, stored only as hashes, short-lived, bound to client and redirect URI, and consumed atomically. Reuse fails. Requested scopes and resources are intersected with the client allowlists. The resulting token carries resolved Troupe tenant identity, not arbitrary tenant values supplied by the client.
 
 ### Refresh Token
 
@@ -192,7 +192,7 @@ A service token must never be upgraded into a user token merely because a reques
 
 ## Token format and key lifecycle
 
-Access tokens are short-lived RS256 JWTs. Registered claims include issuer, audience/resource, expiration, issued-at, and optional not-before. Astonish claims carry client, tenant, scopes, effective subject, and delegated actor as applicable.
+Access tokens are short-lived RS256 JWTs. Registered claims include issuer, audience/resource, expiration, issued-at, and optional not-before. Troupe claims carry client, tenant, scopes, effective subject, and delegated actor as applicable.
 
 Signing keys are platform-scoped records containing:
 
@@ -209,7 +209,7 @@ Private signing material must be encrypted with deployment-stable secret materia
 
 ## Persistence and atomicity
 
-OAuth state is platform-scoped because issuer keys and client identifiers belong to one Astonish installation. Organization binding narrows a client; it does not move the record into an organization database.
+OAuth state is platform-scoped because issuer keys and client identifiers belong to one Troupe installation. Organization binding narrows a client; it does not move the record into an organization database.
 
 The persistence boundary explicitly models:
 
@@ -242,8 +242,8 @@ storage:
   auth:
     oauth_server:
       enabled: true
-      issuer: https://astonish.example.com
-      resource: https://astonish.example.com/api/mcp
+      issuer: https://troupe.example.com
+      resource: https://troupe.example.com/api/mcp
       access_token_ttl_minutes: 15
       refresh_token_ttl_days: 30
 ```
@@ -268,33 +268,33 @@ It passes the server into `launcher.NewStudioServer`, which registers discovery,
 External IdPs are upstream authenticators. A successful external login must:
 
 1. Validate the provider response using the provider-specific protocol.
-2. Resolve or provision an Astonish platform user according to explicit linking policy.
-3. Resolve active organization and team membership in Astonish storage.
-4. Create or resume an Astonish platform session.
-5. Let the built-in authorization endpoint issue an Astonish code/token under normal client, scope, resource, and tenant policy.
+2. Resolve or provision an Troupe platform user according to explicit linking policy.
+3. Resolve active organization and team membership in Troupe storage.
+4. Create or resume an Troupe platform session.
+5. Let the built-in authorization endpoint issue an Troupe code/token under normal client, scope, resource, and tenant policy.
 
-Provider claims such as IAS `xs.groups`, Keycloak roles/groups, or SAML attributes may inform provisioning and team mapping, but the resulting Astonish membership is authoritative for execution. Mapping rules must be explicit, tenant-scoped, and auditable.
+Provider claims such as IAS `xs.groups`, Keycloak roles/groups, or SAML attributes may inform provisioning and team mapping, but the resulting Troupe membership is authoritative for execution. Mapping rules must be explicit, tenant-scoped, and auditable.
 
 ### Prohibited coupling
 
-- Do not forward an upstream IdP access token to Astonish tools as an Astonish credential.
+- Do not forward an upstream IdP access token to Troupe tools as an Troupe credential.
 - Do not trust arbitrary external JWKS in `pkg/oauthserver.ValidateBearer`.
 - Do not infer organization/team access solely from an unpersisted external group claim at execution time.
 - Do not encode provider-specific claims into the canonical principal contract.
 - Do not make OAuth client administration depend on which upstream login provider is active.
-- Do not conflate OAuth client secrets with OIDC/SAML application credentials used to connect Astonish to an IdP.
+- Do not conflate OAuth client secrets with OIDC/SAML application credentials used to connect Troupe to an IdP.
 
-No protected execution transport accepts an external bearer token directly. Inbound A2A is protected by an Astonish-issued OAuth token carrying exact `a2a`; it does not use a trusted-issuer registry, external JWKS configuration, or `UserChannel(a2a, ...)` identity links.
+No protected execution transport accepts an external bearer token directly. Inbound A2A is protected by an Troupe-issued OAuth token carrying exact `a2a`; it does not use a trusted-issuer registry, external JWKS configuration, or `UserChannel(a2a, ...)` identity links.
 
 ## Security invariants
 
 1. **Fail closed:** parsing is never validation; unknown issuer, key, algorithm, tenant, scope, resource, client, or grant fails.
-2. **Astonish-issued downstream tokens:** upstream IdPs authenticate users but do not implicitly authorize Astonish execution.
+2. **Troupe-issued downstream tokens:** upstream IdPs authenticate users but do not implicitly authorize Troupe execution.
 3. **Exact redirect matching:** no prefix, wildcard, or client-supplied redirect expansion.
 4. **PKCE required:** Authorization Code requires S256.
 5. **Single-use credentials:** authorization codes and rotated refresh handles are atomically consumed.
 6. **No plaintext persistence:** client secrets, authorization codes, refresh handles, and private signing material are hashed or encrypted as appropriate.
-7. **Tenant from trusted identity:** org/team context comes from validated grant state and Astonish membership, never request overrides.
+7. **Tenant from trusted identity:** org/team context comes from validated grant state and Troupe membership, never request overrides.
 8. **Scopes at execution boundary:** OAuth-authenticated execution requires the exact typed capability.
 9. **Service/user separation:** service grants cannot impersonate users or access personal memory.
 10. **Delegation is explicit:** `act.sub` identifies an actor acting for a subject and does not erase either identity.
@@ -335,9 +335,9 @@ Each future IAS, Keycloak, OIDC, or SAML integration must prove:
 
 - Provider response validation.
 - Account-linking and group/team mapping policy.
-- Astonish membership resolution.
+- Troupe membership resolution.
 - Authorization Code issuance through the same built-in OAuth server.
-- Astonish-signed downstream access token.
+- Troupe-signed downstream access token.
 - Rejection of the raw upstream token at the built-in OAuth bearer boundary.
 
 These are architectural acceptance criteria, not a record of project completion. Temporary status, gap, or remaining-work documents must not replace this contract.

@@ -8,7 +8,7 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/codeintel/internal/treesitter"
 )
 
-// resolveTestLibraryPath returns a usable libastonish-treesitter.so path, or "".
+// resolveTestLibraryPath returns a usable libtroupe-treesitter.so path, or "".
 func resolveTestLibraryPath() string {
 	if path := os.Getenv("TROUPE_TREESITTER_LIB"); path != "" {
 		if st, err := os.Stat(path); err == nil && !st.IsDir() {
@@ -22,7 +22,7 @@ func resolveTestLibraryPath() string {
 	if ok {
 		pkgDir := filepath.Dir(thisFile)
 		candidates = append(candidates,
-			filepath.Join(pkgDir, "native", "dist", "libastonish-treesitter.so"),
+			filepath.Join(pkgDir, "native", "dist", "libtroupe-treesitter.so"),
 		)
 	}
 	for _, path := range candidates {

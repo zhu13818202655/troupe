@@ -1,16 +1,16 @@
-# Dockerfile — astonish-sandbox-base image.
+# Dockerfile — troupe-sandbox-base image.
 #
-# This is the container image every Astonish sandbox pod runs in when
+# This is the container image every Troupe sandbox pod runs in when
 # the K8s backend is active (SandboxConfig.Backend = "k8s"). It is NOT
-# the application image (see docker/astonish/Dockerfile for that); it's a
+# the application image (see docker/troupe/Dockerfile for that); it's a
 # minimal userland that serves as PID 1 inside the sandbox pod.
 #
 # The image contains, and is RESTRICTED to:
 #
-#   1. /usr/local/bin/astonish-sandbox-entrypoint
+#   1. /usr/local/bin/troupe-sandbox-entrypoint
 #        The POSIX-shell script whose source of truth is
 #        pkg/sandbox/k8s.EntrypointScript. Generated on the host via
-#        `make sandbox-entrypoint` (cmd/astonish-sandbox-entrypoint-script)
+#        `make sandbox-entrypoint` (cmd/troupe-sandbox-entrypoint-script)
 #        so Docker does not recompile Go on every image rebuild.
 #
 #   2. Base userland sufficient to compose the overlay in any of the
@@ -22,19 +22,19 @@
 #
 #   3. A tiny /sandbox skeleton where the overlay will be composed:
 #        /sandbox/rootfs  — overlay mount point (created by the entrypoint)
-#        /var/astonish/   — emptyDir mount roots (upper, work)
-#        /mnt/astonish-layers, /mnt/astonish-uppers — PVC mount roots
+#        /var/troupe/   — emptyDir mount roots (upper, work)
+#        /mnt/troupe-layers, /mnt/troupe-uppers — PVC mount roots
 #
-#   4. Host-cross-compiled astonish binary at /usr/local/bin/astonish-host
-#        plus chroot wrappers at /usr/local/bin/astonish and
-#        /usr/local/bin/astonish-shell (see below).
+#   4. Host-cross-compiled troupe binary at /usr/local/bin/troupe-host
+#        plus chroot wrappers at /usr/local/bin/troupe and
+#        /usr/local/bin/troupe-shell (see below).
 #
 # What this image INTENTIONALLY does NOT contain:
 #
 #   - Language runtimes / agent tool userland (those live in overlay
 #     layers on top of this base).
 #   - A Docker-side Go toolchain. Binaries and the entrypoint script are
-#     produced on the host (same pattern as docker/astonish) so BuildKit
+#     produced on the host (same pattern as docker/troupe) so BuildKit
 #     can cache the heavy apt + treesitter layers across code changes.
 #
 # Layer order (stable → volatile) for cache hits on routine rebuilds:
@@ -42,7 +42,7 @@
 #   2. treesitter .so        — changes only when pkg/codeintel/native changes
 #   3. static setup/wrappers — changes only when this Dockerfile changes
 #   4. entrypoint script     — changes when overlay entrypoint source changes
-#   5. astonish-host binary  — changes on almost every agent code edit
+#   5. troupe-host binary  — changes on almost every agent code edit
 #
 # Prerequisites (from repo root):
 #   make build-linux              # and/or build-linux-arm64 for multi-arch
@@ -81,7 +81,7 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 COPY pkg/codeintel/native ./pkg/codeintel/native
-RUN make -C pkg/codeintel/native OUT=/tmp/libastonish-treesitter.so
+RUN make -C pkg/codeintel/native OUT=/tmp/libtroupe-treesitter.so
 
 # ---------------------------------------------------------------------------
 # Stage 2 — final runtime image.
@@ -93,8 +93,8 @@ RUN make -C pkg/codeintel/native OUT=/tmp/libastonish-treesitter.so
 # ---------------------------------------------------------------------------
 FROM debian:bookworm-slim
 
-LABEL org.opencontainers.image.title="astonish-sandbox-base" \
-      org.opencontainers.image.description="Minimal base image for Astonish K8s sandbox pods" \
+LABEL org.opencontainers.image.title="troupe-sandbox-base" \
+      org.opencontainers.image.description="Minimal base image for Troupe K8s sandbox pods" \
       org.opencontainers.image.source="https://github.com/zhu13818202655/troupe" \
       org.opencontainers.image.licenses="Apache-2.0"
 
@@ -118,32 +118,32 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /usr/lib/astonish
-COPY --from=treesitter-builder /tmp/libastonish-treesitter.so /usr/lib/astonish/libastonish-treesitter.so
+RUN mkdir -p /usr/lib/troupe
+COPY --from=treesitter-builder /tmp/libtroupe-treesitter.so /usr/lib/troupe/libtroupe-treesitter.so
 
-# Compatibility guard for sandbox astonish-host binaries whose ELF
+# Compatibility guard for sandbox troupe-host binaries whose ELF
 # interpreter is /lib/ld-musl-x86_64.so.1. The intended build is static
 # (CGO_ENABLED=0), but some Go/toolchain combinations still produce a
 # dynamic musl-linked binary. Without this loader path, backend Exec sees
 # exit=127 and no node handshake even though the file exists.
 RUN ln -sf x86_64-linux-gnu/ld-linux-x86-64.so.2 /lib/ld-musl-x86_64.so.1
 
-# Disable apt's privilege-drop sandbox. In the Astonish sandbox chroot,
+# Disable apt's privilege-drop sandbox. In the Troupe sandbox chroot,
 # everything runs as root under squash_to_root semantics, so the _apt
 # user cannot access partial-download directories.
 RUN echo 'APT::Sandbox::User "root";' > /etc/apt/apt.conf.d/00no-sandbox
 
 # Directory skeleton the entrypoint and pod manifest expect.
-# NOTE: /var/astonish/overlay is a single emptyDir mount point.
+# NOTE: /var/troupe/overlay is a single emptyDir mount point.
 # The entrypoint creates upper/ and work/ subdirectories inside it at
 # runtime. They MUST share a single mount to avoid cross-device
 # renameat failures in fuse-overlayfs (see session.go comments).
 RUN mkdir -p \
       /sandbox/rootfs \
-      /var/astonish/overlay \
-      /mnt/astonish-layers \
-      /mnt/astonish-uppers \
-    && chmod 0755 /sandbox /sandbox/rootfs /var/astonish
+      /var/troupe/overlay \
+      /mnt/troupe-layers \
+      /mnt/troupe-uppers \
+    && chmod 0755 /sandbox /sandbox/rootfs /var/troupe
 
 # ---------------------------------------------------------------------------
 # Wrappers (stable Dockerfile text — keep ABOVE binary COPY so code edits
@@ -155,25 +155,25 @@ RUN mkdir -p \
 # §11 Phase E.
 RUN printf '%s\n' \
       '#!/bin/sh' \
-      '# astonish (sandbox-base wrapper) — chroot into the composed overlay' \
-      '# before invoking the real astonish binary at /usr/local/bin/astonish-host.' \
+      '# troupe (sandbox-base wrapper) — chroot into the composed overlay' \
+      '# before invoking the real troupe binary at /usr/local/bin/troupe-host.' \
       '#' \
       '# DO NOT EDIT. Generated by docker/sandbox-base/Dockerfile during image build.' \
       'set -e' \
       'MOUNT_POINT=/sandbox/rootfs' \
-      'BIN=/usr/local/bin/astonish-host' \
-      'if [ ! -d "$MOUNT_POINT" ] || [ ! -x "$MOUNT_POINT/usr/local/bin/astonish" ]; then' \
+      'BIN=/usr/local/bin/troupe-host' \
+      'if [ ! -d "$MOUNT_POINT" ] || [ ! -x "$MOUNT_POINT/usr/local/bin/troupe" ]; then' \
       '  # Overlay not composed yet — fall back to the host binary directly.' \
       '  exec "$BIN" "$@"' \
       'fi' \
-      'exec chroot "$MOUNT_POINT" /usr/local/bin/astonish "$@"' \
-      > /usr/local/bin/astonish \
-    && chmod +x /usr/local/bin/astonish
+      'exec chroot "$MOUNT_POINT" /usr/local/bin/troupe "$@"' \
+      > /usr/local/bin/troupe \
+    && chmod +x /usr/local/bin/troupe
 
 # Interactive shell wrapper for team-template editor sessions.
 RUN printf '%s\n' \
       '#!/bin/sh' \
-      '# astonish-shell — chroot into the overlay and start an interactive shell.' \
+      '# troupe-shell — chroot into the overlay and start an interactive shell.' \
       '#' \
       '# DO NOT EDIT. Generated by docker/sandbox-base/Dockerfile during image build.' \
       'set -e' \
@@ -186,8 +186,8 @@ RUN printf '%s\n' \
       '  exec chroot "$MOUNT_POINT" "$@"' \
       'fi' \
       'exec chroot "$MOUNT_POINT" /bin/bash -l' \
-      > /usr/local/bin/astonish-shell \
-    && chmod +x /usr/local/bin/astonish-shell
+      > /usr/local/bin/troupe-shell \
+    && chmod +x /usr/local/bin/troupe-shell
 
 # ---------------------------------------------------------------------------
 # Volatile host-built artifacts (invalidate only these on routine rebuilds).
@@ -197,15 +197,18 @@ RUN printf '%s\n' \
 ARG TARGETARCH
 
 # Generated on the host: make sandbox-entrypoint
-COPY astonish-sandbox-entrypoint /usr/local/bin/astonish-sandbox-entrypoint
-RUN chmod +x /usr/local/bin/astonish-sandbox-entrypoint && \
-    head -1 /usr/local/bin/astonish-sandbox-entrypoint | grep -q '^#!/bin/sh'
+# NOTE: the host artifact is `troupe-sandbox-entrypoint` (Makefile BINARY_NAME);
+# it is installed under the legacy in-container name because the k8s pod
+# templates and sandbox entrypoint tests reference that path.
+COPY troupe-sandbox-entrypoint /usr/local/bin/troupe-sandbox-entrypoint
+RUN chmod +x /usr/local/bin/troupe-sandbox-entrypoint && \
+    head -1 /usr/local/bin/troupe-sandbox-entrypoint | grep -q '^#!/bin/sh'
 
 # Host-cross-compiled agent binary (make build-linux / build-linux-arm64).
 # Installed at a NON-standard path; the entrypoint bind-mounts it into the
-# overlay as /usr/local/bin/astonish once the overlay is composed.
-COPY astonish-linux-${TARGETARCH} /usr/local/bin/astonish-host
-RUN chmod +x /usr/local/bin/astonish-host
+# overlay as /usr/local/bin/troupe once the overlay is composed.
+COPY troupe-linux-${TARGETARCH} /usr/local/bin/troupe-host
+RUN chmod +x /usr/local/bin/troupe-host
 
 # Default to the entrypoint; the pod manifest can override via command/args.
-ENTRYPOINT ["/usr/local/bin/astonish-sandbox-entrypoint"]
+ENTRYPOINT ["/usr/local/bin/troupe-sandbox-entrypoint"]

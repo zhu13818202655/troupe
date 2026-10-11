@@ -12,13 +12,13 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/pkg/browser"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	adrill "github.com/zhu13818202655/troupe/pkg/drill"
 	"github.com/zhu13818202655/troupe/pkg/provider"
 	"github.com/zhu13818202655/troupe/pkg/sandbox"
 	"github.com/zhu13818202655/troupe/pkg/tools"
-	"github.com/google/uuid"
 )
 
 func handleDrillCommand(args []string) error {

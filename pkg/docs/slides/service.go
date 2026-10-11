@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/pkg/docs/slides/themes"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/google/uuid"
 )
 
 // templatePrefix namespaces template decks so they can be persisted in the same

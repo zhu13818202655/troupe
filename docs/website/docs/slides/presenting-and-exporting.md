@@ -37,19 +37,19 @@ Select **PPTX**, **PDF**, or **HTML** in the deck toolbar. The browser downloads
 
 ### PPTX
 
-Choose PPTX when recipients need to edit the presentation. Astonish maps supported slide elements to PowerPoint objects rather than flattening every slide into one screenshot.
+Choose PPTX when recipients need to edit the presentation. Troupe maps supported slide elements to PowerPoint objects rather than flattening every slide into one screenshot.
 
 Some browser effects do not have an exact PowerPoint equivalent. Complex content can become a picture, and progressive reveal sequencing is omitted in favor of the final state. Missing or unsupported imported media may also be skipped rather than blocking the entire export.
 
 ### PDF
 
-Choose PDF when the appearance is more important than object editability. Astonish renders the 16:9 presentation and prints each slide as a separate landscape page.
+Choose PDF when the appearance is more important than object editability. Troupe renders the 16:9 presentation and prints each slide as a separate landscape page.
 
-PDF generation requires browser-rendering support on the Astonish server. In a platform deployment, this can depend on the configured sandbox and its browser availability.
+PDF generation requires browser-rendering support on the Troupe server. In a platform deployment, this can depend on the configured sandbox and its browser availability.
 
 ### HTML
 
-Choose HTML for a portable browser presentation. The default export includes slide content, assets, styles, and navigation in one self-contained file and does not require the Astonish server when opened later.
+Choose HTML for a portable browser presentation. The default export includes slide content, assets, styles, and navigation in one self-contained file and does not require the Troupe server when opened later.
 
 ## Fidelity Expectations
 

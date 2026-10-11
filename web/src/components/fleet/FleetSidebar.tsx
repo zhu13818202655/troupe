@@ -391,7 +391,7 @@ export default function FleetSidebar({
           <>
             {renderSection('Fleet Plans', <FileText size={12} className="text-primary" />, planItems, 'plan', 'brand')}
             {renderSection('Active Sessions', <Radio size={12} className="text-primary" />, sessionItems, 'session', null)}
-            {renderSection('Astonish Templates', <Eye size={12} className="text-primary" />, bundledItems, 'template-bundled', 'brand')}
+            {renderSection('Troupe Templates', <Eye size={12} className="text-primary" />, bundledItems, 'template-bundled', 'brand')}
             {renderSection('Your Templates', <Eye size={12} className="text-primary" />, customItems, 'template-custom', null)}
             {renderSection('Bundled Setup Profiles', <Settings2 size={12} className="text-primary" />, bundledSetupItems, 'setup-profile-bundled', 'brand')}
             {renderSection('Your Setup Profiles', <Settings2 size={12} className="text-primary" />, customSetupItems, 'setup-profile-custom', null)}

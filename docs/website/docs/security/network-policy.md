@@ -1,6 +1,6 @@
 # Network Policy
 
-Astonish sandboxes deny all outbound network traffic by default. The agent cannot reach any external host unless explicitly permitted. This zero-trust approach prevents data exfiltration, supply-chain attacks, and unintended API calls from compromised or hallucinating agents.
+Troupe sandboxes deny all outbound network traffic by default. The agent cannot reach any external host unless explicitly permitted. This zero-trust approach prevents data exfiltration, supply-chain attacks, and unintended API calls from compromised or hallucinating agents.
 
 Three mechanisms control which endpoints a sandbox can reach:
 
@@ -103,13 +103,13 @@ Studio still rejects non-`http(s)` schemes and hard-blocked IP literals (loopbac
 
 ## In-Chat Network Approval
 
-For endpoints that are not covered by any policy rule (neither allow nor deny), Astonish provides an interactive approval flow directly in the chat. This flow applies to **sandbox** egress only (agent tools); Apps have no interactive grant UI.
+For endpoints that are not covered by any policy rule (neither allow nor deny), Troupe provides an interactive approval flow directly in the chat. This flow applies to **sandbox** egress only (agent tools); Apps have no interactive grant UI.
 
 ### How It Works
 
 1. The agent runs a command that attempts to connect to an unknown host
 2. The sandbox proxy blocks the connection
-3. Astonish detects the blocked connection from the command output
+3. Troupe detects the blocked connection from the command output
 4. The agent's execution is paused
 5. An approval dialog appears inline in the chat, showing:
    - The blocked host and port

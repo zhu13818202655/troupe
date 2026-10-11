@@ -60,7 +60,7 @@ func LoadA2AAgentsConfig() (*A2AAgentsConfig, error) {
 
 // SaveA2AAgentsConfig saves the A2A agents configuration to the config directory.
 func SaveA2AAgentsConfig(config *A2AAgentsConfig) error {
-	configDir, err := GetConfigDir()
+	configDir, err := ensureConfigDir()
 	if err != nil {
 		return fmt.Errorf("failed to get config directory: %w", err)
 	}

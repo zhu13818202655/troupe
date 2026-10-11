@@ -119,7 +119,7 @@ See [Multi-File ClawHub Skill Support](./skills-multi-file-clawhub-support.md) f
 
 ### Built-in Skills
 
-Astonish includes built-in skills for common tools and workflows. They form the lowest static layer: a same-named filesystem skill replaces a built-in before any platform database overlays are applied.
+Troupe includes built-in skills for common tools and workflows. They form the lowest static layer: a same-named filesystem skill replaces a built-in before any platform database overlays are applied.
 
 ### Agent-Created Skills
 

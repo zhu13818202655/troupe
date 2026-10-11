@@ -111,7 +111,7 @@ func PlatformInitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Generate a unique instance suffix for this deployment.
-	// This namespaces all databases so multiple Astonish instances can share a PG host.
+	// This namespaces all databases so multiple Troupe instances can share a PG host.
 	suffix := config.GenerateInstanceSuffix()
 
 	// Build a temporary DSN and open a single *sql.DB connection for the entire
@@ -193,7 +193,7 @@ func PlatformInitHandler(w http.ResponseWriter, r *http.Request) {
 
 	respondJSON(w, http.StatusOK, PlatformInitResponse{
 		Success:         true,
-		Message:         "Platform initialized successfully. Please restart Astonish to activate platform mode.",
+		Message:         "Platform initialized successfully. Please restart Troupe to activate platform mode.",
 		RestartRequired: true,
 	})
 }
@@ -214,11 +214,11 @@ func cleanPGError(msg string) string {
 
 // SQLitePlatformInitRequest is the request body for POST /api/platform/init/sqlite.
 type SQLitePlatformInitRequest struct {
-	DataDir      string `json:"data_dir"`
-	OrgName      string `json:"org_name"`
-	OrgSlug      string `json:"org_slug"`
-	AdminEmail   string `json:"admin_email"`
-	AdminName    string `json:"admin_name"`
+	DataDir       string `json:"data_dir"`
+	OrgName       string `json:"org_name"`
+	OrgSlug       string `json:"org_slug"`
+	AdminEmail    string `json:"admin_email"`
+	AdminName     string `json:"admin_name"`
 	AdminPassword string `json:"admin_password"`
 }
 
@@ -438,7 +438,7 @@ func SQLitePlatformInitHandler(w http.ResponseWriter, r *http.Request) {
 
 	respondJSON(w, http.StatusOK, PlatformInitResponse{
 		Success:         true,
-		Message:         "SQLite platform initialized successfully. Please restart Astonish to activate platform mode.",
+		Message:         "SQLite platform initialized successfully. Please restart Troupe to activate platform mode.",
 		RestartRequired: true,
 	})
 }

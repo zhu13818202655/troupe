@@ -298,7 +298,7 @@ func TestExtractLastUserMessage(t *testing.T) {
 	reqWithCtx := &model.LLMRequest{
 		Contents: []*genai.Content{
 			{Role: "user", Parts: []*genai.Part{{Text: "hello world"}}},
-			{Role: "user", Parts: []*genai.Part{{Text: "[Astonish Per-Turn Context — not user-authored]\n\n## Available Skills\n..."}}},
+			{Role: "user", Parts: []*genai.Part{{Text: "[Troupe Per-Turn Context — not user-authored]\n\n## Available Skills\n..."}}},
 		},
 	}
 	if got := extractLastUserMessage(reqWithCtx); got != "hello world" {

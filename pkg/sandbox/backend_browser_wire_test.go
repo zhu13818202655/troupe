@@ -97,7 +97,7 @@ func TestWireBackendBrowserManager_ResolveAcceptsDockerContainerName(t *testing.
 	if err := reg.PutSession(&store.SandboxSession{
 		SessionID:     sessionID,
 		Backend:       string(BackendKindDocker),
-		ContainerName: "astonish-session-c1b27dfb-f828-40-e1deb88678e9",
+		ContainerName: "troupe-session-c1b27dfb-f828-40-e1deb88678e9",
 		State:         store.SandboxSessionStateRunning,
 	}); err != nil {
 		t.Fatalf("PutSession: %v", err)
@@ -314,7 +314,7 @@ func TestGetPoolClientFromContext_TemplateOnlyUsesGetOrCreateWithTemplate(t *tes
 // startBackendRecording.
 type recordingExecBackend struct {
 	interfaceTestStub
-	kind        BackendKind
+	kind BackendKind
 	// calls receives each script that was executed via Exec.
 	calls []string
 	// execResults maps call index → ExecResult. If no entry, returns a default
@@ -349,7 +349,7 @@ func TestStartBackendRecording_ProbeFailure(t *testing.T) {
 			0: fmt.Errorf("xdpyinfo not found"),
 		},
 	}
-	_, _, _, err := startBackendRecording(context.Background(), b, "sess-1", ":0", "/tmp/astonish-recordings/test.mp4")
+	_, _, _, err := startBackendRecording(context.Background(), b, "sess-1", ":0", "/tmp/troupe-recordings/test.mp4")
 	if err == nil {
 		t.Fatal("expected error when display probe fails")
 	}
@@ -365,7 +365,7 @@ func TestStartBackendRecording_ProbeBadDimensions(t *testing.T) {
 			0: {ExitCode: 0, Stdout: []byte("not-dimensions")},
 		},
 	}
-	_, _, _, err := startBackendRecording(context.Background(), b, "sess-1", ":0", "/tmp/astonish-recordings/test.mp4")
+	_, _, _, err := startBackendRecording(context.Background(), b, "sess-1", ":0", "/tmp/troupe-recordings/test.mp4")
 	if err == nil {
 		t.Fatal("expected error when dimensions cannot be parsed")
 	}
@@ -404,8 +404,8 @@ func TestBackendShellCommand_K8s(t *testing.T) {
 	if len(cmd) != 4 {
 		t.Errorf("K8s backend command length = %d, want 4", len(cmd))
 	}
-	if cmd[0] != "/usr/local/bin/astonish-shell" || cmd[1] != "sh" || cmd[2] != "-c" || cmd[3] != script {
-		t.Errorf("K8s backend command = %v, want [/usr/local/bin/astonish-shell sh -c %q]", cmd, script)
+	if cmd[0] != "/usr/local/bin/troupe-shell" || cmd[1] != "sh" || cmd[2] != "-c" || cmd[3] != script {
+		t.Errorf("K8s backend command = %v, want [/usr/local/bin/troupe-shell sh -c %q]", cmd, script)
 	}
 }
 
@@ -420,13 +420,13 @@ func TestBackendShellCommand_NilBackend(t *testing.T) {
 	}
 }
 
-func TestStartBackendRecording_K8sUsesAstonishShell(t *testing.T) {
+func TestStartBackendRecording_K8sUsesTroupeShell(t *testing.T) {
 	// recordingExecBackend captures all Exec calls; by default it returns
 	// success with a valid probe response "1920x1080".
 	b := &recordingExecBackend{
 		kind: BackendKindK8s,
 	}
-	_, _, _, err := startBackendRecording(context.Background(), b, "sess-1", ":0", "/tmp/astonish-recordings/test.mp4")
+	_, _, _, err := startBackendRecording(context.Background(), b, "sess-1", ":0", "/tmp/troupe-recordings/test.mp4")
 	if err != nil {
 		t.Fatalf("startBackendRecording failed: %v", err)
 	}
@@ -437,10 +437,10 @@ func TestStartBackendRecording_K8sUsesAstonishShell(t *testing.T) {
 		t.Fatalf("expected at least 3 Exec calls, got %d", len(b.calls))
 	}
 
-	// Each call should start with /usr/local/bin/astonish-shell for K8s backends.
+	// Each call should start with /usr/local/bin/troupe-shell for K8s backends.
 	for i, call := range b.calls[:3] {
-		if !strings.Contains(call, "/usr/local/bin/astonish-shell") {
-			t.Errorf("call %d = %q; expected to contain /usr/local/bin/astonish-shell", i, call)
+		if !strings.Contains(call, "/usr/local/bin/troupe-shell") {
+			t.Errorf("call %d = %q; expected to contain /usr/local/bin/troupe-shell", i, call)
 		}
 	}
 }

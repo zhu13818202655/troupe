@@ -1,5 +1,5 @@
 // Package execution defines the canonical identity and authorization context used
-// by every Astonish execution surface.
+// by every Troupe execution surface.
 package execution
 
 import (

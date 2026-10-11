@@ -1,16 +1,16 @@
 # Platform Overview
 
-Astonish is always a platform — the same agent engine, tools, and capabilities run in every deployment. The database backend determines the scale: SQLite for local/small team setups, PostgreSQL for multi-tenant team deployments. Both backends run in full platform mode with authentication, encryption, sessions, and memory.
+Troupe is always a platform — the same agent engine, tools, and capabilities run in every deployment. The database backend determines the scale: SQLite for local/small team setups, PostgreSQL for multi-tenant team deployments. Both backends run in full platform mode with authentication, encryption, sessions, and memory.
 
 ## Why Multi-Tenancy Matters
 
-A single developer using Astonish accumulates memory, refines flows, and builds a library of skills. When backed by PostgreSQL, that knowledge benefits the entire team at scale. When one engineer solves a tricky deployment issue, the resolution enters team memory. When a team discovers a pattern, it can be promoted to org-level knowledge available to every team.
+A single developer using Troupe accumulates memory, refines flows, and builds a library of skills. When backed by PostgreSQL, that knowledge benefits the entire team at scale. When one engineer solves a tricky deployment issue, the resolution enters team memory. When a team discovers a pattern, it can be promoted to org-level knowledge available to every team.
 
 The core value proposition: **knowledge compounds**. Every interaction makes the platform smarter for everyone — without sacrificing privacy or control over personal data.
 
 ## Database Backends
 
-The same `astonish` binary powers both deployment options. The backend is selected during `astonish setup`:
+The same `troupe` binary powers both deployment options. The backend is selected during `troupe setup`:
 
 | Aspect | Local (SQLite) | Cloud (PostgreSQL) |
 |--------|---------------|-------------------|
@@ -20,7 +20,7 @@ The same `astonish` binary powers both deployment options. The backend is select
 | Encryption | Envelope encryption | Envelope encryption |
 | Scale | Single user / small team | Multi-tenant (many orgs, teams) |
 | Isolation | Separate SQLite files per scope | Database-per-org, schema-per-team |
-| CLI | Via `astonish login` | Via `astonish login` |
+| CLI | Via `troupe login` | Via `troupe login` |
 
 Both backends provide full platform features. PostgreSQL adds database-level cross-org isolation and scales to large multi-tenant deployments.
 
@@ -31,12 +31,12 @@ PostgreSQL deployments use **database-per-org** isolation. Each organization get
 ```
 PostgreSQL Cluster
 │
-├── astonish_platform              ← Platform-level metadata
+├── troupe_platform              ← Platform-level metadata
 │   ├── public.organizations
 │   ├── public.users
 │   └── public.platform_config
 │
-├── astonish_org_acme              ← Acme Corp's database
+├── troupe_org_acme              ← Acme Corp's database
 │   ├── public.*                   ← Org-wide tables (shared memory, config)
 │   ├── team_backend/              ← Backend team schema
 │   │   ├── memory
@@ -49,7 +49,7 @@ PostgreSQL Cluster
 │   ├── personal_<user_uuid>/      ← Alice's private schema
 │   └── personal_<user_uuid>/      ← Bob's private schema
 │
-└── astonish_org_globex            ← Globex Inc's database (completely isolated)
+└── troupe_org_globex            ← Globex Inc's database (completely isolated)
     ├── public.*
     ├── team_engineering/
     └── personal_<user_uuid>/
@@ -68,7 +68,7 @@ Schema-level `GRANT`/`REVOKE` enforces team boundaries. A user can only access t
 SQLite deployments use separate database files to maintain the same isolation model:
 
 ```
-~/.local/share/astonish/
+~/.local/share/troupe/
 └── orgs/<slug>/
     ├── org.db                     ← Org-wide data
     ├── teams/<team_slug>.db       ← Per-team data
@@ -89,28 +89,28 @@ SQLite deployments use separate database files to maintain the same isolation mo
 
 ```bash
 # 1. Run the setup wizard (choose SQLite or PostgreSQL)
-astonish setup
+troupe setup
 
 # 2. Start the platform
-astonish daemon install
-astonish daemon start
+troupe daemon install
+troupe daemon start
 
 # 3. Log in via Studio (http://localhost:9393) or CLI
-astonish login http://localhost:9393
-astonish chat
+troupe login http://localhost:9393
+troupe chat
 ```
 
 For PostgreSQL deployments, invite team members after setup:
 
 ```bash
-astonish platform org invite --org acme --email alice@acme.corp --role admin
+troupe platform org invite --org acme --email alice@acme.corp --role admin
 ```
 
 Users connect with the CLI:
 
 ```bash
-astonish login https://astonish.acme.corp
-astonish status
+troupe login https://troupe.acme.corp
+troupe status
 ```
 
 ## Next Steps

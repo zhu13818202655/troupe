@@ -40,7 +40,7 @@ For data connectivity, apps use [data hooks](./data-hooks.md) — `useAppData` f
 
 ## Comparison to Alternatives
 
-| | Astonish Generative UI | Claude Artifacts | ChatGPT Canvas |
+| | Troupe Generative UI | Claude Artifacts | ChatGPT Canvas |
 |---|---|---|---|
 | Live data connectivity | Yes (MCP, REST, OAuth) | No | No |
 | Persistent state | Yes (per-user DB) | No | No |
@@ -51,17 +51,17 @@ For data connectivity, apps use [data hooks](./data-hooks.md) — `useAppData` f
 
 ## Apps as a Top-Level Concept
 
-Generated UIs are saved as **Apps** — a first-class entity in Astonish alongside Flows and Fleet agents. Apps appear in the Studio sidebar, can be pinned for quick access, and maintain their own persistent state per user.
+Generated UIs are saved as **Apps** — a first-class entity in Troupe alongside Flows and Fleet agents. Apps appear in the Studio sidebar, can be pinned for quick access, and maintain their own persistent state per user.
 
 ## The Compilation Pipeline
 
-Astonish uses [Sucrase](https://github.com/alangpierce/sucrase) for JSX transformation instead of Babel or a full bundler. This gives:
+Troupe uses [Sucrase](https://github.com/alangpierce/sucrase) for JSX transformation instead of Babel or a full bundler. This gives:
 
 - **~5ms compilation** — No perceptible delay between generation and rendering.
 - **No Node.js dependency** — The transform runs in the browser.
 - **Hot updates** — Each refinement recompiles and re-renders instantly.
 
-The rendered app runs in a sandboxed iframe with restricted permissions. Network requests are proxied through the Astonish backend, ensuring credentials and API keys never reach the client.
+The rendered app runs in a sandboxed iframe with restricted permissions. Network requests are proxied through the Troupe backend, ensuring credentials and API keys never reach the client.
 
 ## Getting Started
 

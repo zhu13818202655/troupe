@@ -1,4 +1,4 @@
-// Package slack implements the Slack channel adapter for Astonish.
+// Package slack implements the Slack channel adapter for Troupe.
 // It connects to Slack via Socket Mode (WebSocket) or Events API (HTTP webhook),
 // normalizes inbound messages, and delivers outbound responses with
 // Slack mrkdwn formatting, message chunking, and thread-based replies.
@@ -440,7 +440,7 @@ func (s *SlackChannel) UpdateAllowlist(allowFrom []string) {
 	s.allowMu.Unlock()
 }
 
-// RefreshCommands implements channels.CommandRefresher. It projects Astonish's
+// RefreshCommands implements channels.CommandRefresher. It projects Troupe's
 // shared command registry into Slack's App Manifest when manifest credentials are configured.
 func (s *SlackChannel) RefreshCommands(commands *channels.CommandRegistry) {
 	s.commandsMu.Lock()
@@ -541,7 +541,8 @@ func (s *SlackChannel) handleAppMention(ctx context.Context, ev *slackevents.App
 
 	// Strip the @mention from the text. Slack custom slash commands do not work in
 	// thread composers, so app mentions are the supported thread command entrypoint:
-	// "@Astonish status" and "@Astonish /astonish-status" both become "/status".
+	// "@Troupe status" and "@Troupe /troupe-status" (or the legacy
+	// "/astonish-status") both become "/status".
 	text := s.normalizeMentionCommandText(s.stripBotMention(ev.Text))
 	if text == "" {
 		return
@@ -690,14 +691,14 @@ func (s *SlackChannel) handleSlashCommandWithThread(ctx context.Context, cmd sla
 	}
 	if !shouldExposeSlackCommand(registeredCommand) {
 		s.logger.Printf("[slack] Ignoring unsupported slash command %q from user %s", cmd.Command, cmd.UserID)
-		return "This Slack command is not handled by Astonish. Use /astonish-help for available commands or /link CODE to connect your Astonish account."
+		return "This Slack command is not handled by Troupe. Use /troupe-help (or the legacy /astonish-help) for available commands or /link CODE to connect your Troupe account."
 	}
 	if !s.isAllowed(cmd.UserID) {
 		s.logger.Printf("[slack] Blocked slash command %q from unauthorized user %s", cmd.Command, cmd.UserID)
-		return "Please link your Astonish account first with /link CODE. Get a link code from Astonish Settings → Channels."
+		return "Please link your Troupe account first with /link CODE. Get a link code from Troupe Settings → Channels."
 	}
 	if s.handler == nil {
-		return "Astonish is not ready to process Slack commands yet. Please try again in a moment."
+		return "Troupe is not ready to process Slack commands yet. Please try again in a moment."
 	}
 
 	canonicalCommand := "/" + name
@@ -824,7 +825,7 @@ func (s *SlackChannel) linkAccount(ctx context.Context, userID, displayName, cod
 	}
 
 	if code == "" {
-		return "Usage: /link CODE\n\nGet a link code from the Astonish Settings → Channels page."
+		return "Usage: /link CODE\n\nGet a link code from the Troupe Settings → Channels page."
 	}
 
 	success, msg := linkHandler(ctx, userID, displayName, code)
@@ -965,22 +966,33 @@ func isSlackTimestamp(value string) bool {
 
 func slackCommandNameFromInvocation(command string, registry *channels.CommandRegistry) string {
 	name := strings.TrimPrefix(strings.ToLower(strings.TrimSpace(command)), "/")
-	prefix := slackCommandPrefix + "-"
-	if !strings.HasPrefix(name, prefix) {
-		return name
-	}
-	aliasSuffix := strings.TrimPrefix(name, prefix)
-	if registry != nil {
-		for _, cmd := range registry.List() {
-			if cmd == nil {
-				continue
-			}
-			if slackCommandAliasSuffix(cmd.Name) == aliasSuffix || strings.TrimPrefix(legacySlackCommandAlias(cmd.Name), "/"+slackCommandPrefix+"-") == aliasSuffix {
-				return strings.TrimPrefix(strings.ToLower(strings.TrimSpace(cmd.Name)), "/")
+	// Accept both the current /troupe-* prefix and the legacy /astonish-*
+	// prefix (old Slack App installations still register the old commands).
+	for _, prefix := range []string{slackCommandPrefix, legacySlackCommandPrefix} {
+		p := prefix + "-"
+		if !strings.HasPrefix(name, p) {
+			continue
+		}
+		aliasSuffix := strings.TrimPrefix(name, p)
+		if registry != nil {
+			for _, cmd := range registry.List() {
+				if cmd == nil {
+					continue
+				}
+				if slackCommandAliasSuffix(cmd.Name) == aliasSuffix || legacySlackCommandAliasSuffix(cmd.Name) == aliasSuffix {
+					return strings.TrimPrefix(strings.ToLower(strings.TrimSpace(cmd.Name)), "/")
+				}
 			}
 		}
+		return aliasSuffix
 	}
-	return aliasSuffix
+	return name
+}
+
+// legacySlackCommandAliasSuffix returns the command name suffix as invoked via
+// the legacy /astonish-* alias (e.g. "status" for /astonish-status).
+func legacySlackCommandAliasSuffix(name string) string {
+	return strings.TrimPrefix(legacySlackCommandAlias(name), "/"+legacySlackCommandPrefix+"-")
 }
 
 func isSlashCommandText(text, name string) bool {

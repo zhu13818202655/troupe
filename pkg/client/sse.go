@@ -16,9 +16,9 @@ type SSEEvent struct {
 
 // SSEStream reads Server-Sent Events from an io.ReadCloser.
 type SSEStream struct {
-	reader io.ReadCloser
+	reader  io.ReadCloser
 	scanner *bufio.Scanner
-	done   bool
+	done    bool
 }
 
 // NewSSEStream creates a stream reader from an HTTP response body.

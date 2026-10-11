@@ -31,7 +31,7 @@ type nodeResponse struct {
 	Ready  bool            `json:"ready,omitempty"`
 }
 
-// NodeClient manages a persistent NDJSON connection to an `astonish node`
+// NodeClient manages a persistent NDJSON connection to an `troupe node`
 // process running inside an Incus container. It starts the node via
 // ExecInteractive and proxies tool calls over stdin/stdout.
 //
@@ -61,7 +61,7 @@ func NewNodeClient(containerName string) *NodeClient {
 	}
 }
 
-// Start launches the `astonish node` process inside the container and waits
+// Start launches the `troupe node` process inside the container and waits
 // for the ready signal. The container must already be running.
 func (nc *NodeClient) Start() error {
 	nc.mu.Lock()
@@ -234,7 +234,7 @@ type LazyNodeClient struct {
 	OverrideSessionID string
 
 	// containerReady is closed when the container is created and running,
-	// BEFORE the astonish node process is started. MCP transport only needs
+	// BEFORE the troupe node process is started. MCP transport only needs
 	// the container, not the node, so it waits on this channel.
 	containerReady chan struct{}
 	containerErr   error
@@ -657,7 +657,7 @@ func (lnc *LazyNodeClient) TouchActivity() {
 }
 
 // EnsureContainerReady blocks until the container is created and running,
-// but does NOT wait for the astonish node process to start. Returns the
+// but does NOT wait for the troupe node process to start. Returns the
 // container name and the Incus client.
 //
 // This is used by MCP transport creation — MCP servers run as separate

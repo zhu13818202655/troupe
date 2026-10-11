@@ -12,11 +12,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/huh"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/sandbox"
 	sboxdocker "github.com/zhu13818202655/troupe/pkg/sandbox/docker"
 	persistentsession "github.com/zhu13818202655/troupe/pkg/session"
-	"github.com/charmbracelet/huh"
 )
 
 func handleSandboxCommand(args []string) error {
@@ -551,7 +551,7 @@ func handleSandboxRefresh() error {
 	}
 
 	fmt.Println("Re-seeding @base from the sandbox-base image...")
-	fmt.Println("Named overlay layers are deltas and do not embed the Astonish binary.")
+	fmt.Println("Named overlay layers are deltas and do not embed the Troupe binary.")
 	if err := b.ReseedBaseLayerFromImage(context.Background()); err != nil {
 		return err
 	}

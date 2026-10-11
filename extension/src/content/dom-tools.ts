@@ -170,7 +170,7 @@ function githubClickBlocked(el: HTMLElement): string | null {
   // Do not let the model drive edit mode on the user's behalf. When the
   // description editor is not already open, refuse clicks on the Edit button
   // and the "Issue body actions" (…) kebab menu. Opening Edit is the user's job;
-  // the model should emit an astonish-page-edit fence and stop. Once the editor
+  // the model should emit an troupe-page-edit fence and stop. Once the editor
   // is open, these clicks are allowed (findGitHubIssueEditor() is truthy).
   if (isGitHubIssueOrPull(window.location) && !findGitHubIssueEditor()) {
     if (
@@ -180,7 +180,7 @@ function githubClickBlocked(el: HTMLElement): string | null {
       name === 'issue body actions' ||
       name === 'edit issue description'
     ) {
-      return 'Refusing to open GitHub edit mode for you. Do not click Edit or the "Issue body actions" (…) kebab menu. Emit the complete updated description in ONE astonish-page-edit fence and stop — opening Edit and pressing Apply is the user\'s job.';
+      return 'Refusing to open GitHub edit mode for you. Do not click Edit or the "Issue body actions" (…) kebab menu. Emit the complete updated description in ONE troupe-page-edit fence and stop — opening Edit and pressing Apply is the user\'s job.';
     }
   }
   return null;

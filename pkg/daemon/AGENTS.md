@@ -15,8 +15,8 @@ Long-running platform bootstrap. `daemon.Run` is the wiring boundary: it loads c
 4. **PreWarm**: `api.GetChatManager().PreWarm(...)` is called in the background after Studio starts — do not block startup on it.
 
 ## Entry-point relationship
-- CLI: `astonish daemon run` → `cmd/astonish/daemon.go:handleDaemonRun` → `daemon.Run`.
-- The daemon can also be installed as a service (`daemon install/start/stop` via launchd/systemd) — see `cmd/astonish/daemon.go`.
+- CLI: `troupe daemon run` → `cmd/troupe/daemon.go:handleDaemonRun` → `daemon.Run`.
+- The daemon can also be installed as a service (`daemon install/start/stop` via launchd/systemd) — see `cmd/troupe/daemon.go`.
 
 ## When editing
 1. Adding a new dependency? Thread it via `RunConfig` or via the `services` struct, not via globals.

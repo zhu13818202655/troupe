@@ -321,7 +321,7 @@ export default function LoginPage({ onLogin, onRegister, pendingVerificationEmai
               style={{ color: 'var(--text-muted)' }}
             >
               Please contact a <strong style={{ color: 'var(--text-secondary)' }}>team administrator</strong> to
-              request access. Once you're added to a team, you'll be able to use Astonish.
+              request access. Once you're added to a team, you'll be able to use Troupe.
             </p>
           </div>
 
@@ -337,7 +337,7 @@ export default function LoginPage({ onLogin, onRegister, pendingVerificationEmai
             <ul className="list-disc list-inside space-y-1" style={{ color: 'var(--text-muted)' }}>
               <li>A team admin adds you via the admin panel</li>
               <li>You'll receive an email notification</li>
-              <li>Then you can sign in and start using Astonish</li>
+              <li>Then you can sign in and start using Troupe</li>
             </ul>
           </div>
 
@@ -388,7 +388,7 @@ export default function LoginPage({ onLogin, onRegister, pendingVerificationEmai
             className="text-2xl font-bold"
             style={{ color: 'var(--text-primary)' }}
           >
-            {isFirstSetup ? 'Set Up Astonish' : 'Welcome to Astonish'}
+            {isFirstSetup ? 'Set Up Troupe' : 'Welcome to Troupe'}
           </h1>
           <p
             className="mt-2 text-sm"

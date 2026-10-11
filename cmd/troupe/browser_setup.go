@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/huh"
 	"charm.land/lipgloss/v2"
+	"github.com/charmbracelet/huh"
 	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
@@ -268,9 +268,9 @@ func configureBrowserCustom(cfg *config.AppConfig) error {
 	return nil
 }
 
-// configureBrowserRemote connects Astonish to a Chrome instance running on the
+// configureBrowserRemote connects Troupe to a Chrome instance running on the
 // user's machine (or anywhere on the network). The user launches Chrome with
-// --remote-debugging-port and Astonish auto-discovers the CDP WebSocket URL.
+// --remote-debugging-port and Troupe auto-discovers the CDP WebSocket URL.
 func configureBrowserRemote(cfg *config.AppConfig) error {
 	// Ask for host
 	var host string
@@ -351,7 +351,7 @@ func configureBrowserRemote(cfg *config.AppConfig) error {
 			"  Remote: %s\n"+
 			"  Browser: %s\n\n"+
 			"  Remember to launch Chrome with --remote-debugging-port=%s\n"+
-			"  before starting Astonish.",
+			"  before starting Troupe.",
 		endpoint, browserVersion, portStr))
 	return nil
 }
@@ -388,7 +388,7 @@ func discoverCDPEndpoint(endpoint string) (wsURL string, version string, err err
 	}
 
 	// The WebSocket URL from Chrome points to localhost. We need to rewrite
-	// the host to the user-provided endpoint so Astonish can reach it.
+	// the host to the user-provided endpoint so Troupe can reach it.
 	wsURL = result.WebSocketDebuggerURL
 	wsURL = strings.Replace(wsURL, "localhost:", endpoint+":", 1)
 	wsURL = strings.Replace(wsURL, "127.0.0.1:", endpoint+":", 1)

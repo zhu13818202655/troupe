@@ -15,7 +15,7 @@ func handleDemoCommand(args []string) error {
 	outputPath := demoFlags.String("output", "", "Output HTML file path (default: demo.html)")
 	width := demoFlags.Int("width", 800, "Terminal width in pixels")
 	height := demoFlags.Int("height", 400, "Terminal height in pixels")
-	title := demoFlags.String("title", "Astonish Demo", "Demo title")
+	title := demoFlags.String("title", "Troupe Demo", "Demo title")
 	genTemplate := demoFlags.Bool("template", false, "Generate a template script file")
 
 	demoFlags.Usage = func() {
@@ -89,7 +89,7 @@ func handleDemoCommand(args []string) error {
 }
 
 func generateTemplateScript(outputPath string) error {
-	template := `title: "My Astonish Demo"
+	template := `title: "My Troupe Demo"
 width: 900
 height: 500
 events:

@@ -127,7 +127,7 @@ func (db *DockerBackend) PushFile(ctx context.Context, sessionID, path string, c
 	dir := path[:strings.LastIndexByte(path, '/')+1]
 	if dir != "" && dir != "/" {
 		if _, err := runDocker(ctx, db.cfg.ContainerRuntimePath,
-			"exec", cname, astonishShell, "mkdir", "-p", dir,
+			"exec", cname, troupeShell, "mkdir", "-p", dir,
 		); err != nil {
 			return fmt.Errorf("sandbox/docker: PushFile mkdir %q in %s: %w", dir, sessionID, err)
 		}
@@ -135,7 +135,7 @@ func (db *DockerBackend) PushFile(ctx context.Context, sessionID, path string, c
 
 	// Stream content via docker exec + stdin pipe.
 	args := []string{
-		"exec", "-i", cname, astonishShell,
+		"exec", "-i", cname, troupeShell,
 		"sh", "-c", fmt.Sprintf("cat > %q && chmod %04o %q", path, mode, path),
 	}
 	cmd := exec.CommandContext(ctx, db.cfg.ContainerRuntimePath, args...)
@@ -161,7 +161,7 @@ func (db *DockerBackend) PullFile(ctx context.Context, sessionID, path string) (
 	cname := containerName(sessionID)
 
 	// Stream via docker exec + cat.
-	args := []string{"exec", cname, astonishShell, "cat", path}
+	args := []string{"exec", cname, troupeShell, "cat", path}
 	out, err := runDocker(ctx, db.cfg.ContainerRuntimePath, args...)
 	if err != nil {
 		return nil, fmt.Errorf("sandbox/docker: PullFile %q from %s: %w", path, sessionID, err)
@@ -195,12 +195,12 @@ func (db *DockerBackend) requireRegisteredSession(sessionID string) error {
 
 func wrapShell(command []string) []string {
 	if len(command) == 0 {
-		return []string{astonishShell}
+		return []string{troupeShell}
 	}
-	if command[0] == astonishShell {
+	if command[0] == troupeShell {
 		return command
 	}
-	return append([]string{astonishShell}, command...)
+	return append([]string{troupeShell}, command...)
 }
 
 // buildDockerExecArgs assembles the arguments for `docker exec` from the

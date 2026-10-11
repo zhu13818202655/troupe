@@ -13,11 +13,11 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/provider"
 	"github.com/zhu13818202655/troupe/pkg/skills"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 )
 
 // validationRateLimit tracks the last validation time per skill to prevent
@@ -1113,7 +1113,7 @@ func InstallSkillHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Download into a temp directory on the server
-	tmpDir, err := os.MkdirTemp("", "astonish-clawhub-install-*")
+	tmpDir, err := os.MkdirTemp("", "troupe-clawhub-install-*")
 	if err != nil {
 		slog.Error("failed to create temp dir for ClawHub install", "error", err)
 		respondError(w, http.StatusInternalServerError, "server error during install")

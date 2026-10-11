@@ -25,9 +25,9 @@ type copilotTransport struct {
 	githubToken string
 
 	// sessionToken is the short-lived Copilot session token.
-	sessionToken    string
+	sessionToken     string
 	sessionExpiresAt time.Time
-	mu              sync.Mutex
+	mu               sync.Mutex
 
 	// copilotTokenURL allows overriding the token exchange endpoint for testing.
 	copilotTokenURL string

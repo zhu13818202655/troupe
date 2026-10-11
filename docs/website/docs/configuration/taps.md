@@ -1,35 +1,35 @@
 # Taps & Flow Store
 
-Taps are git-based extension repositories that distribute community flows, skills, and MCP server configurations for Astonish.
+Taps are git-based extension repositories that distribute community flows, skills, and MCP server configurations for Troupe.
 
 ## What Are Taps?
 
-A tap is a git repository containing reusable flows and tools. When you add a tap, Astonish fetches its manifest and makes its contents available for browsing and installation.
+A tap is a git repository containing reusable flows and tools. When you add a tap, Troupe fetches its manifest and makes its contents available for browsing and installation.
 
 ## Adding a Tap
 
 ```bash
 # Add by full URL
-astonish tap add https://github.com/example/astonish-flows.git
+troupe tap add https://github.com/example/troupe-flows.git
 
 # Add by GitHub shorthand (owner/repo)
-astonish tap add example/astonish-flows
+troupe tap add example/troupe-flows
 
 # Add with a custom alias
-astonish tap add example/astonish-flows --as my-flows
+troupe tap add example/troupe-flows --as my-flows
 ```
 
 ## Managing Taps
 
 ```bash
 # List installed taps
-astonish tap list
+troupe tap list
 
 # Update all tap manifests to latest
-astonish tap update
+troupe tap update
 
 # Remove a tap
-astonish tap remove <name>
+troupe tap remove <name>
 ```
 
 ## Browsing and Installing Flows
@@ -38,13 +38,13 @@ After adding taps, browse and install available flows:
 
 ```bash
 # List all flows from all taps
-astonish flows store list
+troupe flows store list
 
 # Install a flow from a tap
-astonish flows store install <tap-name>/<flow-name>
+troupe flows store install <tap-name>/<flow-name>
 
 # Update all tap manifests
-astonish flows store update
+troupe flows store update
 ```
 
 You can also browse and install flows from the **Flow Store** in Studio Settings.

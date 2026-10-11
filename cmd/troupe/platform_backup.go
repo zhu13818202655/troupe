@@ -290,7 +290,7 @@ func printBackupSummary(summary backup.Summary, jsonOut bool, verified bool) err
 func printPlatformBackupUsage() {
 	fmt.Println("usage: troupe platform backup <command> [options]")
 	fmt.Println("")
-	fmt.Println("Create, inspect, and verify Astonish backup archives.")
+	fmt.Println("Create, inspect, and verify Troupe backup archives.")
 	fmt.Println("")
 	fmt.Println("commands:")
 	fmt.Println("  create --output <archive>    Export platform data to a compressed logical backup archive")
@@ -315,11 +315,11 @@ func printPlatformBackupCreateUsage() {
 func printPlatformBackupInspectUsage() {
 	fmt.Println("usage: troupe platform backup inspect <archive> [--json] [--passphrase <secret>]")
 	fmt.Println("")
-	fmt.Println("Show manifest metadata for an Astonish backup archive.")
+	fmt.Println("Show manifest metadata for an Troupe backup archive.")
 }
 
 func printPlatformBackupVerifyUsage() {
 	fmt.Println("usage: troupe platform backup verify <archive> [--json] [--passphrase <secret>]")
 	fmt.Println("")
-	fmt.Println("Validate manifest metadata and SHA-256 checksums for an Astonish backup archive.")
+	fmt.Println("Validate manifest metadata and SHA-256 checksums for an Troupe backup archive.")
 }

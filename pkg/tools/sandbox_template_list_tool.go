@@ -47,7 +47,7 @@ func NewListSandboxTemplatesTool(templateRegistry *sandbox.TemplateRegistry) (to
 		Description: "List available sandbox templates. Returns all saved templates with their " +
 			"name, description, creation date, and snapshot status. Optionally pass a template " +
 			"name to get details for a specific template. Use this tool instead of " +
-			"shell_command with 'astonish sandbox template list' — shell_command runs inside " +
+			"shell_command with 'troupe sandbox template list' — shell_command runs inside " +
 			"the container and cannot see host templates.",
 	}, listSandboxTemplates)
 	if err != nil {

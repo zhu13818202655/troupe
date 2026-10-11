@@ -134,8 +134,8 @@ func TestDefaultSandboxPolicy_NetworkPoliciesPopulated(t *testing.T) {
 	if !ok {
 		t.Fatal("expected 'egress' network policy")
 	}
-	if egress.Name != "astonish-egress" {
-		t.Errorf("egress name = %q, want %q", egress.Name, "astonish-egress")
+	if egress.Name != "troupe-egress" {
+		t.Errorf("egress name = %q, want %q", egress.Name, "troupe-egress")
 	}
 	if len(egress.Endpoints) == 0 {
 		t.Error("expected non-empty egress endpoints")

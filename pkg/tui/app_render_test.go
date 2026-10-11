@@ -235,7 +235,7 @@ func TestLiveStatusShowsTimerWhileStreaming(t *testing.T) {
 		t.Fatalf("timer should appear to the right of status text; statusIdx=%d timerIdx=%d in %q", statusIdx, timerIdx, out)
 	}
 	// There should be multiple spaces between status and timer (right-alignment gap).
-	between := out[statusIdx+len("Running shell_command…"):timerIdx]
+	between := out[statusIdx+len("Running shell_command…") : timerIdx]
 	if len(strings.TrimRight(between, " ")) == len(between) {
 		t.Fatalf("expected whitespace gap between status and timer for right-alignment: %q", out)
 	}

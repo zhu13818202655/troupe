@@ -26,17 +26,17 @@ type actionCaptureState struct {
 	removeScript func() error
 }
 
-// actionRecorderBodyJS installs listeners that append to window.__astonishActionLog.
+// actionRecorderBodyJS installs listeners that append to window.__troupeActionLog.
 // Shared by Eval (function) and EvalOnNewDocument (IIFE) — go-rod Page.Eval wraps
 // JS as `(<js>).apply(...)`, so Eval must receive a function expression, not an IIFE.
 const actionRecorderBodyJS = `
-  if (window.__astonishActionRecorderInstalled) {
-    window.__astonishActionCaptureEnabled = true;
+  if (window.__troupeActionRecorderInstalled) {
+    window.__troupeActionCaptureEnabled = true;
     return;
   }
-  window.__astonishActionRecorderInstalled = true;
-  window.__astonishActionCaptureEnabled = true;
-  window.__astonishActionLog = window.__astonishActionLog || [];
+  window.__troupeActionRecorderInstalled = true;
+  window.__troupeActionCaptureEnabled = true;
+  window.__troupeActionLog = window.__troupeActionLog || [];
   const start = Date.now();
 
   function cssEscape(s) {
@@ -97,10 +97,10 @@ const actionRecorderBodyJS = `
   }
 
   function push(evt) {
-    if (!window.__astonishActionCaptureEnabled) return;
+    if (!window.__troupeActionCaptureEnabled) return;
     evt.t = Date.now() - start;
     evt.url = location.href;
-    window.__astonishActionLog.push(evt);
+    window.__troupeActionLog.push(evt);
   }
 
   document.addEventListener('click', function(e) {
@@ -140,11 +140,11 @@ const actionRecorderEvalJS = `() => {` + actionRecorderBodyJS + `}`
 
 const actionRecorderOnNewDocJS = `(function() {` + actionRecorderBodyJS + `})();`
 
-const actionCaptureDisableJS = `() => { window.__astonishActionCaptureEnabled = false; }`
+const actionCaptureDisableJS = `() => { window.__troupeActionCaptureEnabled = false; }`
 
-const actionCaptureClearJS = `() => { window.__astonishActionLog = []; return JSON.stringify({cleared:true}); }`
+const actionCaptureClearJS = `() => { window.__troupeActionLog = []; return JSON.stringify({cleared:true}); }`
 
-const actionCaptureGetLogJS = `() => JSON.stringify(window.__astonishActionLog || []);`
+const actionCaptureGetLogJS = `() => JSON.stringify(window.__troupeActionLog || []);`
 
 // StartActionCapture injects the DOM action recorder on the current page and
 // all future documents in this target.

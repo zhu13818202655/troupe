@@ -2,7 +2,7 @@
 
 ## Project overview
 
-Astonish is an AI-agent platform distributed as one Go binary. It supports a local coding TUI, a remote multi-tenant chat/platform, HTTP/SSE APIs, reusable flows, tools/MCP, memory, browser automation, fleet orchestration, and isolated execution through Docker OverlayFS, Kubernetes, or OpenShell backends. The Studio UI is a React SPA embedded into the Go binary.
+Troupe is an AI-agent platform distributed as one Go binary. It supports a local coding TUI, a remote multi-tenant chat/platform, HTTP/SSE APIs, reusable flows, tools/MCP, memory, browser automation, fleet orchestration, and isolated execution through Docker OverlayFS, Kubernetes, or OpenShell backends. The Studio UI is a React SPA embedded into the Go binary.
 
 The repository is primarily:
 
@@ -14,7 +14,7 @@ Before changing a subsystem, read the nearest nested `AGENTS.md`; those files co
 
 ## Repository map
 
-- `main.go`, `cmd/astonish/` — binary entry point and CLI dispatch. Commands should parse arguments and delegate; keep business logic in `pkg/`. Preserve local/remote command gating. Bare `astonish` launches local code mode in a TTY.
+- `main.go`, `cmd/troupe/` — binary entry point and CLI dispatch. Commands should parse arguments and delegate; keep business logic in `pkg/`. Preserve local/remote command gating. Bare `troupe` launches local code mode in a TTY.
 - `pkg/agent/` — LLM-driven agent loop, prompt construction, tool execution, compaction, delegation, and approvals.
 - `pkg/api/` — platform/Studio HTTP handlers, authentication, SSE chat/fleet streams, and orchestration wiring.
 - `pkg/launcher/` — composition roots for local code TUI, remote chat TUI, and server/daemon launch paths.
@@ -39,11 +39,11 @@ Prerequisites: Go 1.26.x, Node.js 24+ with npm, Make, and golangci-lint matching
 
 ```bash
 make build-all       # Ent generation + npm/UI build + Go binary; also configures git hooks
-make build           # Go binary only: ./astonish
+make build           # Go binary only: ./troupe
 make build-ui        # npm install and production UI/sandbox bundles in web/dist
 make run             # go run .
 go run .              # run CLI directly
-make daemon           # build UI, then start Astonish (serves Studio UI)
+make daemon           # build UI, then start Troupe (serves Studio UI)
 make daemon-dev       # backend on :9393; run `cd web && npm run dev` separately for :5173
 ```
 
@@ -124,7 +124,7 @@ E2E tests use the `e2e` build tag and run serially through the scenario reporter
 - **Terminal parity:** chat-stream behavior changes may affect both Studio and the terminal TUI. Check `pkg/tui/` whenever changing events, approvals, artifacts, or rendering semantics.
 - **Generative UI security:** Apps execute in a sandboxed opaque-origin iframe and use `postMessage` plus a server-side SSRF-protected proxy. Do not bypass the iframe/origin boundary.
 - **Sandbox lifecycle:** preserve backend idempotency, readiness-before-exec, stream ownership/closure, and capability-based behavior. Read `pkg/sandbox/AGENTS.md` and `docs/architecture/sandbox-backends.md` before backend work.
-- **CLI modes:** local code mode is deliberately ungated and host-filesystem based; remote chat requires login. Preserve `mustBeRemote`/`mustNotBeRemote` decisions when adding commands. New sandbox backends also require registration/linkage described in `cmd/astonish/AGENTS.md`.
+- **CLI modes:** local code mode is deliberately ungated and host-filesystem based; remote chat requires login. Preserve `mustBeRemote`/`mustNotBeRemote` decisions when adding commands. New sandbox backends also require registration/linkage described in `cmd/troupe/AGENTS.md`.
 - **Architecture docs:** when a change alters a protocol, security boundary, storage scope, generated artifact, or runtime flow, update the matching file in `docs/architecture/` in the same change.
 
 ## Working practices

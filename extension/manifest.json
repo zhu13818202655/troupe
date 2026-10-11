@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Astonish",
+  "name": "Troupe",
   "version": "0.1.0",
-  "description": "Chat with Astonish from the current page.",
+  "description": "Chat with Troupe from the current page.",
   "minimum_chrome_version": "114",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA/PmX+XfuqbJO3qySAUZD89coXD9SI1b9Y6HZFii69SgjS6nqlGRNtpV5OiEtphDOfDpFrgT/DXLkvE2z00A86/SSqL3fO0f4T3fiWJYy1JMiPi7ONmnw6gfqP93PaGMx5+OfuvJ+wapk8mbRThtevhwotIoBxM56HR0Z0kHTbwrctOSxRMNTgTzZiRiiKsHaaovWtauiKpyfrQESO9Kg+G65R5pLsYQJCM+XwXzTUGrroNKzjFwBgu6DX6Pcu2cjW4JAMIAXjzBiGmA+9I+S3DWgqsuqXkttC0NJ89zDiu2hOQ44P51aFaTk2Fq6Gx1Q4OtUrdzPYLnmLHWPpEFRgwIDAQAB",
   "permissions": ["sidePanel", "storage", "identity", "activeTab", "scripting", "webNavigation", "debugger"],
@@ -13,7 +13,7 @@
     "https://*/*"
   ],
   "action": {
-    "default_title": "Open Astonish",
+    "default_title": "Open Troupe",
     "default_icons": {
       "16": "public/icons/icon-16.png",
       "48": "public/icons/icon-48.png",

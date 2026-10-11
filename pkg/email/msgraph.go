@@ -492,18 +492,18 @@ type graphMessageList struct {
 }
 
 type graphMessage struct {
-	ID                     string              `json:"id"`
-	Subject                string              `json:"subject"`
-	ReceivedDateTime       string              `json:"receivedDateTime"`
-	IsRead                 bool                `json:"isRead"`
-	HasAttachments         bool                `json:"hasAttachments"`
-	InternetMessageID      string              `json:"internetMessageId"`
-	From                   *graphEmailAddress  `json:"from"`
-	ToRecipients           []graphRecipient    `json:"toRecipients"`
-	CcRecipients           []graphRecipient    `json:"ccRecipients"`
-	Body                   *graphBody          `json:"body"`
-	InternetMessageHeaders []graphHeader       `json:"internetMessageHeaders"`
-	Attachments            []graphAttachment   `json:"attachments"`
+	ID                     string             `json:"id"`
+	Subject                string             `json:"subject"`
+	ReceivedDateTime       string             `json:"receivedDateTime"`
+	IsRead                 bool               `json:"isRead"`
+	HasAttachments         bool               `json:"hasAttachments"`
+	InternetMessageID      string             `json:"internetMessageId"`
+	From                   *graphEmailAddress `json:"from"`
+	ToRecipients           []graphRecipient   `json:"toRecipients"`
+	CcRecipients           []graphRecipient   `json:"ccRecipients"`
+	Body                   *graphBody         `json:"body"`
+	InternetMessageHeaders []graphHeader      `json:"internetMessageHeaders"`
+	Attachments            []graphAttachment  `json:"attachments"`
 }
 
 type graphEmailAddress struct {

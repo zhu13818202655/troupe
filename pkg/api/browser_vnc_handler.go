@@ -13,9 +13,9 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/browser"
 	"github.com/zhu13818202655/troupe/pkg/sandbox"
-	"github.com/gorilla/mux"
 )
 
 // vncDialerPort is the KasmVNC websocket port inside the container.

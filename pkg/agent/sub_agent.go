@@ -18,11 +18,11 @@ import (
 	"google.golang.org/adk/tool"
 	"google.golang.org/genai"
 
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/pkg/credentials"
 	"github.com/zhu13818202655/troupe/pkg/provider/llmerror"
 	persistentsession "github.com/zhu13818202655/troupe/pkg/session"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/google/uuid"
 )
 
 type eventArchiver interface {

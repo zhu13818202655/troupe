@@ -420,7 +420,7 @@ export async function fetchArtifactContent(path: string, sessionId?: string): Pr
 
 /**
  * Fetch a binary artifact (e.g. MP4) via the download endpoint.
- * Uses teamFetch so X-Astonish-Team / CSRF headers are applied — a bare
+ * Uses teamFetch so X-Troupe-Team / CSRF headers are applied — a bare
  * `<video src={downloadUrl}>` cannot send those headers.
  */
 export async function fetchArtifactBlob(path: string, sessionId?: string): Promise<Blob> {

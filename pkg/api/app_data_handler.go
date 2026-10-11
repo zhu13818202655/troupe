@@ -11,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gorilla/mux"
+	mcpsdk "github.com/modelcontextprotocol/go-sdk/mcp"
 	"github.com/zhu13818202655/troupe/pkg/a2a"
 	"github.com/zhu13818202655/troupe/pkg/a2aclient"
 	"github.com/zhu13818202655/troupe/pkg/apps"
@@ -19,8 +21,6 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/mcp"
 	"github.com/zhu13818202655/troupe/pkg/sandbox"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
-	mcpsdk "github.com/modelcontextprotocol/go-sdk/mcp"
 	"google.golang.org/adk/agent"
 	"google.golang.org/adk/memory"
 	"google.golang.org/adk/session"
@@ -688,7 +688,7 @@ type appMCPToolContext struct {
 func (c *appMCPToolContext) Actions() *session.EventActions       { return &session.EventActions{} }
 func (c *appMCPToolContext) Branch() string                       { return "" }
 func (c *appMCPToolContext) AgentName() string                    { return "app-data-proxy" }
-func (c *appMCPToolContext) AppName() string                      { return "astonish" }
+func (c *appMCPToolContext) AppName() string                      { return "troupe" }
 func (c *appMCPToolContext) Artifacts() agent.Artifacts           { return nil }
 func (c *appMCPToolContext) FunctionCallID() string               { return "" }
 func (c *appMCPToolContext) InvocationID() string                 { return "" }

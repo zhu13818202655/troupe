@@ -1,6 +1,6 @@
 # Building Apps
 
-This guide walks through creating, refining, and saving Generative UI apps in Astonish Studio.
+This guide walks through creating, refining, and saving Generative UI apps in Troupe Studio.
 
 ## Step 1: Describe What You Want
 

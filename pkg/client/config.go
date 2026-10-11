@@ -1,4 +1,4 @@
-// Package client provides an HTTP client for connecting to a remote Astonish
+// Package client provides an HTTP client for connecting to a remote Troupe
 // platform server. It handles authentication (JWT tokens), automatic token
 // refresh, and SSE streaming for chat and flow execution.
 package client
@@ -13,8 +13,8 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
-// RemoteConfig holds the connection settings for a remote Astonish server.
-// Stored in ~/.config/astonish/remote.yaml.
+// RemoteConfig holds the connection settings for a remote Troupe server.
+// Stored in ~/.config/troupe/remote.yaml.
 type RemoteConfig struct {
 	URL       string `yaml:"url"`
 	Org       string `yaml:"org"`

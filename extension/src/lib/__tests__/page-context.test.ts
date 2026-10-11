@@ -35,7 +35,7 @@ describe('page-context', () => {
     expect(markdown).toContain('write Markdown');
     expect(markdown).toContain('The service fails when the cluster is unnamed.');
     expect(markdown).toContain('## Chrome extension page tools');
-    expect(markdown).toContain('same tenant-authorized Astonish skills and server-side tools as Studio chat');
+    expect(markdown).toContain('same tenant-authorized Troupe skills and server-side tools as Studio chat');
     expect(markdown).toContain('unrelated to this page');
     expect(markdown).toContain('search_tools');
     expect(markdown).toContain('page_snapshot');
@@ -44,7 +44,7 @@ describe('page-context', () => {
     expect(markdown).toContain('web_fetch');
     expect(markdown).not.toContain('Do NOT call search_tools');
     expect(markdown).toContain('Never write a page-tool envelope');
-    expect(markdown).toContain('astonish-page-edit');
+    expect(markdown).toContain('troupe-page-edit');
     expect(markdown).toMatch(/enter edit mode/i);
     expect(markdown).toMatch(/cannot be edited/i);
     expect(markdown).not.toContain('Never auto-click GitHub Edit');

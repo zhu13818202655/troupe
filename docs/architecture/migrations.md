@@ -1,6 +1,6 @@
 # Migration Management (Atlas)
 
-Astonish uses [Atlas](https://atlasgo.io/) as a dev-time schema diff tool to generate SQL migration files. At runtime, the existing `migrate()` functions in sqlitestore/pgstore apply migrations unchanged — Atlas is never imported into the binary.
+Troupe uses [Atlas](https://atlasgo.io/) as a dev-time schema diff tool to generate SQL migration files. At runtime, the existing `migrate()` functions in sqlitestore/pgstore apply migrations unchanged — Atlas is never imported into the binary.
 
 ## Architecture
 

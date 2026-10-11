@@ -1,6 +1,7 @@
 package oauthserver
 
 import (
+	"context"
 	"testing"
 
 	"github.com/zhu13818202655/troupe/pkg/store"
@@ -52,5 +53,31 @@ func TestFirstPartyPublicClients(t *testing.T) {
 	}
 	if isFirstPartyPublicClient(&store.OAuthClient{ClientID: "ast_other"}) {
 		t.Fatal("registered clients must not inherit first-party tenant binding")
+	}
+}
+
+func TestLegacyFirstPartyClientIDsResolveToRenamedClients(t *testing.T) {
+	s := &Server{}
+	// Old extension builds sending the legacy client ID must still authenticate.
+	ext, err := s.client(context.Background(), LegacyChromeExtensionClientID)
+	if err != nil || ext == nil {
+		t.Fatalf("legacy chrome extension client lookup failed: %v", err)
+	}
+	if ext.ClientID != ChromeExtensionClientID {
+		t.Fatalf("legacy extension lookup issued client ID %q, want new %q", ext.ClientID, ChromeExtensionClientID)
+	}
+	if !isFirstPartyPublicClient(ext) {
+		t.Fatal("legacy extension client must be treated as first-party public")
+	}
+	cli, err := s.client(context.Background(), LegacyCLIClientID)
+	if err != nil || cli == nil {
+		t.Fatalf("legacy CLI client lookup failed: %v", err)
+	}
+	if cli.ClientID != CLIClientID {
+		t.Fatalf("legacy CLI lookup issued client ID %q, want new %q", cli.ClientID, CLIClientID)
+	}
+	if !isFirstPartyPublicClient(&store.OAuthClient{ClientID: LegacyCLIClientID}) ||
+		!isFirstPartyPublicClient(&store.OAuthClient{ClientID: LegacyChromeExtensionClientID}) {
+		t.Fatal("legacy client IDs must satisfy first-party public client checks")
 	}
 }

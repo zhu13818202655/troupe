@@ -82,7 +82,7 @@ func SetupFlowSandbox(appCfg *config.AppConfig, internalTools []tool.Tool) (*Flo
 // (free-form memory string like "2Gi", CPU count, process cap) into the
 // backend-neutral sandbox.ResourceLimits expected by Backend implementations.
 //
-// Memory parsing accepts the small subset Astonish's user documentation
+// Memory parsing accepts the small subset Troupe's user documentation
 // advertises (pure digits = MiB; suffixes K/M/G/T with optional `i`/`B`
 // swallowed case-insensitively). Anything more exotic falls back to zero
 // — backends already treat zero as "no caller-specified cap" and apply

@@ -120,7 +120,7 @@ func (r *channelPlatformResolver) ResolveChannelUserWithHint(
 		Authentication: execution.AuthMethodChannel,
 		Surface:        execution.SurfaceChannel,
 		Subject:        link.UserID,
-		Issuer:         "astonish",
+		Issuer:         "troupe",
 		OrgSlug:        orgSlug,
 		TeamSlug:       teamSlug,
 		Authenticated:  true,

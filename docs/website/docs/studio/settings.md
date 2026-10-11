@@ -1,6 +1,6 @@
 # Settings
 
-The Settings panel is accessible from the gear icon in Studio's navigation. It provides configuration for all Astonish subsystems.
+The Settings panel is accessible from the gear icon in Studio's navigation. It provides configuration for all Troupe subsystems.
 
 ## Settings Sections
 

@@ -69,7 +69,7 @@ func (db *DockerBackend) EnsureFleetContainer(ctx context.Context, spec sandbox.
 	for k, v := range spec.Labels {
 		labels[k] = v
 	}
-	labels["astonish.fleet_key"] = spec.FleetKey
+	labels["troupe.fleet_key"] = spec.FleetKey
 
 	createSpec := sandbox.SessionSpec{
 		SessionID:  sessionID,

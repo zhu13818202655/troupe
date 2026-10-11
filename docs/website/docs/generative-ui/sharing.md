@@ -1,6 +1,6 @@
 # Sharing & Persistence
 
-Generative UI apps in Astonish are designed for collaboration. Apps start as personal creations and can be progressively shared with your team and organization.
+Generative UI apps in Troupe are designed for collaboration. Apps start as personal creations and can be progressively shared with your team and organization.
 
 ## App Visibility Levels
 

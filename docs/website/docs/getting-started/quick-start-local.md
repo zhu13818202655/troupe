@@ -7,7 +7,7 @@ The local deployment uses SQLite as the platform backend. No external database o
 After [installing](./installation.md) the binary, run the setup wizard:
 
 ```bash
-astonish setup
+troupe setup
 ```
 
 The wizard walks you through:
@@ -17,18 +17,18 @@ The wizard walks you through:
 3. **Admin account** — Set your admin email and password.
 4. **AI provider** — Select a provider (OpenAI, Anthropic, Google Gemini, etc.) and enter your API key.
 
-Configuration is stored in `~/.config/astonish/`.
+Configuration is stored in `~/.config/troupe/`.
 
 ## 2. Start the Daemon
 
 The daemon runs the platform in the background — it serves Studio, manages sessions, handles scheduled flows, and channel integrations:
 
 ```bash
-astonish daemon install
-astonish daemon start
+troupe daemon install
+troupe daemon start
 ```
 
-This registers Astonish as a system service (launchd on macOS, systemd on Linux). The platform is now running.
+This registers Troupe as a system service (launchd on macOS, systemd on Linux). The platform is now running.
 
 ## 3. Open Studio
 
@@ -45,17 +45,17 @@ Log in with the admin email and password you created during setup. Studio gives 
 If you prefer working in the terminal, authenticate the CLI against your local platform:
 
 ```bash
-astonish login http://localhost:9393
+troupe login http://localhost:9393
 ```
 
 Enter your admin email and password when prompted. After login:
 
 ```bash
-astonish chat                                      # New chat session
-astonish chat -p anthropic -m claude-sonnet-4-20250514  # Specific provider/model
-astonish chat --resume                             # Resume last session
-astonish flows list                                # List distilled flows
-astonish flows run <name>                          # Run a saved flow
+troupe chat                                      # New chat session
+troupe chat -p anthropic -m claude-sonnet-4-20250514  # Specific provider/model
+troupe chat --resume                             # Resume last session
+troupe flows list                                # List distilled flows
+troupe flows run <name>                          # Run a saved flow
 ```
 
 ## What You Get

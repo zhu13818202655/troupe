@@ -34,7 +34,7 @@ type LiveSession struct {
 	service session.Service
 	ctx     context.Context
 	base    session.Session
-	agent   *AstonishAgent // Reference for tracking node boundaries
+	agent   *TroupeAgent // Reference for tracking node boundaries
 }
 
 func (s *LiveSession) ID() string {
@@ -52,7 +52,7 @@ func (s *LiveSession) UserID() string {
 func (s *LiveSession) getAppAndUser() (string, string) {
 	appName := s.base.AppName()
 	if appName == "" {
-		appName = "astonish"
+		appName = "troupe"
 	}
 	userID := s.base.UserID()
 	if userID == "" {
@@ -148,7 +148,7 @@ func (s *LiveSession) Events() session.Events {
 	if currentNode == "" {
 		for i := totalLen - 1; i >= 0; i-- {
 			ev := allEvents.At(i)
-			if ev != nil && ev.Author != "" && ev.Author != "user" && ev.Author != "astonish_agent" {
+			if ev != nil && ev.Author != "" && ev.Author != "user" && ev.Author != "troupe_agent" {
 				currentNode = ev.Author
 				break
 			}

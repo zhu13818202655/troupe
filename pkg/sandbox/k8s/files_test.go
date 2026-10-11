@@ -98,7 +98,7 @@ func TestPushFile_EmitsSingleFileTarStream(t *testing.T) {
 	})
 
 	payload := []byte("file contents\n")
-	if err := b.PushFile(context.Background(), "s1", "/etc/astonish/hello.txt", bytes.NewReader(payload), 0o640); err != nil {
+	if err := b.PushFile(context.Background(), "s1", "/etc/troupe/hello.txt", bytes.NewReader(payload), 0o640); err != nil {
 		t.Fatalf("PushFile: %v", err)
 	}
 
@@ -129,10 +129,10 @@ func TestPushFile_EmitsSingleFileTarStream(t *testing.T) {
 		t.Errorf("tar should have exactly one entry, got next err %v", err)
 	}
 
-	// Validate exec'd command: astonish-shell sh -c "mkdir -p '/etc/astonish' && tar -C '/etc/astonish' -xmpf -"
+	// Validate exec'd command: troupe-shell sh -c "mkdir -p '/etc/troupe' && tar -C '/etc/troupe' -xmpf -"
 	q := se.url.Query()
 	cmds := q["command"]
-	want := []string{"/usr/local/bin/astonish-shell", "sh", "-c", "mkdir -p '/etc/astonish' && tar -C '/etc/astonish' -xmpf -"}
+	want := []string{"/usr/local/bin/troupe-shell", "sh", "-c", "mkdir -p '/etc/troupe' && tar -C '/etc/troupe' -xmpf -"}
 	if len(cmds) != len(want) {
 		t.Fatalf("command = %v, want %v", cmds, want)
 	}
@@ -156,7 +156,7 @@ func TestPushFile_RootDirectoryPath(t *testing.T) {
 	}
 	q := se.url.Query()
 	cmds := q["command"]
-	want := []string{"/usr/local/bin/astonish-shell", "sh", "-c", "mkdir -p '/' && tar -C '/' -xmpf -"}
+	want := []string{"/usr/local/bin/troupe-shell", "sh", "-c", "mkdir -p '/' && tar -C '/' -xmpf -"}
 	if len(cmds) != len(want) {
 		t.Fatalf("root dir: command = %v, want %v", cmds, want)
 	}
@@ -206,13 +206,13 @@ func TestPushFile_CreatesParentDirectory(t *testing.T) {
 	})
 
 	// Push to the exact path that triggered the original bug.
-	if err := b.PushFile(context.Background(), "s1", "/tmp/astonish/session-credentials.json", strings.NewReader("{}"), 0o600); err != nil {
+	if err := b.PushFile(context.Background(), "s1", "/tmp/troupe/session-credentials.json", strings.NewReader("{}"), 0o600); err != nil {
 		t.Fatalf("PushFile: %v", err)
 	}
 
 	q := se.url.Query()
 	cmds := q["command"]
-	want := []string{"/usr/local/bin/astonish-shell", "sh", "-c", "mkdir -p '/tmp/astonish' && tar -C '/tmp/astonish' -xmpf -"}
+	want := []string{"/usr/local/bin/troupe-shell", "sh", "-c", "mkdir -p '/tmp/troupe' && tar -C '/tmp/troupe' -xmpf -"}
 	if len(cmds) != len(want) {
 		t.Fatalf("command = %v, want %v", cmds, want)
 	}
@@ -269,7 +269,7 @@ func TestPullFile_StreamsFileContent(t *testing.T) {
 		return nil
 	})
 
-	rc, err := b.PullFile(context.Background(), "s1", "/etc/astonish/hello.txt")
+	rc, err := b.PullFile(context.Background(), "s1", "/etc/troupe/hello.txt")
 	if err != nil {
 		t.Fatalf("PullFile: %v", err)
 	}
@@ -287,7 +287,7 @@ func TestPullFile_StreamsFileContent(t *testing.T) {
 	// Verify command shape.
 	q := se.url.Query()
 	cmds := q["command"]
-	want := []string{"/usr/local/bin/astonish-shell", "tar", "-C", "/etc/astonish", "-cf", "-", "hello.txt"}
+	want := []string{"/usr/local/bin/troupe-shell", "tar", "-C", "/etc/troupe", "-cf", "-", "hello.txt"}
 	if len(cmds) != len(want) {
 		t.Fatalf("command = %v, want %v", cmds, want)
 	}

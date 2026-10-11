@@ -12,9 +12,9 @@ import (
 	"github.com/gomlx/gomlx/backends"
 	"github.com/gomlx/gomlx/backends/simplego"
 
-	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/knights-analytics/hugot"
 	"github.com/knights-analytics/hugot/pipelines"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 const (
@@ -24,7 +24,7 @@ const (
 	DefaultEmbeddingModel = "sentence-transformers/all-MiniLM-L6-v2"
 
 	// embeddingPipelineName is the internal name for the Hugot pipeline.
-	embeddingPipelineName = "astonish_embedding"
+	embeddingPipelineName = "troupe_embedding"
 )
 
 // HugotEmbedder wraps a Hugot FeatureExtractionPipeline to provide
@@ -75,7 +75,7 @@ func patchGoMLXBackendForLowCPU() {
 }
 
 // NewHugotEmbedder creates a local embedding pipeline using Hugot's pure Go backend.
-// modelsDir is where ONNX models are stored (e.g., ~/.config/astonish/models/).
+// modelsDir is where ONNX models are stored (e.g., ~/.config/troupe/models/).
 // The model is downloaded from HuggingFace on first use (~23 MB).
 func NewHugotEmbedder(modelsDir string, debugMode bool) (*HugotEmbedder, error) {
 	// Patch GoMLX backend before creating the session to avoid deadlock on low-CPU systems.

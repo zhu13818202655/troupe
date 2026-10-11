@@ -142,7 +142,7 @@ func TestDiffFromToolStep_PrefersVerificationContext(t *testing.T) {
 	st.NoColor = true
 	vc := "@@ README.md:169\n  168| before\n- 169| Share & Reuse\n- 170| \n  169| ```\n"
 	out := DiffFromToolStep("edit_file", map[string]any{
-		"path":       "/root/astonish/README.md",
+		"path":       "/root/troupe/README.md",
 		"old_string": "Share & Reuse\n\n",
 		"new_string": "",
 	}, map[string]any{
@@ -534,9 +534,9 @@ func TestExpandTabs(t *testing.T) {
 		{"no tabs", "no tabs"},
 		{"\thello", "    hello"},
 		{"\t\thello", "        hello"},
-		{"ab\tcd", "ab  cd"},       // tab at col 2 → pad to col 4
-		{"abc\td", "abc d"},        // tab at col 3 → pad to col 4
-		{"abcd\te", "abcd    e"},   // tab at col 4 → pad to col 8
+		{"ab\tcd", "ab  cd"},     // tab at col 2 → pad to col 4
+		{"abc\td", "abc d"},      // tab at col 3 → pad to col 4
+		{"abcd\te", "abcd    e"}, // tab at col 4 → pad to col 8
 	}
 	for _, tt := range tests {
 		got := expandTabs(tt.in, 4)

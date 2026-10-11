@@ -280,7 +280,6 @@ func TestRunSuiteSetupFailure(t *testing.T) {
 	}
 }
 
-
 func TestRunSuiteMultipleTests(t *testing.T) {
 	t.Parallel()
 	executor := newMockExecutor()
@@ -471,9 +470,9 @@ func TestRunSuiteTeardownAlwaysRuns(t *testing.T) {
 			Type:  "drill",
 			Suite: "myapp",
 			Nodes: []config.Node{{
-				Name: "step1",
-				Type: "tool",
-				Args: map[string]interface{}{"tool": "shell_command", "command": "echo hi"},
+				Name:   "step1",
+				Type:   "tool",
+				Args:   map[string]interface{}{"tool": "shell_command", "command": "echo hi"},
 				Assert: &config.AssertConfig{Type: "contains", Expected: "nope"},
 			}},
 		},
@@ -490,7 +489,6 @@ func TestRunSuiteTeardownAlwaysRuns(t *testing.T) {
 		}
 	}
 }
-
 
 func TestRunSuiteMultiServiceBasic(t *testing.T) {
 	t.Parallel()
@@ -519,9 +517,9 @@ func TestRunSuiteMultiServiceBasic(t *testing.T) {
 			Type:  "drill",
 			Suite: "myapp",
 			Nodes: []config.Node{{
-				Name: "ping",
-				Type: "tool",
-				Args: map[string]interface{}{"tool": "shell_command", "command": "echo ping"},
+				Name:   "ping",
+				Type:   "tool",
+				Args:   map[string]interface{}{"tool": "shell_command", "command": "echo ping"},
 				Assert: &config.AssertConfig{Type: "contains", Expected: "ping"},
 			}},
 		},
@@ -538,7 +536,6 @@ func TestRunSuiteMultiServiceBasic(t *testing.T) {
 		}
 	}
 }
-
 
 func TestRunSuiteMultiServiceSetupFailure(t *testing.T) {
 	t.Parallel()
@@ -560,7 +557,6 @@ func TestRunSuiteMultiServiceSetupFailure(t *testing.T) {
 		t.Errorf("Status = %q, want passed when ignoring service setup", report.Status)
 	}
 }
-
 
 func TestRunSuiteMultiServiceTeardownReverse(t *testing.T) {
 	t.Parallel()
@@ -587,7 +583,6 @@ func TestRunSuiteMultiServiceTeardownReverse(t *testing.T) {
 	}
 }
 
-
 func TestRunSuiteMultiServiceAlwaysTeardownOnTestFailure(t *testing.T) {
 	t.Parallel()
 	executor := newMockExecutor()
@@ -608,9 +603,9 @@ func TestRunSuiteMultiServiceAlwaysTeardownOnTestFailure(t *testing.T) {
 			Type:  "drill",
 			Suite: "myapp",
 			Nodes: []config.Node{{
-				Name: "s",
-				Type: "tool",
-				Args: map[string]interface{}{"tool": "shell_command", "command": "echo bad"},
+				Name:   "s",
+				Type:   "tool",
+				Args:   map[string]interface{}{"tool": "shell_command", "command": "echo bad"},
 				Assert: &config.AssertConfig{Type: "contains", Expected: "good"},
 			}},
 		},
@@ -626,7 +621,6 @@ func TestRunSuiteMultiServiceAlwaysTeardownOnTestFailure(t *testing.T) {
 		}
 	}
 }
-
 
 func TestResolveExecutionOrder(t *testing.T) {
 	t.Parallel()

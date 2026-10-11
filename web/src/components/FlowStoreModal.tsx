@@ -414,7 +414,7 @@ export default function FlowStoreModal({ isOpen, onClose, onInstall }: FlowStore
                   </button>
                 </div>
                 <p className="text-xs mt-2" style={{ color: 'var(--text-secondary)' }}>
-                  Just enter "owner" to add owner/astonish-flows, or "owner/repo" for custom repos
+                  Just enter "owner" to add owner/troupe-flows, or "owner/repo" for custom repos
                 </p>
               </div>
 

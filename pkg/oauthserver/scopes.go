@@ -21,7 +21,7 @@ type ScopeDefinition struct {
 var capabilityScopes = []ScopeDefinition{
 	{Value: ScopeToolExecute, Label: "MCP access", Description: "Allows access to the protected MCP tool endpoint."},
 	{Value: ScopeA2A, Label: "A2A access", Description: "Allows access to the inbound A2A protocol endpoint."},
-	{Value: ScopeChat, Label: "Chat access", Description: "Allows conversational access to Astonish chat."},
+	{Value: ScopeChat, Label: "Chat access", Description: "Allows conversational access to Troupe chat."},
 }
 
 // ScopeDefinitions returns the supported client-grant catalog in display and

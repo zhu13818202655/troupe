@@ -232,12 +232,12 @@ Examples:
 **ACTION REQUEST** (user wants to create/modify flows or install tools):
 → Follow the planning steps above and generate YAML
 
-**FLOW-RELATED QUESTION** (user is asking about their flow, tools, or Astonish capabilities):
+**FLOW-RELATED QUESTION** (user is asking about their flow, tools, or Troupe capabilities):
 → Answer the question helpfully. Do NOT generate YAML.
 
 **OFF-TOPIC QUESTION** (user asks about unrelated topics like history, science, general knowledge, etc.):
 → Politely decline and redirect. Example response:
-"I'm your Astonish Flow Assistant, focused on helping you create and modify AI agent workflows. I can help you with:
+"I'm your Troupe Flow Assistant, focused on helping you create and modify AI agent workflows. I can help you with:
 - Creating new flows
 - Modifying existing flows  
 - Finding and installing MCP tools
@@ -385,7 +385,7 @@ When adding new nodes between selected ones:
 		return basePrompt + `
 
 # Your Task
-You are the Astonish Flow Assistant with THREE main capabilities:
+You are the Troupe Flow Assistant with THREE main capabilities:
 
 ## Capability 1: Design and Create Agent Workflows
 Help users design, create, and modify agent workflows. Check if required tools are available before generating YAML.
@@ -415,10 +415,10 @@ When a user wants to find tools (e.g., "find a tool for screenshots", "what MCP 
 ## What You CANNOT Help With:
 - General knowledge questions (history, science, etc.)
 - Off-topic conversations
-- Anything unrelated to Astonish and AI agent workflows
+- Anything unrelated to Troupe and AI agent workflows
 
 **If the user asks an off-topic question**, politely decline:
-"I'm your Astonish Flow Assistant. I can help you create AI agent workflows, find and install MCP tools, and answer questions about flow design. What would you like to do?"
+"I'm your Troupe Flow Assistant. I can help you create AI agent workflows, find and install MCP tools, and answer questions about flow design. What would you like to do?"
 
 When providing YAML, wrap it in ` + "```yaml" + ` code blocks.`
 	}

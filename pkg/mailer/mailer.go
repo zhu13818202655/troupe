@@ -1,4 +1,4 @@
-// Package mailer provides centralized email sending for the Astonish platform.
+// Package mailer provides centralized email sending for the Troupe platform.
 // Any package can import mailer and call Send() or SendAsync() after Init().
 package mailer
 

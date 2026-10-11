@@ -45,7 +45,7 @@ func (b staticBackend) RespondSubAgentAuth(string) bool { return false }
 func TestViewIncludesHeaderAsFirstLine(t *testing.T) {
 	m := newModel(context.Background(), Config{
 		Backend: staticBackend{info: backend.Info{
-			ServerURL: "https://astonish.example.com",
+			ServerURL: "https://troupe.example.com",
 			User:      "user@example.com",
 			Usage:     &events.Usage{Input: 1200, Output: 3400, Total: 4600},
 		}},
@@ -60,7 +60,7 @@ func TestViewIncludesHeaderAsFirstLine(t *testing.T) {
 	out := stripANSI(m.View().Content)
 	lines := strings.Split(out, "\n")
 	firstLine := lines[0]
-	if !strings.Contains(firstLine, "Astonish · https://astonish.example.com · user@example.com") {
+	if !strings.Contains(firstLine, "Troupe · https://troupe.example.com · user@example.com") {
 		t.Fatalf("first line does not contain header identity: %q\nfull view:\n%s", firstLine, out)
 	}
 	if !strings.Contains(firstLine, "Usage 4.6k") {

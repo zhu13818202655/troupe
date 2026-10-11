@@ -15,7 +15,7 @@ import (
 
 const (
 	githubAPIBase = "https://api.github.com"
-	userAgent     = "astonish-flowstore/1.0"
+	userAgent     = "troupe-flowstore/1.0"
 )
 
 // GitHubFile represents a file from the GitHub API

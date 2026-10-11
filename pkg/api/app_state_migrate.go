@@ -185,7 +185,7 @@ func parseColumnDefs(body string) []columnDef {
 }
 
 // parseOneColumn extracts the column name and its type+constraints from a single
-// column definition string like: `name TEXT NOT NULL DEFAULT ''`
+// column definition string like: `name TEXT NOT NULL DEFAULT ”`
 func parseOneColumn(def string) columnDef {
 	def = strings.TrimSpace(def)
 	if def == "" {

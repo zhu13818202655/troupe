@@ -152,7 +152,7 @@ func handleLinkUserChannel(w http.ResponseWriter, r *http.Request) {
 		DisplayName: req.DisplayName,
 		Enabled:     true,
 		Verified:    false,
-		CreatedAt:       time.Now(),
+		CreatedAt:   time.Now(),
 	}
 
 	if err := pg.UserChannels().Link(r.Context(), ch); err != nil {

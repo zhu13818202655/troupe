@@ -292,12 +292,12 @@ export XAUTHORITY=/tmp/.Xauthority
 touch /tmp/.Xauthority
 mkdir -p /tmp/.X11-unix
 if ! proc_running 'Xkasmvnc.*:%s'; then
-  mkdir -p /tmp/astonish-kasmvnc/.vnc
-  cat > /tmp/astonish-kasmvnc/.vnc/kasmvnc.yaml << 'KASMCFG'
+  mkdir -p /tmp/troupe-kasmvnc/.vnc
+  cat > /tmp/troupe-kasmvnc/.vnc/kasmvnc.yaml << 'KASMCFG'
 %s
 KASMCFG
   VNC_LOG=/tmp/kasmvnc_start.log
-  HOME=/tmp/astonish-kasmvnc setsid Xkasmvnc :%s \
+  HOME=/tmp/troupe-kasmvnc setsid Xkasmvnc :%s \
     -geometry %dx%d \
     -depth 24 \
     -rfbport 5900 \

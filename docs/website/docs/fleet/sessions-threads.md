@@ -53,8 +53,8 @@ From the CLI:
 
 ```bash
 # List sessions for a plan
-astonish fleet sessions --plan <plan-id>
+troupe fleet sessions --plan <plan-id>
 
 # View messages in a session
-astonish fleet session show <session-id>
+troupe fleet session show <session-id>
 ```

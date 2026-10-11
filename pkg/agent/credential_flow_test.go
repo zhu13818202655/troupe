@@ -13,7 +13,7 @@ import (
 // --- Test: resolveCredentialVarsInRawContext ---
 
 func TestResolveCredentialVarsInRawContext_BasicResolution(t *testing.T) {
-	a := &AstonishAgent{}
+	a := &TroupeAgent{}
 	state := NewMockState()
 	state.Data["credential_name"] = "openstack"
 
@@ -35,7 +35,7 @@ APP_CRED_SECRET="{{CREDENTIAL:{credential_name}:password}}"`
 }
 
 func TestResolveCredentialVarsInRawContext_PreservesShellSyntax(t *testing.T) {
-	a := &AstonishAgent{}
+	a := &TroupeAgent{}
 	state := NewMockState()
 	state.Data["credential_name"] = "openstack"
 
@@ -66,7 +66,7 @@ curl -s -H "X-Auth-Token: $TOKEN" "$NOVA_URL/servers/detail"`
 }
 
 func TestResolveCredentialVarsInRawContext_UnresolvableVarLeftAsIs(t *testing.T) {
-	a := &AstonishAgent{}
+	a := &TroupeAgent{}
 	state := NewMockState()
 	// credential_name NOT in state
 
@@ -81,7 +81,7 @@ func TestResolveCredentialVarsInRawContext_UnresolvableVarLeftAsIs(t *testing.T)
 }
 
 func TestResolveCredentialVarsInRawContext_AlreadyResolved(t *testing.T) {
-	a := &AstonishAgent{}
+	a := &TroupeAgent{}
 	state := NewMockState()
 	state.Data["credential_name"] = "openstack"
 
@@ -99,7 +99,7 @@ func TestResolveCredentialVarsInRawContext_AlreadyResolved(t *testing.T) {
 // --- Test: renderString preserves credential placeholders ---
 
 func TestRenderString_PreservesCredentialPlaceholders(t *testing.T) {
-	a := &AstonishAgent{}
+	a := &TroupeAgent{}
 	state := NewMockState()
 	state.Data["credential_name"] = "openstack"
 
@@ -117,7 +117,7 @@ func TestRenderString_PreservesCredentialPlaceholders(t *testing.T) {
 }
 
 func TestRenderString_ResolvesStateVarsAndPreservesCredentials(t *testing.T) {
-	a := &AstonishAgent{}
+	a := &TroupeAgent{}
 	state := NewMockState()
 	state.Data["credential_name"] = "openstack"
 
@@ -137,7 +137,7 @@ func TestRenderString_ResolvesStateVarsAndPreservesCredentials(t *testing.T) {
 }
 
 func TestRenderString_MultipleCredentialPlaceholders(t *testing.T) {
-	a := &AstonishAgent{}
+	a := &TroupeAgent{}
 	state := NewMockState()
 
 	tmpl := `ID={{CREDENTIAL:myapp:username}} SECRET={{CREDENTIAL:myapp:password}} TOKEN={{CREDENTIAL:other:token}}`
@@ -158,7 +158,7 @@ func TestRenderString_MultipleCredentialPlaceholders(t *testing.T) {
 // --- Test: Full instruction construction pipeline (simulates executeLLMNodeAttempt) ---
 
 func TestFullInstructionPipeline_OpenStackFlow(t *testing.T) {
-	a := &AstonishAgent{}
+	a := &TroupeAgent{}
 	state := NewMockState()
 	state.Data["credential_name"] = "openstack"
 

@@ -48,7 +48,7 @@ func RenderCharmFlow(cfg *config.AgentConfig) {
 		Foreground(lipgloss.Color("255")).
 		Background(lipgloss.Color("63")).
 		Padding(0, 1).
-		Render(" 🔮 ASTONISH FLOW: " + cfg.Description + " ")
+		Render(" 🔮 TROUPE FLOW: " + cfg.Description + " ")
 	fmt.Println(title)
 	fmt.Println()
 

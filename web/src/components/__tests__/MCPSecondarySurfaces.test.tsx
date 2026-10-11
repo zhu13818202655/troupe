@@ -67,7 +67,7 @@ describe('MCPStoreModal', () => {
           servers: [{
             mcpId: 'github/server',
             name: 'GitHub Tools',
-            author: 'astonish',
+            author: 'troupe',
             description: 'GitHub integration tools',
             githubStars: 12,
             githubUrl: 'https://example.com/docs',
@@ -195,7 +195,7 @@ describe('MCPInspector', () => {
               error: 'Failed to list tools: npm ECONNRESET',
               network_authorization: {
                 required: true,
-                message: 'This MCP server needs outbound network access before Astonish can install or start it.',
+                message: 'This MCP server needs outbound network access before Troupe can install or start it.',
                 denials: [{ host: 'registry.npmjs.org', port: 443, broader_pattern: '*.npmjs.org' }],
               },
             }),

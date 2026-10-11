@@ -113,7 +113,7 @@ func (c *Client) doWithHeaders(t *testing.T, method, path string, body any, time
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+c.token)
-	req.Header.Set("X-Astonish-Team", c.teamSlug)
+	req.Header.Set("X-Troupe-Team", c.teamSlug)
 	for k, v := range headers {
 		req.Header.Set(k, v)
 	}

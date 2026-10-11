@@ -1,11 +1,11 @@
 ---
 layout: home
 
-title: Astonish
+title: Troupe
 titleTemplate: false
 
 hero:
-  name: Astonish
+  name: Troupe
   text: AI Agent Platform That Makes Your Whole Team Smarter
   tagline: When one person solves a problem, everyone benefits. Multi-tenant. Three-tier memory. Enterprise-ready. Built in Go.
   actions:
@@ -17,7 +17,7 @@ hero:
       link: https://github.com/zhu13818202655/troupe
   image:
     src: /logo_icon_background.svg
-    alt: Astonish
+    alt: Troupe
 
 features:
   - icon:

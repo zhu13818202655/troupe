@@ -89,7 +89,7 @@ func ListAvailableFleets() string {
 	}
 	summaries := fleetRegistryVar.ListFleets()
 	if len(summaries) == 0 {
-		return "No fleets available. Add fleet configurations to `~/.config/astonish/fleets/`."
+		return "No fleets available. Add fleet configurations to `~/.config/troupe/fleets/`."
 	}
 	var sb strings.Builder
 	sb.WriteString("**Available Fleets:**\n\n")
@@ -97,7 +97,7 @@ func ListAvailableFleets() string {
 		sb.WriteString(fmt.Sprintf("- **%s** (`%s`) — %s\n", s.Name, s.Key, s.Description))
 		sb.WriteString(fmt.Sprintf("  Agents: %s\n", strings.Join(s.AgentNames, ", ")))
 	}
-	sb.WriteString("\nFleet sessions are started via the Studio UI or CLI (`astonish fleet start`).\n")
+	sb.WriteString("\nFleet sessions are started via the Studio UI or CLI (`troupe fleet start`).\n")
 	return sb.String()
 }
 
@@ -118,6 +118,6 @@ func ListAvailableFleetsFromContext(ctx context.Context) string {
 		sb.WriteString(fmt.Sprintf("- **%s** (`%s`) — %s\n", s.Name, s.Key, s.Description))
 		sb.WriteString(fmt.Sprintf("  Agents: %s\n", strings.Join(s.AgentNames, ", ")))
 	}
-	sb.WriteString("\nFleet sessions are started via the Studio UI or CLI (`astonish fleet start`).\n")
+	sb.WriteString("\nFleet sessions are started via the Studio UI or CLI (`troupe fleet start`).\n")
 	return sb.String()
 }

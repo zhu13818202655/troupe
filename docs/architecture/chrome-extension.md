@@ -4,14 +4,14 @@ Manifest V3 side panel that chats with Studio about the current browser tab. v1 
 
 ## Side panel UX
 
-Clicking the Astonish toolbar icon opens Chrome's native right-hand `chrome.sidePanel` (minimum Chrome 114). The panel is a small local chat client:
+Clicking the Troupe toolbar icon opens Chrome's native right-hand `chrome.sidePanel` (minimum Chrome 114). The panel is a small local chat client:
 
 - Logged out: Studio URL and Sign in. Sign-in opens an OAuth Authorization Code + PKCE flow in the browser.
 - Logged in: session picker (extension-created chats only), tab title/URL line, transcript, optional Apply-to-page bar, composer.
 
 It does **not** iframe Studio Chat and does **not** import `web/src/components/StudioChat.tsx`. Approvals render as a notice plus a "Finish this in Studio" link to the configured Studio URL.
 
-Follow-up messages reuse the `sessionId` from the SSE `session` event (`data.sessionId`, fallback `data.id`). That id is stored in `chrome.storage.local` (`astonishExtensionChat`) together with the list of sessions **this extension created**. Studio Chat still lists every session; the panel picker is filtered client-side to extension ids only. **New** clears the current id so the next Send mints a fresh chat. Reloading the panel restores the last-used extension session and its history.
+Follow-up messages reuse the `sessionId` from the SSE `session` event (`data.sessionId`, fallback `data.id`). That id is stored in `chrome.storage.local` (`troupeExtensionChat`) together with the list of sessions **this extension created**. Studio Chat still lists every session; the panel picker is filtered client-side to extension ids only. **New** clears the current id so the next Send mints a fresh chat. Reloading the panel restores the last-used extension session and its history.
 
 ## Three contexts
 
@@ -25,19 +25,19 @@ There is no install-time `content_scripts.matches` for `<all_urls>`. Injection h
 
 ## Auth: OAuth Authorization Code + PKCE
 
-Studio Chat in the SPA uses an HttpOnly `SameSite=Strict` cookie (`astonish_access`). A `chrome-extension://` origin cannot send that cookie.
+Studio Chat in the SPA uses an HttpOnly `SameSite=Strict` cookie (`troupe_access`). A `chrome-extension://` origin cannot send that cookie.
 
-The extension authenticates via OAuth using the built-in `astonish-chrome-extension` first-party public client:
+The extension authenticates via OAuth using the built-in `troupe-chrome-extension` first-party public client:
 
-- User clicks Sign in → extension opens a tab to `/oauth/authorize` with S256 PKCE challenge, `client_id=astonish-chrome-extension`, and `redirect_uri=https://<extension-id>.chromiumapp.org/oauth2`
+- User clicks Sign in → extension opens a tab to `/oauth/authorize` with S256 PKCE challenge, `client_id=troupe-chrome-extension`, and `redirect_uri=https://<extension-id>.chromiumapp.org/oauth2`
 - User authenticates (built-in or OIDC) and the authorization server redirects back to the `chrome-extension://` redirect URI with an authorization code
 - Extension exchanges code + verifier at `/oauth/token` for RS256 access + refresh tokens
 - Persist tokens in `chrome.storage.local` (refresh) and `chrome.storage.session` (live access token)
-- `Authorization: Bearer <access>` plus `X-Astonish-Team` when a team slug is set
+- `Authorization: Bearer <access>` plus `X-Troupe-Team` when a team slug is set
 - On 401, refresh via `/oauth/token` with `grant_type=refresh_token` and retry once
 - The extension's allowed scopes are `chat` and `tool:execute` (page tools need tool execution)
 
-It never reads `astonish_access` / `astonish_refresh` cookies.
+It never reads `troupe_access` / `troupe_refresh` cookies.
 
 Before the first fetch it requests `optional_host_permissions` for the Studio origin via `chrome.permissions.request`.
 
@@ -58,7 +58,7 @@ The model is instructed **not** to call `search_tools`, `describe_tools`, `brows
 To inspect or click the open page the model emits fenced JSON:
 
 ````markdown
-```astonish-page-tool
+```troupe-page-tool
 {"name":"page_snapshot"}
 ```
 ````
@@ -137,7 +137,7 @@ When `page_snapshot` runs, the service worker sends `MSG_FRAME_TOOL` to both the
 
 ## Confirmed apply
 
-The model may propose a page rewrite in a fenced block with language id `astonish-page-edit` (`PAGE_EDIT_FENCE`). The panel parses the latest agent text (`extractPageEdit`) and shows **Apply** / **Dismiss**. DOM writes never run on stream complete.
+The model may propose a page rewrite in a fenced block with language id `troupe-page-edit` (`PAGE_EDIT_FENCE`). The panel parses the latest agent text (`extractPageEdit`) and shows **Apply** / **Dismiss**. DOM writes never run on stream complete.
 
 On Apply, `MSG_APPLY { text, mode: "replace" }` goes to the content script, which only ever writes into an **already-open** editor:
 

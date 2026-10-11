@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gorilla/mux"
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 
 	"github.com/zhu13818202655/troupe/pkg/fleet"
 	"github.com/zhu13818202655/troupe/pkg/store"
@@ -557,9 +557,9 @@ func GetFleetSetupProfileStepHandler(w http.ResponseWriter, r *http.Request) {
 	groups := fleet.StepToolGroups(profile, step, collected)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]any{
-		"step":                step,
-		"tools":               tools,
-		"pinned_tool_groups":  groups,
-		"resolved_tool_refs":  fleet.SetupToolCatalog(),
+		"step":               step,
+		"tools":              tools,
+		"pinned_tool_groups": groups,
+		"resolved_tool_refs": fleet.SetupToolCatalog(),
 	})
 }

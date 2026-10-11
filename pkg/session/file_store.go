@@ -21,7 +21,7 @@ import (
 // FileStore implements ADK's session.Service interface with file-based persistence.
 // Sessions are stored as JSONL transcript files with a JSON metadata index.
 type FileStore struct {
-	baseDir     string // e.g. ~/.config/astonish/sessions/
+	baseDir     string // e.g. ~/.config/troupe/sessions/
 	index       *SessionIndex
 	threadIndex *ThreadIndex
 	mu          sync.RWMutex
@@ -47,7 +47,11 @@ type stateMap = map[string]any
 // StateKeyParentID is the session state key used to pass a parent session ID
 // during session creation. FileStore.Create() extracts this key from the
 // initial state and stores it in the index metadata, then removes it from state.
-const StateKeyParentID = "_astonish_parent_id"
+const StateKeyParentID = "_troupe_parent_id"
+
+// legacyStateKeyParentID is the pre-rename state key. Sessions created before
+// the rename may still carry the old key, so it is accepted as a fallback.
+const legacyStateKeyParentID = "_astonish_parent_id"
 
 // NewFileStore creates a file-based session store at the given directory.
 func NewFileStore(baseDir string) (*FileStore, error) {
@@ -127,11 +131,15 @@ func (s *FileStore) Create(ctx context.Context, req *adksession.CreateRequest) (
 		state = make(stateMap)
 	}
 
-	// Extract parent ID from state if present (used for sub-agent sessions)
+	// Extract parent ID from state if present (used for sub-agent sessions).
+	// Falls back to the legacy pre-rename key for old in-flight callers.
 	var parentID string
 	if pid, ok := state[StateKeyParentID].(string); ok && pid != "" {
 		parentID = pid
 		delete(state, StateKeyParentID)
+	} else if pid, ok := state[legacyStateKeyParentID].(string); ok && pid != "" {
+		parentID = pid
+		delete(state, legacyStateKeyParentID)
 	}
 
 	// Extract and store scoped state deltas

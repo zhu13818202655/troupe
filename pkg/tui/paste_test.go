@@ -637,7 +637,7 @@ func TestPastePlaceholderDeleteKeysRemoveWholeToken(t *testing.T) {
 		},
 		{
 			name: "ctrl+w at end",
-			key: 'w', mod: tea.ModCtrl,
+			key:  'w', mod: tea.ModCtrl,
 			setup: func(m *model) {
 				m.ta.SetValue("before " + ph)
 				m.ta.CursorEnd()
@@ -646,7 +646,7 @@ func TestPastePlaceholderDeleteKeysRemoveWholeToken(t *testing.T) {
 		},
 		{
 			name: "ctrl+w alone",
-			key: 'w', mod: tea.ModCtrl,
+			key:  'w', mod: tea.ModCtrl,
 			setup: func(m *model) {
 				m.ta.SetValue(ph)
 				m.ta.CursorEnd()

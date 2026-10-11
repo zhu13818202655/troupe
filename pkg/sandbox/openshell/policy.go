@@ -8,7 +8,7 @@ import (
 )
 
 // defaultSandboxPolicy returns the SandboxPolicySpec applied to every sandbox
-// created by the Astonish backend.
+// created by the Troupe backend.
 //
 // Key design choices:
 //   - Landlock compatibility defaults to "best_effort" so the supervisor
@@ -42,26 +42,26 @@ func defaultSandboxPolicy(cfg config.SandboxOpenShellConfig) *SandboxPolicySpec 
 		},
 		Filesystem: &FilesystemSpec{
 			IncludeWorkdir: true,
-		ReadOnly: []string{
-			"/usr",
-			"/bin",
-			"/sbin",
-			"/lib",
-			"/lib64",
-			"/etc",
-			"/opt",
-			// Device nodes needed by standard library functions.
-			"/dev/urandom",
-		},
-		ReadWrite: []string{
-			"/sandbox",
-			"/tmp",
-			"/var/tmp",
-			"/home",
-			"/run",
-			// /dev/null must be read-write — shell redirections (>/dev/null)
-			// require write access, not just read.
-			"/dev/null",
+			ReadOnly: []string{
+				"/usr",
+				"/bin",
+				"/sbin",
+				"/lib",
+				"/lib64",
+				"/etc",
+				"/opt",
+				// Device nodes needed by standard library functions.
+				"/dev/urandom",
+			},
+			ReadWrite: []string{
+				"/sandbox",
+				"/tmp",
+				"/var/tmp",
+				"/home",
+				"/run",
+				// /dev/null must be read-write — shell redirections (>/dev/null)
+				// require write access, not just read.
+				"/dev/null",
 				// PTY device nodes — required for shell_command's interactive
 				// terminal support (password prompts, interactive CLIs).
 				// The supervisor pre-opens PathFds for these paths BEFORE
@@ -102,7 +102,7 @@ func defaultSandboxPolicy(cfg config.SandboxOpenShellConfig) *SandboxPolicySpec 
 	if len(endpoints) > 0 {
 		policy.NetworkPolicies = map[string]*NetworkPolicySpec{
 			"egress": {
-				Name:      "astonish-egress",
+				Name:      "troupe-egress",
 				Endpoints: endpoints,
 				Binaries:  []string{"/**"},
 			},
@@ -113,7 +113,7 @@ func defaultSandboxPolicy(cfg config.SandboxOpenShellConfig) *SandboxPolicySpec 
 }
 
 // mergeSessionNetworkAllows appends SessionSpec allow endpoints into the
-// astonish-egress rule (creating the rule if presets produced none).
+// troupe-egress rule (creating the rule if presets produced none).
 func mergeSessionNetworkAllows(policy *SandboxPolicySpec, extra []sandbox.NetworkAllowEndpoint) *SandboxPolicySpec {
 	if policy == nil || len(extra) == 0 {
 		return policy
@@ -134,7 +134,7 @@ func mergeSessionNetworkAllows(policy *SandboxPolicySpec, extra []sandbox.Networ
 	egress, ok := policy.NetworkPolicies["egress"]
 	if !ok || egress == nil {
 		egress = &NetworkPolicySpec{
-			Name:     "astonish-egress",
+			Name:     "troupe-egress",
 			Binaries: []string{"/**"},
 		}
 		policy.NetworkPolicies["egress"] = egress

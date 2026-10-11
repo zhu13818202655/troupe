@@ -13,7 +13,7 @@ const (
 	GrantClientCredentials = "client_credentials"
 )
 
-// Config controls Astonish's OAuth issuer. Issuer and Resource must be stable,
+// Config controls Troupe's OAuth issuer. Issuer and Resource must be stable,
 // externally reachable HTTPS URLs outside explicit development environments.
 type Config struct {
 	Issuer          string
@@ -24,7 +24,7 @@ type Config struct {
 	Development     bool
 	// LoginPath is the same-origin Studio route used when an authorization
 	// request needs interactive platform authentication.
-	LoginPath       string
+	LoginPath string
 }
 
 func (c Config) normalized() (Config, error) {

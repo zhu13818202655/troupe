@@ -34,7 +34,7 @@ func BuildSystemPromptSection(
 	sb.WriteString("other and to the customer using @mentions. The customer is a first-class participant.\n\n")
 
 	sb.WriteString("**Starting a fleet:**\n")
-	sb.WriteString("Fleets are started via the Studio UI or CLI (`astonish fleet start`).\n")
+	sb.WriteString("Fleets are started via the Studio UI or CLI (`troupe fleet start`).\n")
 	sb.WriteString("They create a dedicated session where agents and the customer collaborate.\n\n")
 
 	// List available fleets

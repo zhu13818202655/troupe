@@ -3,7 +3,7 @@ package themes
 // This file defines the lossless template intermediate representation (IR) that
 // a high-fidelity .pptx import produces. It is modeled on the pptx-html pilot's
 // src/model/types.ts (TemplateModel / LayoutModel / ChromeObject / Placeholder /
-// MediaAsset / Background / TextStyle) but expressed in Astonish's canvas units:
+// MediaAsset / Background / TextStyle) but expressed in Troupe's canvas units:
 // logical pixels on the fixed 1920x1080 canvas and #RRGGBB colors, rather than
 // the pilot's inches + bare-hex.
 //

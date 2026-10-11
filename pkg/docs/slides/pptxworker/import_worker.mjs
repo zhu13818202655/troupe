@@ -1198,7 +1198,7 @@ try {
     ok(scene)
   } else {
     // -----------------------------------------------------------------------
-    // Template mode (Option A): ONE Astonish template per .pptx that exposes the
+    // Template mode (Option A): ONE Troupe template per .pptx that exposes the
     // deck's LAYOUTS as classified, human-labeled, selectable variants. A single
     // slide master + single theme = one design system, so we do not split into
     // multiple templates. Each of the N slide layouts becomes an archetype whose

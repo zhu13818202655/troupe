@@ -32,8 +32,8 @@ func maximalCodeBuilder() *CodeSystemPromptBuilder {
 		RelevantKnowledge:   "**infra/portainer.md** (53%)\nPortainer runs at 192.168.1.223:9000",
 		RelevantTools:       "**browser** group:\n  - `browser_take_screenshot` — Capture a screenshot\n",
 		Identity: &AgentIdentity{
-			Name:     "Astonish Bot",
-			Username: "astonish_ai",
+			Name:     "Troupe Bot",
+			Username: "troupe_ai",
 			Email:    "bot@example.com",
 			Bio:      "An AI assistant",
 			Website:  "https://example.com",
@@ -332,14 +332,14 @@ func TestCodeSystemPromptContracts_NoCodeSectionsInChatMode(t *testing.T) {
 }
 
 // TestCodeSystemPromptContracts_NoGenerativeUISection verifies that the code-mode
-// prompt does NOT contain the "Visual Apps (Generative UI)" section. astonish-app
-// fences are Studio-only; exposing this section in Astonish Code causes the
-// coding agent to generate astonish-app output for plain "build an app" requests.
+// prompt does NOT contain the "Visual Apps (Generative UI)" section. troupe-app
+// fences are Studio-only; exposing this section in Troupe Code causes the
+// coding agent to generate troupe-app output for plain "build an app" requests.
 func TestCodeSystemPromptContracts_NoGenerativeUISection(t *testing.T) {
 	prompt := maximalCodeBuilder().Build()
 
 	assertNotContains(t, prompt, "## Visual Apps (Generative UI)", "Visual Apps section must NOT appear in code-mode prompt")
-	assertNotContains(t, prompt, "astonish-app code fence", "astonish-app fence instruction must NOT appear in code-mode prompt")
+	assertNotContains(t, prompt, "troupe-app code fence", "troupe-app fence instruction must NOT appear in code-mode prompt")
 	assertNotContains(t, prompt, "generative-ui", "generative-ui skill must NOT be referenced in code-mode prompt")
 }
 

@@ -186,7 +186,7 @@ func buildPerplexitySearchPrompt(args PerplexityWebSearchArgs, defaultContextSiz
 	}
 
 	var sb strings.Builder
-	sb.WriteString("You are being used as a web search tool inside Astonish. Perform live web research for the user query, then return only useful search data for another model to consume.\n")
+	sb.WriteString("You are being used as a web search tool inside Troupe. Perform live web research for the user query, then return only useful search data for another model to consume.\n")
 	sb.WriteString("Use web search/grounding capabilities available to this Sonar/Perplexity model. Do not answer from memory when current web evidence is needed.\n")
 	sb.WriteString("Return a concise answer followed by a Sources section. Include one source per line with title and URL.\n")
 	sb.WriteString(fmt.Sprintf("Maximum sources: %d. Detail level: %s. Search mode: %s. Search context size: %s.\n", maxResults, detail, mode, contextSize))

@@ -6,7 +6,7 @@ Common issues organized by category with symptoms, causes, and solutions.
 
 ### Binary not found after install
 
-**Symptom:** `astonish: command not found`
+**Symptom:** `troupe: command not found`
 
 **Solution:** Ensure the install directory is in your `PATH`:
 ```bash
@@ -28,8 +28,8 @@ Add this to your shell profile (`~/.bashrc`, `~/.zshrc`) for persistence.
 **Symptom:** `401 Unauthorized` or `Invalid API key`
 
 **Solution:**
-1. Verify the key in `astonish status`
-2. Re-enter with `astonish setup` or edit `~/.config/astonish/config.yaml`
+1. Verify the key in `troupe status`
+2. Re-enter with `troupe setup` or edit `~/.config/troupe/config.yaml`
 3. Check the key hasn't expired or been revoked in your provider dashboard
 
 ### Timeout errors
@@ -51,16 +51,16 @@ Add this to your shell profile (`~/.bashrc`, `~/.zshrc`) for persistence.
 
 ### Daemon won't start
 
-**Symptom:** `astonish daemon start` exits immediately
+**Symptom:** `troupe daemon start` exits immediately
 
 **Solution:**
 ```bash
 # Check for port conflicts
-astonish daemon logs
+troupe daemon logs
 
 # Kill stale process
-astonish daemon stop --force
-astonish daemon start
+troupe daemon stop --force
+troupe daemon start
 ```
 
 ### Channels not connecting
@@ -82,8 +82,8 @@ astonish daemon start
 **Solution:**
 1. Verify PostgreSQL is running: `pg_isready -h localhost -p 5432`
 2. Check DSN in config matches actual database credentials
-3. Ensure the database exists: `psql -l | grep astonish`
-4. Check `pg_hba.conf` allows connections from the Astonish host
+3. Ensure the database exists: `psql -l | grep troupe`
+4. Check `pg_hba.conf` allows connections from the Troupe host
 
 ### Migration errors
 
@@ -92,10 +92,10 @@ astonish daemon start
 **Solution:**
 ```bash
 # Check current migration state
-astonish platform migrate status
+troupe platform migrate status
 
 # Retry migrations
-astonish platform migrate
+troupe platform migrate
 ```
 
 If a migration is stuck, check PostgreSQL logs for lock contention or permission issues.
@@ -106,27 +106,27 @@ If a migration is stuck, check PostgreSQL logs for lock contention or permission
 
 **Solution:**
 - Clear browser cookies and retry
-- Re-authenticate: `astonish login`
-- Check that the user exists in the org: `astonish platform org members --org <name>`
+- Re-authenticate: `troupe login`
+- Check that the user exists in the org: `troupe platform org members --org <name>`
 
 ### Org membership issues
 
 **Symptom:** `access denied` or content not visible
 
 **Solution:**
-- Verify membership: `astonish platform org members --org <name>`
+- Verify membership: `troupe platform org members --org <name>`
 - Check team assignment: user must be in a team to access team-scoped resources
-- Ensure RLS policies are applied: `astonish platform migrate status`
+- Ensure RLS policies are applied: `troupe platform migrate status`
 
 ## Channels
 
 ### Telegram bot not responding
 
 **Solution:**
-1. Confirm daemon is running: `astonish daemon status`
+1. Confirm daemon is running: `troupe daemon status`
 2. Check allowlist includes your user ID
 3. Verify bot token: `curl https://api.telegram.org/bot<TOKEN>/getMe`
-4. Check daemon logs for errors: `astonish daemon logs --follow`
+4. Check daemon logs for errors: `troupe daemon logs --follow`
 
 ### Email messages not processed
 
@@ -163,5 +163,5 @@ Check that imported templates are valid `.pptx` files no larger than 75 MiB. PDF
 
 **Solution:**
 - Increase timeout in Studio Settings → Browser
-- Check that the target URL is accessible from the machine running Astonish
+- Check that the target URL is accessible from the machine running Troupe
 - For authenticated pages, ensure credentials are configured

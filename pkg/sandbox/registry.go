@@ -36,7 +36,7 @@ type SessionEntry struct {
 // sandbox code depends on.
 //
 // Personal mode: constructed via NewSessionRegistry(), which wraps a
-// filestore-backed store over ~/.local/share/astonish/sandbox.
+// filestore-backed store over ~/.local/share/troupe/sandbox.
 //
 // Platform mode (Phase C+): construct via NewSessionRegistryFromStore(...)
 // passing a pgstore-backed store.

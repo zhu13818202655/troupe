@@ -12,7 +12,7 @@ interface AppCodeIndicatorProps {
 }
 
 /**
- * Backward-compatible wrapper around FenceIndicator for astonish-app fences.
+ * Backward-compatible wrapper around FenceIndicator for troupe-app fences.
  */
 export default function AppCodeIndicator(props: AppCodeIndicatorProps) {
   return <FenceIndicator {...props} fenceType="app" />

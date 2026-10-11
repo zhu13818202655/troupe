@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
 	teament "github.com/zhu13818202655/troupe/ent/team"
 	teamdeck "github.com/zhu13818202655/troupe/ent/team/deck"
 	teamdeckversion "github.com/zhu13818202655/troupe/ent/team/deckversion"
 	teamslide "github.com/zhu13818202655/troupe/ent/team/slide"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/google/uuid"
 )
 
 type teamDocsStore struct{ client *teament.Client }

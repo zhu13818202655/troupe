@@ -1,6 +1,6 @@
 # Cascading Defaults
 
-Configuration in Astonish cascades through **platform → org → team → personal**, with optional **per-session** and **per-app** model pins on top. Each level can override settings from the level above, and the most specific value wins.
+Configuration in Troupe cascades through **platform → org → team → personal**, with optional **per-session** and **per-app** model pins on top. Each level can override settings from the level above, and the most specific value wins.
 
 ## Resolution Order
 
@@ -95,13 +95,13 @@ Per-conversation and per-app model pins are managed in the UI, not Settings:
 
 - **Chat** — toolbar **Model** control (see [Studio Chat](../studio/chat.md))
 - **Apps** — detail header **Model** control (see [Building Apps](../generative-ui/building-apps.md))
-- **CLI** — `astonish chat -p` / `-m` (see [Chat Commands](../cli/chat.md))
+- **CLI** — `troupe chat -p` / `-m` (see [Chat Commands](../cli/chat.md))
 
-The local config file (`~/.config/astonish/config.yaml`) can also be edited directly:
+The local config file (`~/.config/troupe/config.yaml`) can also be edited directly:
 
 ```bash
-astonish config edit    # Opens config.yaml in your editor
-astonish config show    # Prints current config file contents
+troupe config edit    # Opens config.yaml in your editor
+troupe config show    # Prints current config file contents
 ```
 
 ## How Resolution Works Internally

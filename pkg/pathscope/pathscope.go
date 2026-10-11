@@ -1,5 +1,5 @@
 // Package pathscope provides the pure, domain-agnostic path primitives that
-// back Astonish's code-mode folder-access boundary. It is the single source of
+// back Troupe's code-mode folder-access boundary. It is the single source of
 // truth for:
 //
 //   - normalizing/expanding filesystem paths (ExpandHome, NormalizePath),
@@ -494,5 +494,3 @@ func looksLikePathToken(tok string) bool {
 	}
 	return false
 }
-
-

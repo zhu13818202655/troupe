@@ -24,8 +24,8 @@ func TestSystemPromptBuilderExternal(t *testing.T) {
 		"execute_tool",
 		"Available Skills",
 		"skill_lookup",
-		"Astonish's returned catalog",
-		"Local PATH, environment-variable, SDK, or package probes outside Astonish do not establish",
+		"Troupe's returned catalog",
+		"Local PATH, environment-variable, SDK, or package probes outside Troupe do not establish",
 		"credential names or placeholders",
 	} {
 		if !strings.Contains(prompt, want) {

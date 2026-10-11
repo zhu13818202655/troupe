@@ -24,7 +24,7 @@ type EmbedFunc func(ctx context.Context, text string) ([]float32, error)
 //	Output: P(needs_strong) ∈ [0, 1]
 //
 // It is model-agnostic: the same weights work regardless of which strong/weak
-// model pair is configured in Astonish.
+// model pair is configured in Troupe.
 type MLPClassifier struct {
 	weights *npzWeights
 	embed   EmbedFunc

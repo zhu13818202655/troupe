@@ -340,7 +340,7 @@ func TestAnnouncePlanTool_RejectsUnitVerifyOnRunningSurface(t *testing.T) {
 		Goal:         "replace incus",
 		Context:      "THE PROBLEM: multiple sandbox backends. THE APPROACH: Docker+overlay.",
 		WhatNotToDo:  "Do not change the Backend interface.",
-		Verification: "docker inspect astonish-session-test",
+		Verification: "docker inspect troupe-session-test",
 		Steps: []PlanStepInput{{
 			Name:        "new-docker-backend",
 			Description: "write docker backend",

@@ -33,8 +33,8 @@ const highlightInjectJS = `(opts) => {
   }
   if (!el) return JSON.stringify({ok:false,error:'element not found'});
 
-  if (!window.__astonishHighlights) window.__astonishHighlights = {};
-  const prev = window.__astonishHighlights[id];
+  if (!window.__troupeHighlights) window.__troupeHighlights = {};
+  const prev = window.__troupeHighlights[id];
   if (prev) {
     if (prev.overlay && prev.overlay.remove) prev.overlay.remove();
     if (prev.caption && prev.caption.remove) prev.caption.remove();
@@ -47,7 +47,7 @@ const highlightInjectJS = `(opts) => {
   }
 
   const overlay = document.createElement('div');
-  overlay.setAttribute('data-astonish-highlight', id);
+  overlay.setAttribute('data-troupe-highlight', id);
   overlay.style.cssText = [
     'position:fixed','pointer-events:none','z-index:2147483646',
     'border:3px solid ' + color,
@@ -58,7 +58,7 @@ const highlightInjectJS = `(opts) => {
   let caption = null;
   if (label) {
     caption = document.createElement('div');
-    caption.setAttribute('data-astonish-highlight-label', id);
+    caption.setAttribute('data-troupe-highlight-label', id);
     caption.textContent = label;
     caption.style.cssText = [
       'position:fixed','pointer-events:none','z-index:2147483647',
@@ -97,15 +97,15 @@ const highlightInjectJS = `(opts) => {
   let timer = null;
   if (durationMs > 0) {
     timer = setTimeout(function() {
-      if (window.__astonishClearHighlight) window.__astonishClearHighlight(id);
+      if (window.__troupeClearHighlight) window.__troupeClearHighlight(id);
     }, durationMs);
   }
 
-  window.__astonishHighlights[id] = {overlay: overlay, caption: caption, onScroll: onScroll, ro: ro, timer: timer};
+  window.__troupeHighlights[id] = {overlay: overlay, caption: caption, onScroll: onScroll, ro: ro, timer: timer};
 
-  if (!window.__astonishClearHighlight) {
-    window.__astonishClearHighlight = function(hid) {
-      const h = window.__astonishHighlights && window.__astonishHighlights[hid];
+  if (!window.__troupeClearHighlight) {
+    window.__troupeClearHighlight = function(hid) {
+      const h = window.__troupeHighlights && window.__troupeHighlights[hid];
       if (!h) return;
       if (h.overlay && h.overlay.remove) h.overlay.remove();
       if (h.caption && h.caption.remove) h.caption.remove();
@@ -115,11 +115,11 @@ const highlightInjectJS = `(opts) => {
         window.removeEventListener('resize', h.onScroll);
       }
       if (h.timer) clearTimeout(h.timer);
-      delete window.__astonishHighlights[hid];
+      delete window.__troupeHighlights[hid];
     };
-    window.__astonishClearAllHighlights = function() {
-      const ids = Object.keys(window.__astonishHighlights || {});
-      for (var i = 0; i < ids.length; i++) window.__astonishClearHighlight(ids[i]);
+    window.__troupeClearAllHighlights = function() {
+      const ids = Object.keys(window.__troupeHighlights || {});
+      for (var i = 0; i < ids.length; i++) window.__troupeClearHighlight(ids[i]);
     };
   }
 
@@ -127,25 +127,25 @@ const highlightInjectJS = `(opts) => {
 }`
 
 const clearAllHighlightsJS = `() => {
-  if (window.__astonishClearAllHighlights) window.__astonishClearAllHighlights();
+  if (window.__troupeClearAllHighlights) window.__troupeClearAllHighlights();
   return JSON.stringify({ok:true});
 }`
 
 // demoCursorBodyJS is the install body shared by Eval (function) and
 // EvalOnNewDocument (IIFE source).
 const demoCursorBodyJS = `
-  if (window.__astonishDemoCursorInstalled) {
-    var existing = document.getElementById('astonish-demo-cursor');
+  if (window.__troupeDemoCursorInstalled) {
+    var existing = document.getElementById('troupe-demo-cursor');
     if (existing) return;
-    window.__astonishDemoCursorInstalled = false;
+    window.__troupeDemoCursorInstalled = false;
   }
-  window.__astonishDemoCursorInstalled = true;
+  window.__troupeDemoCursorInstalled = true;
 
   function ensure() {
-    var c = document.getElementById('astonish-demo-cursor');
+    var c = document.getElementById('troupe-demo-cursor');
     if (c) return c;
     c = document.createElement('div');
-    c.id = 'astonish-demo-cursor';
+    c.id = 'troupe-demo-cursor';
     c.setAttribute('aria-hidden', 'true');
     c.style.cssText = [
       'position:fixed','left:0','top:0','width:22px','height:22px',
@@ -160,12 +160,12 @@ const demoCursorBodyJS = `
     return c;
   }
 
-  window.__astonishMoveDemoCursor = function(x, y) {
+  window.__troupeMoveDemoCursor = function(x, y) {
     var c = ensure();
     c.style.transform = 'translate(' + x + 'px,' + y + 'px)';
   };
 
-  window.__astonishShowDemoCursor = function(show) {
+  window.__troupeShowDemoCursor = function(show) {
     var c = ensure();
     c.style.display = show === false ? 'none' : 'block';
   };
@@ -202,7 +202,7 @@ func (m *Manager) HighlightElement(el *rod.Element, label, color string, duratio
 		return "", fmt.Errorf("element is nil")
 	}
 	id := fmt.Sprintf("hl-%d", m.demoState().highlightSeq.Add(1))
-	attr := "data-astonish-hl-" + id
+	attr := "data-troupe-hl-" + id
 	if _, err := el.Eval(`(n) => { this.setAttribute(n, '1'); return true; }`, attr); err != nil {
 		return "", fmt.Errorf("highlight mark: %w", err)
 	}
@@ -303,10 +303,10 @@ func (m *Manager) DisableDemoCursor() error {
 		return nil
 	}
 	_, _ = pg.Eval(`() => {
-		var c = document.getElementById('astonish-demo-cursor');
+		var c = document.getElementById('troupe-demo-cursor');
 		if (c) c.remove();
-		window.__astonishDemoCursorInstalled = false;
-		window.__astonishMoveDemoCursor = undefined;
+		window.__troupeDemoCursorInstalled = false;
+		window.__troupeMoveDemoCursor = undefined;
 	}`)
 	return nil
 }
@@ -321,8 +321,8 @@ func (m *Manager) SyncDemoCursorOverlay(x, y float64) error {
 		return err
 	}
 	_, err = pg.Eval(`(x, y) => {
-		if (window.__astonishMoveDemoCursor) {
-			window.__astonishMoveDemoCursor(x, y);
+		if (window.__troupeMoveDemoCursor) {
+			window.__troupeMoveDemoCursor(x, y);
 			return true;
 		}
 		return false;

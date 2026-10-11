@@ -19,17 +19,17 @@ import (
 type ToolWithDeclaration = common.ToolWithDeclaration
 
 // NodeTool wraps an existing tool.Tool and proxies its Run() method to a
-// ToolNodeClient (astonish node inside a container, backed by Incus,
+// ToolNodeClient (troupe node inside a container, backed by Incus,
 // K8s+Sysbox, or mock). It preserves the original tool's Name(),
 // Description(), Declaration(), and IsLongRunning() so the ADK sees it
 // as a normal tool.
 //
 // On the first Run() call, the client creates the session container
-// and starts the astonish node process. The session ID is obtained from
+// and starts the troupe node process. The session ID is obtained from
 // tool.Context.SessionID().
 //
 // This follows the same structural interface pattern as ADK's mcpTool and
-// Astonish's ProtectedTool/sanitizedTool — it satisfies FunctionTool and
+// Troupe's ProtectedTool/sanitizedTool — it satisfies FunctionTool and
 // RequestProcessor by implementing the methods directly.
 //
 // Two shapes are supported for vending clients:
@@ -157,7 +157,7 @@ func (nt *NodeTool) ProcessRequest(ctx tool.Context, req *model.LLMRequest) erro
 	return nil
 }
 
-// Run proxies the tool call to the container's astonish node process.
+// Run proxies the tool call to the container's troupe node process.
 // On the first call, the LazyNodeClient creates the session container and
 // starts the node. The session ID is extracted from tool.Context.SessionID().
 func (nt *NodeTool) Run(ctx tool.Context, args any) (map[string]any, error) {

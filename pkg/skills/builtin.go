@@ -12,11 +12,11 @@ func BuiltinSkills() []Skill {
 	return []Skill{
 		{
 			Name:        "generative-ui",
-			Description: "Complete API docs, design system, and examples for building visual apps (astonish-app). MUST load before generating any visual app.",
+			Description: "Complete API docs, design system, and examples for building visual apps (troupe-app). MUST load before generating any visual app.",
 			Content:     BuiltinGenerativeUI,
 			Source:      "builtin",
-			// ExcludeFromCodeMode: generative-ui produces astonish-app fences which
-			// are Studio-only. In Astonish Code mode there is no app renderer, so
+			// ExcludeFromCodeMode: generative-ui produces troupe-app fences which
+			// are Studio-only. In Troupe Code mode there is no app renderer, so
 			// advertising this skill causes the coding agent to generate the wrong
 			// kind of app. Keep it resolvable via skill_lookup for explicit calls,
 			// but hide it from the Available Skills index and the /skills picker.
@@ -54,10 +54,10 @@ func BuiltinSkills() []Skill {
 }
 
 // BuiltinSkillsForCode returns the subset of BuiltinSkills() that is
-// appropriate for Astonish Code mode. Skills with ExcludeFromCodeMode set are
+// appropriate for Troupe Code mode. Skills with ExcludeFromCodeMode set are
 // omitted so they do not appear in the system-prompt skill index or the
 // /skills picker, preventing the coding agent from accidentally generating
-// Studio-only artifacts (e.g. astonish-app fences).
+// Studio-only artifacts (e.g. troupe-app fences).
 func BuiltinSkillsForCode() []Skill {
 	all := BuiltinSkills()
 	filtered := make([]Skill, 0, len(all)+1)

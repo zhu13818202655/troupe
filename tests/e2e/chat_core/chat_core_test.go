@@ -454,7 +454,7 @@ func TestE2E_Chat_AutoApproveBypassesGate(t *testing.T) {
 				"but every tool_result reports a sandbox/k8s scheduling " +
 				"failure (e.g. 'pod does not have a host assigned'). " +
 				"This is not a CHAT-010 regression — fix the cluster " +
-				"(check kubectl get pods -n astonishe2e-sandbox).")
+				"(check kubectl get pods -n troupee2e-sandbox).")
 		case e2eboot.ToolNotCalled:
 			// LLM chose a different tool (e.g. shell_command). That's fine
 			// for CHAT-010 as long as a tool_result came back at all.

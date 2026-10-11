@@ -153,7 +153,7 @@ func TestGRPCClient_CreateSandbox(t *testing.T) {
 		Image: "ubuntu:24.04",
 		Env:   map[string]string{"FOO": "bar"},
 		Labels: map[string]string{
-			"app": "astonish",
+			"app": "troupe",
 		},
 	})
 	if err != nil {
@@ -278,7 +278,7 @@ func TestGRPCClient_CreateSandbox_WithDriverConfig(t *testing.T) {
 					map[string]any{
 						"name": "corp-root-ca",
 						"persistent_volume_claim": map[string]any{
-							"claim_name": "astonish-corp-ca",
+							"claim_name": "troupe-corp-ca",
 							"read_only":  true,
 						},
 					},
@@ -358,7 +358,7 @@ func TestGRPCClient_CreateSandbox_WithNetworkPolicy(t *testing.T) {
 			},
 			NetworkPolicies: map[string]*NetworkPolicySpec{
 				"egress": {
-					Name: "astonish-egress",
+					Name: "troupe-egress",
 					Endpoints: []EndpointSpec{
 						{Host: "github.com", Port: 443},
 						{Host: "*.github.com", Port: 443},
@@ -388,8 +388,8 @@ func TestGRPCClient_CreateSandbox_WithNetworkPolicy(t *testing.T) {
 	if !ok {
 		t.Fatal("expected 'egress' rule in network_policies")
 	}
-	if egressRule.GetName() != "astonish-egress" {
-		t.Errorf("egress rule name = %q, want %q", egressRule.GetName(), "astonish-egress")
+	if egressRule.GetName() != "troupe-egress" {
+		t.Errorf("egress rule name = %q, want %q", egressRule.GetName(), "troupe-egress")
 	}
 
 	endpoints := egressRule.GetEndpoints()

@@ -1,10 +1,10 @@
 // Package embed carries the tree-sitter C sources needed to build the
-// astonish tree-sitter shared library at runtime.
+// troupe tree-sitter shared library at runtime.
 //
-// The library (libastonish-treesitter.so) is a native shared object compiled
+// The library (libtroupe-treesitter.so) is a native shared object compiled
 // from the tree-sitter runtime plus the Go/TypeScript/TSX/JavaScript/Python
 // grammars. Container images build it at image-build time and install it under
-// /usr/lib/astonish. Local code mode, however, runs in the user's own
+// /usr/lib/troupe. Local code mode, however, runs in the user's own
 // environment where that library does not exist, so the binary carries a
 // compressed copy of the exact C sources and compiles the library on first use
 // (see pkg/codeintel/native/builder.go).
@@ -33,7 +33,7 @@ type CompileManifest struct {
 }
 
 // Manifest returns the include directories and source files required to build
-// libastonish-treesitter.so from the embedded tarball. It is a function (not a
+// libtroupe-treesitter.so from the embedded tarball. It is a function (not a
 // var) so callers cannot mutate the shared slices.
 func Manifest() CompileManifest {
 	return CompileManifest{

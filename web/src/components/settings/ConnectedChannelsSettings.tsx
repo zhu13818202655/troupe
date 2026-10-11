@@ -412,7 +412,7 @@ export default function ConnectedChannelsSettings({ isAdmin = false }: { isAdmin
           </div>
           {isAdmin && (
             <p className="text-xs pt-2 border-t" style={{ ...sectionBorderStyle, color: 'var(--text-muted)' }}>
-              To set up or reconfigure channels, use the CLI: <code className="px-1 py-0.5 rounded text-xs" style={{ background: 'var(--bg-tertiary)' }}>astonish channels setup [telegram|slack|email]</code>
+              To set up or reconfigure channels, use the CLI: <code className="px-1 py-0.5 rounded text-xs" style={{ background: 'var(--bg-tertiary)' }}>troupe channels setup [telegram|slack|email]</code>
             </p>
           )}
         </div>
@@ -624,7 +624,7 @@ export default function ConnectedChannelsSettings({ isAdmin = false }: { isAdmin
               {!channelInfo.telegram.enabled && ' and enable the Telegram channel'}.
             </p>
             <p className="text-xs mt-1 font-mono" style={hintStyle}>
-              Run: astonish channels setup telegram
+              Run: troupe channels setup telegram
             </p>
           </div>
         </div>
@@ -823,7 +823,7 @@ export default function ConnectedChannelsSettings({ isAdmin = false }: { isAdmin
               <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Steps:</p>
               <ol className="text-xs space-y-1 list-decimal list-inside" style={hintStyle}>
                 <li>Open your Slack workspace.</li>
-                <li>Run <code className="px-1 py-0.5 rounded text-xs" style={{ background: 'var(--bg-tertiary)' }}>/link {slackLink.code}</code> in any Slack channel or DM where the Astonish app is available.</li>
+                <li>Run <code className="px-1 py-0.5 rounded text-xs" style={{ background: 'var(--bg-tertiary)' }}>/link {slackLink.code}</code> in any Slack channel or DM where the Troupe app is available.</li>
                 <li>Wait for Slack to show confirmation — this page updates automatically.</li>
               </ol>
               {slackBotUserID && (
@@ -872,7 +872,7 @@ export default function ConnectedChannelsSettings({ isAdmin = false }: { isAdmin
               {!channelInfo.slack.enabled && ' and enable the Slack channel'}.
             </p>
             <p className="text-xs mt-1 font-mono" style={hintStyle}>
-              Run: astonish channels setup slack
+              Run: troupe channels setup slack
             </p>
           </div>
         </div>

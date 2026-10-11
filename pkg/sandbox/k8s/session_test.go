@@ -137,8 +137,8 @@ func TestBuildPodManifest_RuntimeClassAndVolumes(t *testing.T) {
 			if !v.PersistentVolumeClaim.ReadOnly {
 				t.Errorf("volume %q should be read-only", volumeLayers)
 			}
-			if v.PersistentVolumeClaim.ClaimName != "astonish-layers" {
-				t.Errorf("volume %q ClaimName = %q, want %q", volumeLayers, v.PersistentVolumeClaim.ClaimName, "astonish-layers")
+			if v.PersistentVolumeClaim.ClaimName != "troupe-layers" {
+				t.Errorf("volume %q ClaimName = %q, want %q", volumeLayers, v.PersistentVolumeClaim.ClaimName, "troupe-layers")
 			}
 		}
 	}
@@ -194,7 +194,7 @@ func TestBuildPodManifest_EnvAndMounts(t *testing.T) {
 		t.Fatalf("container must have a preStop exec hook to persist the upper on manual pod deletion")
 	}
 	preStop := strings.Join(c.Lifecycle.PreStop.Exec.Command, " ")
-	for _, want := range []string{"/var/astonish/overlay/upper", "SESSION_DIR=\"/mnt/astonish-uppers\"", "upper.tar.zst", "mv \"$TMP\" \"$FINAL\""} {
+	for _, want := range []string{"/var/troupe/overlay/upper", "SESSION_DIR=\"/mnt/troupe-uppers\"", "upper.tar.zst", "mv \"$TMP\" \"$FINAL\""} {
 		if !strings.Contains(preStop, want) {
 			t.Errorf("preStop hook missing %q: %s", want, preStop)
 		}
@@ -247,8 +247,8 @@ func TestBuildPodManifest_TeamTemplateEditorMountsLayersRW(t *testing.T) {
 		SessionID:  "team-template-general",
 		TemplateID: "@base",
 		Labels: map[string]string{
-			"astonish.io/purpose": "team-template-editor",
-			"astonish.io/team":    "general",
+			"troupe.io/purpose": "team-template-editor",
+			"troupe.io/team":    "general",
 		},
 	})
 	if err != nil {
@@ -717,7 +717,7 @@ func TestStopSession_DeletesPodAndMarksEvicted(t *testing.T) {
 		t.Fatalf("persist command = %v, want /bin/sh -c script", cmds)
 	}
 	script := cmds[2]
-	for _, want := range []string{"/var/astonish/overlay/upper", "SESSION_DIR=\"/mnt/astonish-uppers\"", "FINAL=\"$SESSION_DIR/upper.tar.zst\"", "upper.tar.zst.tmp", "--exclude=/var/astonish/overlay/upper/mnt/astonish-uppers", "mv \"$TMP\" \"$FINAL\""} {
+	for _, want := range []string{"/var/troupe/overlay/upper", "SESSION_DIR=\"/mnt/troupe-uppers\"", "FINAL=\"$SESSION_DIR/upper.tar.zst\"", "upper.tar.zst.tmp", "--exclude=/var/troupe/overlay/upper/mnt/troupe-uppers", "mv \"$TMP\" \"$FINAL\""} {
 		if !strings.Contains(script, want) {
 			t.Errorf("persist script missing %q:\n%s", want, script)
 		}
@@ -1090,10 +1090,10 @@ func TestLabelSelector(t *testing.T) {
 		in   sandbox.SessionFilter
 		want string
 	}{
-		{sandbox.SessionFilter{}, "astonish.io/type=session"},
-		{sandbox.SessionFilter{Type: sandbox.SessionTypeFleet}, "astonish.io/type=fleet"},
-		{sandbox.SessionFilter{OrgSlug: "acme"}, "astonish.io/type=session,astonish.io/org=acme"},
-		{sandbox.SessionFilter{TeamSlug: "data"}, "astonish.io/type=session,astonish.io/team=data"},
+		{sandbox.SessionFilter{}, "troupe.io/type=session"},
+		{sandbox.SessionFilter{Type: sandbox.SessionTypeFleet}, "troupe.io/type=fleet"},
+		{sandbox.SessionFilter{OrgSlug: "acme"}, "troupe.io/type=session,troupe.io/org=acme"},
+		{sandbox.SessionFilter{TeamSlug: "data"}, "troupe.io/type=session,troupe.io/team=data"},
 	}
 	for _, c := range cases {
 		if got := labelSelectorFor(c.in); got != c.want {

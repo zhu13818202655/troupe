@@ -122,12 +122,12 @@ type DistillResult struct {
 
 // DistillModifyRequest holds the inputs for modifying a distilled flow.
 type DistillModifyRequest struct {
-	CurrentYAML    string // The current YAML to modify
-	ChangeRequest  string // What the user wants changed
-	OriginalTrace  *ExecutionTrace
-	History        []string // Previous modification requests for context
-	DryRunOutput   string   // Output from last test run (for context)
-	DryRunError    string   // Error from last test run (for diagnosis)
+	CurrentYAML   string // The current YAML to modify
+	ChangeRequest string // What the user wants changed
+	OriginalTrace *ExecutionTrace
+	History       []string // Previous modification requests for context
+	DryRunOutput  string   // Output from last test run (for context)
+	DryRunError   string   // Error from last test run (for diagnosis)
 }
 
 // Distill converts an execution trace into a YAML flow definition.
@@ -232,11 +232,11 @@ func (d *FlowDistiller) buildDistillationPrompt(req DistillRequest, previousYAML
 	var sb strings.Builder
 
 	sb.WriteString("# Task\n\n")
-	sb.WriteString("Convert this successful execution trace into a reusable Astonish YAML flow.\n\n")
+	sb.WriteString("Convert this successful execution trace into a reusable Troupe YAML flow.\n\n")
 
 	// Include the flow schema
 	if d.GetSchema != nil {
-		sb.WriteString("# Astonish Flow Schema\n\n")
+		sb.WriteString("# Troupe Flow Schema\n\n")
 		sb.WriteString(d.GetSchema())
 	}
 
@@ -620,11 +620,11 @@ func (d *FlowDistiller) buildModificationPrompt(req DistillModifyRequest, previo
 	var sb strings.Builder
 
 	sb.WriteString("# Task\n\n")
-	sb.WriteString("Modify this existing Astonish YAML flow based on the user's request.\n\n")
+	sb.WriteString("Modify this existing Troupe YAML flow based on the user's request.\n\n")
 
 	// Include the flow schema
 	if d.GetSchema != nil {
-		sb.WriteString("# Astonish Flow Schema\n\n")
+		sb.WriteString("# Troupe Flow Schema\n\n")
 		sb.WriteString(d.GetSchema())
 	}
 

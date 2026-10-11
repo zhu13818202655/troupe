@@ -7,7 +7,7 @@ import {
   fetchSessions,
   historyMessageKind,
   sessionIdFromEvent,
-} from '../astonish-client';
+} from '../troupe-client';
 
 type Store = Record<string, unknown>;
 
@@ -50,7 +50,7 @@ function installChromeMock() {
   };
 }
 
-describe('astonish-client', () => {
+describe('troupe-client', () => {
   const originalFetch = globalThis.fetch;
 
   beforeEach(async () => {
@@ -127,7 +127,7 @@ describe('astonish-client', () => {
       sessionId: '',
       message: 'hello',
       autoApprove: false,
-      appName: 'astonish-extension',
+      appName: 'troupe-extension',
       systemContext: '## Browser page context\nURL: https://example.com\nTitle: Example',
     });
     expect(payload.systemContext).toContain('URL:');
@@ -163,7 +163,7 @@ describe('astonish-client', () => {
       { id: 'ext-2', title: 'Another extension chat' },
     ]);
     const url = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0][0] as string;
-    expect(url).toBe('http://localhost:9393/api/studio/sessions?app=astonish-extension');
+    expect(url).toBe('http://localhost:9393/api/studio/sessions?app=troupe-extension');
   });
 
   it('fetchSessionHistory returns messages for restore with ?app= param', async () => {
@@ -190,7 +190,7 @@ describe('astonish-client', () => {
     });
     const url = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0][0] as string;
     expect(url).toBe(
-      'http://localhost:9393/api/studio/sessions/ext-1?app=astonish-extension',
+      'http://localhost:9393/api/studio/sessions/ext-1?app=troupe-extension',
     );
   });
 
@@ -228,7 +228,7 @@ describe('astonish-client', () => {
     await expect(deleteSession('ext-1')).resolves.toBeUndefined();
     const [url, init] = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
     expect(url).toBe(
-      'http://localhost:9393/api/studio/sessions/ext-1?app=astonish-extension',
+      'http://localhost:9393/api/studio/sessions/ext-1?app=troupe-extension',
     );
     expect(init.method).toBe('DELETE');
   });
@@ -271,6 +271,6 @@ describe('astonish-client', () => {
     const payload = JSON.parse(init.body as string) as { sessionId: string; message: string; appName: string };
     expect(payload.sessionId).toBe('ext-1');
     expect(payload.message).toBe('follow up');
-    expect(payload.appName).toBe('astonish-extension');
+    expect(payload.appName).toBe('troupe-extension');
   });
 });

@@ -19,7 +19,7 @@ func TestReadPDF_Validation(t *testing.T) {
 		},
 		{
 			name:    "NonexistentFile",
-			args:    ReadPDFArgs{Path: "/tmp/nonexistent-astonish-test.pdf"},
+			args:    ReadPDFArgs{Path: "/tmp/nonexistent-troupe-test.pdf"},
 			wantErr: "file not found",
 		},
 		{
@@ -49,7 +49,7 @@ func TestReadPDF_Validation(t *testing.T) {
 
 func TestReadPDF_NonPDFExtension(t *testing.T) {
 	// Create a temp file with non-pdf extension
-	tmp, err := os.CreateTemp("", "astonish-test-*.txt")
+	tmp, err := os.CreateTemp("", "troupe-test-*.txt")
 	if err != nil {
 		t.Fatalf("failed to create temp file: %v", err)
 	}
@@ -105,7 +105,7 @@ func TestResolvePDFPath_LocalFile(t *testing.T) {
 
 func TestResolvePDFPath_URLDetection(t *testing.T) {
 	// HTTP URL should trigger download (which will fail for invalid URL, but we can test detection)
-	_, _, err := resolvePDFPath("http://this-host-does-not-exist-astonish.invalid/test.pdf")
+	_, _, err := resolvePDFPath("http://this-host-does-not-exist-troupe.invalid/test.pdf")
 	if err == nil {
 		t.Fatal("expected error for unreachable URL, got nil")
 	}

@@ -170,7 +170,7 @@ func (t *Transcript) ScanOversized() (int, int64, error) {
 // oversizedWarningEvent builds the synthetic system event appended when lines
 // had to be skipped, so the gap is visible in the restored transcript.
 func oversizedWarningEvent(skipped int, skippedBytes int64) *adksession.Event {
-	msg := fmt.Sprintf("⚠ %d transcript line(s) totaling %s exceeded the %s read limit and were skipped. Run 'astonish sessions repair <id>' to rewrite this transcript.",
+	msg := fmt.Sprintf("⚠ %d transcript line(s) totaling %s exceeded the %s read limit and were skipped. Run 'troupe sessions repair <id>' to rewrite this transcript.",
 		skipped, humanBytes(skippedBytes), humanBytes(int64(MaxTranscriptLineBytes)))
 	return &adksession.Event{
 		ID:        "transcript-skipped-lines",

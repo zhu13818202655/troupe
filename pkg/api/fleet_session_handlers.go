@@ -178,7 +178,7 @@ func StartFleetSessionFromPlan(planKey, initialMessage, userID, teamSlug string,
 
 	// Resolve per-session workspace directory. Each session gets its own
 	// isolated workspace (via git clone --local from the base) under the workspaces dir.
-	// The base workspace (~/astonish_projects/<repo-name>/) is where the wizard
+	// The base workspace (~/troupe_projects/<repo-name>/) is where the wizard
 	// cloned the repo and generated AGENTS.md.
 	baseDir := plan.ResolveWorkspaceDir()
 	var workspaceDir string
@@ -480,7 +480,7 @@ func FleetStartHandler(w http.ResponseWriter, r *http.Request) {
 // Otherwise, it writes to the file-based session store.
 func persistFleetSessionMeta(fs *fleet.FleetSession, fleetCfg *fleet.FleetConfig, userID string, issueNumber int, repo string, sessionStore store.SessionStore) {
 	// When sandbox is enabled, WorkspaceDir is a container-internal path
-	// (e.g., "/root/astonish"). Do NOT persist it — CleanupSessionWorkspace
+	// (e.g., "/root/troupe"). Do NOT persist it — CleanupSessionWorkspace
 	// would run os.RemoveAll on that path ON THE HOST, potentially destroying
 	// the host project directory. Sandbox sessions have no host-side workspace;
 	// container cleanup handles everything.
@@ -566,7 +566,7 @@ func updateFleetSessionMeta(sessionID string, messageCount int, sessionStore sto
 
 // wireFleetTranscript creates a JSONL transcript file for a fleet session
 // and wires up the OnMessagePosted callback to persist messages to it.
-// This makes fleet sessions visible via `astonish sessions show <id>`.
+// This makes fleet sessions visible via `troupe sessions show <id>`.
 // If sessionStore is non-nil (platform mode), events are persisted to the PG
 // store instead of a JSONL file on disk.
 func wireFleetTranscript(fs *fleet.FleetSession, userID string, sessionStore store.SessionStore) {

@@ -470,7 +470,7 @@ func BrowserContainerInstallCommands(engine, arch string, distro LinuxDistro) []
 	// ownership explicitly with chown.
 	cmds = append(cmds,
 		// Write kasmvnc.yaml with SSL disabled (TLS is terminated by the
-		// astonish exec tunnel) and explicit paths to the user-owned cert
+		// troupe exec tunnel) and explicit paths to the user-owned cert
 		// we just generated. This is the key change that makes base template
 		// builds succeed on unprivileged Incus (Apple Silicon + Docker).
 		[]string{"sh", "-c", fmt.Sprintf(`cat > /home/browser/.vnc/kasmvnc.yaml << 'KASMCFG'
@@ -611,8 +611,8 @@ export CLOAKBROWSER_AUTO_UPDATE=false
 export HOME=/home/browser
 ulimit -c 0 2>/dev/null || true
 CACHE=""
-if [ -d /mnt/astonish-layers ]; then
-  CACHE=/mnt/astonish-layers/.cache/cloakbrowser
+if [ -d /mnt/troupe-layers ]; then
+  CACHE=/mnt/troupe-layers/.cache/cloakbrowser
   mkdir -p "$CACHE"
 fi
 find_chrome() {

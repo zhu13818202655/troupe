@@ -68,7 +68,7 @@ func TestTokenValidator_ValidToken(t *testing.T) {
 	jwksServer := testJWKSServer(t, kid, &privKey.PublicKey)
 
 	issuerURL := "https://idp.example.com"
-	audience := "astonish-api"
+	audience := "troupe-api"
 
 	cfg := TokenValidatorConfig{
 		Issuers: []TrustedIssuer{
@@ -206,7 +206,7 @@ func TestTokenValidator_ExpiredToken(t *testing.T) {
 	jwksServer := testJWKSServer(t, kid, &privKey.PublicKey)
 
 	issuerURL := "https://idp.example.com"
-	audience := "astonish-api"
+	audience := "troupe-api"
 
 	cfg := TokenValidatorConfig{
 		Issuers: []TrustedIssuer{
@@ -248,7 +248,7 @@ func TestTokenValidator_ActClaimWithMatchingAgent(t *testing.T) {
 	jwksServer := testJWKSServer(t, kid, &privKey.PublicKey)
 
 	issuerURL := "https://idp.example.com"
-	audience := "astonish-api"
+	audience := "troupe-api"
 
 	cfg := TokenValidatorConfig{
 		Issuers: []TrustedIssuer{
@@ -263,8 +263,8 @@ func TestTokenValidator_ActClaimWithMatchingAgent(t *testing.T) {
 		},
 		Agents: []AllowedAgent{
 			{
-				ID:       "agent-1",
-				Name:     "Test Agent",
+				ID:        "agent-1",
+				Name:      "Test Agent",
 				ActorSub:  "service-abc",
 				IssuerID:  "issuer-1",
 				OrgID:     "org-1",
@@ -317,7 +317,7 @@ func TestTokenValidator_ActClaimAgentNotAllowed(t *testing.T) {
 	jwksServer := testJWKSServer(t, kid, &privKey.PublicKey)
 
 	issuerURL := "https://idp.example.com"
-	audience := "astonish-api"
+	audience := "troupe-api"
 
 	cfg := TokenValidatorConfig{
 		Issuers: []TrustedIssuer{
@@ -372,7 +372,7 @@ func TestTokenValidator_NoActClaimRequireActorTrue(t *testing.T) {
 	jwksServer := testJWKSServer(t, kid, &privKey.PublicKey)
 
 	issuerURL := "https://idp.example.com"
-	audience := "astonish-api"
+	audience := "troupe-api"
 
 	cfg := TokenValidatorConfig{
 		Issuers: []TrustedIssuer{
@@ -415,7 +415,7 @@ func TestTokenValidator_NoActClaimRequireActorFalse(t *testing.T) {
 	jwksServer := testJWKSServer(t, kid, &privKey.PublicKey)
 
 	issuerURL := "https://idp.example.com"
-	audience := "astonish-api"
+	audience := "troupe-api"
 
 	cfg := TokenValidatorConfig{
 		Issuers: []TrustedIssuer{
@@ -470,7 +470,7 @@ func TestTokenValidator_AlgNone(t *testing.T) {
 	jwksServer := testJWKSServer(t, kid, &privKey.PublicKey)
 
 	issuerURL := "https://idp.example.com"
-	audience := "astonish-api"
+	audience := "troupe-api"
 
 	cfg := TokenValidatorConfig{
 		Issuers: []TrustedIssuer{
@@ -512,7 +512,7 @@ func TestTokenValidator_HS256Confusion(t *testing.T) {
 	jwksServer := testJWKSServer(t, kid, &privKey.PublicKey)
 
 	issuerURL := "https://idp.example.com"
-	audience := "astonish-api"
+	audience := "troupe-api"
 
 	cfg := TokenValidatorConfig{
 		Issuers: []TrustedIssuer{
@@ -566,7 +566,7 @@ func TestTokenValidator_TamperedSignature(t *testing.T) {
 	jwksServer := testJWKSServer(t, kid, &privKey.PublicKey)
 
 	issuerURL := "https://idp.example.com"
-	audience := "astonish-api"
+	audience := "troupe-api"
 
 	cfg := TokenValidatorConfig{
 		Issuers: []TrustedIssuer{
@@ -623,7 +623,7 @@ func TestTokenValidator_UnknownKID(t *testing.T) {
 	jwksServer := testJWKSServer(t, kid, &privKey.PublicKey)
 
 	issuerURL := "https://idp.example.com"
-	audience := "astonish-api"
+	audience := "troupe-api"
 
 	cfg := TokenValidatorConfig{
 		Issuers: []TrustedIssuer{
@@ -705,7 +705,7 @@ func TestTokenValidator_ES256ValidToken(t *testing.T) {
 	t.Cleanup(jwksServer.Close)
 
 	issuerURL := "https://idp.example.com"
-	audience := "astonish-api"
+	audience := "troupe-api"
 
 	cfg := TokenValidatorConfig{
 		Issuers: []TrustedIssuer{
@@ -754,5 +754,3 @@ func TestTokenValidator_ES256ValidToken(t *testing.T) {
 	}
 	t.Logf("ES256 token validated successfully: user=%s", result.UserIdentifier)
 }
-
-

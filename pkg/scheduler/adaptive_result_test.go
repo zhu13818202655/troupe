@@ -23,7 +23,7 @@ func TestExtractUserFacingText_SkipsThoughtAndTools(t *testing.T) {
 
 func TestApplyLastWinsTurn(t *testing.T) {
 	prior := "I need to paginate…"
-	next := "```astonish-report\npath: /sandbox/r.md\n```"
+	next := "```troupe-report\npath: /sandbox/r.md\n```"
 	if got := applyLastWinsTurn(prior, next); got != next {
 		t.Fatalf("last-wins = %q, want final turn", got)
 	}
@@ -47,7 +47,7 @@ func TestCaptureWriteFileContent(t *testing.T) {
 }
 
 func TestPreferDeliveryBody_ReportFromWriteFile(t *testing.T) {
-	lastWins := "Done.\n\n```astonish-report\npath: /sandbox/openstack-vm-status-report.md\ntitle: OpenStack VM Status\n```\n"
+	lastWins := "Done.\n\n```troupe-report\npath: /sandbox/openstack-vm-status-report.md\ntitle: OpenStack VM Status\n```\n"
 	written := map[string]string{
 		"/sandbox/openstack-vm-status-report.md": "# OpenStack VM Status\n\n| Name | State |\n|---|---|\n| a | ACTIVE |\n",
 	}
@@ -55,13 +55,13 @@ func TestPreferDeliveryBody_ReportFromWriteFile(t *testing.T) {
 	if !strings.Contains(got, "| a | ACTIVE |") {
 		t.Fatalf("expected report body, got %q", got)
 	}
-	if strings.Contains(got, "astonish-report") {
+	if strings.Contains(got, "troupe-report") {
 		t.Fatalf("delivery body should not include fence: %q", got)
 	}
 }
 
 func TestPreferDeliveryBody_StripsFenceWhenNoFile(t *testing.T) {
-	lastWins := "Summary of results.\n\n```astonish-report\npath: /sandbox/missing.md\n```\n"
+	lastWins := "Summary of results.\n\n```troupe-report\npath: /sandbox/missing.md\n```\n"
 	got := preferDeliveryBody(lastWins, nil, nil, nil)
 	if got != "Summary of results." {
 		t.Fatalf("got %q, want stripped prose", got)
@@ -69,7 +69,7 @@ func TestPreferDeliveryBody_StripsFenceWhenNoFile(t *testing.T) {
 }
 
 func TestPreferDeliveryBody_DrainedMarkdownWhenFenceOnly(t *testing.T) {
-	lastWins := "```astonish-report\npath: /sandbox/r.md\ntitle: T\n```"
+	lastWins := "```troupe-report\npath: /sandbox/r.md\ntitle: T\n```"
 	written := map[string]string{"/sandbox/r.md": "# Report\n\nbody"}
 	drained := []agent.FileArtifact{{Path: "/sandbox/r.md", ToolName: "write_file"}}
 	got := preferDeliveryBody(lastWins, written, drained, nil)
@@ -79,7 +79,7 @@ func TestPreferDeliveryBody_DrainedMarkdownWhenFenceOnly(t *testing.T) {
 }
 
 func TestPreferDeliveryBody_ReadFileFallback(t *testing.T) {
-	lastWins := "```astonish-report\npath: /sandbox/r.md\n```"
+	lastWins := "```troupe-report\npath: /sandbox/r.md\n```"
 	got := preferDeliveryBody(lastWins, nil, nil, func(path string) ([]byte, error) {
 		if path != "/sandbox/r.md" {
 			t.Fatalf("path = %q", path)

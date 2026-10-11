@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	// OfficialStoreName is the name of the official Astonish flow store
+	// OfficialStoreName is the name of the official Troupe flow store
 	OfficialStoreName = "official"
 	// OfficialStoreURL is the GitHub repository for the official store
 	OfficialStoreURL = "github.com/zhu13818202655/troupe-flows"
@@ -346,8 +346,8 @@ func buildRawGitHubURLWithRefs(repoURL, branch, filePath string) (rawURL string,
 }
 
 // AddTap adds a new tap by GitHub URL with smart naming:
-// - "owner" → assumes owner/astonish-flows, tap name = "owner"
-// - "owner/repo" → if repo != "astonish-flows", tap name = "owner-repo"
+// - "owner" → assumes owner/troupe-flows, tap name = "owner"
+// - "owner/repo" → if repo != "troupe-flows", tap name = "owner-repo"
 // - alias parameter overrides the tap name
 // Validates that the repository exists and contains a manifest.yaml
 func (s *Store) AddTap(urlOrShorthand string, alias string) (string, error) {
@@ -578,7 +578,7 @@ func getStoreDir() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(configDir, "astonish", "store"), nil
+	return filepath.Join(configDir, "troupe", "store"), nil
 }
 
 func getStoreConfigPath() (string, error) {
@@ -586,15 +586,15 @@ func getStoreConfigPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(configDir, "astonish", "store.json"), nil
+	return filepath.Join(configDir, "troupe", "store.json"), nil
 }
 
 // parseTapURL parses a GitHub URL or shorthand into name and full URL
 // Smart naming rules:
-// - "owner" → assumes owner/astonish-flows, name = "owner"
-// - "owner/astonish-flows" → name = "owner" (default repo)
+// - "owner" → assumes owner/troupe-flows, name = "owner"
+// - "owner/troupe-flows" → name = "owner" (default repo)
 // - "owner/custom-repo" → name = "owner-custom-repo"
-// - "github.enterprise.com/owner" → assumes owner/astonish-flows on enterprise
+// - "github.enterprise.com/owner" → assumes owner/troupe-flows on enterprise
 // - "github.enterprise.com/owner/repo" → full enterprise URL
 func parseTapURL(input string) (name, url string) {
 	input = strings.TrimPrefix(input, "https://")
@@ -602,7 +602,7 @@ func parseTapURL(input string) (name, url string) {
 	input = strings.TrimSuffix(input, ".git")
 	input = strings.TrimSuffix(input, "/")
 
-	const defaultRepo = "astonish-flows"
+	const defaultRepo = "troupe-flows"
 
 	// Check if this is an enterprise URL (contains a host with dots before the path)
 	// e.g., github.enterprise.com/owner or github.mycompany.com/owner/repo
@@ -670,11 +670,11 @@ func sanitizeName(name string) string {
 func GetFlowsDir() (string, error) {
 	// Honor XDG_CONFIG_HOME on all platforms for portability and test isolation.
 	if xdg := os.Getenv("XDG_CONFIG_HOME"); xdg != "" {
-		return filepath.Join(xdg, "astonish", "flows"), nil
+		return filepath.Join(xdg, "troupe", "flows"), nil
 	}
 	configDir, err := os.UserConfigDir()
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(configDir, "astonish", "flows"), nil
+	return filepath.Join(configDir, "troupe", "flows"), nil
 }

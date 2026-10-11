@@ -13,7 +13,7 @@ import (
 // State Delta Tests (X11-X15)
 //
 // These test processStateDelta directly, since state deltas are produced by
-// Astonish's agent node execution code (approval, retry, failure, spinner),
+// Troupe's agent node execution code (approval, retry, failure, spinner),
 // not by the LLM. Testing processStateDelta in isolation verifies the runner's
 // event emission logic for all state-driven SSE events.
 // =============================================================================
@@ -751,14 +751,14 @@ func TestIntegration_X25_UnsubscribeDuringRun(t *testing.T) {
 // App Preview Edge Cases (X26-X27)
 // =============================================================================
 
-// TestIntegration_X26_MultipleAppPreviews verifies that multiple astonish-app
+// TestIntegration_X26_MultipleAppPreviews verifies that multiple troupe-app
 // code fences in a single response each produce their own app_preview event.
 // Per the design, the first fence creates a new app (version 1) and subsequent
 // fences refine it (same appId, incrementing versions).
 func TestIntegration_X26_MultipleAppPreviews(t *testing.T) {
 	app1 := `export default function App1() { return <div>App 1</div>; }`
 	app2 := `export default function App2() { return <div>App 2</div>; }`
-	response := "Here are two apps:\n\n```astonish-app\n" + app1 + "\n```\n\nAnd:\n\n```astonish-app\n" + app2 + "\n```"
+	response := "Here are two apps:\n\n```troupe-app\n" + app1 + "\n```\n\nAnd:\n\n```troupe-app\n" + app2 + "\n```"
 
 	mockLLM := NewMockLLM(TextTurn(response))
 	env := setupIntegrationTest(t, mockLLM, nil)
@@ -790,10 +790,10 @@ func TestIntegration_X26_MultipleAppPreviews(t *testing.T) {
 	}
 }
 
-// TestIntegration_X27_EmptyAppPreviewFence verifies that an empty astonish-app
+// TestIntegration_X27_EmptyAppPreviewFence verifies that an empty troupe-app
 // code fence is ignored (no app_preview event).
 func TestIntegration_X27_EmptyAppPreviewFence(t *testing.T) {
-	response := "Here's an app:\n\n```astonish-app\n\n```\n\nOops, it's empty."
+	response := "Here's an app:\n\n```troupe-app\n\n```\n\nOops, it's empty."
 
 	mockLLM := NewMockLLM(TextTurn(response))
 	env := setupIntegrationTest(t, mockLLM, nil)

@@ -3,7 +3,17 @@ package config
 import (
 	"log/slog"
 	"os"
+	"strings"
 )
+
+// isPlaceholderSecret reports whether val is a placeholder that must never be
+// used as a real secret: the literal "EMPTY" and maskValue output ("****" + a
+// suffix, the masked form the settings UI echoes back). See the twin helper in
+// pkg/api/settings_handlers.go — kept in sync because pkg/config cannot import
+// pkg/api.
+func isPlaceholderSecret(val string) bool {
+	return val == "EMPTY" || strings.HasPrefix(val, "****")
+}
 
 // ProviderEnvMapping maps provider config keys to environment variable names
 // This is the single source of truth for how config keys map to env vars
@@ -111,9 +121,9 @@ func SetupAllProviderEnvFromStore(appCfg *AppConfig, getSecret SecretGetter) {
 		}
 
 		for cfgKey, envVar := range mapping {
-			// 1. Try credential store
+			// 1. Try credential store (skip placeholder values — see isPlaceholderSecret)
 			storeKey := "provider." + instanceName + "." + cfgKey
-			if val := getSecret(storeKey); val != "" {
+			if val := getSecret(storeKey); val != "" && !isPlaceholderSecret(val) {
 				if err := os.Setenv(envVar, val); err != nil {
 					slog.Warn("failed to set env var from store", "key", envVar, "error", err)
 				}
@@ -141,7 +151,7 @@ func SetupAllProviderEnvFromStore(appCfg *AppConfig, getSecret SecretGetter) {
 		}
 		for serverID, envVar := range webServerEnvMapping {
 			storeKey := "web_servers." + serverID + ".api_key"
-			if val := getSecret(storeKey); val != "" {
+			if val := getSecret(storeKey); val != "" && !isPlaceholderSecret(val) {
 				if err := os.Setenv(envVar, val); err != nil {
 					slog.Warn("failed to set web server env var", "key", envVar, "error", err)
 				}
@@ -240,9 +250,11 @@ func InjectProviderSecretsToConfig(appCfg *AppConfig, getSecret SecretGetter) {
 				continue
 			}
 
-			// Try the credential store
+			// Try the credential store. Skip placeholder values — a stored
+			// "EMPTY" or masked "****xxxx" must never be used as a real key
+			// (it would shadow the correct value still present in config).
 			storeKey := "provider." + instanceName + "." + key
-			if val := getSecret(storeKey); val != "" {
+			if val := getSecret(storeKey); val != "" && !isPlaceholderSecret(val) {
 				providerCfg[key] = val
 			}
 		}

@@ -220,10 +220,10 @@ func memoryToolDeclarations() []ToolDeclaration {
 
 func slideToolDeclarations() []ToolDeclaration {
 	return []ToolDeclaration{
-		{Name: "create_deck", Description: "Create a private Astonish Slides deck", Category: "slides"},
+		{Name: "create_deck", Description: "Create a private Troupe Slides deck", Category: "slides"},
 		{Name: "write_slide", Description: "Validate and write one ASD slide into a private deck", Category: "slides"},
 		{Name: "get_deck", Description: "Read a private deck and its ordered slide markup", Category: "slides"},
-		{Name: "list_decks", Description: "List private Astonish Slides decks", Category: "slides"},
+		{Name: "list_decks", Description: "List private Troupe Slides decks", Category: "slides"},
 		{Name: "validate_deck", Description: "Validate all persisted slides in a deck", Category: "slides"},
 	}
 }

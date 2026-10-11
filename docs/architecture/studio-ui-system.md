@@ -2,7 +2,7 @@
 
 ## Overview
 
-Astonish Studio uses a source-owned UI system built on `shadcn/ui`, Tailwind CSS v4, and product CSS tokens. This document owns:
+Troupe Studio uses a source-owned UI system built on `shadcn/ui`, Tailwind CSS v4, and product CSS tokens. This document owns:
 
 - Dual-axis theming (light/dark **mode** × **brand pack**)
 - Shared primitives vs custom product surfaces
@@ -27,7 +27,7 @@ Related docs:
 7. **Do not change Studio Chat SSE handling or the three-signal report gate** as part of visual refresh work. See `chat-rendering-pipeline.md`.
 8. **Do not replace React Flow node/edge/canvas behavior** with generic widgets. Tokenize and restyle only.
 9. **Server and client allowlists must stay in sync** when shipping a pack: `web/src/themes/brandTheme.ts` ↔ `pkg/api/brand_theme.go`.
-10. **Shared logo** uses `AstonishLogo` (brand-token fill/mask). Do not reintroduce hard-coded purple wordmarks in header, home, or chat.
+10. **Shared logo** uses `TroupeLogo` (brand-token fill/mask). Do not reintroduce hard-coded purple wordmarks in header, home, or chat.
 
 ## Layers
 
@@ -71,7 +71,7 @@ Use shadcn only for standard subpanels, forms, menus, or dialogs **inside** thes
 
 ## Theme tokens
 
-`web/src/index.css` defines shadcn-compatible tokens and Astonish product tokens. Pack selectors:
+`web/src/index.css` defines shadcn-compatible tokens and Troupe product tokens. Pack selectors:
 
 ```css
 html[data-theme="classic"] { /* light tokens */ }
@@ -156,7 +156,7 @@ Token-based apps retheme when `html[data-theme]` or `html.dark` changes. Hard-co
 
 ## Shared logo
 
-`web/src/components/AstonishLogo.tsx` applies brand gradients/fills via CSS variables over SVG masks. Use it for header, home hero, and chat empty states instead of static purple assets (except raw SVG sources under `web/public/` used as mask bases).
+`web/src/components/TroupeLogo.tsx` applies brand gradients/fills via CSS variables over SVG masks. Use it for header, home hero, and chat empty states instead of static purple assets (except raw SVG sources under `web/public/` used as mask bases).
 
 ## Settings surface hierarchy
 
@@ -183,7 +183,7 @@ Do **not** use near-black sidebar tokens for settings cards. Shared helpers: `we
 | `web/src/hooks/useTheme.ts` | Light/dark + brand React API |
 | `web/src/components/ui/*` | shadcn primitives |
 | `web/src/lib/utils.ts` | `cn()` |
-| `web/src/components/AstonishLogo.tsx` | Themed logo |
+| `web/src/components/TroupeLogo.tsx` | Themed logo |
 | `pkg/api/brand_theme.go` | Server normalize/resolve + public handler |
 
 ## Migration posture

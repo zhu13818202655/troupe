@@ -4,7 +4,7 @@ package skills
 // presentation. The always-on prompt keeps only a short pointer; this file is
 // the working contract: intake, official bookends, recipe body, never reprint chrome.
 
-const BuiltinSlides = "# Astonish Slides — Authoring\n" + `
+const BuiltinSlides = "# Troupe Slides — Authoring\n" + `
 Load this skill for slides, a slide deck, a slideshow, a slide show, a presentation, PowerPoint, or ` + "`.pptx`" + `. The always-on system-prompt pointer is not a substitute — you must ` + "`skill_lookup(\"slides\")`" + ` even if you already know the intake questions.
 
 **Start from a template.** Never ship an unstyled deck.

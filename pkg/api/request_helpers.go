@@ -314,11 +314,30 @@ func EffectiveAppConfigFromContext(ctx context.Context, isPlatformMode bool) *co
 	resolved = provider.ApplyUserDefault(resolved, userDefault)
 	resolved = provider.ApplyProviderOverride(resolved, "", "")
 	mergeResolvedProviders(appCfg, resolved)
-	appCfg.General.DefaultProvider = resolved.General.DefaultProvider
-	appCfg.General.DefaultModel = resolved.General.DefaultModel
-	appCfg.General.WebSearchTool = resolved.General.WebSearchTool
-	appCfg.General.WebExtractTool = resolved.General.WebExtractTool
-	appCfg.PerplexityWebSearch = resolved.PerplexityWebSearch
+	// Database values only win when explicitly set.
+	//
+	// These used to be unconditional assignments, which meant an empty platform
+	// database cleared the default_provider/default_model baked into config.yaml
+	// and left the chat path with "no provider configured" (provider.Pool.Get
+	// rejects an empty provider name). This mirrors the daemon-level cascade in
+	// cascadePlatformProviders (pkg/daemon/run.go) and the conditional overlay in
+	// applyTeamNonProviderSettings below, so config.yaml stays usable as the base
+	// layer for file-based deployments.
+	if resolved.General.DefaultProvider != "" {
+		appCfg.General.DefaultProvider = resolved.General.DefaultProvider
+	}
+	if resolved.General.DefaultModel != "" {
+		appCfg.General.DefaultModel = resolved.General.DefaultModel
+	}
+	if resolved.General.WebSearchTool != "" {
+		appCfg.General.WebSearchTool = resolved.General.WebSearchTool
+	}
+	if resolved.General.WebExtractTool != "" {
+		appCfg.General.WebExtractTool = resolved.General.WebExtractTool
+	}
+	if resolved.PerplexityWebSearch.Provider != "" {
+		appCfg.PerplexityWebSearch = resolved.PerplexityWebSearch
+	}
 
 	// Apply additional non-provider team settings (web tools, context length, etc.)
 	if svc.Settings != nil {
@@ -372,11 +391,30 @@ func effectiveAppConfig(r *http.Request) *config.AppConfig {
 	resolved = provider.ApplyUserDefault(resolved, userDefault)
 	resolved = provider.ApplyProviderOverride(resolved, "", "")
 	mergeResolvedProviders(appCfg, resolved)
-	appCfg.General.DefaultProvider = resolved.General.DefaultProvider
-	appCfg.General.DefaultModel = resolved.General.DefaultModel
-	appCfg.General.WebSearchTool = resolved.General.WebSearchTool
-	appCfg.General.WebExtractTool = resolved.General.WebExtractTool
-	appCfg.PerplexityWebSearch = resolved.PerplexityWebSearch
+	// Database values only win when explicitly set.
+	//
+	// These used to be unconditional assignments, which meant an empty platform
+	// database cleared the default_provider/default_model baked into config.yaml
+	// and left the chat path with "no provider configured" (provider.Pool.Get
+	// rejects an empty provider name). This mirrors the daemon-level cascade in
+	// cascadePlatformProviders (pkg/daemon/run.go) and the conditional overlay in
+	// applyTeamNonProviderSettings below, so config.yaml stays usable as the base
+	// layer for file-based deployments.
+	if resolved.General.DefaultProvider != "" {
+		appCfg.General.DefaultProvider = resolved.General.DefaultProvider
+	}
+	if resolved.General.DefaultModel != "" {
+		appCfg.General.DefaultModel = resolved.General.DefaultModel
+	}
+	if resolved.General.WebSearchTool != "" {
+		appCfg.General.WebSearchTool = resolved.General.WebSearchTool
+	}
+	if resolved.General.WebExtractTool != "" {
+		appCfg.General.WebExtractTool = resolved.General.WebExtractTool
+	}
+	if resolved.PerplexityWebSearch.Provider != "" {
+		appCfg.PerplexityWebSearch = resolved.PerplexityWebSearch
+	}
 
 	// Apply additional non-provider team settings (web tools, context length, etc.)
 	if svc.Settings != nil {

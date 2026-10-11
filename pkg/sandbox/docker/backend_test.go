@@ -32,7 +32,7 @@ func newTestConfig(t *testing.T, r *sandbox.SessionRegistry) docker.Config {
 		Sessions:     r,
 		LayersDir:    t.TempDir(),
 		UppersDir:    t.TempDir(),
-		SandboxImage: "ghcr.io/sap/astonish-sandbox-base:latest",
+		SandboxImage: "ghcr.io/sap/troupe-sandbox-base:latest",
 	}
 }
 
@@ -51,7 +51,7 @@ func TestNew_RequiresSessions(t *testing.T) {
 }
 
 func TestNew_RequiresLayersDir(t *testing.T) {
-	// LayersDir now defaults to <UserConfigDir>/astonish/sandbox/layers via
+	// LayersDir now defaults to <UserConfigDir>/troupe/sandbox/layers via
 	// applyDefaults(). Verify that passing an empty LayersDir succeeds (defaults kick in).
 	r, err := sandbox.NewSessionRegistry()
 	if err != nil {
@@ -70,7 +70,7 @@ func TestNew_RequiresLayersDir(t *testing.T) {
 }
 
 func TestNew_RequiresUppersDir(t *testing.T) {
-	// UppersDir now defaults to <UserConfigDir>/astonish/sandbox/uppers via
+	// UppersDir now defaults to <UserConfigDir>/troupe/sandbox/uppers via
 	// applyDefaults(). Verify that passing an empty UppersDir succeeds (defaults kick in).
 	r, err := sandbox.NewSessionRegistry()
 	if err != nil {

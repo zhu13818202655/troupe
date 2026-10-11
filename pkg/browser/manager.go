@@ -50,7 +50,7 @@ type BrowserConfig struct {
 	ViewportWidth     int           // Default: 1920
 	ViewportHeight    int           // Default: 1080
 	NoSandbox         bool          // For running as root in containers
-	UserDataDir       string        // Browser profile dir. Default: ~/.config/astonish/browser/
+	UserDataDir       string        // Browser profile dir. Default: ~/.config/troupe/browser/
 	NavigationTimeout time.Duration // Max time to wait for page load (default: 30s)
 	Proxy             string        // HTTP/SOCKS proxy URL. Empty = direct connection.
 	RemoteCDPURL      string        // External CDP endpoint. When set, skip local launch.
@@ -78,7 +78,7 @@ type HandoffCfg struct {
 // Headless defaults to false for better anti-detection (headed mode with Xvfb).
 // NoSandbox is enabled automatically when running as root (uid 0),
 // because Chrome refuses to use its sandbox when running as root.
-// UserDataDir defaults to ~/.config/astonish/browser/ so that login
+// UserDataDir defaults to ~/.config/troupe/browser/ so that login
 // sessions, cookies, and site data persist across restarts.
 func DefaultConfig() BrowserConfig {
 	return BrowserConfig{
@@ -173,7 +173,7 @@ func defaultProfileDir() string {
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(configDir, "astonish", "browser")
+	return filepath.Join(configDir, "troupe", "browser")
 }
 
 // Manager manages a singleton browser instance. The browser is

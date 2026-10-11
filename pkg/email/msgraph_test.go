@@ -58,13 +58,13 @@ func TestMSGraphClient_ListMessages(t *testing.T) {
 		resp := graphMessageList{
 			Value: []graphMessage{
 				{
-					ID:               "msg-1",
-					Subject:          "Hello",
-					ReceivedDateTime: "2025-01-15T10:30:00Z",
-					IsRead:           false,
-					HasAttachments:   true,
+					ID:                "msg-1",
+					Subject:           "Hello",
+					ReceivedDateTime:  "2025-01-15T10:30:00Z",
+					IsRead:            false,
+					HasAttachments:    true,
 					InternetMessageID: "<abc@example.com>",
-					From: &graphEmailAddress{},
+					From:              &graphEmailAddress{},
 					ToRecipients: []graphRecipient{
 						{},
 					},
@@ -294,7 +294,7 @@ func newTestClient(srv *httptest.Server, token string) *MSGraphClient {
 	// Actually, we need to directly patch the URLs. Let's create a wrapper.
 	// The simplest approach: override the test to use a URL-rewriting transport.
 	client.client.Transport = &testTransport{
-		base:     srv.Client().Transport,
+		base:      srv.Client().Transport,
 		serverURL: srv.URL + "/v1.0",
 	}
 	return client

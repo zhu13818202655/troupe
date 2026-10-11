@@ -28,7 +28,7 @@ import (
 
 // ssoPageBaseCSS is the shared CSS foundation for all server-rendered SSO pages.
 // It uses prefers-color-scheme to match the user's OS theme preference, and
-// mirrors the Astonish Studio design tokens (Inter font, colors, radiuses).
+// mirrors the Troupe Studio design tokens (Inter font, colors, radiuses).
 const ssoPageBaseCSS = `
 :root {
   --bg: #fafbfe; --surface: #ffffff; --text: #0b1222;
@@ -581,7 +581,7 @@ func (h *SSOHandler) handleCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// --- Issue Astonish tokens ---
+	// --- Issue Troupe tokens ---
 	accessToken, err := h.pa.jwt.IssueAccessToken(
 		user.ID, user.Email, user.DisplayName,
 		org.Slug, teamSlug, membership.Role, user.PlatformRole,
@@ -833,7 +833,11 @@ func (h *SSOHandler) discoverOIDCProvider(provider *store.OIDCProvider) (*oidc.P
 	return oidc.NewProvider(ctx, provider.IssuerURL)
 }
 
-const oauthContinueCookiePrefix = "astonish_oauth_continue_"
+const oauthContinueCookiePrefix = "troupe_oauth_continue_"
+
+// legacyOAuthContinueCookiePrefix is the pre-rebrand cookie prefix, still
+// accepted on read so an SSO flow started before the rename can complete.
+const legacyOAuthContinueCookiePrefix = "astonish_oauth_continue_"
 
 func oauthContinueCookieName(deviceCode string) string {
 	return oauthContinueCookiePrefix + deviceCode
@@ -841,6 +845,10 @@ func oauthContinueCookieName(deviceCode string) string {
 
 func oauthContinueCookie(r *http.Request, deviceCode string) (string, error) {
 	cookie, err := r.Cookie(oauthContinueCookieName(deviceCode))
+	if err == http.ErrNoCookie {
+		// Fall back to the legacy pre-rebrand cookie name.
+		cookie, err = r.Cookie(legacyOAuthContinueCookiePrefix + deviceCode)
+	}
 	if err == http.ErrNoCookie {
 		return "", nil
 	}
@@ -886,7 +894,7 @@ func (h *SSOHandler) renderSSOBounce(w http.ResponseWriter) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="refresh" content="0;url=/">
-<title>Astonish — Logging in</title>
+<title>Troupe — Logging in</title>
 <style>
 `+ssoPageBaseCSS+`
 .spinner {
@@ -916,7 +924,7 @@ func (h *SSOHandler) renderCallbackSuccess(w http.ResponseWriter, displayName, o
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Astonish — Login Successful</title>
+<title>Troupe — Login Successful</title>
 <style>
 `+ssoPageBaseCSS+`
 .icon {
@@ -954,7 +962,7 @@ func (h *SSOHandler) renderCallbackError(w http.ResponseWriter, message string) 
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Astonish — Login Failed</title>
+<title>Troupe — Login Failed</title>
 <style>
 `+ssoPageBaseCSS+`
 .icon {

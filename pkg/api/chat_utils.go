@@ -1912,7 +1912,7 @@ func reconstructActiveApp(events session.Events) *agent.ActiveApp {
 //
 // A report marker is the persisted record that an artifact created via
 // write_file/edit_file in a given turn was signaled by the agent (via an
-// ```astonish-report fence) to be a report. The marker carries the absolute
+// ```troupe-report fence) to be a report. The marker carries the absolute
 // path to the artifact and an optional title. It is the source of truth that
 // flips ArtifactInfo.IsReport on subsequent session-detail loads.
 //

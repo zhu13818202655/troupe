@@ -1,6 +1,6 @@
 # Chat
 
-The Astonish agent operates through an LLM-driven tool-use loop. You describe a goal, and the agent plans, executes tools, observes results, and iterates until the task is complete.
+The Troupe agent operates through an LLM-driven tool-use loop. You describe a goal, and the agent plans, executes tools, observes results, and iterates until the task is complete.
 
 ## How It Works
 
@@ -31,19 +31,19 @@ The Studio chat interface at `http://localhost:9393` provides the full visual ex
 The terminal chat interface provides the same agent capabilities:
 
 ```bash
-astonish chat                                      # New session
-astonish chat -p anthropic -m claude-sonnet-4-20250514  # Pin provider/model on the new session
-astonish chat --resume <session-id>                # Resume a session
-astonish chat -r <session-id>                      # Short form
-astonish chat --auto-approve                       # Skip tool confirmations
-astonish chat --debug                              # Enable debug output
-astonish chat -w /path/to/project                  # Set working directory
+troupe chat                                      # New session
+troupe chat -p anthropic -m claude-sonnet-4-20250514  # Pin provider/model on the new session
+troupe chat --resume <session-id>                # Resume a session
+troupe chat -r <session-id>                      # Short form
+troupe chat --auto-approve                       # Skip tool confirmations
+troupe chat --debug                              # Enable debug output
+troupe chat -w /path/to/project                  # Set working directory
 ```
 
-`-p` / `-m` on a new session persist as a session pin (same concept as the Studio Model control). See [Chat Commands](../cli/chat.md) for `--no-pin`, `--clear-model`, and `astonish chat model`.
+`-p` / `-m` on a new session persist as a session pin (same concept as the Studio Model control). See [Chat Commands](../cli/chat.md) for `--no-pin`, `--clear-model`, and `troupe chat model`.
 
 ::: warning Authentication Required
-The CLI requires authentication before use. Run `astonish login <server-url>` first. See [Remote CLI](../platform/remote-cli.md).
+The CLI requires authentication before use. Run `troupe login <server-url>` first. See [Remote CLI](../platform/remote-cli.md).
 :::
 
 ## Confirmation System

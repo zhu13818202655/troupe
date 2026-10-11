@@ -10,8 +10,13 @@ import (
 
 const (
 	// ChromeExtensionClientID is the fixed public OAuth client embedded in the
-	// first-party Astonish Chrome extension. It has no secret; PKCE is mandatory.
-	ChromeExtensionClientID = "astonish-chrome-extension"
+	// first-party Troupe Chrome extension. It has no secret; PKCE is mandatory.
+	ChromeExtensionClientID = "troupe-chrome-extension"
+
+	// LegacyChromeExtensionClientID is the pre-rename client ID embedded in old
+	// extension builds. It is accepted for lookup so existing installs keep
+	// working, but tokens and codes are always issued to the new client ID.
+	LegacyChromeExtensionClientID = "astonish-chrome-extension"
 
 	// ChromeExtensionRedirectURI is derived from the pinned public key in
 	// extension/manifest.json. Chrome computes this stable extension ID for both
@@ -19,8 +24,13 @@ const (
 	ChromeExtensionRedirectURI = "https://oeiocpkpaiphjhoapdlihnbdpimipelg.chromiumapp.org/oauth2"
 
 	// CLIClientID is the fixed public OAuth client embedded in the first-party
-	// Astonish CLI. It has no secret; PKCE and a loopback redirect are mandatory.
-	CLIClientID = "astonish-cli"
+	// Troupe CLI. It has no secret; PKCE and a loopback redirect are mandatory.
+	CLIClientID = "troupe-cli"
+
+	// LegacyCLIClientID is the pre-rename client ID embedded in old CLI builds.
+	// It is accepted for lookup so existing installs keep working, but tokens
+	// and codes are always issued to the new client ID.
+	LegacyCLIClientID = "astonish-cli"
 
 	// CLIRedirectPath is the only path the CLI loopback listener may register.
 	CLIRedirectPath = "/oauth/callback"
@@ -29,7 +39,7 @@ const (
 func chromeExtensionClient() *store.OAuthClient {
 	return &store.OAuthClient{
 		ClientID:     ChromeExtensionClientID,
-		Name:         "Astonish Chrome Extension",
+		Name:         "Troupe Chrome Extension",
 		ClientType:   "public",
 		Active:       true,
 		RedirectURIs: []string{ChromeExtensionRedirectURI},
@@ -41,7 +51,7 @@ func chromeExtensionClient() *store.OAuthClient {
 func cliClient() *store.OAuthClient {
 	return &store.OAuthClient{
 		ClientID:     CLIClientID,
-		Name:         "Astonish CLI",
+		Name:         "Troupe CLI",
 		ClientType:   "public",
 		Active:       true,
 		RedirectURIs: []string{},
@@ -52,20 +62,22 @@ func cliClient() *store.OAuthClient {
 
 func (s *Server) client(ctx context.Context, id string) (*store.OAuthClient, error) {
 	switch id {
-	case ChromeExtensionClientID:
+	case ChromeExtensionClientID, LegacyChromeExtensionClientID:
+		// Legacy IDs resolve to the renamed client so old builds keep working,
+		// while every issued authorization carries the new client ID.
 		return chromeExtensionClient(), nil
-	case CLIClientID:
+	case CLIClientID, LegacyCLIClientID:
 		return cliClient(), nil
 	}
 	return s.store.GetOAuthClient(ctx, id)
 }
 
 func isChromeExtensionClient(client *store.OAuthClient) bool {
-	return client != nil && client.ClientID == ChromeExtensionClientID
+	return client != nil && (client.ClientID == ChromeExtensionClientID || client.ClientID == LegacyChromeExtensionClientID)
 }
 
 func isCLIClient(client *store.OAuthClient) bool {
-	return client != nil && client.ClientID == CLIClientID
+	return client != nil && (client.ClientID == CLIClientID || client.ClientID == LegacyCLIClientID)
 }
 
 func isFirstPartyPublicClient(client *store.OAuthClient) bool {

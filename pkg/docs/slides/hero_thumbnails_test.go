@@ -162,12 +162,12 @@ func TestFitDimensionsPreservesAspectRatio(t *testing.T) {
 		srcW, srcH, maxW, maxH int
 		wantW, wantH           int
 	}{
-		{1920, 1080, 320, 180, 320, 180},  // exact fit
-		{1600, 900, 320, 180, 320, 180},   // 16:9
-		{800, 800, 320, 180, 180, 180},    // square → height-limited
-		{100, 50, 320, 180, 100, 50},      // already small → no upscale
-		{3840, 2160, 320, 180, 320, 180},  // 4K → scaled down
-		{640, 480, 320, 180, 240, 180},    // 4:3 → height-limited
+		{1920, 1080, 320, 180, 320, 180}, // exact fit
+		{1600, 900, 320, 180, 320, 180},  // 16:9
+		{800, 800, 320, 180, 180, 180},   // square → height-limited
+		{100, 50, 320, 180, 100, 50},     // already small → no upscale
+		{3840, 2160, 320, 180, 320, 180}, // 4K → scaled down
+		{640, 480, 320, 180, 240, 180},   // 4:3 → height-limited
 	}
 	for _, tt := range tests {
 		w, h := fitDimensions(tt.srcW, tt.srcH, tt.maxW, tt.maxH)

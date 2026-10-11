@@ -169,7 +169,7 @@ api() {
 
   header_team=()
   if [[ -n "${team}" ]]; then
-    header_team=(-H "X-Astonish-Team: ${team}")
+    header_team=(-H "X-Troupe-Team: ${team}")
   fi
 
   local resp

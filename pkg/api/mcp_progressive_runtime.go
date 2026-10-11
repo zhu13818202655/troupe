@@ -232,7 +232,7 @@ type mcpToolContext struct {
 func (m *mcpToolContext) Actions() *session.EventActions       { return &session.EventActions{} }
 func (m *mcpToolContext) Branch() string                       { return "" }
 func (m *mcpToolContext) AgentName() string                    { return "MCPProgressiveRuntime" }
-func (m *mcpToolContext) AppName() string                      { return "astonish" }
+func (m *mcpToolContext) AppName() string                      { return "troupe" }
 func (m *mcpToolContext) Artifacts() adkagent.Artifacts        { return nil }
 func (m *mcpToolContext) FunctionCallID() string               { return "" }
 func (m *mcpToolContext) InvocationID() string                 { return "" }

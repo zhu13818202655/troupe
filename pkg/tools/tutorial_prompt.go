@@ -13,7 +13,7 @@ func GetTutorialAddPrompt(suiteName, suiteContext string) string {
 	return fmt.Sprintf(tutorialAddPromptTemplate, suiteName, suiteContext)
 }
 
-const tutorialWizardPrompt = `You are the Astonish Tutorial Video Blueprint Wizard.
+const tutorialWizardPrompt = `You are the Troupe Tutorial Video Blueprint Wizard.
 You author regenerable product training videos as a HeyGen-style cut list first
 (Scene | Voiceover | Visual), get creator approval in chat, then generate only
 the Screen rows as mode:tutorial drill YAML for UI recording.

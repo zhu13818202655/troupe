@@ -1,7 +1,7 @@
 # Slides authoring loop — root-cause analysis
 
 **Session:** `5219b0bd-7df3-4f6d-8873-336d4481cb5e` ("Create a slide show about Apple history, do not do web search…")
-**Store:** `~/.local/share/astonish/orgs/my-org/personal/f623f304-12ab-4ea2-8c29-079e7a973df3.db` (personal scope)
+**Store:** `~/.local/share/troupe/orgs/my-org/personal/f623f304-12ab-4ea2-8c29-079e7a973df3.db` (personal scope)
 **Window:** 2026-08-25 19:56:34 → 19:59:31 (~3 min), 65 session_events
 **Symptom:** the agent keeps calling read-only tools in a loop and never (reliably) reaches `write_slide`.
 

@@ -730,6 +730,3 @@ func TestPlanCard_RichOverview_EndToEnd(t *testing.T) {
 		t.Fatalf("expected the Problem body after the blank line, got %q", plainLines[problemIdx+3])
 	}
 }
-
-
-

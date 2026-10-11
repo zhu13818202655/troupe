@@ -15,10 +15,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/zhu13818202655/troupe/pkg/docs/slides"
-	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"github.com/zhu13818202655/troupe/pkg/docs/slides"
+	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
 // docsStoreStub is a minimal in-memory store.DocsStore for handler tests.

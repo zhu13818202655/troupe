@@ -52,7 +52,7 @@ func (r *GitHubReporter) PostSessionSummary(messages []Message, sessionID string
 func buildSummaryComment(messages []Message, sessionID string) string {
 	var sb strings.Builder
 
-	sb.WriteString("## Astonish Fleet Summary\n\n")
+	sb.WriteString("## Troupe Fleet Summary\n\n")
 
 	// Collect agent contributions (skip system and customer messages, skip intermediates)
 	type contribution struct {
@@ -116,7 +116,7 @@ func buildSummaryComment(messages []Message, sessionID string) string {
 	}
 
 	sb.WriteString("---\n")
-	sb.WriteString(fmt.Sprintf("*Processed by [Astonish Fleet](https://github.com/zhu13818202655/troupe) (session: `%s`)*\n", truncateID(sessionID)))
+	sb.WriteString(fmt.Sprintf("*Processed by [Troupe Fleet](https://github.com/zhu13818202655/troupe) (session: `%s`)*\n", truncateID(sessionID)))
 
 	return sb.String()
 }

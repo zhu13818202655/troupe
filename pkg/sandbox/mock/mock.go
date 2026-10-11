@@ -76,7 +76,7 @@ type MockBackend struct {
 
 	// State, keyed by SessionID.
 	sessions map[string]*sandbox.Session
-	ports    map[string]map[int]string // sessionID → port → proto
+	ports    map[string]map[int]string    // sessionID → port → proto
 	files    map[string]map[string][]byte // sessionID → path → content
 
 	// Call logs (append-only).

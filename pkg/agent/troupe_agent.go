@@ -20,8 +20,8 @@ import (
 // ErrWaitingForApproval is returned when a tool needs user approval
 var ErrWaitingForApproval = fmt.Errorf("interrupt: waiting for user approval")
 
-// AstonishAgent implements the logic for running Astonish agents.
-type AstonishAgent struct {
+// TroupeAgent implements the logic for running Troupe agents.
+type TroupeAgent struct {
 	Config          *config.AgentConfig
 	LLM             model.LLM
 	Tools           []tool.Tool
@@ -35,9 +35,9 @@ type AstonishAgent struct {
 	PendingSecrets  *credentials.PendingVault      // Per-session vault for <<<SECRET_N>>> token resolution (nil = disabled)
 }
 
-// NewAstonishAgent creates a new AstonishAgent.
-func NewAstonishAgent(cfg *config.AgentConfig, llm model.LLM, tools []tool.Tool) *AstonishAgent {
-	return &AstonishAgent{
+// NewTroupeAgent creates a new TroupeAgent.
+func NewTroupeAgent(cfg *config.AgentConfig, llm model.LLM, tools []tool.Tool) *TroupeAgent {
+	return &TroupeAgent{
 		Config:   cfg,
 		LLM:      llm,
 		Tools:    tools,
@@ -45,9 +45,9 @@ func NewAstonishAgent(cfg *config.AgentConfig, llm model.LLM, tools []tool.Tool)
 	}
 }
 
-// NewAstonishAgentWithToolsets creates a new AstonishAgent with both tools and toolsets.
-func NewAstonishAgentWithToolsets(cfg *config.AgentConfig, llm model.LLM, tools []tool.Tool, toolsets []tool.Toolset) *AstonishAgent {
-	return &AstonishAgent{
+// NewTroupeAgentWithToolsets creates a new TroupeAgent with both tools and toolsets.
+func NewTroupeAgentWithToolsets(cfg *config.AgentConfig, llm model.LLM, tools []tool.Tool, toolsets []tool.Toolset) *TroupeAgent {
+	return &TroupeAgent{
 		Config:   cfg,
 		LLM:      llm,
 		Tools:    tools,
@@ -56,7 +56,7 @@ func NewAstonishAgentWithToolsets(cfg *config.AgentConfig, llm model.LLM, tools 
 }
 
 // Run executes the agent flow with stateful workflow management.
-func (a *AstonishAgent) Run(ctx agent.InvocationContext) iter.Seq2[*session.Event, error] {
+func (a *TroupeAgent) Run(ctx agent.InvocationContext) iter.Seq2[*session.Event, error] {
 	if a.DebugMode {
 		if a.Toolsets != nil {
 			// Create a minimal context for listing tools

@@ -1,4 +1,4 @@
-# A2A Client — Astonish Calling External Agents
+# A2A Client — Troupe Calling External Agents
 
 > **Status:** Implemented  
 > **Packages:** `pkg/a2aclient/`, `pkg/config/a2a_agents_config.go`, `pkg/store/a2a_agents.go`, `pkg/store/entstore/org_a2a_agents.go`, `pkg/store/entstore/team_a2a_agents.go`, `pkg/api/a2a_client_handlers.go`  
@@ -6,9 +6,9 @@
 
 ## 1. Overview
 
-The A2A Client feature enables Astonish to act as a **consumer** of external agents that implement the [Agent-to-Agent (A2A) protocol](https://github.com/a2aproject/a2a-go). Where the A2A *Server* feature (see [`a2a-server.md`](./a2a-server.md)) exposes Astonish as a remote agent for other systems to call, the A2A *Client* does the inverse: it connects **outward** to remote agents and surfaces their capabilities as callable tools within an Astonish session.
+The A2A Client feature enables Troupe to act as a **consumer** of external agents that implement the [Agent-to-Agent (A2A) protocol](https://github.com/a2aproject/a2a-go). Where the A2A *Server* feature (see [`a2a-server.md`](./a2a-server.md)) exposes Troupe as a remote agent for other systems to call, the A2A *Client* does the inverse: it connects **outward** to remote agents and surfaces their capabilities as callable tools within an Troupe session.
 
-This mirrors the MCP Server integration pattern: remote agent connections are declared in configuration, scoped with a 3-tier cascade (Platform → Org → Team), and their skills are automatically converted into tools the Astonish agent can invoke.
+This mirrors the MCP Server integration pattern: remote agent connections are declared in configuration, scoped with a 3-tier cascade (Platform → Org → Team), and their skills are automatically converted into tools the Troupe agent can invoke.
 
 ### Key Capabilities
 
@@ -22,7 +22,7 @@ This mirrors the MCP Server integration pattern: remote agent connections are de
 
 ```mermaid
 graph TB
-    subgraph "Astonish Agent Session"
+    subgraph "Troupe Agent Session"
         ToolExec["Tool Executor"]
     end
 
@@ -69,7 +69,7 @@ Lower tiers override higher tiers **by agent name**. The merge semantics are ide
 
 ### File-Based Config (Personal Mode)
 
-Location: `~/.config/astonish/a2a_agents.json`
+Location: `~/.config/troupe/a2a_agents.json`
 
 ```json
 {

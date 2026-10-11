@@ -1,5 +1,5 @@
 // Package a2a implements the Agent-to-Agent (A2A) protocol v1.0 types and
-// server-side infrastructure for Astonish's A2A channel adapter.
+// server-side infrastructure for Troupe's A2A channel adapter.
 package a2a
 
 import (

@@ -221,8 +221,8 @@ func TestEnsureFleetContainer_WithCertBundles(t *testing.T) {
 		AppConfig: config.SandboxOpenShellConfig{
 			CertBundles: []config.CertBundleConfig{{
 				Name:      "corp-root-ca",
-				ClaimName: "astonish-corp-ca",
-				MountPath: "/etc/astonish-ca/ca-bundle.crt",
+				ClaimName: "troupe-corp-ca",
+				MountPath: "/etc/troupe-ca/ca-bundle.crt",
 			}},
 		},
 	})
@@ -241,7 +241,7 @@ func TestEnsureFleetContainer_WithCertBundles(t *testing.T) {
 	if captured.DriverConfig == nil {
 		t.Fatal("expected DriverConfig")
 	}
-	if captured.Env["SSL_CERT_FILE"] != "/etc/astonish-ca/ca-bundle.crt" {
+	if captured.Env["SSL_CERT_FILE"] != "/etc/troupe-ca/ca-bundle.crt" {
 		t.Errorf("SSL_CERT_FILE = %q", captured.Env["SSL_CERT_FILE"])
 	}
 }

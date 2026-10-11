@@ -69,16 +69,16 @@ func TestParseTapURL(t *testing.T) {
 		expectedURL  string
 	}{
 		{
-			name:         "simple username assumes astonish-flows repo",
+			name:         "simple username assumes troupe-flows repo",
 			input:        "myuser",
 			expectedName: "myuser",
-			expectedURL:  "github.com/myuser/astonish-flows",
+			expectedURL:  "github.com/myuser/troupe-flows",
 		},
 		{
-			name:         "user/astonish-flows uses just username as name",
-			input:        "myuser/astonish-flows",
+			name:         "user/troupe-flows uses just username as name",
+			input:        "myuser/troupe-flows",
 			expectedName: "myuser",
-			expectedURL:  "github.com/myuser/astonish-flows",
+			expectedURL:  "github.com/myuser/troupe-flows",
 		},
 		{
 			name:         "user/other-repo uses user-repo as name",
@@ -103,13 +103,13 @@ func TestParseTapURL(t *testing.T) {
 			name:         "enterprise with just owner assumes default repo",
 			input:        "github.enterprise.com/myteam",
 			expectedName: "myteam",
-			expectedURL:  "github.enterprise.com/myteam/astonish-flows",
+			expectedURL:  "github.enterprise.com/myteam/troupe-flows",
 		},
 		{
 			name:         "enterprise with owner and default repo",
-			input:        "github.enterprise.com/myteam/astonish-flows",
+			input:        "github.enterprise.com/myteam/troupe-flows",
 			expectedName: "myteam",
-			expectedURL:  "github.enterprise.com/myteam/astonish-flows",
+			expectedURL:  "github.enterprise.com/myteam/troupe-flows",
 		},
 		{
 			name:         "enterprise with owner and custom repo",
@@ -168,9 +168,9 @@ func TestSanitizeName(t *testing.T) {
 	}{
 		{"simple", "simple"},
 		{"my-tap", "my-tap"},
-		{"user/repo", "user-repo"},    // / replaced with -
-		{"user:repo", "user:repo"},    // : is kept as-is
-		{"a/b/c", "a-b-c"},            // multiple / replaced
+		{"user/repo", "user-repo"}, // / replaced with -
+		{"user:repo", "user:repo"}, // : is kept as-is
+		{"a/b/c", "a-b-c"},         // multiple / replaced
 	}
 
 	for _, tt := range tests {
@@ -478,19 +478,19 @@ func TestBuildRawGitHubURL(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			url, _, err := buildRawGitHubURL(tt.repoURL, tt.branch, tt.filePath)
-			
+
 			if tt.expectError {
 				if err == nil {
 					t.Error("expected error, got nil")
 				}
 				return
 			}
-			
+
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
 			}
-			
+
 			if url != tt.expectedURL {
 				t.Errorf("URL = %q, expected %q", url, tt.expectedURL)
 			}
@@ -511,7 +511,7 @@ func TestBuildRawGitHubURLTokenSelection(t *testing.T) {
 	// Test public GitHub uses GITHUB_TOKEN
 	os.Setenv("GITHUB_TOKEN", "public-token")
 	os.Setenv("GITHUB_ENTERPRISE_TOKEN", "enterprise-token")
-	
+
 	_, token, _ := buildRawGitHubURL("github.com/owner/repo", "main", "file")
 	if token != "public-token" {
 		t.Errorf("Public GitHub should use GITHUB_TOKEN, got: %q", token)

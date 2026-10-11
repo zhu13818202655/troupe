@@ -374,7 +374,7 @@ func validateCredentials(ctx tool.Context, creds map[string]string) ([]Validatio
 		checks = append(checks, ValidationCheck{
 			Name:    checkName,
 			Status:  "failed",
-			Message: fmt.Sprintf("Credential %q not found: store entry %q does not exist. Add it with 'astonish credentials set' or the save_credential tool.", logicalName, storeName),
+			Message: fmt.Sprintf("Credential %q not found: store entry %q does not exist. Add it with 'troupe credentials set' or the save_credential tool.", logicalName, storeName),
 		})
 	}
 

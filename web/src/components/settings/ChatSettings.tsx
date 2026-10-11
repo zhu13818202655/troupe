@@ -61,7 +61,7 @@ export default function ChatSettings({ config, onSaved }: { config: Record<strin
         <CardHeader>
           <CardTitle className="text-base">System Prompt</CardTitle>
           <CardDescription>
-            Customize the instructions appended to Astonish&apos;s built-in system prompt.
+            Customize the instructions appended to Troupe&apos;s built-in system prompt.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2">
@@ -70,12 +70,12 @@ export default function ChatSettings({ config, onSaved }: { config: Record<strin
             id="system-prompt"
             value={form.system_prompt}
             onChange={(e) => setForm({ ...form, system_prompt: e.target.value })}
-            placeholder="You are Astonish, an AI assistant with access to tools..."
+            placeholder="You are Troupe, an AI assistant with access to tools..."
             rows={5}
             className="min-h-28 resize-y bg-background"
           />
           <p className="text-xs leading-relaxed text-muted-foreground">
-            Leave empty to use only the default prompt: “You are Astonish, an AI assistant with access to tools. You help users accomplish tasks by calling tools and reasoning through problems.”
+            Leave empty to use only the default prompt: “You are Troupe, an AI assistant with access to tools. You help users accomplish tasks by calling tools and reasoning through problems.”
           </p>
         </CardContent>
       </Card>
@@ -188,7 +188,7 @@ export default function ChatSettings({ config, onSaved }: { config: Record<strin
               className="bg-background font-mono"
             />
             <p className="text-xs text-muted-foreground">
-              Working directory for tool execution. Default: the directory where Astonish was started.
+              Working directory for tool execution. Default: the directory where Troupe was started.
             </p>
           </div>
           <div className="space-y-2">
@@ -198,11 +198,11 @@ export default function ChatSettings({ config, onSaved }: { config: Record<strin
               type="text"
               value={form.flow_save_dir}
               onChange={(e) => setForm({ ...form, flow_save_dir: e.target.value })}
-              placeholder="~/.config/astonish/flows/ (default)"
+              placeholder="~/.config/troupe/flows/ (default)"
               className="bg-background font-mono"
             />
             <p className="text-xs text-muted-foreground">
-              Directory where recorded flows are saved. Default: ~/.config/astonish/flows/.
+              Directory where recorded flows are saved. Default: ~/.config/troupe/flows/.
             </p>
           </div>
         </CardContent>

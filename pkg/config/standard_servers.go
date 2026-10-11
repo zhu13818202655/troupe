@@ -17,14 +17,14 @@ type StandardEnvVar struct {
 // The server command, args, and env var names are hardcoded here.
 // Credentials are stored in config.yaml under web_servers.
 type StandardMCPServer struct {
-	ID             string           `json:"id"`
-	DisplayName    string           `json:"displayName"`
-	Description    string           `json:"description"`
-	Category       string           `json:"category"`       // "web", "browser", or "codeintel"
-	Kind           string           `json:"kind,omitempty"` // "mcp" (default) or "model"
-	Command        string           `json:"command"`
-	Args           []string         `json:"args"`
-	EnvVars        []StandardEnvVar `json:"envVars"`
+	ID          string           `json:"id"`
+	DisplayName string           `json:"displayName"`
+	Description string           `json:"description"`
+	Category    string           `json:"category"`       // "web", "browser", or "codeintel"
+	Kind        string           `json:"kind,omitempty"` // "mcp" (default) or "model"
+	Command     string           `json:"command"`
+	Args        []string         `json:"args"`
+	EnvVars     []StandardEnvVar `json:"envVars"`
 	// FixedEnv are non-secret environment variables always passed to the server
 	// (e.g. feature flags). Unlike EnvVars, these carry no user credential and
 	// are injected verbatim by BuildMCPServerConfig — used by keyless servers

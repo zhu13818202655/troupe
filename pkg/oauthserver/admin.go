@@ -23,7 +23,7 @@ type ClientInput struct {
 	Active                                       bool
 }
 
-// Discovery describes the stable public endpoints for an Astonish issuer.
+// Discovery describes the stable public endpoints for an Troupe issuer.
 type Discovery struct {
 	Issuer                string            `json:"issuer"`
 	Resource              string            `json:"resource"`

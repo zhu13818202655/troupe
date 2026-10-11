@@ -28,11 +28,11 @@ type Skill struct {
 	Directory   string      `yaml:"-"`                  // Absolute path to skill directory (empty for DB-backed)
 
 	// ExcludeFromCodeMode marks a builtin skill that must not appear in the
-	// "Available Skills" index or the /skills picker when running in Astonish
+	// "Available Skills" index or the /skills picker when running in Troupe
 	// Code mode. The skill remains resolvable via skill_lookup for users who
 	// explicitly request it; it is only suppressed from discovery surfaces
 	// that would otherwise mislead the coding agent into generating
-	// Studio-only artifacts (e.g. astonish-app fences).
+	// Studio-only artifacts (e.g. troupe-app fences).
 	ExcludeFromCodeMode bool `yaml:"-"`
 }
 

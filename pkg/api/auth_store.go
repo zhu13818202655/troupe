@@ -1,6 +1,6 @@
 // Package api — file-backed session store for Studio device authorization.
 //
-// Authorized sessions are stored in ~/.config/astonish/web_sessions.json.
+// Authorized sessions are stored in ~/.config/troupe/web_sessions.json.
 // Tokens are stored as SHA-256 hashes so that a leaked file does not
 // expose usable session tokens.
 package api

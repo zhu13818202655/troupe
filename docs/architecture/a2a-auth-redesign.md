@@ -1,6 +1,6 @@
 # A2A Authentication Redesign — Historical External-IdP Proposal
 
-> **Historical record.** This proposal is superseded. Inbound A2A accepts only Astonish-issued OAuth bearer tokens for the shared protected-resource audience with exact `a2a` scope. It no longer accepts direct external IdP/JWKS tokens, maintains trusted-issuer or allowed-agent settings, maps `UserChannel(a2a, ...)`, or uses `channels.a2a`. OAuth-issued grants resolve the canonical tenant principal before A2A execution. See [A2A Server](./a2a-server.md) and [OAuth Authorization](./oauth-authorization.md).
+> **Historical record.** This proposal is superseded. Inbound A2A accepts only Troupe-issued OAuth bearer tokens for the shared protected-resource audience with exact `a2a` scope. It no longer accepts direct external IdP/JWKS tokens, maintains trusted-issuer or allowed-agent settings, maps `UserChannel(a2a, ...)`, or uses `channels.a2a`. OAuth-issued grants resolve the canonical tenant principal before A2A execution. See [A2A Server](./a2a-server.md) and [OAuth Authorization](./oauth-authorization.md).
 
 ## Problem Statement
 
@@ -9,12 +9,12 @@ The current A2A implementation has a fundamentally broken identity model:
 1. **Unconstrained impersonation**: When `AllowIdentityPropagation=true`, an external agent can claim to be ANY user by simply putting `"user_email": "anyone@company.com"` in the message metadata. No verification occurs.
 2. **Single token → all users**: One API key with propagation enabled gives access to every user's context (credentials, memory, tools, sessions).
 3. **No cryptographic proof**: Identity is asserted via a plaintext string, not a signed token from a trusted authority.
-4. **Violates Astonish's core model**: Every other channel (Telegram, Slack, Email) links a verified external identity to a specific platform user. A2A bypasses this entirely.
+4. **Violates Troupe's core model**: Every other channel (Telegram, Slack, Email) links a verified external identity to a specific platform user. A2A bypasses this entirely.
 
 ## Design Goals
 
 1. **Same security model as other channels**: Every A2A request executes in the context of a specific, verified platform user — with their team, credentials, memory, MCP servers, and skills.
-2. **Enterprise-grade identity propagation**: External systems (like SAP Joule) can call Astonish on behalf of their authenticated users, with cryptographic proof of who the user is.
+2. **Enterprise-grade identity propagation**: External systems (like SAP Joule) can call Troupe on behalf of their authenticated users, with cryptographic proof of who the user is.
 3. **No trust in the requester's self-assertion**: Identity must be proven by a token signed by a trusted Identity Provider (IdP), not asserted in metadata.
 4. **Standards-based**: Uses OAuth 2.0 Token Exchange (RFC 8693) semantics, OpenID Connect for user identity, and the A2A protocol's native `securitySchemes` mechanism.
 5. **Multi-tenant safe**: Different organizations can configure different trusted IdPs; an agent authenticated in one org cannot access another.
@@ -38,7 +38,7 @@ External Agent (e.g., SAP Joule)
 │  4. Extract identity:                                                 │
 │     - sub  = user identity (email or user ID)                         │
 │     - act  = calling agent/service identity (RFC 8693)                │
-│     - aud  = must include Astonish's A2A audience                     │
+│     - aud  = must include Troupe's A2A audience                     │
 │     - org/tenant = routing hint                                       │
 │  5. Resolve user via PlatformResolver (same as Telegram/Slack/Email)  │
 │  6. Inject authenticated context                                      │
@@ -51,17 +51,17 @@ The redesigned A2A supports two authentication modes, both producing the same ou
 
 #### Mode 1: Direct User Token (OIDC)
 
-The external agent holds a valid **user access token** (or ID token) from a trusted IdP that Astonish is configured to accept. This is the simplest case — the user authenticated directly with the IdP, and the agent forwards their token.
+The external agent holds a valid **user access token** (or ID token) from a trusted IdP that Troupe is configured to accept. This is the simplest case — the user authenticated directly with the IdP, and the agent forwards their token.
 
 ```
 User authenticates with IdP (e.g., IAS, Azure AD, Okta)
-    → IdP issues JWT with sub=user@company.com, aud=astonish-a2a
+    → IdP issues JWT with sub=user@company.com, aud=troupe-a2a
     → External agent includes this JWT in Authorization: Bearer header
-    → Astonish validates JWT signature via JWKS, extracts sub as user identity
+    → Troupe validates JWT signature via JWKS, extracts sub as user identity
     → PlatformResolver maps user@company.com → platform user → team context
 ```
 
-**When to use**: When the external agent can obtain a user-scoped token with Astonish as the audience. This is the standard OIDC pattern.
+**When to use**: When the external agent can obtain a user-scoped token with Troupe as the audience. This is the standard OIDC pattern.
 
 #### Mode 2: Delegated Token (OAuth 2.0 Token Exchange / On-Behalf-Of)
 
@@ -72,17 +72,17 @@ External system authenticates user internally
     → System calls its own IdP to exchange user token for a delegated token:
        - subject_token = user's token
        - actor_token = system's service credential
-       - audience = astonish-a2a
+       - audience = troupe-a2a
     → IdP issues delegated JWT:
        {
          "sub": "user@company.com",      ← the user
          "act": { "sub": "joule-prod" }, ← the acting service
-         "aud": "astonish-a2a",
+         "aud": "troupe-a2a",
          "iss": "https://accounts.sap.com",
          "exp": 1723620000
        }
     → External agent includes this JWT in Authorization: Bearer header
-    → Astonish validates:
+    → Troupe validates:
        1. Signature via JWKS from trusted issuer
        2. Audience matches configured A2A audience
        3. Actor (act.sub) is in the allowed agents list for this org
@@ -99,11 +99,11 @@ External system authenticates user internally
 │  SAP Joule (BTP)                                              │
 │                                                               │
 │  1. User is authenticated via IAS (OIDC)                      │
-│  2. Joule needs to call Astonish on behalf of user            │
+│  2. Joule needs to call Troupe on behalf of user            │
 │  3. Joule calls IAS token exchange:                           │
 │     - subject_token = user's IAS token                        │
 │     - client_credentials = Joule's service identity           │
-│     - audience = "astonish-a2a" (configured in IAS)           │
+│     - audience = "troupe-a2a" (configured in IAS)           │
 │  4. IAS issues delegated JWT:                                 │
 │     { sub: "user@company.com", act: { sub: "joule" }, ... }   │
 │  5. Joule sends A2A request with this JWT                     │
@@ -111,10 +111,10 @@ External system authenticates user internally
                            │
                            v
 ┌──────────────────────────────────────────────────────────────┐
-│  Astonish A2A Server                                          │
+│  Troupe A2A Server                                          │
 │                                                               │
 │  1. Validates JWT signature (IAS JWKS endpoint)               │
-│  2. Checks audience = "astonish-a2a"                          │
+│  2. Checks audience = "troupe-a2a"                          │
 │  3. Checks act.sub = "joule" is in allowed agents for org     │
 │  4. Extracts sub = "user@company.com"                         │
 │  5. PlatformResolver: email → user → org/team context         │
@@ -136,9 +136,9 @@ type TrustedIssuer struct {
     Name        string `json:"name"`            // "SAP IAS Production"
     Issuer      string `json:"issuer"`          // "https://accounts.sap.com" (must match JWT iss)
     JWKSURL     string `json:"jwks_url"`        // "https://accounts.sap.com/.well-known/jwks.json"
-    Audience    string `json:"audience"`        // Expected aud claim ("astonish-a2a" or custom)
+    Audience    string `json:"audience"`        // Expected aud claim ("troupe-a2a" or custom)
     UserClaim   string `json:"user_claim"`      // Which claim identifies the user: "sub", "email", "preferred_username"
-    OrgID       string `json:"org_id"`          // Owning organization in Astonish
+    OrgID       string `json:"org_id"`          // Owning organization in Troupe
 }
 ```
 
@@ -184,7 +184,7 @@ type PlatformA2AConfig struct {
     Enabled             bool   `json:"enabled"`
     BaseURL             string `json:"base_url,omitempty"`
     TaskTTL             string `json:"task_ttl,omitempty"`
-    DefaultAudience     string `json:"default_audience,omitempty"`     // e.g., "astonish-a2a"
+    DefaultAudience     string `json:"default_audience,omitempty"`     // e.g., "troupe-a2a"
     AutoLinkByEmail     bool   `json:"auto_link_by_email"`            // Auto-create user-channel link if email matches
     RequireActorClaim   bool   `json:"require_actor_claim"`           // If true, reject tokens without act claim
 }
@@ -218,13 +218,13 @@ The Agent Card now advertises OpenID Connect as the primary auth mechanism:
 
 ```json
 {
-  "name": "Astonish",
-  "url": "https://astonish.example.com/api/a2a",
+  "name": "Troupe",
+  "url": "https://troupe.example.com/api/a2a",
   "version": "1.0.0",
   "securitySchemes": {
     "oidc": {
       "type": "openIdConnect",
-      "openIdConnectUrl": "https://astonish.example.com/.well-known/openid-configuration"
+      "openIdConnectUrl": "https://troupe.example.com/.well-known/openid-configuration"
     },
     "bearerJWT": {
       "type": "http",
@@ -239,7 +239,7 @@ The Agent Card now advertises OpenID Connect as the primary auth mechanism:
 }
 ```
 
-Note: Astonish doesn't need to BE an OIDC provider. The `openIdConnectUrl` can point to the org's configured IdP, or we can use the simpler `bearerJWT` scheme which just says "send a JWT Bearer token" — the validation happens server-side against configured JWKS endpoints.
+Note: Troupe doesn't need to BE an OIDC provider. The `openIdConnectUrl` can point to the org's configured IdP, or we can use the simpler `bearerJWT` scheme which just says "send a JWT Bearer token" — the validation happens server-side against configured JWKS endpoints.
 
 ## What Gets Removed
 
@@ -269,7 +269,7 @@ POST /api/admin/a2a/issuers
   "name": "SAP IAS Production",
   "issuer": "https://mycompany.accounts.ondemand.com",
   "jwks_url": "https://mycompany.accounts.ondemand.com/oauth2/certs",
-  "audience": "astonish-a2a",
+  "audience": "troupe-a2a",
   "user_claim": "email"
 }
 
@@ -289,15 +289,15 @@ POST /api/admin/a2a/agents
 channels:
   a2a:
     enabled: true
-    base_url: "https://astonish.example.com"
-    default_audience: "astonish-a2a"
+    base_url: "https://troupe.example.com"
+    default_audience: "troupe-a2a"
     auto_link_by_email: true
     require_actor_claim: false  # Allow direct user tokens too
     trusted_issuers:
       - name: "Company IdP"
         issuer: "https://login.company.com"
         jwks_url: "https://login.company.com/.well-known/jwks.json"
-        audience: "astonish-a2a"
+        audience: "troupe-a2a"
         user_claim: "email"
     allowed_agents:
       - name: "Joule"
@@ -307,21 +307,21 @@ channels:
 
 ## Request Flow (Complete)
 
-### Happy Path: Joule calling Astonish on behalf of user
+### Happy Path: Joule calling Troupe on behalf of user
 
 ```
 1. User is logged into SAP system, authenticated via IAS
-2. User triggers Joule action that needs Astonish capabilities
+2. User triggers Joule action that needs Troupe capabilities
 3. Joule performs token exchange with IAS:
    - subject_token = user's IAS access token
    - client_credentials = Joule's service identity
-   - audience = "astonish-a2a"
+   - audience = "troupe-a2a"
    - scope = "a2a:task"
 4. IAS issues delegated JWT:
    {
      "iss": "https://mycompany.accounts.ondemand.com",
      "sub": "user@company.com",
-     "aud": "astonish-a2a",
+     "aud": "troupe-a2a",
      "act": { "sub": "joule-prod-client-id" },
      "exp": <now + 5min>,
      "iat": <now>
@@ -341,7 +341,7 @@ channels:
      }
    }
 
-6. Astonish A2A Auth Middleware:
+6. Troupe A2A Auth Middleware:
    a. Extracts Bearer JWT
    b. Parses header → gets kid
    c. Fetches JWKS from IAS (cached)
@@ -401,7 +401,7 @@ channels:
 ## Security Properties
 
 1. **No trust in requester assertions**: Identity comes from cryptographically signed JWT, not from message metadata.
-2. **Audience binding**: Token must be issued specifically for Astonish (`aud` claim), preventing token reuse from other services.
+2. **Audience binding**: Token must be issued specifically for Troupe (`aud` claim), preventing token reuse from other services.
 3. **Short-lived tokens**: Delegated tokens should be short-lived (5-15 min), limiting exposure window.
 4. **Actor verification**: Even with a valid user token, the acting service must be in the org's allowlist.
 5. **Per-user scoping**: Each request resolves to exactly one platform user, with their specific permissions.
@@ -413,7 +413,7 @@ channels:
 
 - **`github.com/golang-jwt/jwt/v5`** — already in use for platform auth
 - **JWKS fetching** — need a JWKS client with caching (e.g., `github.com/MicahParks/keyfunc/v3` or custom)
-- No new external IdP integration needed — Astonish validates tokens, it doesn't issue them
+- No new external IdP integration needed — Troupe validates tokens, it doesn't issue them
 
 ## A2A Protocol Alignment
 
@@ -428,5 +428,5 @@ This design aligns with the A2A v1.0 specification:
 
 1. **JWKS cache TTL**: How aggressively to cache JWKS? Recommend 1h with forced refresh on unknown kid.
 2. **Auto-link policy**: Should auto-linking require the user to already exist, or also auto-provision? Recommend: user must exist, link is auto-created.
-3. **Fallback for simple setups**: Should we keep a simplified "shared secret JWT" mode for self-hosted instances without an external IdP? (Astonish issues its own JWTs for A2A, validated with its own key.)
+3. **Fallback for simple setups**: Should we keep a simplified "shared secret JWT" mode for self-hosted instances without an external IdP? (Troupe issues its own JWTs for A2A, validated with its own key.)
 4. **Rate limiting**: Per-agent or per-user or both? Recommend: per-agent global + per-user within agent.

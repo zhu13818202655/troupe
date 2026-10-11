@@ -11,7 +11,7 @@ API-specific guidance under the parent [`web/src` guide](../AGENTS.md). Read it 
 
 ## Auth and team context
 
-- Use `teamFetch` from `teamContext.ts` for authenticated/team-scoped API calls. It owns `X-Astonish-Team`, `X-Requested-With`, single-flight 401 refresh/retry, auth-expiry notification, and rejected-team handling.
+- Use `teamFetch` from `teamContext.ts` for authenticated/team-scoped API calls. It owns `X-Troupe-Team`, `X-Requested-With`, single-flight 401 refresh/retry, auth-expiry notification, and rejected-team handling.
 - Do not duplicate token refresh, read auth storage directly, or use bare `fetch` to bypass team context. Use `explicitTeam` only when the operation intentionally targets a team other than the globally active team.
 - Preserve headers supplied by callers. Team/auth behavior belongs in `teamContext.ts`; endpoint wrappers own only endpoint-specific headers and payloads.
 

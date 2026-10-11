@@ -1,6 +1,6 @@
 # Installation
 
-Astonish ships as a single binary for macOS and Linux. Choose the installation method that fits your environment.
+Troupe ships as a single binary for macOS and Linux. Choose the installation method that fits your environment.
 
 ## Homebrew (macOS and Linux)
 
@@ -11,7 +11,7 @@ brew install zhu13818202655/troupe/troupe
 Verify the installation:
 
 ```bash
-astonish --version
+troupe --version
 ```
 
 ## Install Script
@@ -34,11 +34,11 @@ Requirements:
 
 ```bash
 git clone https://github.com/zhu13818202655/troupe.git
-cd astonish
+cd troupe
 make build-all
 ```
 
-This builds the Ent ORM client, React frontend, and compiles the Go binary with the UI embedded. The resulting binary is at `./astonish`.
+This builds the Ent ORM client, React frontend, and compiles the Go binary with the UI embedded. The resulting binary is at `./troupe`.
 
 To build only the Go binary without the UI:
 
@@ -48,10 +48,10 @@ make build
 
 ## Cloud Deployment Prerequisites
 
-If you plan to deploy Astonish with PostgreSQL (multi-tenant, teams), you need:
+If you plan to deploy Troupe with PostgreSQL (multi-tenant, teams), you need:
 
 - **PostgreSQL 15+** with the `pgvector` extension installed
-- A database user with permissions to create databases (Astonish creates one database per organization)
+- A database user with permissions to create databases (Troupe creates one database per organization)
 
 Install pgvector on your PostgreSQL instance:
 
@@ -66,8 +66,8 @@ On managed PostgreSQL services (AWS RDS, GCP Cloud SQL, Azure), pgvector is typi
 After installing, confirm everything works:
 
 ```bash
-astonish --version
-astonish setup       # Interactive configuration wizard
+troupe --version
+troupe setup       # Interactive configuration wizard
 ```
 
 The setup wizard walks you through AI provider configuration. See [Quick Start: Local](./quick-start-local.md) or [Quick Start: Cloud](./quick-start-cloud.md) for next steps.

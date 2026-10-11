@@ -45,14 +45,14 @@ func newOwnershipFixture(t *testing.T) ownershipFixture {
 		SessionID:     "chat-owner",
 		ChatSessionID: "chat-owner",
 		Backend:       "docker",
-		ContainerName: "astonish-session-owner",
+		ContainerName: "troupe-session-owner",
 		TemplateID:    sandbox.BaseTemplateID,
 		State:         store.SandboxSessionStateRunning,
 	}); err != nil {
 		t.Fatalf("PutSession: %v", err)
 	}
 	sessions := &memSessionStore{metas: map[string]*store.SessionMeta{
-		"chat-owner": {ID: "chat-owner", UserID: "user-owner", AppName: "astonish"},
+		"chat-owner": {ID: "chat-owner", UserID: "user-owner", AppName: "troupe"},
 	}}
 	return ownershipFixture{
 		registry: reg,
@@ -107,7 +107,7 @@ func TestSandboxContainerList_HidesTeammate(t *testing.T) {
 		SessionID:     "chat-mate",
 		ChatSessionID: "chat-mate",
 		Backend:       "docker",
-		ContainerName: "astonish-session-mate",
+		ContainerName: "troupe-session-mate",
 		TemplateID:    sandbox.BaseTemplateID,
 		State:         store.SandboxSessionStateRunning,
 	}); err != nil {
@@ -153,7 +153,7 @@ func TestStudioArtifact_ForeignSession404(t *testing.T) {
 func TestSandboxProxy_ForeignContainerNotDialed(t *testing.T) {
 	fix := newOwnershipFixture(t)
 	req := withSandboxRegistry(fix.mateReq, fix.registry)
-	if sessionIDForProxyContainer(req, "astonish-session-owner") == "" && sessionIDForProxyContainer(req, "chat-owner") == "" {
+	if sessionIDForProxyContainer(req, "troupe-session-owner") == "" && sessionIDForProxyContainer(req, "chat-owner") == "" {
 		t.Fatal("owner container should resolve inside the team registry before the ownership check")
 	}
 	rec := httptest.NewRecorder()
@@ -234,7 +234,7 @@ func TestAuthorizeSandboxSession(t *testing.T) {
 			SessionID:     "orphan-chat",
 			ChatSessionID: "orphan-chat",
 			Backend:       "docker",
-			ContainerName: "astonish-session-orphan",
+			ContainerName: "troupe-session-orphan",
 			TemplateID:    sandbox.BaseTemplateID,
 			State:         store.SandboxSessionStateRunning,
 			CreatedBy:     "user-owner",
@@ -263,14 +263,14 @@ func TestAuthorizeSandboxSession(t *testing.T) {
 			SessionID:     "fleet-1",
 			ChatSessionID: "fleet-1",
 			Backend:       "docker",
-			ContainerName: "astonish-session-fleet",
+			ContainerName: "troupe-session-fleet",
 			TemplateID:    sandbox.BaseTemplateID,
 			State:         store.SandboxSessionStateRunning,
 		}); err != nil {
 			t.Fatalf("PutSession: %v", err)
 		}
 		sessions := &memSessionStore{metas: map[string]*store.SessionMeta{
-			"fleet-1": {ID: "fleet-1", UserID: "user-owner", FleetKey: "bugs", AppName: "astonish"},
+			"fleet-1": {ID: "fleet-1", UserID: "user-owner", FleetKey: "bugs", AppName: "troupe"},
 		}}
 		sameTeam := platformSandboxRequest(t, "user-mate", "member", sessions)
 		if !sandboxSessionVisible(sameTeam, reg, "fleet-1") {

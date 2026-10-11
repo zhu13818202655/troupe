@@ -1,11 +1,11 @@
 // Kubernetes client configuration loaders.
 //
-// Phase D wiring: astonish needs to connect to a real API server when the
+// Phase D wiring: troupe needs to connect to a real API server when the
 // operator selects backend=k8s in the app config. This file provides the
 // minimal, well-tested ladder that production code uses:
 //
 //  1. In-cluster config (serviceaccount token mounted into the pod), when
-//     Astonish itself is running inside the cluster.
+//     Troupe itself is running inside the cluster.
 //  2. Explicit kubeconfig path (opts.KubeconfigPath).
 //  3. $KUBECONFIG env var.
 //  4. Default ~/.kube/config.
@@ -17,9 +17,9 @@
 // Rationale:
 //
 //   - We reuse client-go's clientcmd precedence rules so that kubectl and
-//     astonish see the same cluster without surprises.
+//     troupe see the same cluster without surprises.
 //   - The in-cluster branch is tried first because deployments run
-//     astonish as a Pod far more often than as a laptop CLI; a stray
+//     troupe as a Pod far more often than as a laptop CLI; a stray
 //     ~/.kube/config on a node would otherwise silently win.
 //   - The Context field lets operators pin a specific context in a
 //     multi-cluster kubeconfig without editing files.
@@ -63,7 +63,7 @@ type LoadConfigOptions struct {
 	Burst int
 
 	// UserAgent sets the User-Agent header on every request. Default:
-	// "astonish/<version>".
+	// "troupe/<version>".
 	UserAgent string
 }
 
@@ -145,7 +145,7 @@ func applyDefaultsToRESTConfig(cfg *rest.Config, opts LoadConfigOptions) {
 	if opts.UserAgent != "" {
 		cfg.UserAgent = opts.UserAgent
 	} else if cfg.UserAgent == "" {
-		cfg.UserAgent = rest.DefaultKubernetesUserAgent() + " astonish"
+		cfg.UserAgent = rest.DefaultKubernetesUserAgent() + " troupe"
 	}
 }
 

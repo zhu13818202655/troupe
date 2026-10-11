@@ -2,19 +2,19 @@
 
 ## Overview
 
-Astonish ships a **fullscreen terminal chat app** comparable to Claude Code, Codex, OpenCode, and Grok Build. It has two entry points that share the same `pkg/tui` presentation layer:
+Troupe ships a **fullscreen terminal chat app** comparable to Claude Code, Codex, OpenCode, and Grok Build. It has two entry points that share the same `pkg/tui` presentation layer:
 
-- **`astonish chat`** — platform-backed. Even a local installation requires authentication (`astonish login <url>`); the agent runs on the platform and the TUI streams Studio SSE.
-- **`astonish code`** — **local code mode**. The single binary runs the agent loop **in-process** and executes its compiled-in tools directly on the host filesystem in the working directory. There is no daemon, no HTTP, and no login. This is the Claude-Code-style local coding path.
+- **`troupe chat`** — platform-backed. Even a local installation requires authentication (`troupe login <url>`); the agent runs on the platform and the TUI streams Studio SSE.
+- **`troupe code`** — **local code mode**. The single binary runs the agent loop **in-process** and executes its compiled-in tools directly on the host filesystem in the working directory. There is no daemon, no HTTP, and no login. This is the Claude-Code-style local coding path.
 
-**Entry:** `astonish chat` (requires login) or `astonish code` (no login). On an interactive TTY with an existing login, bare `astonish` opens the platform chat app.
+**Entry:** `troupe chat` (requires login) or `troupe code` (no login). On an interactive TTY with an existing login, bare `troupe` opens the platform chat app.
 
 ## Architecture
 
 ```mermaid
 flowchart TB
-  subgraph cmd [cmd/astonish]
-    bare[bare astonish TTY entry]
+  subgraph cmd [cmd/troupe]
+    bare[bare troupe TTY entry]
     chat[chat command]
     login[login]
   end
@@ -26,7 +26,7 @@ flowchart TB
     App[bubbletea App]
     Events[events.Transcript]
   end
-  subgraph platform [Astonish platform]
+  subgraph platform [Troupe platform]
     API["/api/studio/chat SSE"]
     Grants["/api/studio/sessions/{id}/network-grants/*"]
     Agent[ChatAgent / tools / sandbox]
@@ -57,13 +57,13 @@ flowchart TB
 
 ### Auth requirement
 
-If `client.IsRemoteMode()` is false (no `~/.config/astonish/remote.yaml` / login), `astonish chat` exits with instructions to run `astonish login <url>`. Bare `astonish` only launches the TUI when both stdin/stdout are TTYs and the CLI is already logged in; otherwise it keeps normal help/error behavior for scripts. **`astonish code` has no auth requirement** — it never contacts a platform.
+If `client.IsRemoteMode()` is false (no `~/.config/troupe/remote.yaml` / login), `troupe chat` exits with instructions to run `troupe login <url>`. Bare `troupe` only launches the TUI when both stdin/stdout are TTYs and the CLI is already logged in; otherwise it keeps normal help/error behavior for scripts. **`troupe code` has no auth requirement** — it never contacts a platform.
 
 ## Code mode (local, in-process)
 
-`astonish code` runs the entire agent locally in the same process, like Claude Code / Codex / OpenCode / Grok Build. It reuses the same `pkg/tui` presentation and event model as platform chat; only the backend differs.
+`troupe code` runs the entire agent locally in the same process, like Claude Code / Codex / OpenCode / Grok Build. It reuses the same `pkg/tui` presentation and event model as platform chat; only the backend differs.
 
-**Flow:** `cmd/astonish/code.go:handleCodeCommand` → `launcher.RunCodeTUI` →
+**Flow:** `cmd/troupe/code.go:handleCodeCommand` → `launcher.RunCodeTUI` →
 
 1. `config.LoadAppConfig()`.
 2. `forceHostExecution(appConfig)` — sets `Sandbox.Enabled = false`. This is the defining line of code mode: with the sandbox off, every filesystem/shell tool resolves against the process working directory instead of a sandbox backend.
@@ -86,19 +86,19 @@ The user picks a provider/model through the existing `/model` picker (`pkg/tui/m
 
 1. Builds the real LLM via `provider.GetProvider` and hot-swaps it into the `SwappableLLM` (tools/MCP/session survive).
 2. Marks the backend configured and updates the footer.
-3. **Persists** the choice to `~/.config/astonish/config.yaml` (`general.default_provider` / `default_model`) via `config.SaveAppConfig`, so the next `astonish code` starts with that model. A save failure is non-fatal — the in-memory swap already took effect.
+3. **Persists** the choice to `~/.config/troupe/config.yaml` (`general.default_provider` / `default_model`) via `config.SaveAppConfig`, so the next `troupe code` starts with that model. A save failure is non-fatal — the in-memory swap already took effect.
 
 The `/model` picker lists provider *instances* from `AppConfig.Providers`. When none exist yet, the user adds one inline through the `/models` overlay (below) without leaving the app.
 
 ### Managing providers through `/models`
 
-Code mode is **file-only**: it reads and writes provider configuration in `~/.config/astonish/config.yaml` and never connects to a platform database. Provider management is integrated directly into the `/models` overlay (`pkg/tui/model_picker.go`), which lists, adds, and removes provider instances alongside model selection. The former `/provider` command has been removed; all provider administration is now part of `/models`.
+Code mode is **file-only**: it reads and writes provider configuration in `~/.config/troupe/config.yaml` and never connects to a platform database. Provider management is integrated directly into the `/models` overlay (`pkg/tui/model_picker.go`), which lists, adds, and removes provider instances alongside model selection. The former `/provider` command has been removed; all provider administration is now part of `/models`.
 
 This capability is exposed through an **optional** backend interface, `backend.ProviderAdminBackend` (`ListProviderInstances` / `ProviderTypes` / `AddProvider` / `RemoveProvider`), implemented only by `localAgentBackend`. The platform backend does **not** implement it — platform provider management stays in the database via Studio settings. The TUI type-asserts for the capability: inline provider management (add/delete with confirmation) in the `/models` overlay is only offered when the active backend implements `ProviderAdminBackend`, so platform chat is unaffected.
 
 **Code mode never surfaces platform providers.** `ListProviderInstances` returns **only** the local config.yaml providers. Platform providers are intentionally *not* fetched or displayed in code mode: their credentials live on the platform and must never transit to a local surface, and a read-only "phantom" entry the user cannot use would add no value. The direction that *does* merge is the opposite one — the **platform** merges config.yaml providers into its own runtime and effective view (see below and `multi-tenant-platform.md` / `api-studio.md`): the daemon captures `AppConfig.Providers` at bootstrap, `cascadePlatformProviders` merges them with the DB cascade (config.yaml is the base layer, DB wins on a name collision) so both are runnable, and it also publishes them via `api.SetLocalProviders` so `GET /api/settings/providers/effective` returns them under `provider_sources[name].source == "local"` with `read_only: true`, deduped to one entry per instance name regardless of pod count. **Secrets are always masked in that HTTP view** (`maskValue` over `providerSecretKeysForType`); the real keys stay in the trusted daemon process and never cross the API boundary.
 
-The catalog of provider types offered by the overlay is `codeProviderTypes()` in `pkg/launcher/tui_code.go`. It mirrors the full set of providers Astonish supports (`provider.ProviderDisplayNames`) so anything configurable from a plaintext config file can be added through `/models`: **OpenAI, Anthropic, Google GenAI (Gemini), Groq, xAI, xAI (OAuth), OpenRouter, Poe, SAP AI Core, LiteLLM, OpenAI Compatible, Ollama, and LM Studio.** Each entry declares the input fields it needs via `backend.ProviderField` (label, `Secret`, `Default`, `Optional`), and the overlay form renders those fields generically — most providers need only an `api_key`, while SAP AI Core collects OAuth credentials (`client_id`, `client_secret`, `auth_url`, `base_url`, `resource_group`) and LiteLLM/OpenAI-Compatible add a `base_url`. xAI (OAuth) uses the RFC 8628 device-code flow (`backend.XAIOAuthBackend`) so the overlay can display the user code while waiting for browser approval. A drift-guard test (`TestCodeProviderTypes_CoversAllSupportedProviders`) fails if a newly-supported provider is not added to this catalog.
+The catalog of provider types offered by the overlay is `codeProviderTypes()` in `pkg/launcher/tui_code.go`. It mirrors the full set of providers Troupe supports (`provider.ProviderDisplayNames`) so anything configurable from a plaintext config file can be added through `/models`: **OpenAI, Anthropic, Google GenAI (Gemini), Groq, xAI, xAI (OAuth), OpenRouter, Poe, SAP AI Core, LiteLLM, OpenAI Compatible, Ollama, and LM Studio.** Each entry declares the input fields it needs via `backend.ProviderField` (label, `Secret`, `Default`, `Optional`), and the overlay form renders those fields generically — most providers need only an `api_key`, while SAP AI Core collects OAuth credentials (`client_id`, `client_secret`, `auth_url`, `base_url`, `resource_group`) and LiteLLM/OpenAI-Compatible add a `base_url`. xAI (OAuth) uses the RFC 8628 device-code flow (`backend.XAIOAuthBackend`) so the overlay can display the user code while waiting for browser approval. A drift-guard test (`TestCodeProviderTypes_CoversAllSupportedProviders`) fails if a newly-supported provider is not added to this catalog.
 
 `AddProvider` writes the instance (`type` + fields such as `base_url`) into `AppConfig.Providers`, stores the API key directly in `config.yaml` under `providers.<name>.api_key`, and calls `config.SaveAppConfig`. Because `GetProvider` reads `api_key` straight from the instance map, the new provider is usable immediately — the user can then pick it in `/model`. `RemoveProvider` deletes the instance and clears `general.default_*` if it pointed at the removed provider.
 
@@ -108,14 +108,14 @@ The catalog of provider types offered by the overlay is `codeProviderTypes()` in
 
 **Event bridge (Option B).** Rather than duplicate SSE→event mapping, `RunTurn` emits the exact `(type, data)` payloads `ChatRunner.emitEvent` produces, marshals each into a `client.SSEEvent`, and feeds it through the shared `mapSSEToEvents` translator in `tui_chat.go`. There is exactly one translator; new event kinds are added there, never in a code-mode-only path.
 
-**Sessions.** Code-mode sessions are **persisted to disk** via a `session.FileStore` (wrapped by `common.NewAutoInitService`) rooted at `<sessionsDir>/code/`, under the app name `astonish_code`. They survive restarts and are isolated from Studio/chat sessions two ways: the distinct app name, and the dedicated `code/` subdirectory. Sessions are **scoped per working directory**: `RunCodeTUI` derives the session `userID` from a stable hash of the absolute working directory (`codeUserIDForDir`), and `FileStore.List` filters by `(appName, userID)`, so sessions from one project never appear in another. **Startup is always a fresh session** — code mode does not auto-resume the last conversation. `ListSessions` enumerates persisted sessions for the current directory (via `FileStore.ListSessionMetas`, newest-first, with titles and message counts) and `ResumeSession` loads a chosen transcript, powering the `/sessions` picker. A new session's title is derived from its first user message (`deriveSessionTitle` → `FileStore.SetSessionTitle`). All session-service calls route through `effectiveUserID()` (falling back to the base `local_user` when unscoped, e.g. in tests). Because the store is a `FileStore`, code-mode transcripts also get on-disk credential redaction wired by the factory.
+**Sessions.** Code-mode sessions are **persisted to disk** via a `session.FileStore` (wrapped by `common.NewAutoInitService`) rooted at `<sessionsDir>/code/`, under the app name `troupe_code`. They survive restarts and are isolated from Studio/chat sessions two ways: the distinct app name, and the dedicated `code/` subdirectory. Sessions are **scoped per working directory**: `RunCodeTUI` derives the session `userID` from a stable hash of the absolute working directory (`codeUserIDForDir`), and `FileStore.List` filters by `(appName, userID)`, so sessions from one project never appear in another. **Startup is always a fresh session** — code mode does not auto-resume the last conversation. `ListSessions` enumerates persisted sessions for the current directory (via `FileStore.ListSessionMetas`, newest-first, with titles and message counts) and `ResumeSession` loads a chosen transcript, powering the `/sessions` picker. A new session's title is derived from its first user message (`deriveSessionTitle` → `FileStore.SetSessionTitle`). All session-service calls route through `effectiveUserID()` (falling back to the base `local_user` when unscoped, e.g. in tests). Because the store is a `FileStore`, code-mode transcripts also get on-disk credential redaction wired by the factory.
 
 **Safety model.** Tools run unsandboxed with the user's own permissions. Safety comes from two code-mode authorization gates (see [Tool & folder authorization](#tool--folder-authorization-code-mode)): non-read-only tools require per-tool authorization, and paths outside the project working directory require folder-access authorization. `--auto-approve` / `--yolo` bypasses both gates (matching Claude Code).
 
 **Project guidance (AGENTS.md).** Code mode follows the [agents.md](https://agents.md) convention used by Claude Code, opencode, and Codex: at startup it loads project instructions into the system prompt. `RunCodeTUI` builds the agent with `LoadProjectContext: true`, and the factory calls `agent.LoadProjectContext(workspaceDir)`, which:
 
 - walks **upward** from the working directory to the project root (the first ancestor containing `.git`), reading the nearest `AGENTS.md` at each level (falling back to `CLAUDE.md` when a directory has no `AGENTS.md`);
-- prepends the global `~/.config/astonish/AGENTS.md` (honoring `XDG_CONFIG_HOME`) at lowest precedence;
+- prepends the global `~/.config/troupe/AGENTS.md` (honoring `XDG_CONFIG_HOME`) at lowest precedence;
 - concatenates them **root-first so the nearest file appears last** (highest precedence), skips empty files, tags each block with a provenance comment, and caps the total at ~32 KiB.
 
 The merged Markdown is injected as a `## Project Guidance` section in `SystemPromptBuilder` (near the top, after INSTRUCTIONS.md), so conventions, build/test commands, and gotchas are always in view. Platform chat does **not** load these files — it uses per-team instructions from the database — so the behavior is gated behind `ChatFactoryConfig.LoadProjectContext`.
@@ -124,7 +124,7 @@ The merged Markdown is injected as a `## Project Guidance` section in `SystemPro
 
 **Log isolation.** Because code mode runs the agent in-process while the bubbletea alt-screen owns the terminal, `RunCodeTUI` redirects the standard `log` writer and slog's default handler away from the terminal for the TUI's lifetime (`redirectLogsForTUI`). This prevents background log lines — notably ADK's `runner` `log.Printf("Event from an unknown agent: …")`, emitted for every event whose author (`chat`/`system`/`knowledge`) differs from the runner's root agent name — from corrupting the display. Studio chat never hit this because its logs go to the daemon log file. In `--debug`, the logs are written to `<configDir>/code-debug.log` instead of being discarded, and the previous logging config is restored on exit.
 
-**Native prerequisites are self-provisioning.** Code mode runs on the user's own machine, not in a sandbox container, so the two native prerequisites are handled automatically rather than assumed pre-installed. The tree-sitter shared library (`libastonish-treesitter.{so,dylib}`) is **compiled from embedded C sources and cached on first use** when it is not already present — see [code-intelligence.md](code-intelligence.md#library-resolution-and-local-auto-build). This needs a C compiler (Xcode Command Line Tools on macOS); without one, the structural tools return an actionable error and the agent falls back to `grep_search`/`find_files`. **ripgrep is provisioned too:** `pkg/tools/ripgrep.ResolvePath` prefers an `rg` on `PATH` and otherwise downloads the pinned, SHA256-verified official release into `<config-dir>/astonish/bin/` (kicked off in the background at startup). `grep_search` is **ripgrep-only** — the naive pure-Go grep was removed, so if `rg` cannot be resolved the tool errors rather than silently returning worse results. So `astonish code` works out of the box on a stock machine, with tree-sitter navigation and full ripgrep search lighting up after the one-time setup.
+**Native prerequisites are self-provisioning.** Code mode runs on the user's own machine, not in a sandbox container, so the two native prerequisites are handled automatically rather than assumed pre-installed. The tree-sitter shared library (`libtroupe-treesitter.{so,dylib}`) is **compiled from embedded C sources and cached on first use** when it is not already present — see [code-intelligence.md](code-intelligence.md#library-resolution-and-local-auto-build). This needs a C compiler (Xcode Command Line Tools on macOS); without one, the structural tools return an actionable error and the agent falls back to `grep_search`/`find_files`. **ripgrep is provisioned too:** `pkg/tools/ripgrep.ResolvePath` prefers an `rg` on `PATH` and otherwise downloads the pinned, SHA256-verified official release into `<config-dir>/troupe/bin/` (kicked off in the background at startup). `grep_search` is **ripgrep-only** — the naive pure-Go grep was removed, so if `rg` cannot be resolved the tool errors rather than silently returning worse results. So `troupe code` works out of the box on a stock machine, with tree-sitter navigation and full ripgrep search lighting up after the one-time setup.
 
 
 **Context usage in the header (estimated fallback).** The header shows `Context <used>/<window> (<pct>)` from `usage` events. Some providers — notably local OpenAI-compatible proxies — return no token usage metadata, which would leave the figure at `Context 0`. In that case `driveTurn` calls `emitEstimatedContext`, which estimates the current context fill from the session's accumulated contents (via `session.EstimateTokens`, the same ~3 chars/token heuristic the compactor uses) and emits a `usage` event flagged `estimated`. Estimated readings update the context-occupancy figure (`Transcript.ContextTokens`, tracked as a max) but are **not** accumulated into cumulative session usage, since each estimate represents the whole current context rather than a per-call delta.
@@ -184,13 +184,13 @@ All UI state is driven by `events.Event`. The platform backend maps Studio SSE t
 ## UI chrome
 
 ```
-Astonish · https://… · user@example.com     Context 20.0k/200.0k (10%) · Usage 4.6k
+Troupe · https://… · user@example.com     Context 20.0k/200.0k (10%) · Usage 4.6k
 ────────────────────────────────────────────────────────
 transcript viewport
 ────────────────────────────────────────────────────────
 [live status / spinner]
 ╭──────────────────────────────────────────────────────╮
-│ ❯  Message Astonish…                                 │  ← bordered composer
+│ ❯  Message Troupe…                                 │  ← bordered composer
 ╰──────────────────────────────────────────── Normal ──╯
 provider / concrete-model                auto-approve
 Enter send · … · ctrl+c quit            ← idle
@@ -199,7 +199,7 @@ esc cancel · ↑↓ scroll · ctrl+c cancel  ← while a turn is streaming
 
 **Cancel keys.** While a turn is streaming, both **Esc** and **Ctrl+C** call `cancelInFlightTurn` (`pkg/tui/app.go`): they fire `turnCancel` (the per-turn context passed to `Backend.RunTurn`), clear streaming state, and append a `Turn cancelled.` system line. Esc never quits the app when idle; Ctrl+C still quits when nothing is running. Overlays (sessions, model picker, rollback, file viewer) and the approval card continue to own Esc when open (close / deny).
 
-The header intentionally stays a single row: the left side identifies the connected Astonish platform URL and logged-in user from the remote login config (in local code mode it shows `Astonish · code`); the right side shows **context utilization** — the primary metric when coding. `Transcript.ContextTokens` tracks the largest per-call token reading in the latest turn (an LLM tool loop grows the prompt each call, so the max reflects current context-window fill), fed by live `usage` SSE events (`headerUsageText` in `pkg/tui/app.go`). When the active model's context window is known (`contextWindowFor`, a domain-agnostic family-substring lookup), it renders as `Context <used>/<window> (<pct>%)`; otherwise just `Context <used>`. A compact cumulative session `Usage <total>` is appended after the context figure. Both fall back gracefully (`Context 0` only for a brand-new session before its first turn; resumed sessions seed `ContextTokens` from `Info().ContextTokens` so they show real utilization on load). The layout consumes the full reported terminal height so the footer help line lands on the final row instead of leaving a blank strip below the TUI.
+The header intentionally stays a single row: the left side identifies the connected Troupe platform URL and logged-in user from the remote login config (in local code mode it shows `Troupe · code`); the right side shows **context utilization** — the primary metric when coding. `Transcript.ContextTokens` tracks the largest per-call token reading in the latest turn (an LLM tool loop grows the prompt each call, so the max reflects current context-window fill), fed by live `usage` SSE events (`headerUsageText` in `pkg/tui/app.go`). When the active model's context window is known (`contextWindowFor`, a domain-agnostic family-substring lookup), it renders as `Context <used>/<window> (<pct>%)`; otherwise just `Context <used>`. A compact cumulative session `Usage <total>` is appended after the context figure. Both fall back gracefully (`Context 0` only for a brand-new session before its first turn; resumed sessions seed `ContextTokens` from `Info().ContextTokens` so they show real utilization on load). The layout consumes the full reported terminal height so the footer help line lands on the final row instead of leaving a blank strip below the TUI.
 
 The footer metadata is a **single row** under the composer (`renderFooterMeta`). Left is the active provider and resolved concrete model when the platform reports them through model-status or `model_changed` events. It deliberately avoids displaying the raw model label `default`, because that is a cascade placeholder rather than useful runtime context; until a concrete model is known, the footer shows the provider with `model resolving…`. In **code mode** the same row also shows the abbreviated project folder from `backend.Info.WorkingDir` (home prefix collapsed to `~` via `abbreviateHomePath`, the same helper the welcome card uses). The folder is glanceable only — no `Working in` prefix, no extra chrome row — and is left-truncated (`truncatePathLeft`) or dropped entirely when the terminal is too narrow to keep the model visible. Platform mode leaves `WorkingDir` empty on purpose and must not fall back to process CWD. `/status` is the unambiguous place for the full folder path (`Folder: …`). The welcome card still shows `Working in <path>` once at session start; that is not a substitute for the persistent footer.
 
@@ -233,7 +233,7 @@ During a turn with tools, there is **one** agent bubble:
 
 ### Linear thread (code mode)
 
-Code mode (`astonish code`) opts out of the sticky-agent collapse and renders a **chronological reasoning trail** instead. `Transcript.LinearThread` is set from `info.Mode == "code"` in `newModel`; Studio/platform chat leaves it `false` and keeps the sticky behavior above.
+Code mode (`troupe code`) opts out of the sticky-agent collapse and renders a **chronological reasoning trail** instead. `Transcript.LinearThread` is set from `info.Mode == "code"` in `newModel`; Studio/platform chat leaves it `false` and keeps the sticky behavior above.
 
 When `LinearThread` is true:
 
@@ -248,7 +248,7 @@ When `LinearThread` is true:
 |-------|---------|
 | Done | Composer, markdown/code/tables, sticky Thinking, activity + diffs |
 | Done | Approval overlay (`y`/`n`), sessions picker (`/sessions`, `ctrl+l`), resume history, `/new` |
-| Done | Bare `astonish` TTY entry and local `@file` mention completion/context injection |
+| Done | Bare `troupe` TTY entry and local `@file` mention completion/context injection |
 | Done | Terminal plan mode (`/plan`, `shift+tab`) via per-turn `systemContext` |
 | Later | Deeper reconnect polish |
 
@@ -286,7 +286,7 @@ Because code mode runs tools **unsandboxed on the user's machine**, two authoriz
 - **Always Allow** — authorizes the directory (its subtree) for the rest of the session.
 - **Deny** — returns `FolderAccessDeniedMessage`; the model stays in-project or asks the user.
 
-**Implicit in-scope: Astonish's own state directory.** Beyond the project root, the policy is constructed with the Astonish config/state directory (`config.GetConfigDir()` — e.g. `~/Library/Application Support/astonish` or `~/.config/astonish`) as an **extra allowed root** (`NewSessionAuthPolicy(root, extraRoots...)` → `allowedRoots`). Paths under it — session transcripts, the session `PLAN.md`, per-session workspaces, config — are always in-scope and never prompt, because the agent writes there routinely as part of normal operation and that directory is owned by Astonish, not the user. These allowances are fixed at construction, do not depend on a user grant, and are checked by both `PathAllowed` and `OutOfScopePaths`. Genuinely unrelated out-of-project paths are still denied.
+**Implicit in-scope: Troupe's own state directory.** Beyond the project root, the policy is constructed with the Troupe config/state directory (`config.GetConfigDir()` — e.g. `~/Library/Application Support/troupe` or `~/.config/troupe`) as an **extra allowed root** (`NewSessionAuthPolicy(root, extraRoots...)` → `allowedRoots`). Paths under it — session transcripts, the session `PLAN.md`, per-session workspaces, config — are always in-scope and never prompt, because the agent writes there routinely as part of normal operation and that directory is owned by Troupe, not the user. These allowances are fixed at construction, do not depend on a user grant, and are checked by both `PathAllowed` and `OutOfScopePaths`. Genuinely unrelated out-of-project paths are still denied.
 
 **Implicit in-scope: well-known harmless special paths.** A small fixed set of special filesystem paths is **always** allowed regardless of the project-root boundary, via `pathscope.IsAlwaysAllowedPath` (the single source of truth shared by both `PathAllowed` and `pathAllowedNoConsume`/`OutOfScopePaths`). This covers two categories: (1) exact paths like `/dev/null` — agents routinely redirect output to it, and prompting is pure friction since it discards data; and (2) directory trees like `/tmp` and `/private/tmp` — agents routinely write temporary files there, and the contents are ephemeral with no security sensitivity. The check runs against the normalized (absolute, symlink-resolved) path; for exact entries forms like `/dev/./null` that resolve to `/dev/null` are covered while genuinely different device nodes (`/dev/zero`, etc.) are not; for directory entries any path equal to or under the directory is covered (via `PathWithin`) while similarly-named paths like `/tmpdata` are not. Like the state-directory allowance, this is not a consumable grant and does not depend on any user approval.
 
@@ -317,7 +317,7 @@ The agent emits heartbeat metadata while blocked on provider output, but only to
 - Click a tool activity block to expand/collapse detailed execution rows; `ctrl+o` toggles the latest activity
 - Click a generated file row to open it in the terminal file viewer; `Esc` returns to the chat thread
 - Drag across transcript text to select it; releasing the mouse automatically copies the selected plain text to the system clipboard
-- `astonish chat --resume <id>` — loads history via `GET /api/studio/sessions/{id}` on open
+- `troupe chat --resume <id>` — loads history via `GET /api/studio/sessions/{id}` on open
 
 ### Paste handling
 
@@ -333,7 +333,7 @@ Because `bubbles/textarea` repositions its **internal** viewport while it proces
 
 Pasting an image from the system clipboard (`Ctrl+V` / Super+V, and empty text pastes that only contain image data) inserts an atomic placeholder such as `[image #1]`. Multiple images increment the index (`#2`, `#3`, …). Image tokens share the same atomic navigation/delete behavior as text-paste placeholders. On submit, remaining image tokens are sent as multimodal `attachments` (base64 PNG/JPEG/GIF) while the user transcript keeps the `[image #N]` markers.
 
-Both backends must forward these attachments to the model, or the placeholder appears but the image is silently dropped. The platform backend (`platformBackend.RunTurn`) forwards them over the HTTP chat API. Code mode (`localAgentBackend.RunTurn`) converts the raw attachment bytes to base64 and builds the user message with `agent.NewTimestampedUserContentWithAttachments`, which emits the same `InlineData` genai parts the platform path produces — so pasted images reach the LLM in local `astonish code` sessions as well. The conversion happens in `agentAttachmentsFromBackend`.
+Both backends must forward these attachments to the model, or the placeholder appears but the image is silently dropped. The platform backend (`platformBackend.RunTurn`) forwards them over the HTTP chat API. Code mode (`localAgentBackend.RunTurn`) converts the raw attachment bytes to base64 and builds the user message with `agent.NewTimestampedUserContentWithAttachments`, which emits the same `InlineData` genai parts the platform path produces — so pasted images reach the LLM in local `troupe code` sessions as well. The conversion happens in `agentAttachmentsFromBackend`.
 
 Clipboard image reads are platform-specific:
 
@@ -360,7 +360,7 @@ Starting a new chat (`/new`, `ctrl+n`, or deleting the active session) clears an
 
 `/plan` or `shift+tab` toggles a terminal-only plan mode, matching the convention used by coding-agent CLIs. Mode changes are UI state only: they do not append system messages to the transcript. The current mode is embedded in the composer bottom border (`Normal` on a softened gray border, `Plan` on a warm-accent border). While enabled, each normal user turn carries **both** a hidden per-turn `systemContext` (instructing the agent to produce a concise plan) **and** a `planMode` flag that enables a **hard runtime gate**. The gate is enforced server-side in `pkg/agent/chat_agent_run.go` as a `BeforeToolCallback`: when plan mode is active, `delegate_tasks` and any tool not in `agent.SafeTools` (the read-only allow-list) are refused before execution and the model receives a `blocked_plan_mode` result (via `agent.PlanModeBlockedMessage`) reminding it that it is in Plan mode. Read-only tools (`read_file`, `grep_search`, `find_files`, `file_tree`, `memory_search`, …) still run so the agent can investigate to build an accurate plan. This means plan mode is a guarantee, not a suggestion — a model that ignores the prose still cannot write files, run commands, or spawn sub-agents. The flag threads through `backend.TurnOptions.PlanMode` → `client.ChatRequest.PlanMode` / `agent.PromptOverrides.PlanMode` for both code mode and platform chat (and the Studio SPA via `connectChat({ planMode })`). Approval responses deliberately do **not** inherit the plan-mode `systemContext` because they are part of an already-running approval protocol. Starting or resuming a session clears the toggle so mode does not leak across conversations. Future modes can reuse the same composer-border affordance (for example deep research, report, or build-oriented modes).
 
-**Plan persistence and approved execution.** `announce_plan` is Plan-mode only (stripped from the Normal/Ask tool list and refused if called). When the agent finalizes a plan via `announce_plan`, code mode writes it to a per-session `PLAN.md` sidecar next to the session transcript (`<sessions-dir>/<app>/<userID>/<sessionID>.PLAN.md`, resolved by `localAgentBackend.planFilePath` and set via `ChatAgent.SetPlanFilePath`). Each phase requires a `details` implementation spec plus a `files` list (each affected file marked new/modify/delete) and a `verify` command (build/test/lint), so the concrete, dependency-aware plan (blast radius + verification) is persisted, not just labels. The file includes a generated Progress section and is rewritten on every phase transition via a `PlanState.onChange` hook; its checkbox-per-phase format is rendered/parsed by `pkg/agent/plan_document.go`. Progress is driven two ways: delegated phases advance automatically from sub-task events, while main-thread phases are updated by the model calling the **`update_plan`** tool (`running` → `complete`/`failed`) as it works. When the user approves implementation, `submitPlanApproval` starts a Normal-mode turn with `backend.TurnOptions.ApprovedPlanExecution`; subsequent Normal turns inherit that flag while the session lifecycle is `approved` and the sidecar exists (`localAgentBackend.shouldContinueApprovedPlan`). The flag reaches `PromptOverrides`, inlines `PLAN.md` into the execution system context, restores per-phase status (including `[~]`/`[x]`), and a hard runtime gate rejects `announce_plan` while leaving `update_plan` available. The approved active plan is sealed against replacement, and callbacks from a superseded planning version cannot overwrite its sidecar. Only genuine planning/revision turns (Plan / Graph-Plan mode) explicitly reopen replacement. When the model tracks the plan itself, the end-of-turn `CompleteAll` sweep is suppressed (`PlanState.IsManuallyTracked`) so the file reflects real progress instead of a bulk completion. The in-memory plan is kept while phases remain pending. This makes the plan survive context compaction: the `Compactor` inlines `PLAN.md` into the summary. See `docs/plan-mode-enforcement-summary.md` → "Plan persistence (PLAN.md)" and `docs/architecture/smart-compaction.md` → "Execution Plan Survival". When the session is deleted, its `PLAN.md` sidecar is removed alongside the transcript (`localAgentBackend.DeleteSession`, plus the `astonish sessions delete` / `sessions clear` CLI), so plan files never outlive their session on disk.
+**Plan persistence and approved execution.** `announce_plan` is Plan-mode only (stripped from the Normal/Ask tool list and refused if called). When the agent finalizes a plan via `announce_plan`, code mode writes it to a per-session `PLAN.md` sidecar next to the session transcript (`<sessions-dir>/<app>/<userID>/<sessionID>.PLAN.md`, resolved by `localAgentBackend.planFilePath` and set via `ChatAgent.SetPlanFilePath`). Each phase requires a `details` implementation spec plus a `files` list (each affected file marked new/modify/delete) and a `verify` command (build/test/lint), so the concrete, dependency-aware plan (blast radius + verification) is persisted, not just labels. The file includes a generated Progress section and is rewritten on every phase transition via a `PlanState.onChange` hook; its checkbox-per-phase format is rendered/parsed by `pkg/agent/plan_document.go`. Progress is driven two ways: delegated phases advance automatically from sub-task events, while main-thread phases are updated by the model calling the **`update_plan`** tool (`running` → `complete`/`failed`) as it works. When the user approves implementation, `submitPlanApproval` starts a Normal-mode turn with `backend.TurnOptions.ApprovedPlanExecution`; subsequent Normal turns inherit that flag while the session lifecycle is `approved` and the sidecar exists (`localAgentBackend.shouldContinueApprovedPlan`). The flag reaches `PromptOverrides`, inlines `PLAN.md` into the execution system context, restores per-phase status (including `[~]`/`[x]`), and a hard runtime gate rejects `announce_plan` while leaving `update_plan` available. The approved active plan is sealed against replacement, and callbacks from a superseded planning version cannot overwrite its sidecar. Only genuine planning/revision turns (Plan / Graph-Plan mode) explicitly reopen replacement. When the model tracks the plan itself, the end-of-turn `CompleteAll` sweep is suppressed (`PlanState.IsManuallyTracked`) so the file reflects real progress instead of a bulk completion. The in-memory plan is kept while phases remain pending. This makes the plan survive context compaction: the `Compactor` inlines `PLAN.md` into the summary. See `docs/plan-mode-enforcement-summary.md` → "Plan persistence (PLAN.md)" and `docs/architecture/smart-compaction.md` → "Execution Plan Survival". When the session is deleted, its `PLAN.md` sidecar is removed alongside the transcript (`localAgentBackend.DeleteSession`, plus the `troupe sessions delete` / `sessions clear` CLI), so plan files never outlive their session on disk.
 
 ### Graph-Optimized Plan mode (code mode only)
 
@@ -399,34 +399,34 @@ If the Studio SSE connection returns a read error after a session id is known, t
 
 | Invocation | Behavior |
 |------------|----------|
-| `astonish login <url>` | Authenticate to platform |
-| `astonish` | TUI against platform when stdin/stdout are TTYs and login exists |
-| `astonish chat` | TUI against platform |
-| `astonish chat --resume ID` | Resume session |
-| `astonish chat model provider:model` | Pin model via platform API |
-| `astonish code` | Local in-process coding TUI (no login, sandbox forced off, host CWD) |
-| `astonish code -m provider:model` | Local TUI with a pinned provider/model |
-| `astonish code -C DIR` / `--dir DIR` | Local TUI operating in DIR |
-| `astonish code --auto-approve` / `--yolo` | Local TUI, bypass tool & folder authorization gates |
-| `astonish code --resume ID` | Resume a code-mode session (within a run) |
-| Without login | Error: run `astonish login` for `chat`; `code` works regardless; bare `astonish` prints normal usage |
-| Bare `astonish` with piped stdin or redirected stdout | Prints normal usage plus a hint that interactive chat requires a TTY |
+| `troupe login <url>` | Authenticate to platform |
+| `troupe` | TUI against platform when stdin/stdout are TTYs and login exists |
+| `troupe chat` | TUI against platform |
+| `troupe chat --resume ID` | Resume session |
+| `troupe chat model provider:model` | Pin model via platform API |
+| `troupe code` | Local in-process coding TUI (no login, sandbox forced off, host CWD) |
+| `troupe code -m provider:model` | Local TUI with a pinned provider/model |
+| `troupe code -C DIR` / `--dir DIR` | Local TUI operating in DIR |
+| `troupe code --auto-approve` / `--yolo` | Local TUI, bypass tool & folder authorization gates |
+| `troupe code --resume ID` | Resume a code-mode session (within a run) |
+| Without login | Error: run `troupe login` for `chat`; `code` works regardless; bare `troupe` prints normal usage |
+| Bare `troupe` with piped stdin or redirected stdout | Prints normal usage plus a hint that interactive chat requires a TTY |
 
 ## Invariants
 
 1. TUI does not reimplement agent logic — the platform runs the agent for `chat`; `code` runs the *same* wired `ChatAgent` in-process (it does not fork a second agent implementation).
 2. Two — and only two — CLI chat surfaces: platform-backed `chat` and in-process `code`. No third backend, and no code-mode-only event mapper (both share `mapSSEToEvents`).
 3. Code mode always forces the sandbox off and runs tools on the host CWD; do not reintroduce sandbox wrapping in `RunCodeTUI`.
-4. Code mode is file-only: provider config is read/written in `~/.config/astonish/config.yaml`, never a database. Provider management is part of the `/models` overlay, gated behind the optional `backend.ProviderAdminBackend` so platform chat never exposes it.
-5. Code-mode sessions persist to `<sessionsDir>/code/`, scoped per working directory (`codeUserIDForDir` → session `userID`) and isolated from Studio sessions (`astonish_code` app name + `code/` subdir). Startup never auto-resumes; `/sessions` (backed by `ListSessions`/`ResumeSession`) is the only way to load a prior session.
+4. Code mode is file-only: provider config is read/written in `~/.config/troupe/config.yaml`, never a database. Provider management is part of the `/models` overlay, gated behind the optional `backend.ProviderAdminBackend` so platform chat never exposes it.
+5. Code-mode sessions persist to `<sessionsDir>/code/`, scoped per working directory (`codeUserIDForDir` → session `userID`) and isolated from Studio sessions (`troupe_code` app name + `code/` subdir). Startup never auto-resumes; `/sessions` (backed by `ListSessions`/`ResumeSession`) is the only way to load a prior session.
 6. `/rollback` is code-mode-only, gated behind the optional `backend.RollbackBackend`. File revert uses snapshot-on-write (`session.CheckpointStore`); chat revert uses `FileStore.TruncateEvents` (the sanctioned transcript-rewrite exception). Both key off event position so they stay in sync. Do not widen rollback to the platform backend or wire capture into the generic tools — capture lives in the code-mode driver.
 7. Report three-signal gate remains a Studio SPA concern.
-8. `cmd/astonish` stays thin — no bubbletea models there.
+8. `cmd/troupe` stays thin — no bubbletea models there.
 9. Single binary.
 
 ## Related docs
 
 - `docs/architecture/remote-cli-client.md` — login, tokens, remote command routing
 - `docs/architecture/chat-rendering-pipeline.md` — Studio SPA pipeline (UX reference)
-- `docs/website/docs/cli/code.md` — user-facing Astonish Code documentation (VitePress)
+- `docs/website/docs/cli/code.md` — user-facing Troupe Code documentation (VitePress)
 - `pkg/tui/AGENTS.md`

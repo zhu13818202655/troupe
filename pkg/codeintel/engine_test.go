@@ -11,7 +11,7 @@ import (
 )
 
 func TestDefaultLibraryPathMatchesSandboxContract(t *testing.T) {
-	const want = "/usr/lib/astonish/libastonish-treesitter.so"
+	const want = "/usr/lib/troupe/libtroupe-treesitter.so"
 	if treesitter.DefaultLibraryPath != want {
 		t.Fatalf("DefaultLibraryPath = %q, want %q", treesitter.DefaultLibraryPath, want)
 	}
@@ -233,15 +233,15 @@ func TestDiskCache_HitMissAndStale(t *testing.T) {
 
 func TestSpecForPath(t *testing.T) {
 	cases := map[string]string{
-		"a.go":   "go",
-		"a.ts":   "typescript",
-		"a.tsx":  "tsx",
-		"a.js":   "javascript",
-		"a.jsx":  "javascript",
-		"a.mjs":  "javascript",
-		"a.cjs":  "javascript",
-		"a.py":   "python",
-		"a.txt":  "",
+		"a.go":     "go",
+		"a.ts":     "typescript",
+		"a.tsx":    "tsx",
+		"a.js":     "javascript",
+		"a.jsx":    "javascript",
+		"a.mjs":    "javascript",
+		"a.cjs":    "javascript",
+		"a.py":     "python",
+		"a.txt":    "",
 		"Makefile": "",
 	}
 	for path, want := range cases {

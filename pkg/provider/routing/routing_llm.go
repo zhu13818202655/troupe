@@ -455,7 +455,7 @@ func ClassifierContextFromContext(ctx context.Context) ClassifierContext {
 
 // --- Helpers ---
 
-const perTurnContextPrefix = "[Astonish Per-Turn Context"
+const perTurnContextPrefix = "[Troupe Per-Turn Context"
 
 // extractLastUserMessage walks req.Contents in reverse, finds the last
 // user-authored content (skipping framework-injected per-turn context), and
@@ -497,7 +497,7 @@ func extractLastUserMessage(req *model.LLMRequest) string {
 
 // isPerTurnContext returns true if the Content is a framework-injected
 // per-turn context block (skills, tools, session metadata) rather than
-// actual user input. These always start with "[Astonish Per-Turn Context".
+// actual user input. These always start with "[Troupe Per-Turn Context".
 func isPerTurnContext(c *genai.Content) bool {
 	for _, p := range c.Parts {
 		if p != nil && strings.HasPrefix(p.Text, perTurnContextPrefix) {

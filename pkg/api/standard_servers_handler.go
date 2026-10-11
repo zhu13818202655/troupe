@@ -6,10 +6,10 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/provider"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 )
 
 // StandardServerResponse represents a standard server in the API response.

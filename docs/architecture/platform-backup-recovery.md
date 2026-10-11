@@ -2,7 +2,7 @@
 
 ## Overview
 
-Astonish platform backups capture control-plane data so an operator can recover a deployment or port data between locations. The backup system is intentionally backend-aware but not backend-locked: logical archives are designed to move data between SQLite and PostgreSQL deployments, while later physical backups can optimize same-backend disaster recovery.
+Troupe platform backups capture control-plane data so an operator can recover a deployment or port data between locations. The backup system is intentionally backend-aware but not backend-locked: logical archives are designed to move data between SQLite and PostgreSQL deployments, while later physical backups can optimize same-backend disaster recovery.
 
 The design follows the existing tenant topology:
 
@@ -26,7 +26,7 @@ orgs/{org_slug}/personal/{user_id}/*.jsonl
 
 `manifest.json` identifies the archive:
 
-- `format`: always `astonish.backup`.
+- `format`: always `troupe.backup`.
 - `formatVersion`: archive format version, starting at `1`; this versions the tar/gzip layout and manifest semantics independently from database schema versions.
 - `createdAt`: UTC timestamp.
 - `backend`: source backend, for example `sqlite` or `postgres`.
@@ -38,7 +38,7 @@ orgs/{org_slug}/personal/{user_id}/*.jsonl
 
 `checksums.json` contains SHA-256 digests and sizes for every non-metadata logical payload file. Checksums are calculated over the uncompressed payload bytes so integrity semantics do not depend on the archive compression wrapper. `backup.Verify` rejects missing files, checksum mismatches, duplicate tar entries, unchecked payload files, unsafe archive paths, and malformed compressed streams.
 
-When `--passphrase` is used, Astonish first creates the complete tar/gzip archive and then encrypts that entire byte stream. This means `manifest.json`, `checksums.json`, and all payload files are inside the AES-256-GCM ciphertext. The encryption metadata stores a versioned cipher/KDF description, including Argon2id memory, time, thread, and key-length parameters, and is passed as AES-GCM additional authenticated data.
+When `--passphrase` is used, Troupe first creates the complete tar/gzip archive and then encrypts that entire byte stream. This means `manifest.json`, `checksums.json`, and all payload files are inside the AES-256-GCM ciphertext. The encryption metadata stores a versioned cipher/KDF description, including Argon2id memory, time, thread, and key-length parameters, and is passed as AES-GCM additional authenticated data.
 
 ## Scope Model
 
@@ -57,7 +57,7 @@ The scope identifiers in the manifest are security-relevant. Exporters must reso
 
 Credential payloads are encrypted at rest and must remain encrypted in archives. Logical export must never serialize plaintext secrets, OAuth access tokens, refresh tokens, or provider keys. The default restore behavior preserves encrypted blobs only when the target has compatible key material.
 
-Credentials use envelope encryption: each org has a `credential_key` row in `org_encryption_keys`, encrypted by the installation master key (`TROUPE_MASTER_KEY` or `~/.config/astonish/.store_key`), and personal/team credential rows are encrypted with that org key. Restore planning inspects encrypted credential material before writing. If a backup contains credential rows and the current master key is missing or cannot decrypt the restored org credential key, restore reports a blocker instead of importing credentials that would appear in lists but fail at use time.
+Credentials use envelope encryption: each org has a `credential_key` row in `org_encryption_keys`, encrypted by the installation master key (`TROUPE_MASTER_KEY` or `~/.config/troupe/.store_key`), and personal/team credential rows are encrypted with that org key. Restore planning inspects encrypted credential material before writing. If a backup contains credential rows and the current master key is missing or cannot decrypt the restored org credential key, restore reports a blocker instead of importing credentials that would appear in lists but fail at use time.
 
 Portable non-secret exports use the explicit `--redact-secrets` option. Archive-level encryption is explicit via a passphrase and uses AES-256-GCM with an Argon2id-derived key. Archive passphrases protect the backup file in transit/storage; they do not replace the installation master key needed to decrypt restored credentials at runtime. Any future key export or re-key flow must be explicit, audited, and documented separately from normal backup creation.
 
@@ -84,7 +84,7 @@ Restore must validate before writing:
 4. Target is empty, unless SQLite destructive reset is explicitly requested.
 5. Encrypted credential payloads are usable with the current installation master key, or the backup is intentionally redacted/non-recovery.
 
-Credential validation is a preflight safety gate. It checks restored `org_encryption_keys.credential_key` rows and representative personal/team `credentials.encrypted` rows. Missing or wrong key material is a blocker with an operator-facing remediation: copy the source `~/.config/astonish/.store_key` or set the same `TROUPE_MASTER_KEY` before restore. Legacy plaintext credential rows are allowed with a warning.
+Credential validation is a preflight safety gate. It checks restored `org_encryption_keys.credential_key` rows and representative personal/team `credentials.encrypted` rows. Missing or wrong key material is a blocker with an operator-facing remediation: copy the source `~/.config/troupe/.store_key` or set the same `TROUPE_MASTER_KEY` before restore. Legacy plaintext credential rows are allowed with a warning.
 
 Each logical scope import is wrapped in a database transaction and the SQLite path runs foreign-key checks before commit. PostgreSQL full-platform restore is not one global transaction because it provisions and writes multiple databases and schemas; failures can leave already-committed earlier scopes in place. This is acceptable only for the first fresh-target recovery workflow and is why PostgreSQL destructive reset remains outside the tool.
 
@@ -119,12 +119,12 @@ The current implementation provides the safe archive foundation, SQLite/PostgreS
 - `pkg/backup.Inspect` for manifest/checksum metadata.
 - `pkg/backup.OpenReader` and `Reader.ForEachFile` for streaming tar payload traversal. Encrypted archives still decrypt to memory because AES-GCM requires authenticated plaintext before tar parsing.
 - `pkg/backup.Verify` for streaming checksum validation.
-- `astonish platform backup create --output <archive> [--compression gzip|none] [--passphrase <secret>]` for logical row export across platform, org, team, and personal databases.
+- `troupe platform backup create --output <archive> [--compression gzip|none] [--passphrase <secret>]` for logical row export across platform, org, team, and personal databases.
 - Scoped export flags: `--org`, `--team`, and `--user`.
-- `astonish platform backup inspect` and `astonish platform backup verify`, with `--passphrase` for encrypted archives.
-- `astonish platform restore <archive> --dry-run` for restore planning, including encrypted credential key preflight.
-- `astonish platform restore <archive> --confirm` for SQLite or PostgreSQL fresh-target logical restore.
-- `astonish platform restore <archive> --confirm --reset-target` for destructive SQLite target reset followed by restore.
+- `troupe platform backup inspect` and `troupe platform backup verify`, with `--passphrase` for encrypted archives.
+- `troupe platform restore <archive> --dry-run` for restore planning, including encrypted credential key preflight.
+- `troupe platform restore <archive> --confirm` for SQLite or PostgreSQL fresh-target logical restore.
+- `troupe platform restore <archive> --confirm --reset-target` for destructive SQLite target reset followed by restore.
 - Restore-time scope mapping with `--map-org`, `--map-team`, and `--map-user`.
 - PostgreSQL integration scaffolding in `pkg/store/entstore/backup_postgres_restore_integration_test.go`, gated by `-tags=integration` and `TROUPE_TEST_DSN`.
 

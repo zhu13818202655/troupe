@@ -77,7 +77,7 @@ const PROVIDERS: ProviderDef[] = [
 ]
 
 const BROWSER_ENGINES: BrowserEngine[] = [
-  { id: 'default', name: 'Default Chromium', description: 'Auto-downloaded by Astonish. No setup needed.', recommended: true },
+  { id: 'default', name: 'Default Chromium', description: 'Auto-downloaded by Troupe. No setup needed.', recommended: true },
   { id: 'cloakbrowser', name: 'CloakBrowser', description: 'Anti-detect Chromium with C++ stealth patches. Install via CLI.' },
   { id: 'custom', name: 'Custom Chrome', description: 'Use your own Chrome/Chromium binary.' },
   { id: 'remote', name: 'Remote Browser', description: 'Connect to Chrome running on another machine via CDP.' },
@@ -477,7 +477,7 @@ export default function SetupWizard({ onComplete }: { onComplete: () => void }) 
         return (
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary to-[var(--accent3)] mb-6"><Sparkles size={40} className="text-white" /></div>
-            <h1 className="text-3xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Welcome to Astonish Studio</h1>
+            <h1 className="text-3xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Welcome to Troupe Studio</h1>
             <p className="text-lg mb-6 max-w-md mx-auto" style={{ color: 'var(--text-muted)' }}>Build powerful AI agents visually. Let's get you set up in just a few steps.</p>
             <div className="flex flex-col gap-3 max-w-sm mx-auto text-left p-4 rounded-lg" style={{ background: 'var(--bg-tertiary)' }}>
               <div className="flex items-center gap-3"><div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm">1</div><span style={{ color: 'var(--text-secondary)' }}>Choose deployment mode</span></div>
@@ -492,7 +492,7 @@ export default function SetupWizard({ onComplete }: { onComplete: () => void }) 
         return (
           <div>
             <h2 className="text-2xl font-bold mb-2 text-center" style={{ color: 'var(--text-primary)' }}>Database Backend</h2>
-            <p className="text-center mb-6" style={{ color: 'var(--text-muted)' }}>Choose your database backend for Astonish.</p>
+            <p className="text-center mb-6" style={{ color: 'var(--text-muted)' }}>Choose your database backend for Troupe.</p>
 
             <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto mb-6">
               <button
@@ -702,7 +702,7 @@ export default function SetupWizard({ onComplete }: { onComplete: () => void }) 
                 <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
                   <p className="text-sm font-medium text-yellow-400">Restart Required</p>
                   <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
-                    After completing setup, restart Astonish to activate platform mode with authentication and teams.
+                    After completing setup, restart Troupe to activate platform mode with authentication and teams.
                   </p>
                 </div>
               </div>
@@ -964,7 +964,7 @@ export default function SetupWizard({ onComplete }: { onComplete: () => void }) 
               <div className="p-4 rounded-lg mb-4 bg-primary/5 border border-primary/20">
                 <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                   CloakBrowser requires dependency installation via the CLI.
-                  Run <code className="text-primary">astonish config browser</code> to set it up.
+                  Run <code className="text-primary">troupe config browser</code> to set it up.
                 </p>
               </div>
             )}
@@ -1153,7 +1153,7 @@ export default function SetupWizard({ onComplete }: { onComplete: () => void }) 
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-emerald-400 mb-6"><Check size={40} className="text-white" /></div>
             <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>You're All Set!</h2>
-            <p className="text-lg mb-6" style={{ color: 'var(--text-muted)' }}>Astonish Studio is ready to use.</p>
+            <p className="text-lg mb-6" style={{ color: 'var(--text-muted)' }}>Troupe Studio is ready to use.</p>
             <div className="inline-block text-left p-4 rounded-lg space-y-3 min-w-[280px]" style={{ background: 'var(--bg-tertiary)' }}>
               {(deploymentMode === 'platform' || deploymentMode === 'sqlite') && (
                 <div className="flex items-center gap-2 text-xs pb-3 border-b" style={{ borderColor: 'var(--border-color)' }}>

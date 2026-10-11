@@ -1,6 +1,6 @@
 # tests/ — AGENTS.md
 
-Astonish's end-to-end and integration test infrastructure. Read this before adding or modifying any test that touches DB, sandbox, or provider APIs.
+Troupe's end-to-end and integration test infrastructure. Read this before adding or modifying any test that touches DB, sandbox, or provider APIs.
 
 ## Layout
 - `tests/e2e/` — grouped e2e packages (one dir per group):
@@ -31,8 +31,8 @@ Astonish's end-to-end and integration test infrastructure. Read this before addi
   - or provider-specific alternatives (`OPENROUTER_API_KEY`, `POE_API_KEY`, `GROQ_API_KEY`, `XAI_API_KEY`, …).
   `tests/e2eboot/platform_core.go` and `bootstrap_sqlite.go` skip tests with no provider key present.
 - **`TAVILY_API_KEY`** — required for MCP-standard-install tests and some `apps` tests (`chat_mcp_standard_install_test.go`, `apps/apps_test.go`).
-- Sandbox-dependent tests require **`kubectl`** and **`helm`** on `PATH`, with namespaces + PVCs `astonish-layers` / `astonish-uppers` provisioned. Use `make e2e-k8s-up` / `make e2e-k8s-down` to bring them up/down.
-- `docker-compose.e2e.yml` powers `make e2e-env-up` / `make e2e-env-down` for a containerized smoke Astonish (not the full k8s sandbox path).
+- Sandbox-dependent tests require **`kubectl`** and **`helm`** on `PATH`, with namespaces + PVCs `troupe-layers` / `troupe-uppers` provisioned. Use `make e2e-k8s-up` / `make e2e-k8s-down` to bring them up/down.
+- `docker-compose.e2e.yml` powers `make e2e-env-up` / `make e2e-env-down` for a containerized smoke Troupe (not the full k8s sandbox path).
 
 ## e2eboot responsibilities
 - `bootstrap.go` / `bootstrap_sqlite.go` — set up DBs (Postgres via `TROUPE_TEST_DSN`, or SQLite path), seed initial state.
@@ -42,7 +42,7 @@ Astonish's end-to-end and integration test infrastructure. Read this before addi
 - `sandbox*.go` — sandbox backend selection, port-forwarding, env injection.
 - `auth*.go` — auth helpers.
 - `embedder*.go` — embedder/memory seeding.
-- `inspector_state*.go` — inspector lifecycle state (per-run DB naming, PID/state file locations under `/tmp/astonish-e2e-inspect.*`).
+- `inspector_state*.go` — inspector lifecycle state (per-run DB naming, PID/state file locations under `/tmp/troupe-e2e-inspect.*`).
 
 ## Scenario catalog and reporters
 - `tests/scenarios/*.yaml` — declarative catalog: which packages belong to which group, which env vars each scenario needs, expected fixtures.

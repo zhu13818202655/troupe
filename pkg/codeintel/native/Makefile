@@ -8,7 +8,7 @@ TREE_SITTER_PYTHON_VERSION ?= v0.23.6
 
 BUILD_DIR ?= $(CURDIR)/.build
 OUT_DIR ?= $(CURDIR)/dist
-OUT ?= $(OUT_DIR)/libastonish-treesitter.so
+OUT ?= $(OUT_DIR)/libtroupe-treesitter.so
 OUT_PARENT := $(dir $(OUT))
 CC ?= cc
 CFLAGS ?= -O2 -fPIC

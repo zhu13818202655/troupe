@@ -43,7 +43,7 @@ type GenerateOptions struct {
 // DefaultOptions returns sensible defaults
 func DefaultOptions() GenerateOptions {
 	return GenerateOptions{
-		Title:       "Astonish Demo",
+		Title:       "Troupe Demo",
 		Width:       800,
 		Height:      400,
 		AutoPlay:    true,
@@ -381,4 +381,3 @@ const htmlTemplate = `<!DOCTYPE html>
 </body>
 </html>
 `
-

@@ -357,6 +357,11 @@ func memoryHealthCacheKey(pu *PlatformUser, teamSlug string) string {
 }
 
 func activeTeamSlug(r *http.Request, pu *PlatformUser) string {
+	// X-Troupe-Team is the post-rebrand name; X-Astonish-Team is kept for
+	// legacy clients until they are upgraded.
+	if team := strings.TrimSpace(r.Header.Get("X-Troupe-Team")); team != "" {
+		return team
+	}
 	if team := strings.TrimSpace(r.Header.Get("X-Astonish-Team")); team != "" {
 		return team
 	}

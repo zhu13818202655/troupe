@@ -68,8 +68,8 @@ func (b *CodeSystemPromptBuilder) build(base *SystemPromptBuilder) string {
 	// ── Tier 1: Static Core ──────────────────────────────────────
 
 	// 1. Identity — code mode is explicit so the model distinguishes it from Studio/platform/chat
-	sb.WriteString("You are Astonish, running in **Code mode** — a local-first terminal development environment.\n")
-	sb.WriteString("You operate directly on the user's filesystem and local toolchain. You are NOT in the Studio web UI, not in a platform chat session, and not in a browser. \"Astonish Code\" and \"code mode\" both refer to this environment.\n")
+	sb.WriteString("You are Troupe, running in **Code mode** — a local-first terminal development environment.\n")
+	sb.WriteString("You operate directly on the user's filesystem and local toolchain. You are NOT in the Studio web UI, not in a platform chat session, and not in a browser. \"Troupe Code\" and \"code mode\" both refer to this environment.\n")
 	sb.WriteString("You help users accomplish tasks by calling tools and reasoning through problems.\n\n")
 
 	// 1b. Channel-specific output constraints (set per-turn by channel manager)
@@ -331,17 +331,17 @@ func (b *CodeSystemPromptBuilder) build(base *SystemPromptBuilder) string {
 	}
 
 	// Note: The "Visual Apps (Generative UI)" section is intentionally absent from
-	// code mode. astonish-app fences are Studio-only; there is no app renderer in
-	// Astonish Code. Including the section (even gated behind skill_lookup) causes
-	// the coding agent to generate astonish-app output for plain "build an app"
+	// code mode. troupe-app fences are Studio-only; there is no app renderer in
+	// Troupe Code. Including the section (even gated behind skill_lookup) causes
+	// the coding agent to generate troupe-app output for plain "build an app"
 	// requests. The generative-ui skill is also excluded from code-mode skill
 	// lookup (SkillLookupModeCode uses BuiltinSkillsForCode) for the same reason.
 
 	// 6l. Reports
 	sb.WriteString("\n## Reports\n\n")
-	sb.WriteString("For any report, analysis, review, summary, or document the user may share or export: save it as a `.md` file via `write_file`, then emit an `astonish-report` fence in your reply. Both steps are required every time. Reports may include mermaid diagrams for flows and architectures.\n\n")
-	sb.WriteString("```astonish-report\npath: <exact path passed to write_file>\ntitle: <human-readable title>\n```\n\n")
-	sb.WriteString("The fence's `path` MUST match the `file_path` you used. Without the fence the file appears as a small download card instead of an inline report. Without `write_file` the fence is ignored. Do NOT use `astonish-app` for reports — that fence is for interactive UIs.\n")
+	sb.WriteString("For any report, analysis, review, summary, or document the user may share or export: save it as a `.md` file via `write_file`, then emit an `troupe-report` fence in your reply. Both steps are required every time. Reports may include mermaid diagrams for flows and architectures.\n\n")
+	sb.WriteString("```troupe-report\npath: <exact path passed to write_file>\ntitle: <human-readable title>\n```\n\n")
+	sb.WriteString("The fence's `path` MUST match the `file_path` you used. Without the fence the file appears as a small download card instead of an inline report. Without `write_file` the fence is ignored. Do NOT use `troupe-app` for reports — that fence is for interactive UIs.\n")
 
 	// ── Tier 3: Per-Turn Dynamic ─────────────────────────────────
 

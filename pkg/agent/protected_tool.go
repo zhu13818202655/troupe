@@ -26,7 +26,7 @@ type ToolWithDeclaration = common.ToolWithDeclaration
 type ProtectedToolset struct {
 	underlying tool.Toolset
 	state      session.State
-	agent      *AstonishAgent
+	agent      *TroupeAgent
 	yieldFunc  func(*session.Event, error) bool
 }
 
@@ -94,7 +94,7 @@ func (f *FilteredToolset) Tools(ctx agent.ReadonlyContext) ([]tool.Tool, error) 
 type ProtectedTool struct {
 	tool.Tool                                  // Embed the underlying tool
 	State     session.State                    // Access to session state
-	Agent     *AstonishAgent                   // Access to helper methods
+	Agent     *TroupeAgent                     // Access to helper methods
 	YieldFunc func(*session.Event, error) bool // For emitting events
 }
 
@@ -195,7 +195,7 @@ func (p *ProtectedTool) Run(ctx tool.Context, args any) (map[string]any, error) 
 }
 
 // formatToolApprovalRequest formats a tool approval request
-func (a *AstonishAgent) formatToolApprovalRequest(toolName string, args map[string]interface{}) string {
+func (a *TroupeAgent) formatToolApprovalRequest(toolName string, args map[string]interface{}) string {
 	if a.IsWebMode {
 		// Return plain text / markdown for Web UI
 		var sb strings.Builder
@@ -214,7 +214,7 @@ func (a *AstonishAgent) formatToolApprovalRequest(toolName string, args map[stri
 
 // formatFolderApprovalRequest formats a folder-access authorization request for
 // the code-mode gate: the tool wants to touch paths outside the project root.
-func (a *AstonishAgent) formatFolderApprovalRequest(toolName string, paths []string, root string) string {
+func (a *TroupeAgent) formatFolderApprovalRequest(toolName string, paths []string, root string) string {
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf("`%s` wants to access files outside the project directory:\n", toolName))
 	for _, p := range paths {

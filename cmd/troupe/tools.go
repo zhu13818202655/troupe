@@ -10,8 +10,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/charmbracelet/huh"
 	"charm.land/lipgloss/v2"
+	"github.com/charmbracelet/huh"
 	"github.com/zhu13818202655/troupe/pkg/cache"
 	"github.com/zhu13818202655/troupe/pkg/common"
 	"github.com/zhu13818202655/troupe/pkg/config"
@@ -841,7 +841,7 @@ func handleToolsSearchCommand(args []string) error {
 	fmt.Println("The 'tools search' command is no longer available.")
 	fmt.Println()
 	fmt.Println("Tool discovery is now managed by the platform database backend.")
-	fmt.Println("Use the Astonish Studio web interface or the search_tools tool")
+	fmt.Println("Use the Troupe Studio web interface or the search_tools tool")
 	fmt.Println("during chat to search the tool index.")
 	return nil
 }

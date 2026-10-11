@@ -233,7 +233,7 @@ func (m *memCredStore) Count(_ context.Context) int { return len(m.creds) }
 func (m *memCredStore) Resolve(_ context.Context, name string) (string, string, error) {
 	return store.ResolveCredentialHeader(name, m.Get(context.Background(), name), nil)
 }
-func (m *memCredStore) InvalidateToken(_ context.Context, _ string)                {}
+func (m *memCredStore) InvalidateToken(_ context.Context, _ string)                 {}
 func (m *memCredStore) SetSecret(_ context.Context, _, _ string) error              { return nil }
 func (m *memCredStore) SetSecretBatch(_ context.Context, _ map[string]string) error { return nil }
 func (m *memCredStore) GetSecret(_ context.Context, _ string) string                { return "" }
@@ -259,8 +259,8 @@ func (f *fakePlanStore) ListPlans(_ context.Context) []store.FleetPlanSummary {
 	return out
 }
 func (f *fakePlanStore) Save(_ context.Context, _ any) error                     { return nil }
-func (f *fakePlanStore) Delete(_ context.Context, _ string) error                 { return nil }
-func (f *fakePlanStore) Count(_ context.Context) int                              { return len(f.plans) }
-func (f *fakePlanStore) Reload(_ context.Context) error                           { return nil }
-func (f *fakePlanStore) GetPlanYAML(_ context.Context, _ string) (string, error)  { return "", nil }
-func (f *fakePlanStore) SavePlanYAML(_ context.Context, _, _ string) error        { return nil }
+func (f *fakePlanStore) Delete(_ context.Context, _ string) error                { return nil }
+func (f *fakePlanStore) Count(_ context.Context) int                             { return len(f.plans) }
+func (f *fakePlanStore) Reload(_ context.Context) error                          { return nil }
+func (f *fakePlanStore) GetPlanYAML(_ context.Context, _ string) (string, error) { return "", nil }
+func (f *fakePlanStore) SavePlanYAML(_ context.Context, _, _ string) error       { return nil }

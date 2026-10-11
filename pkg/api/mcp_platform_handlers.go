@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"sort"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/sandbox"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
 )
 
 // MCPServerListItem represents an MCP server in listing responses.

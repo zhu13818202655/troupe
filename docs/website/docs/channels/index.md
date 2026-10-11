@@ -1,6 +1,6 @@
 # Channels Overview
 
-Channels are communication adapters that connect external messaging platforms to the Astonish agent engine. They allow users to interact with their AI agents through familiar interfaces — Telegram, Email, or Slack — without changing how agents process requests.
+Channels are communication adapters that connect external messaging platforms to the Troupe agent engine. They allow users to interact with their AI agents through familiar interfaces — Telegram, Email, or Slack — without changing how agents process requests.
 
 Inbound A2A is not a messaging channel. It is an OAuth-protected HTTP endpoint for external agents; see [Inbound A2A Server](./a2a.md).
 
@@ -58,7 +58,7 @@ In PostgreSQL deployments, channels gain additional capabilities:
 
 ## Configuration
 
-Channel configuration lives in your Astonish config file under the `channels` key. Each adapter has its own section with platform-specific settings.
+Channel configuration lives in your Troupe config file under the `channels` key. Each adapter has its own section with platform-specific settings.
 
 See the individual channel pages for detailed setup instructions:
 
@@ -66,4 +66,4 @@ See the individual channel pages for detailed setup instructions:
 - [Email](./email.md)
 - [Slack](./slack.md)
 
-For external agents that call Astonish, use [Inbound A2A Server](./a2a.md) and grant the OAuth `a2a` scope. For Astonish calling remote agents, use [A2A Agents](../configuration/a2a-agents.md).
+For external agents that call Troupe, use [Inbound A2A Server](./a2a.md) and grant the OAuth `a2a` scope. For Troupe calling remote agents, use [A2A Agents](../configuration/a2a-agents.md).

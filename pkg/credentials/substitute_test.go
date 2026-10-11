@@ -287,7 +287,7 @@ func TestSubstituteAndRestore_ParallelCalls(t *testing.T) {
 		t.Fatalf("Open: %v", err)
 	}
 
-	store.Set("proxmox", &Credential{Type: CredAPIKey, Header: "Authorization", Value: "PVEAPIToken=root@pam!astonish=secret123"})
+	store.Set("proxmox", &Credential{Type: CredAPIKey, Header: "Authorization", Value: "PVEAPIToken=root@pam!troupe=secret123"})
 
 	// Simulate two parallel tool calls — one with a credential placeholder,
 	// one without. This is the exact pattern from session 1b919508 where
@@ -318,7 +318,7 @@ func TestSubstituteAndRestore_ParallelCalls(t *testing.T) {
 			if ContainsPlaceholder(cmd) {
 				t.Errorf("iteration %d: credential not substituted in goroutine 1, got %q", i, cmd)
 			}
-			if !strings.Contains(cmd, "PVEAPIToken=root@pam!astonish=secret123") {
+			if !strings.Contains(cmd, "PVEAPIToken=root@pam!troupe=secret123") {
 				t.Errorf("iteration %d: expected real token in command, got %q", i, cmd)
 			}
 

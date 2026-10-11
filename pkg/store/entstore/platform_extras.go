@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"net/http"
 	"path/filepath"
-	"strings"
 
 	"entgo.io/ent/dialect/sql/schema"
 
 	platformmigrate "github.com/zhu13818202655/troupe/ent/platform/migrate"
 	"github.com/zhu13818202655/troupe/pkg/agent"
+	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/fleet"
 	"github.com/zhu13818202655/troupe/pkg/session"
 	"github.com/zhu13818202655/troupe/pkg/store"
@@ -56,14 +56,11 @@ func TeamSchemaName(teamSlug string) string {
 }
 
 // OrgDBName returns the conventional database name for an organization.
-// Matches config.OrgDBName: astonish_{suffix}_{sanitized_slug} (with suffix)
-// or astonish_org_{sanitized_slug} (legacy, no suffix).
+// Delegates to config.OrgDBName, which is the single source of truth:
+// troupe_{suffix}_{sanitized_slug} (with suffix) or troupe_org_{sanitized_slug}
+// (legacy, no suffix).
 func OrgDBName(instanceSuffix, orgSlug string) string {
-	safe := strings.ReplaceAll(orgSlug, "-", "_")
-	if instanceSuffix == "" {
-		return "astonish_org_" + safe
-	}
-	return "astonish_" + instanceSuffix + "_" + safe
+	return config.OrgDBName(instanceSuffix, orgSlug)
 }
 
 // NewPlatformServices creates a Services instance for platform mode.

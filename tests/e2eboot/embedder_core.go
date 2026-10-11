@@ -43,12 +43,12 @@ func initEmbedFuncCore(log CoreLogger, backend store.PlatformBackend) {
 }
 
 // stableModelsDir returns a stable models directory that persists across runs.
-// Uses ~/.config/astonish/models/ (the real user's config, not any temporary
-// XDG_CONFIG_HOME). Falls back to /tmp/astonish-e2e-models/ if the user's home
+// Uses ~/.config/troupe/models/ (the real user's config, not any temporary
+// XDG_CONFIG_HOME). Falls back to /tmp/troupe-e2e-models/ if the user's home
 // directory cannot be determined.
 func stableModelsDir() string {
 	if home, err := os.UserHomeDir(); err == nil {
-		return filepath.Join(home, ".config", "astonish", "models")
+		return filepath.Join(home, ".config", "troupe", "models")
 	}
-	return "/tmp/astonish-e2e-models"
+	return "/tmp/troupe-e2e-models"
 }

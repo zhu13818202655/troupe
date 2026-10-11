@@ -49,7 +49,7 @@ type minimalReadonlyContext struct {
 }
 
 func (m *minimalReadonlyContext) AgentName() string                    { return "cache-refresh" }
-func (m *minimalReadonlyContext) AppName() string                      { return "astonish" }
+func (m *minimalReadonlyContext) AppName() string                      { return "troupe" }
 func (m *minimalReadonlyContext) UserContent() *genai.Content          { return nil }
 func (m *minimalReadonlyContext) InvocationID() string                 { return "" }
 func (m *minimalReadonlyContext) ReadonlyState() session.ReadonlyState { return nil }
@@ -299,7 +299,7 @@ func RunConsole(ctx context.Context, cfg *ConsoleConfig) error {
 	// Wrap tools with sandbox if enabled (container isolation for file/shell/network tools)
 	internalTools, sandboxCleanup, sandboxErr := setupFlowSandbox(cfg.AppConfig, internalTools, cfg.DebugMode)
 	if sandboxErr != nil {
-		return fmt.Errorf("sandbox is enabled but the runtime is not available: %w\n\nTo disable sandbox, set 'sandbox.enabled: false' in ~/.config/astonish/config.yaml", sandboxErr)
+		return fmt.Errorf("sandbox is enabled but the runtime is not available: %w\n\nTo disable sandbox, set 'sandbox.enabled: false' in ~/.config/troupe/config.yaml", sandboxErr)
 	}
 	defer sandboxCleanup()
 
@@ -366,21 +366,21 @@ func RunConsole(ctx context.Context, cfg *ConsoleConfig) error {
 		}
 	}
 
-	// Create Astonish agent with internal tools
+	// Create Troupe agent with internal tools
 	// MCP toolsets will be passed directly to llmagent when creating nodes
 	if cfg.DebugMode {
 		fmt.Println("Creating agent...")
 	}
-	astonishAgent := agent.NewAstonishAgentWithToolsets(cfg.AgentConfig, llm, internalTools, mcpToolsets)
-	astonishAgent.DebugMode = cfg.DebugMode
-	astonishAgent.AutoApprove = cfg.AutoApprove
-	astonishAgent.SessionService = sessionService
+	troupeAgent := agent.NewTroupeAgentWithToolsets(cfg.AgentConfig, llm, internalTools, mcpToolsets)
+	troupeAgent.DebugMode = cfg.DebugMode
+	troupeAgent.AutoApprove = cfg.AutoApprove
+	troupeAgent.SessionService = sessionService
 
 	// Wire credential redactor and store for placeholder substitution
 	if cs := tools.GetCredentialStore(); cs != nil {
-		astonishAgent.Redactor = cs.Redactor()
-		astonishAgent.CredentialStore = cs
-		astonishAgent.PendingSecrets = credentials.NewPendingVault(cs.Redactor())
+		troupeAgent.Redactor = cs.Redactor()
+		troupeAgent.CredentialStore = cs
+		troupeAgent.PendingSecrets = credentials.NewPendingVault(cs.Redactor())
 		// Inject Redactor into context so memory_save can Placeholderize()
 		ctx = credentials.WithRedactor(ctx, cs.Redactor())
 		// Attach proactive secret scanner
@@ -395,15 +395,15 @@ func RunConsole(ctx context.Context, cfg *ConsoleConfig) error {
 					scanner.MinTokenLength = sc.MinTokenLength
 				}
 			}
-			astonishAgent.PendingSecrets.Scanner = scanner
+			troupeAgent.PendingSecrets.Scanner = scanner
 		}
 	}
 
 	// Create ADK agent wrapper
 	adkAgent, err := adkagent.New(adkagent.Config{
-		Name:        "astonish_agent",
+		Name:        "troupe_agent",
 		Description: cfg.AgentConfig.Description,
-		Run:         astonishAgent.Run,
+		Run:         troupeAgent.Run,
 	})
 	if err != nil {
 		fmt.Printf("ERROR: Failed to create ADK agent: %v\n", err)
@@ -417,7 +417,7 @@ func RunConsole(ctx context.Context, cfg *ConsoleConfig) error {
 	if cfg.DebugMode {
 		fmt.Println("Creating session...")
 	}
-	userID, appName := "console_user", "astonish"
+	userID, appName := "console_user", "troupe"
 	resp, err := sessionService.Create(ctx, &session.CreateRequest{
 		AppName: appName,
 		UserID:  userID,

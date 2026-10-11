@@ -2,7 +2,7 @@
 
 ## Overview
 
-Astonish supports 12+ LLM providers through a factory pattern that creates ADK-compatible `model.LLM` instances. Each provider adapter handles the specifics of API authentication, request formatting, streaming, and error mapping, while presenting a uniform interface to the rest of the system.
+Troupe supports 12+ LLM providers through a factory pattern that creates ADK-compatible `model.LLM` instances. Each provider adapter handles the specifics of API authentication, request formatting, streaming, and error mapping, while presenting a uniform interface to the rest of the system.
 
 ## Key Design Decisions
 
@@ -12,7 +12,7 @@ The `NewLLM()` factory function takes a provider name and model name, returning 
 
 ### Why ADK-Native Where Possible
 
-Google's ADK provides built-in support for Google GenAI (Gemini). For OpenAI and Anthropic, Astonish uses their native Go SDKs wrapped in ADK's model interface. For all other providers (OpenRouter, Groq, xAI, LiteLLM, etc.), the OpenAI-compatible API adapter is used since most providers have standardized on OpenAI's API format.
+Google's ADK provides built-in support for Google GenAI (Gemini). For OpenAI and Anthropic, Troupe uses their native Go SDKs wrapped in ADK's model interface. For all other providers (OpenRouter, Groq, xAI, LiteLLM, etc.), the OpenAI-compatible API adapter is used since most providers have standardized on OpenAI's API format.
 
 ### Why Context Window Tracking
 
@@ -124,7 +124,7 @@ Agent engine:
 
 ## Interactions
 
-- **Agent Engine**: ChatAgent and AstonishAgent receive a `model.LLM` from the factory. Error classification drives retry logic.
+- **Agent Engine**: ChatAgent and TroupeAgent receive a `model.LLM` from the factory. Error classification drives retry logic.
 - **Credentials**: Provider API keys are resolved from the encrypted credential store via `provider_env.go`.
 - **Configuration**: Provider selection and model choice are in the app config.
 - **Daemon**: Provider environment is set up during daemon initialization.

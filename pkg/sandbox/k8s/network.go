@@ -6,14 +6,14 @@
 // Design invariants (§5.7):
 //
 //   - Per-org isolation is done via labels + NetworkPolicy, not per-org
-//     namespaces. Every sandbox pod already carries astonish.io/org=<slug>;
+//     namespaces. Every sandbox pod already carries troupe.io/org=<slug>;
 //     EnsureOrgNetwork renders a NetworkPolicy that allows intra-org pod
-//     traffic plus ingress from the Astonish control-plane namespace, and
+//     traffic plus ingress from the Troupe control-plane namespace, and
 //     denies everything else by default.
 //
 //   - ExposePort creates an in-cluster ClusterIP Service named
 //     sess-<sessionID>-<port>. The Service selector targets the single
-//     pod via astonish.io/session-id. Ingress (external URL) is
+//     pod via troupe.io/session-id. Ingress (external URL) is
 //     deferred; when Config.BaseDomain is set in a later slice we will
 //     optionally create an Ingress here.
 //
@@ -55,11 +55,11 @@ func orgNetworkPolicyName(orgSlug string) string {
 // EnsureOrgNetwork creates or updates the NetworkPolicy that isolates
 // sandbox pods belonging to orgSlug. The policy:
 //
-//   - Selects pods with astonish.io/type in {session, fleet,
-//     template-builder} AND astonish.io/org = <slug>.
+//   - Selects pods with troupe.io/type in {session, fleet,
+//     template-builder} AND troupe.io/org = <slug>.
 //
 //   - Ingress: allows traffic from (a) any pod in the control-plane
-//     namespace (Config.ControlPlaneNamespace, default "astonish") and
+//     namespace (Config.ControlPlaneNamespace, default "troupe") and
 //     (b) any pod in the same namespace with a matching org label.
 //
 //   - Egress: allows DNS (UDP/53, TCP/53) to kube-system and traffic to
@@ -273,8 +273,8 @@ func (b *K8sBackend) ExposePort(ctx context.Context, sessionID string, port int,
 				labelType:      "port-exposure",
 			},
 			Annotations: map[string]string{
-				"astonish.io/port":     fmt.Sprintf("%d", port),
-				"astonish.io/protocol": string(k8sProto),
+				"troupe.io/port":     fmt.Sprintf("%d", port),
+				"troupe.io/protocol": string(k8sProto),
 			},
 		},
 		Spec: corev1.ServiceSpec{

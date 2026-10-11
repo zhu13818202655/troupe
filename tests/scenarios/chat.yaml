@@ -1,5 +1,5 @@
 # Chat View — E2E Scenario Catalog
-# Real user journeys exercised against a running Astonish platform.
+# Real user journeys exercised against a running Troupe platform.
 # Unit-level UI rendering tests (Vitest) are NOT tracked here.
 #
 # Status: covered | missing
@@ -419,7 +419,7 @@ scenarios:
   - id: CHAT-040
     title: "AppCodeIndicator shows progress while app is being generated"
     user_story: |
-      As a user, while the agent is streaming an astonish-app code fence,
+      As a user, while the agent is streaming an troupe-app code fence,
       I see a pulsing "Generating app..." indicator (AppCodeIndicator)
       instead of raw fence text.
     priority: P1
@@ -717,22 +717,22 @@ scenarios:
     status: covered
 
   # ---------------------------------------------------------------------------
-  # Section I — Report Gate (two-step astonish-report contract)
+  # Section I — Report Gate (two-step troupe-report contract)
   # ---------------------------------------------------------------------------
   # These three scenarios pin the boundary of the report-vs-artifact gate
   # introduced to fix the b5310ae regression. The contract: an artifact is
   # promoted to inline EmbeddedFileViewer rendering iff it is markdown,
   # produced in the last turn, AND the agent emitted a matching
-  # ```astonish-report``` fence. Without all three signals, the artifact
+  # ```troupe-report``` fence. Without all three signals, the artifact
   # renders as a compact ArtifactCard. CHAT-066 covers the negative path,
   # CHAT-067 covers the report_marker SSE event, and CHAT-068 covers the
   # positive end-to-end markdown+marker case.
 
   - id: CHAT-066
-    title: "Plain write_file (no astonish-report fence) does not promote to a report"
+    title: "Plain write_file (no troupe-report fence) does not promote to a report"
     user_story: |
       As a user, when my agent writes a working file (e.g. a Python script)
-      without emitting an astonish-report fence, the file appears as a
+      without emitting an troupe-report fence, the file appears as a
       compact ArtifactCard download tile and NOT as an inline embedded
       report viewer. The session detail's artifacts[] entry has
       isReport=false. Pins the negative path of the gate to prevent any
@@ -741,10 +741,10 @@ scenarios:
     status: covered
 
   - id: CHAT-067
-    title: "Agent emits astonish-report fence and a report_marker SSE event is delivered"
+    title: "Agent emits troupe-report fence and a report_marker SSE event is delivered"
     user_story: |
       As a user, when my agent writes a markdown report AND emits the
-      ```astonish-report``` fence with a matching path, the backend
+      ```troupe-report``` fence with a matching path, the backend
       detects the fence and emits a report_marker SSE event whose path
       matches the artifact. The persisted marker survives session-detail
       reload — artifacts[] returns isReport=true and the optional
@@ -754,10 +754,10 @@ scenarios:
     status: covered
 
   - id: CHAT-068
-    title: "Markdown file with astonish-report fence is flagged as a report"
+    title: "Markdown file with troupe-report fence is flagged as a report"
     user_story: |
       As a user, when my agent saves a markdown file via write_file and
-      then emits a matching astonish-report fence, the session-detail
+      then emits a matching troupe-report fence, the session-detail
       artifacts[] entry comes back with isReport=true AND
       fileType="Markdown". This is the symmetric positive counterpart of
       CHAT-066: together they pin the gate's behavior on both sides

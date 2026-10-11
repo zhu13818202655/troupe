@@ -15,6 +15,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 
+	"github.com/zhu13818202655/troupe/pkg/config"
 	"github.com/zhu13818202655/troupe/pkg/store"
 	"github.com/zhu13818202655/troupe/pkg/store/pgutil"
 )
@@ -125,7 +126,7 @@ func setupPostgresBackupRestoreStore(t *testing.T, name string) *Store {
 	}
 	ctx := context.Background()
 	suffix := fmt.Sprintf("backup_%s_%s", sanitizePostgresBackupTestName(name), strings.ReplaceAll(uuid.NewString()[:8], "-", "_"))
-	platformDBName := fmt.Sprintf("astonish_%s_platform", suffix)
+	platformDBName := config.PlatformDBName(suffix)
 	platformDSN, err := pgutil.ReplaceDSNDatabase(baseDSN, platformDBName)
 	if err != nil {
 		t.Fatalf("ReplaceDSNDatabase error = %v", err)
@@ -169,7 +170,7 @@ func dropPostgresBackupTestDB(t *testing.T, baseDSN, dbName string) {
 }
 
 func orgDBNameForSuffix(suffix, orgSlug string) string {
-	return fmt.Sprintf("astonish_%s_%s", suffix, sanitizeSlug(orgSlug))
+	return OrgDBName(suffix, sanitizeSlug(orgSlug))
 }
 
 func sanitizePostgresBackupTestName(name string) string {

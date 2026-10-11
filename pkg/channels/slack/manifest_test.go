@@ -10,7 +10,7 @@ import (
 	slackapi "github.com/slack-go/slack"
 )
 
-func TestBuildAstonishSlackCommandsIncludesBuiltinsAndRegistry(t *testing.T) {
+func TestBuildTroupeSlackCommandsIncludesBuiltinsAndRegistry(t *testing.T) {
 	t.Parallel()
 	registry := channels.NewCommandRegistry()
 	registry.Register(&channels.Command{Name: "status", Description: "Show status"})
@@ -18,13 +18,13 @@ func TestBuildAstonishSlackCommandsIncludesBuiltinsAndRegistry(t *testing.T) {
 	registry.Register(&channels.Command{Name: "fleet_stop", Description: "Stop fleet", SessionScoped: true})
 	registry.Register(&channels.Command{Name: "authorize", Description: "Authorize device"})
 
-	cmds := buildAstonishSlackCommands(registry, "https://example.com/api/slack/commands")
+	cmds := buildTroupeSlackCommands(registry, "https://example.com/api/slack/commands")
 	byName := map[string]slackapi.ManifestSlashCommand{}
 	for _, cmd := range cmds {
 		byName[cmd.Command] = cmd
 	}
 
-	for _, name := range []string{"/link", "/astonish-status", "/astonish-authorize"} {
+	for _, name := range []string{"/link", "/troupe-status", "/troupe-authorize"} {
 		if _, ok := byName[name]; !ok {
 			t.Fatalf("expected command %s in %#v", name, cmds)
 		}
@@ -35,23 +35,23 @@ func TestBuildAstonishSlackCommandsIncludesBuiltinsAndRegistry(t *testing.T) {
 	if byName["/link"].UsageHint != "CODE" {
 		t.Fatalf("/link usage hint = %q, want CODE", byName["/link"].UsageHint)
 	}
-	if _, ok := byName["/astonish-new"]; ok {
-		t.Fatalf("session-scoped /new should not be registered for Slack: %#v", byName["/astonish-new"])
+	if _, ok := byName["/troupe-new"]; ok {
+		t.Fatalf("session-scoped /new should not be registered for Slack: %#v", byName["/troupe-new"])
 	}
-	if _, ok := byName["/astonish-start"]; ok {
-		t.Fatalf("unsupported /start should not be registered for Slack: %#v", byName["/astonish-start"])
+	if _, ok := byName["/troupe-start"]; ok {
+		t.Fatalf("unsupported /start should not be registered for Slack: %#v", byName["/troupe-start"])
 	}
-	if _, ok := byName["/astonish-fleet-stop"]; ok {
-		t.Fatalf("session-scoped /fleet_stop should not be registered for Slack: %#v", byName["/astonish-fleet-stop"])
+	if _, ok := byName["/troupe-fleet-stop"]; ok {
+		t.Fatalf("session-scoped /fleet_stop should not be registered for Slack: %#v", byName["/troupe-fleet-stop"])
 	}
 }
 
-func TestBuildAstonishSlackCommandsOmitsURLsForSocketMode(t *testing.T) {
+func TestBuildTroupeSlackCommandsOmitsURLsForSocketMode(t *testing.T) {
 	t.Parallel()
 	registry := channels.NewCommandRegistry()
 	registry.Register(&channels.Command{Name: "status", Description: "Show status"})
 
-	cmds := buildAstonishSlackCommands(registry, "")
+	cmds := buildTroupeSlackCommands(registry, "")
 	for _, cmd := range cmds {
 		if cmd.Url != "" {
 			t.Fatalf("socket command %s URL = %q, want omitted", cmd.Command, cmd.Url)
@@ -59,14 +59,14 @@ func TestBuildAstonishSlackCommandsOmitsURLsForSocketMode(t *testing.T) {
 	}
 }
 
-func TestBuildAstonishSlackCommandsDeduplicatesBuiltins(t *testing.T) {
+func TestBuildTroupeSlackCommandsDeduplicatesBuiltins(t *testing.T) {
 	t.Parallel()
 	registry := channels.NewCommandRegistry()
 	registry.Register(&channels.Command{Name: "link", Description: "duplicate link"})
 	registry.Register(&channels.Command{Name: "/START", Description: "legacy session start", SessionScoped: true})
 	registry.Register(&channels.Command{Name: "help", Description: strings.Repeat("x", maxSlackCommandDescriptionLength+20)})
 
-	cmds := buildAstonishSlackCommands(registry, "")
+	cmds := buildTroupeSlackCommands(registry, "")
 	counts := map[string]int{}
 	for _, cmd := range cmds {
 		counts[cmd.Command]++
@@ -77,11 +77,11 @@ func TestBuildAstonishSlackCommandsDeduplicatesBuiltins(t *testing.T) {
 	if counts["/link"] != 1 {
 		t.Fatalf("/link count = %d, want 1", counts["/link"])
 	}
-	if counts["/astonish-start"] != 0 {
-		t.Fatalf("/astonish-start count = %d, want 0", counts["/astonish-start"])
+	if counts["/troupe-start"] != 0 {
+		t.Fatalf("/troupe-start count = %d, want 0", counts["/troupe-start"])
 	}
-	if counts["/astonish-help"] != 1 {
-		t.Fatalf("/astonish-help count = %d, want 1", counts["/astonish-help"])
+	if counts["/troupe-help"] != 1 {
+		t.Fatalf("/troupe-help count = %d, want 1", counts["/troupe-help"])
 	}
 }
 
@@ -90,17 +90,17 @@ func TestSlackCommandAliasUsesAppPrefix(t *testing.T) {
 	registry := channels.NewCommandRegistry()
 	registry.Register(&channels.Command{Name: "status", Description: "Show status"})
 	registry.Register(&channels.Command{Name: "fleet_plan", Description: "Plan fleet"})
-	if got := slackCommandAlias("status"); got != "/astonish-status" {
+	if got := slackCommandAlias("status"); got != "/troupe-status" {
 		t.Fatalf("slackCommandAlias(status) = %q", got)
 	}
-	if got := slackCommandAlias("fleet_plan"); got != "/astonish-fleet-plan" {
+	if got := slackCommandAlias("fleet_plan"); got != "/troupe-fleet-plan" {
 		t.Fatalf("slackCommandAlias(fleet_plan) = %q", got)
 	}
-	if got := slackCommandNameFromInvocation("/astonish-status", registry); got != "status" {
-		t.Fatalf("slackCommandNameFromInvocation(/astonish-status) = %q", got)
+	if got := slackCommandNameFromInvocation("/troupe-status", registry); got != "status" {
+		t.Fatalf("slackCommandNameFromInvocation(/troupe-status) = %q", got)
 	}
-	if got := slackCommandNameFromInvocation("/astonish-fleet-plan", registry); got != "fleet_plan" {
-		t.Fatalf("slackCommandNameFromInvocation(/astonish-fleet-plan) = %q", got)
+	if got := slackCommandNameFromInvocation("/troupe-fleet-plan", registry); got != "fleet_plan" {
+		t.Fatalf("slackCommandNameFromInvocation(/troupe-fleet-plan) = %q", got)
 	}
 }
 
@@ -206,7 +206,7 @@ func TestManifestCommandBuilderSkipsInvalidNames(t *testing.T) {
 	registry := channels.NewCommandRegistry()
 	registry.Register(&channels.Command{Name: strings.Repeat("a", 40), Description: "Too long"})
 
-	cmds := buildAstonishSlackCommands(registry, "https://example.com/api/slack/commands")
+	cmds := buildTroupeSlackCommands(registry, "https://example.com/api/slack/commands")
 	for _, cmd := range cmds {
 		if cmd.Description == "Too long" {
 			t.Fatalf("invalid long command was included: %#v", cmd)
@@ -270,7 +270,7 @@ func TestInvalidManifestHintDoesNotRequireCommandURLForSocketMode(t *testing.T) 
 	t.Parallel()
 	manifest := &slackapi.Manifest{}
 	manifest.Settings.SocketModeEnabled = true
-	manifest.Features.SlashCommands = []slackapi.ManifestSlashCommand{{Command: "/astonish-status", Description: "Status"}}
+	manifest.Features.SlashCommands = []slackapi.ManifestSlashCommand{{Command: "/troupe-status", Description: "Status"}}
 	got := invalidManifestHint(assertStringError("invalid_manifest"), manifest)
 	if strings.Contains(got, "command_url") {
 		t.Fatalf("socket mode hint should not require command_url: %q", got)
@@ -281,7 +281,7 @@ type assertStringError string
 
 func (e assertStringError) Error() string { return string(e) }
 
-func TestMergeAstonishSlashCommandsPreservesUnownedCommands(t *testing.T) {
+func TestMergeTroupeSlashCommandsPreservesUnownedCommands(t *testing.T) {
 	t.Parallel()
 	manifest := &slackapi.Manifest{}
 	manifest.Display.Name = "Existing"
@@ -292,9 +292,9 @@ func TestMergeAstonishSlashCommandsPreservesUnownedCommands(t *testing.T) {
 
 	registry := channels.NewCommandRegistry()
 	registry.Register(&channels.Command{Name: "status", Description: "Show status"})
-	mergeAstonishSlashCommands(manifest, []slackapi.ManifestSlashCommand{
-		{Command: "/astonish-status", Description: "New status", Url: "https://astonish.example.com"},
-		{Command: "/link", Description: "Link account", Url: "https://astonish.example.com"},
+	mergeTroupeSlashCommands(manifest, []slackapi.ManifestSlashCommand{
+		{Command: "/troupe-status", Description: "New status", Url: "https://troupe.example.com"},
+		{Command: "/link", Description: "Link account", Url: "https://troupe.example.com"},
 	}, registry)
 
 	if manifest.Display.Name != "Existing" {
@@ -310,8 +310,8 @@ func TestMergeAstonishSlashCommandsPreservesUnownedCommands(t *testing.T) {
 	if _, ok := byName["/status"]; ok {
 		t.Fatalf("legacy bare status command was not removed: %#v", byName["/status"])
 	}
-	if byName["/astonish-status"].Description != "New status" {
-		t.Fatalf("status command was not replaced: %#v", byName["/astonish-status"])
+	if byName["/troupe-status"].Description != "New status" {
+		t.Fatalf("status command was not replaced: %#v", byName["/troupe-status"])
 	}
 	if _, ok := byName["/link"]; !ok {
 		t.Fatal("link command was not added")
@@ -321,7 +321,7 @@ func TestMergeAstonishSlashCommandsPreservesUnownedCommands(t *testing.T) {
 	}
 }
 
-func TestMergeAstonishSlashCommandsRemovesLegacyBareBuiltins(t *testing.T) {
+func TestMergeTroupeSlashCommandsRemovesLegacyBareBuiltins(t *testing.T) {
 	t.Parallel()
 	manifest := &slackapi.Manifest{}
 	manifest.Features.SlashCommands = []slackapi.ManifestSlashCommand{
@@ -329,8 +329,8 @@ func TestMergeAstonishSlashCommandsRemovesLegacyBareBuiltins(t *testing.T) {
 		{Command: "/external", Description: "External command", Url: "https://external.example.com"},
 	}
 
-	mergeAstonishSlashCommands(manifest, []slackapi.ManifestSlashCommand{
-		{Command: "/astonish-start", Description: "New start", Url: "https://astonish.example.com"},
+	mergeTroupeSlashCommands(manifest, []slackapi.ManifestSlashCommand{
+		{Command: "/troupe-start", Description: "New start", Url: "https://troupe.example.com"},
 	}, nil)
 
 	byName := map[string]slackapi.ManifestSlashCommand{}
@@ -340,8 +340,54 @@ func TestMergeAstonishSlashCommandsRemovesLegacyBareBuiltins(t *testing.T) {
 	if _, ok := byName["/start"]; ok {
 		t.Fatalf("legacy bare start command was not removed: %#v", byName["/start"])
 	}
-	if byName["/astonish-start"].Description != "New start" {
-		t.Fatalf("prefixed start command was not added: %#v", byName["/astonish-start"])
+	if byName["/troupe-start"].Description != "New start" {
+		t.Fatalf("prefixed start command was not added: %#v", byName["/troupe-start"])
+	}
+	if byName["/external"].Url != "https://external.example.com" {
+		t.Fatalf("external command was not preserved: %#v", byName["/external"])
+	}
+}
+
+func TestSlackCommandNameFromInvocationAcceptsLegacyPrefix(t *testing.T) {
+	t.Parallel()
+	registry := channels.NewCommandRegistry()
+	registry.Register(&channels.Command{Name: "status", Description: "Show status"})
+	registry.Register(&channels.Command{Name: "fleet_plan", Description: "Plan fleet"})
+	// Legacy /astonish-* invocations map to the same internal commands as /troupe-*.
+	if got := slackCommandNameFromInvocation("/astonish-status", registry); got != "status" {
+		t.Fatalf("slackCommandNameFromInvocation(/astonish-status) = %q, want status", got)
+	}
+	if got := slackCommandNameFromInvocation("/astonish-fleet-plan", registry); got != "fleet_plan" {
+		t.Fatalf("slackCommandNameFromInvocation(/astonish-fleet-plan) = %q, want fleet_plan", got)
+	}
+	if got := slackCommandNameFromInvocation("/troupe-status", registry); got != "status" {
+		t.Fatalf("slackCommandNameFromInvocation(/troupe-status) = %q, want status", got)
+	}
+}
+
+func TestMergeTroupeSlashCommandsRemovesLegacyAstonishCommands(t *testing.T) {
+	t.Parallel()
+	manifest := &slackapi.Manifest{}
+	manifest.Features.SlashCommands = []slackapi.ManifestSlashCommand{
+		{Command: "/astonish-status", Description: "Old prefixed status", Url: "https://old.example.com"},
+		{Command: "/external", Description: "External command", Url: "https://external.example.com"},
+	}
+
+	registry := channels.NewCommandRegistry()
+	registry.Register(&channels.Command{Name: "status", Description: "Show status"})
+	mergeTroupeSlashCommands(manifest, []slackapi.ManifestSlashCommand{
+		{Command: "/troupe-status", Description: "New status", Url: "https://troupe.example.com"},
+	}, registry)
+
+	byName := map[string]slackapi.ManifestSlashCommand{}
+	for _, cmd := range manifest.Features.SlashCommands {
+		byName[cmd.Command] = cmd
+	}
+	if _, ok := byName["/astonish-status"]; ok {
+		t.Fatalf("legacy /astonish-status was not removed: %#v", byName["/astonish-status"])
+	}
+	if byName["/troupe-status"].Description != "New status" {
+		t.Fatalf("status command was not replaced: %#v", byName["/troupe-status"])
 	}
 	if byName["/external"].Url != "https://external.example.com" {
 		t.Fatalf("external command was not preserved: %#v", byName["/external"])

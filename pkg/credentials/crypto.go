@@ -1,4 +1,4 @@
-// Package credentials provides an encrypted credential store for Astonish.
+// Package credentials provides an encrypted credential store for Troupe.
 // Secrets are encrypted at rest with AES-256-GCM. The encryption key is
 // auto-generated on first use and stored in a separate key file. A redaction
 // engine prevents credential values from leaking through tool outputs,

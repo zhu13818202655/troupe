@@ -1,7 +1,7 @@
 import { useEffect, useState, type ElementType } from 'react'
 import { Moon, Sun, Settings, Cpu, Grid, MessageSquare, Rocket, ShieldCheck, ShieldAlert, Crosshair, AppWindow, Presentation, ChevronDown, LogOut, MoreHorizontal, Menu } from 'lucide-react'
 
-import AstonishLogo from './AstonishLogo'
+import TroupeLogo from './TroupeLogo'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -164,8 +164,8 @@ export default function TopBar({ theme, onToggleTheme, onOpenSandbox, defaultPro
             <SheetContent side="left" className="w-72 border-panel-border bg-panel-background p-0 md:hidden">
               <SheetHeader className="border-b border-border px-4 py-3 text-left">
                 <SheetTitle className="flex items-center gap-2">
-                  <AstonishLogo size="sm" alt="Astonish" />
-                  Astonish
+                  <TroupeLogo size="sm" alt="Troupe" />
+                  Troupe
                 </SheetTitle>
                 <SheetDescription className="sr-only">Primary navigation and account controls</SheetDescription>
               </SheetHeader>
@@ -249,9 +249,9 @@ export default function TopBar({ theme, onToggleTheme, onOpenSandbox, defaultPro
           </Sheet>
 
           <button type="button" onClick={() => nav('chat')} className="flex shrink-0 items-center gap-2.5 rounded-xl pr-2">
-            <AstonishLogo size="sm" alt="Astonish" />
+            <TroupeLogo size="sm" alt="Troupe" />
             <span className="hidden whitespace-nowrap text-base font-semibold text-foreground sm:inline">
-              Astonish Studio
+              Troupe Studio
             </span>
           </button>
 

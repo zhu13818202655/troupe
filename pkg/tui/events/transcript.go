@@ -151,7 +151,7 @@ type Transcript struct {
 	// of agent text becomes its own permanent message (never provisional, never
 	// replaced), and a message between tool groups starts a fresh tool fold so
 	// the layout is message → tools → message → tools as events arrive. Used by
-	// `astonish code`, where the full reasoning trail matters. When false
+	// `troupe code`, where the full reasoning trail matters. When false
 	// (Studio/platform chat), the default sticky-agent behavior applies: one
 	// agent bubble per tool run, interstitial text collapsed for a cleaner chat.
 	LinearThread bool

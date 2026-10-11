@@ -42,4 +42,3 @@ func TestSandboxHTML_AppCanvasNovaNight(t *testing.T) {
 		t.Error("theme handler should apply msg.tokens from parent")
 	}
 }
-

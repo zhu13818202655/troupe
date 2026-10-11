@@ -1,6 +1,6 @@
 # Organizations & Teams
 
-Astonish organizes users into a three-level hierarchy: **organizations**, **teams**, and **users**. Each level provides isolation boundaries and role-based access control.
+Troupe organizes users into a three-level hierarchy: **organizations**, **teams**, and **users**. Each level provides isolation boundaries and role-based access control.
 
 ## Hierarchy
 
@@ -38,17 +38,17 @@ A user belongs to exactly one organization and can be a member of multiple teams
 
 ## Creating an Organization
 
-Organizations are created during the `astonish setup` wizard or via the platform CLI:
+Organizations are created during the `troupe setup` wizard or via the platform CLI:
 
 ```bash
 # Platform admin creates an org
-astonish platform org create --name "Acme Corp" --slug acme
+troupe platform org create --name "Acme Corp" --slug acme
 ```
 
 Optionally assign an existing user as owner:
 
 ```bash
-astonish platform org create --name "Acme Corp" --slug acme --owner-email alice@acme.corp
+troupe platform org create --name "Acme Corp" --slug acme --owner-email alice@acme.corp
 ```
 
 This provisions a new database (PostgreSQL) or directory (SQLite), creates the org-wide schema, and assigns the owner.
@@ -59,18 +59,18 @@ Teams are managed through **Studio** (Settings → Teams). The CLI provides read
 
 ```bash
 # List teams in current org (requires login)
-astonish team list
+troupe team list
 ```
 
-Team creation, member management, and configuration are handled through the Studio web interface or during the initial `astonish setup` wizard.
+Team creation, member management, and configuration are handled through the Studio web interface or during the initial `troupe setup` wizard.
 
 ## Inviting Members
 
 ```bash
 # Invite by email (platform admin)
-astonish platform org invite --org acme --email alice@acme.corp --role admin
-astonish platform org invite --org acme --email bob@acme.corp --team backend
-astonish platform org invite --org acme --email carol@acme.corp
+troupe platform org invite --org acme --email alice@acme.corp --role admin
+troupe platform org invite --org acme --email bob@acme.corp --team backend
+troupe platform org invite --org acme --email carol@acme.corp
 ```
 
 Flags:
@@ -88,8 +88,8 @@ When OIDC federation is configured, users authenticate through your identity pro
 To switch your active org or team, log out and log back in with the desired context:
 
 ```bash
-astonish logout
-astonish login https://astonish.acme.corp --org acme --team frontend
+troupe logout
+troupe login https://troupe.acme.corp --org acme --team frontend
 ```
 
 Or omit the flags to be prompted interactively during login.
@@ -97,7 +97,7 @@ Or omit the flags to be prompted interactively during login.
 To check your current context:
 
 ```bash
-astonish status
+troupe status
 ```
 
 ## Data Isolation Guarantees

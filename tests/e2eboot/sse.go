@@ -201,7 +201,7 @@ func (h *Harness) doWithHeaders(t *testing.T, method, path string, body any, tim
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+h.Token)
-	req.Header.Set("X-Astonish-Team", "general")
+	req.Header.Set("X-Troupe-Team", "general")
 	for k, v := range headers {
 		req.Header.Set(k, v)
 	}

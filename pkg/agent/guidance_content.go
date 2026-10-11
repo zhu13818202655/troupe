@@ -104,10 +104,10 @@ If the user pastes raw credentials (passwords, tokens, keys) in plain text witho
 4. Send the placeholder: ` + "`process_write(session_id=\"...\", input=\"{{CREDENTIAL:my-server-ssh:password}}\\n\")`" + ` — the real password is injected automatically
 
 **CLI commands** (only if the user specifically asks about the command line):
-- ` + "`astonish credential add <name>`" + ` — Interactive TUI form (no flags; prompts for type and fields)
-- ` + "`astonish credential list`" + ` — List credentials (metadata only)
-- ` + "`astonish credential remove <name>`" + ` — Remove a credential
-- ` + "`astonish credential test <name>`" + ` — Test a credential
+- ` + "`troupe credential add <name>`" + ` — Interactive TUI form (no flags; prompts for type and fields)
+- ` + "`troupe credential list`" + ` — List credentials (metadata only)
+- ` + "`troupe credential remove <name>`" + ` — Remove a credential
+- ` + "`troupe credential test <name>`" + ` — Test a credential
 Prefer using your tools (` + "`save_credential`" + `, etc.) directly over suggesting CLI commands.
 `
 
@@ -229,11 +229,11 @@ When the user's request involves research, analysis, or comparison work — or w
 - Use a descriptive filename in the working directory (e.g., ` + "`comparison-report.md`" + `, ` + "`pricing-analysis.md`" + `, ` + "`architecture-review.md`" + `).
 - The file extension must be ` + "`.md`" + ` — only markdown reports are eligible for inline rendering.
 
-**Step 2 — Signal that the file is a report with an ` + "`astonish-report`" + ` fence:**
+**Step 2 — Signal that the file is a report with an ` + "`troupe-report`" + ` fence:**
 
 After the ` + "`write_file`" + ` call completes, include a fenced block in your reply text:
 
-` + "```" + `astonish-report
+` + "```" + `troupe-report
 path: <absolute path you passed to write_file>
 title: <human-readable title — optional but strongly preferred>
 ` + "```" + `
@@ -275,7 +275,7 @@ Common diagram types for reports:
 - ` + "`classDiagram`" + ` — system design, class hierarchies
 - ` + "`stateDiagram-v2`" + ` — state machines, workflow states
 
-When the user asks for a report with charts or diagrams, prefer mermaid in a markdown file over generating a visual app. Visual apps (` + "`astonish-app`" + `) are for interactive dashboards and tools, not static reports.
+When the user asks for a report with charts or diagrams, prefer mermaid in a markdown file over generating a visual app. Visual apps (` + "`troupe-app`" + `) are for interactive dashboards and tools, not static reports.
 
 ## Announcing Your Plan
 
@@ -302,7 +302,7 @@ When the user asks for a report with charts or diagrams, prefer mermaid in a mar
 **Example:**
 ` + "```" + `
 announce_plan(
-  goal: "Source-Level GitHub Comparison: astonish vs openclaw",
+  goal: "Source-Level GitHub Comparison: troupe vs openclaw",
   steps: [
     {name: "explore-repos", description: "Explore both repository structures and dependencies", details: "file_tree both repos; read go.mod / package.json; note entry points"},
     {name: "analyze-core", description: "Read and analyze core source files from both projects"},
@@ -433,7 +433,7 @@ const guidanceSandboxTemplates = `# Guidance: Sandbox Templates
 
 Sandbox templates are frozen container snapshots with a project's code, toolchains, and dependencies pre-installed. Fleet sessions clone from templates so each agent starts with a ready-to-use development environment instead of building from scratch.
 
-**These tools run on the HOST, not inside the container.** You cannot manage templates from inside the sandbox — CLI commands like ` + "`astonish sandbox init`" + ` or API calls to ` + "`localhost`" + ` from within the container will not work. Always use ` + "`delegate_tasks`" + ` with ` + "`tools: [\"sandbox_templates\"]`" + `.
+**These tools run on the HOST, not inside the container.** You cannot manage templates from inside the sandbox — CLI commands like ` + "`troupe sandbox init`" + ` or API calls to ` + "`localhost`" + ` from within the container will not work. Always use ` + "`delegate_tasks`" + ` with ` + "`tools: [\"sandbox_templates\"]`" + `.
 
 ## Available tools (via delegate_tasks)
 

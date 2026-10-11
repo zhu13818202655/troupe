@@ -38,14 +38,14 @@ func TestRenderHeaderShowsConnectionAndUsage(t *testing.T) {
 		theme: DefaultTheme(),
 		width: 120,
 		info: backend.Info{
-			ServerURL: "https://astonish.example.com",
+			ServerURL: "https://troupe.example.com",
 			User:      "user@example.com",
 		},
 		tr: &events.Transcript{LastUsage: &events.Usage{Input: 1200, Output: 3400, Total: 4600}, ContextTokens: 4600},
 	}
 
 	out := stripANSI(m.renderHeader())
-	if !strings.Contains(out, "Astonish · https://astonish.example.com · user@example.com") {
+	if !strings.Contains(out, "Troupe · https://troupe.example.com · user@example.com") {
 		t.Fatalf("header missing connection identity: %q", out)
 	}
 	if !strings.Contains(out, "Context 4.6k") {
@@ -118,7 +118,7 @@ func TestRenderHeaderTruncatesToOneLine(t *testing.T) {
 		theme: DefaultTheme(),
 		width: 48,
 		info: backend.Info{
-			ServerURL: "https://very-long-astonish-platform.example.com",
+			ServerURL: "https://very-long-troupe-platform.example.com",
 			User:      "somebody.with.a.long.name@example.com",
 		},
 		tr: &events.Transcript{LastUsage: &events.Usage{Input: 1000, Output: 2000, Total: 3000}, ContextTokens: 3000},

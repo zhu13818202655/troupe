@@ -13,7 +13,7 @@ export default defineConfig({
     emptyOutDir: false,
     lib: {
       entry: resolve(root, 'src/components/docs/slides/runtime/index.ts'),
-      name: 'AstonishSlidesRuntime',
+      name: 'TroupeSlidesRuntime',
       formats: ['iife'],
       fileName: () => 'slides-runtime.js',
     },

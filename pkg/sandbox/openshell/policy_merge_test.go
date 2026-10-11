@@ -20,7 +20,7 @@ func TestMergeSessionNetworkAllows_AppendsCloudSAP(t *testing.T) {
 	}
 	egress := policy.NetworkPolicies["egress"]
 	if egress == nil {
-		t.Fatal("expected astonish-egress rule")
+		t.Fatal("expected troupe-egress rule")
 	}
 	foundBroader, foundExact := false, false
 	for _, ep := range egress.Endpoints {

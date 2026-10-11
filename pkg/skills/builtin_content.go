@@ -11,10 +11,10 @@ When the user asks you to build a visual interface, create a UI, make a dashboar
 
 ## How to Create a Visual App
 
-Wrap your React component code in a special code fence using ` + "the marker `astonish-app`" + `:
+Wrap your React component code in a special code fence using ` + "the marker `troupe-app`" + `:
 
 ` + "````" + `
-` + "```" + `astonish-app
+` + "```" + `troupe-app
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp } from 'lucide-react';
@@ -82,7 +82,7 @@ There is NO component library. The following DO NOT EXIST in the sandbox:
 
 ## How to Build UI Without a Component Library
 
-Use native HTML elements styled with Tailwind. Follow the **Astonish App Canvas** design system so apps match Studio (brand pack + light/dark).
+Use native HTML elements styled with Tailwind. Follow the **Troupe App Canvas** design system so apps match Studio (brand pack + light/dark).
 
 ### App Canvas (light/dark + brand-pack aware)
 
@@ -251,7 +251,7 @@ Fetches data from a backend source. Returns ` + "`{ data, loading, error, refetc
 - ` + "`\"a2a:<agentName>\"`" + ` — Sends a message to a remote A2A agent. Example: ` + "`\"a2a:my-research-agent\"`" + `. Requires ` + "`args.message`" + `. Returns ` + "`{ status, response, task_id, artifacts }`" + `.
 - ` + "`\"http:GET:<url>\"`" + ` — Makes an HTTP GET request. Example: ` + "`\"http:GET:https://api.example.com/data\"`" + `
 - ` + "`\"http:POST:<url>\"`" + ` — Makes an HTTP POST request.
-- ` + "`\"http:<METHOD>:<url>@<credential-name>\"`" + ` — Makes an HTTP request with authentication. The ` + "`@credential-name`" + ` suffix references a named credential from the Astonish credential store (configured in Settings > Credentials). The credential is resolved server-side and its auth header is injected into the request. Example: ` + "`\"http:GET:https://api.example.com/data@my-api-key\"`" + `
+- ` + "`\"http:<METHOD>:<url>@<credential-name>\"`" + ` — Makes an HTTP request with authentication. The ` + "`@credential-name`" + ` suffix references a named credential from the Troupe credential store (configured in Settings > Credentials). The credential is resolved server-side and its auth header is injected into the request. Example: ` + "`\"http:GET:https://api.example.com/data@my-api-key\"`" + `
 
 **options:**
 - ` + "`args`" + ` — Object passed to the backend (MCP tool args, or HTTP body for POST).
@@ -425,7 +425,7 @@ export default function TaskManager() {
 
 - **Use hardcoded data** for mockups, prototypes, static dashboards, and demos where no external data source is mentioned.
 - **Use useAppData** whenever the user mentions a URL, API endpoint, database, MCP server, or says things like "connect to", "fetch from", "query", "pull data from", "call this API", or provides any URL. The sourceId for HTTP APIs is simply ` + "`\"http:GET:<the-url>\"`" + ` — put the user's URL directly in the sourceId string.
-- **Authenticated APIs** — If the API requires authentication, append ` + "`@credential-name`" + ` to the sourceId: ` + "`\"http:GET:https://api.example.com/data@my-api-key\"`" + `. The credential must exist in the Astonish credential store (Settings > Credentials). Ask the user for the credential name if they mention authentication. Credentials support API keys, Bearer tokens, Basic auth, and OAuth (client_credentials and authorization_code with auto-refresh).
+- **Authenticated APIs** — If the API requires authentication, append ` + "`@credential-name`" + ` to the sourceId: ` + "`\"http:GET:https://api.example.com/data@my-api-key\"`" + `. The credential must exist in the Troupe credential store (Settings > Credentials). Ask the user for the credential name if they mention authentication. Credentials support API keys, Bearer tokens, Basic auth, and OAuth (client_credentials and authorization_code with auto-refresh).
 - **Dynamic URLs** — If the URL contains a variable part (like a city name), construct the sourceId dynamically: ` + "`const { data, loading } = useAppData(` + \"`http:GET:https://api.example.com/${variable}`\" + `)`" + `. The hook re-fetches automatically when the sourceId string changes.
 - **Ask the user** what MCP server/tool or HTTP endpoint to use if they request live data but don't specify the source.
 - **A2A agents** — If the user wants to communicate with a remote agent (or you know from context that an A2A agent tool like ` + "`a2a_<name>`" + ` was used in the chat session), use the ` + "`a2a:`" + ` prefix with the agent name: ` + "`useAppData('a2a:agent-name', { args: { message: 'your question' } })`" + `. The agent name is the configured name (NOT the tool name — strip the ` + "`a2a_`" + ` prefix and replace underscores with hyphens if needed). The response contains ` + "`{ status, response, task_id, artifacts }`" + `.
@@ -433,14 +433,14 @@ export default function TaskManager() {
 
 ## AI Capabilities — useAppAI
 
-The ` + "`useAppAI`" + ` hook lets your component make one-shot LLM calls for tasks like summarization, classification, text generation, or analysis. It uses the same model configured for the Astonish agent.
+The ` + "`useAppAI`" + ` hook lets your component make one-shot LLM calls for tasks like summarization, classification, text generation, or analysis. It uses the same model configured for the Troupe agent.
 
 ### useAppAI(options?)
 
 Returns an async function you call with a prompt. The LLM processes it and returns a text response.
 
 ` + "```" + `jsx
-import { useAppAI } from 'astonish';
+import { useAppAI } from 'troupe';
 
 // Basic usage — returns a callable function
 const askAI = useAppAI();
@@ -463,7 +463,7 @@ const insights = await analyst('What trends do you see?', { context: salesData }
 
 ` + "```" + `jsx
 import { useState } from 'react';
-import { useAppAI } from 'astonish';
+import { useAppAI } from 'troupe';
 
 export default function ArticleViewer() {
   const [article] = useState('The quarterly earnings report shows...');
@@ -500,7 +500,7 @@ export default function ArticleViewer() {
 
 ` + "```" + `jsx
 import { useState } from 'react';
-import { useAppData, useAppAI } from 'astonish';
+import { useAppData, useAppAI } from 'troupe';
 
 export default function SmartDashboard() {
   const { data: metrics, loading } = useAppData('http:GET:https://api.example.com/metrics');
@@ -554,7 +554,7 @@ The ` + "`useAppState`" + ` hook gives your component a per-app **SQLite databas
 
 ### useAppState()
 
-**Import required:** ` + "`import { useAppState } from 'astonish';`" + `
+**Import required:** ` + "`import { useAppState } from 'troupe';`" + `
 
 Returns an object with two methods:
 - ` + "`db.exec(sql, params?)`" + ` — Execute write/DDL SQL (CREATE, INSERT, UPDATE, DELETE). Returns ` + "`Promise<{ rowsAffected, lastInsertId }>`" + `.
@@ -576,7 +576,7 @@ data.map(item => ...)     // also works
 
 ` + "```" + `jsx
 import React, { useState, useEffect } from 'react';
-import { useAppState } from 'astonish';
+import { useAppState } from 'troupe';
 
 export default function TodoApp() {
   const db = useAppState();
@@ -631,7 +631,7 @@ export default function TodoApp() {
 
 ` + "```" + `jsx
 import React, { useState, useEffect } from 'react';
-import { useAppState } from 'astonish';
+import { useAppState } from 'troupe';
 
 export default function InventoryTracker() {
   const db = useAppState();
@@ -709,7 +709,7 @@ export default function InventoryTracker() {
 
 ` + "```" + `jsx
 // ❌ WRONG — Using useAppState without import:
-const db = useAppState(); // ERROR — useAppState requires: import { useAppState } from 'astonish'
+const db = useAppState(); // ERROR — useAppState requires: import { useAppState } from 'troupe'
 
 // ❌ WRONG — Calling db.exec() in a useEffect that depends on query results:
 const items = db.query('SELECT * FROM items');
@@ -739,10 +739,10 @@ Generate a visual app when the user:
 
 Do NOT generate a visual app when:
 - The user is clearly asking about code architecture, asking you to write backend code, or asking for explanations.
-- The user asks for a **report**, **analysis**, **review**, or **document** — even if it includes diagrams, charts, or flows. Use the two-step report contract instead: ` + "`write_file`" + ` for the markdown file, then an ` + "`astonish-report`" + ` fence to signal it as a report (see "Structured Output & Reports" guidance).
+- The user asks for a **report**, **analysis**, **review**, or **document** — even if it includes diagrams, charts, or flows. Use the two-step report contract instead: ` + "`write_file`" + ` for the markdown file, then an ` + "`troupe-report`" + ` fence to signal it as a report (see "Structured Output & Reports" guidance).
 - The output is primarily textual content with supporting visuals (architecture diagrams, process flows, data breakdowns). That is a markdown report with mermaid, not an app.
 
-**Key distinction:** Use ` + "`astonish-app`" + ` when **interactivity** is needed (user input, live data, filtering, real-time updates). Use **markdown with mermaid** when the goal is a static document the user can read, export, and share.
+**Key distinction:** Use ` + "`troupe-app`" + ` when **interactivity** is needed (user input, live data, filtering, real-time updates). Use **markdown with mermaid** when the goal is a static document the user can read, export, and share.
 
 ## Iterative Refinement
 
@@ -751,13 +751,13 @@ After generating a visual app, the user may ask for modifications ("make the hea
 - **The current app source code will be provided in your system context** under "Active App Refinement". Use that as your starting point — do NOT re-invent the component from scratch.
 - Output the COMPLETE updated component (not a diff or partial code).
 - Keep all existing functionality unless explicitly asked to remove it.
-- Wrap the updated code in the same ` + "`astonish-app`" + ` fence.
+- Wrap the updated code in the same ` + "`troupe-app`" + ` fence.
 - Maintain the same component name and structure. Only change what the user asked for.
 - If the user asks for something that conflicts with existing features, explain the tradeoff and implement their request.
 
 **Important:** When you see "Active App Refinement" in your session context, the user is iterating on an existing app. You MUST:
 1. Read the provided source code carefully
 2. Apply ONLY the requested changes
-3. Output the full updated component in an ` + "`astonish-app`" + ` fence
+3. Output the full updated component in an ` + "`troupe-app`" + ` fence
 4. Do NOT add features the user didn't ask for
 `

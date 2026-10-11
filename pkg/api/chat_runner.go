@@ -13,13 +13,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/pkg/agent"
 	"github.com/zhu13818202655/troupe/pkg/credentials"
 	"github.com/zhu13818202655/troupe/pkg/docs/slides"
 	"github.com/zhu13818202655/troupe/pkg/sandbox/netpolicy"
 	"github.com/zhu13818202655/troupe/pkg/sandbox/openshell"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/google/uuid"
 	adkagent "google.golang.org/adk/agent"
 	"google.golang.org/adk/model"
 	"google.golang.org/adk/runner"
@@ -624,8 +624,8 @@ func (cr *ChatRunner) Run(
 
 	// Prepare the ADK runner
 	adkAgent, err := adkagent.New(adkagent.Config{
-		Name:        "astonish_chat",
-		Description: "Astonish intelligent chat agent",
+		Name:        "troupe_chat",
+		Description: "Troupe intelligent chat agent",
 		Run:         chatAgent.Run,
 	})
 	if err != nil {
@@ -1198,11 +1198,11 @@ runLoop:
 		})
 	}
 
-	// Post-processing: detect astonish-app code fences in the accumulated response
+	// Post-processing: detect troupe-app code fences in the accumulated response
 	// text and emit app_preview events + persist them.
 	cr.detectAndEmitAppPreviews(chatAgent, sessionService)
 
-	// Post-processing: detect astonish-report code fences in the accumulated
+	// Post-processing: detect troupe-report code fences in the accumulated
 	// response text and emit report_marker events + persist them. The fence
 	// is a SIGNAL only — the file content itself was already created via
 	// write_file/edit_file (rule 1: every report uses write_file). The fence
@@ -1499,11 +1499,13 @@ func (cr *ChatRunner) drainImagesAndFlowOutput(chatAgent *agent.ChatAgent, sessi
 	return len(images)
 }
 
-// appPreviewFenceRe matches ```astonish-app code fences. It captures the code content
-// between the opening and closing fences.
-var appPreviewFenceRe = regexp.MustCompile("(?s)```astonish-app\\s*\\n(.*?)\\n```")
+// appPreviewFenceRe matches ```troupe-app code fences (and the legacy
+// ```astonish-app spelling emitted by models fine-tuned on pre-rebrand
+// prompts). It captures the code content between the opening and closing
+// fences.
+var appPreviewFenceRe = regexp.MustCompile("(?s)```(?:troupe|astonish)-app\\s*\\n(.*?)\\n```")
 
-// detectAndEmitAppPreviews scans the buffered text events for astonish-app code fences.
+// detectAndEmitAppPreviews scans the buffered text events for troupe-app code fences.
 // When found, it emits an app_preview event, persists it to the session transcript,
 // and updates the active app state on the ChatAgent for cross-turn refinement.
 func (cr *ChatRunner) detectAndEmitAppPreviews(chatAgent *agent.ChatAgent, sessionService session.Service) {
@@ -1592,13 +1594,14 @@ func (cr *ChatRunner) detectAndEmitAppPreviews(chatAgent *agent.ChatAgent, sessi
 	}
 }
 
-// reportMarkerFenceRe matches ```astonish-report code fences. It captures the
-// frontmatter body (a YAML-ish key:value block) between the opening and
-// closing fences. Mirrors appPreviewFenceRe in shape so both fence types
-// are detected by structurally identical post-processors.
-var reportMarkerFenceRe = regexp.MustCompile("(?s)```astonish-report\\s*\\n(.*?)\\n```")
+// reportMarkerFenceRe matches ```troupe-report code fences (and the legacy
+// ```troupe-report spelling). It captures the frontmatter body (a YAML-ish
+// key:value block) between the opening and closing fences. Mirrors
+// appPreviewFenceRe in shape so both fence types are detected by structurally
+// identical post-processors.
+var reportMarkerFenceRe = regexp.MustCompile("(?s)```(?:troupe|astonish)-report\\s*\\n(.*?)\\n```")
 
-// reportMarkerInfo is the parsed content of a single astonish-report fence.
+// reportMarkerInfo is the parsed content of a single troupe-report fence.
 // It is intentionally minimal: the fence is a signal that an artifact should
 // be rendered as a report, not a content carrier. Future fields (mermaid hint,
 // summary, export formats) attach naturally here without changing the
@@ -1608,7 +1611,7 @@ type reportMarkerInfo struct {
 	Title string // optional, displayed by EmbeddedFileViewer when present
 }
 
-// parseReportMarkerFrontmatter parses the body of a ```astonish-report fence.
+// parseReportMarkerFrontmatter parses the body of a ```troupe-report fence.
 // Recognised format (Shape B):
 //
 //	path: /tmp/q4-revenue.md
@@ -1644,7 +1647,7 @@ func parseReportMarkerFrontmatter(body string) (info reportMarkerInfo, ok bool) 
 	return info, true
 }
 
-// stripReportMarkerFences removes every ```astonish-report fence from text,
+// stripReportMarkerFences removes every ```troupe-report fence from text,
 // leaving the surrounding prose intact. Used so the persisted agent message
 // transcript and the rendered chat bubble don't show the raw fence to the
 // user — it is a signal, not display content. Mirrors the equivalent
@@ -1656,7 +1659,7 @@ func stripReportMarkerFences(text string) string {
 // recentTurnArtifactPaths walks the runner's event buffer and returns the
 // set of file paths emitted as "artifact" events during the current turn.
 // The set is used by detectAndEmitReportMarkers to validate that the path
-// inside an astonish-report fence corresponds to a file the agent actually
+// inside an troupe-report fence corresponds to a file the agent actually
 // wrote. Mismatches are logged-and-skipped so a stray or stale path in the
 // model's text cannot fabricate a report marker out of nothing.
 func (cr *ChatRunner) recentTurnArtifactPaths() map[string]bool {
@@ -1675,7 +1678,7 @@ func (cr *ChatRunner) recentTurnArtifactPaths() map[string]bool {
 }
 
 // detectAndEmitReportMarkers scans the buffered text events for one or more
-// ```astonish-report fences. For each well-formed fence whose path matches
+// ```troupe-report fences. For each well-formed fence whose path matches
 // an artifact emitted in this turn, it:
 //
 //  1. emits a "report_marker" SSE event {path, title} carrying the gate
@@ -1714,14 +1717,14 @@ func (cr *ChatRunner) detectAndEmitReportMarkers(sessionService session.Service)
 		body := match[1]
 		info, ok := parseReportMarkerFrontmatter(body)
 		if !ok {
-			slog.Warn("astonish-report fence missing required path field; ignoring",
+			slog.Warn("troupe-report fence missing required path field; ignoring",
 				"component", "chat_runner",
 				"session", cr.SessionID,
 				"body", strings.TrimSpace(body))
 			continue
 		}
 		if !turnArtifacts[info.Path] {
-			slog.Warn("astonish-report fence references a path with no matching write_file/edit_file artifact in this turn; ignoring",
+			slog.Warn("troupe-report fence references a path with no matching write_file/edit_file artifact in this turn; ignoring",
 				"component", "chat_runner",
 				"session", cr.SessionID,
 				"path", info.Path)

@@ -9,8 +9,10 @@ import (
 	"google.golang.org/genai"
 )
 
-// reportMarkerFenceRe matches ```astonish-report fences (same shape as pkg/api).
-var reportMarkerFenceRe = regexp.MustCompile("(?s)```astonish-report\\s*\\n(.*?)\\n```")
+// reportMarkerFenceRe matches ```troupe-report fences (same shape as pkg/api).
+// The legacy ```astonish-report fence is still accepted for compatibility with
+// transcripts/prompts produced before the rename.
+var reportMarkerFenceRe = regexp.MustCompile("(?s)```(?:troupe|astonish)-report\\s*\\n(.*?)\\n```")
 
 // extractUserFacingText returns non-thought text from a complete model turn.
 // Function call/response parts are ignored.

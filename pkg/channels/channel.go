@@ -1,4 +1,4 @@
-// Package channels defines the core interfaces and types for Astonish's
+// Package channels defines the core interfaces and types for Troupe's
 // communication channel system. Channels are plugins that receive inbound
 // messages from external platforms (Telegram, Slack, etc.), normalize them
 // into a common format, route them to the ChatAgent, and deliver responses

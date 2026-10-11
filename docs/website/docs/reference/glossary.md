@@ -1,6 +1,6 @@
 # Glossary
 
-Alphabetical definitions of key terms used throughout the Astonish documentation.
+Alphabetical definitions of key terms used throughout the Troupe documentation.
 
 | Term | Definition |
 |------|------------|
@@ -26,7 +26,7 @@ Alphabetical definitions of key terms used throughout the Astonish documentation
 | **Personal Workspace** | A user's private space within the platform containing their sessions, memory, credentials, and config. |
 | **Plan** | A mission instance in fleet — created from a template with a specific objective and tracked through completion. |
 | **Publish** | Making a flow or app available to other team/org members. |
-| **Remote CLI** | Using the Astonish CLI against a remote platform instance rather than a local setup. |
+| **Remote CLI** | Using the Troupe CLI against a remote platform instance rather than a local setup. |
 | **RLS** | Row-Level Security. PostgreSQL feature ensuring tenants only access their own data. |
 | **Sandbox** | Isolated execution environment for running agent-generated code safely. |
 | **Session** | A conversation between a user and an agent (or between two fleet agents) with persistent message history. |

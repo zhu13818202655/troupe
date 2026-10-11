@@ -58,8 +58,8 @@ func SkillLookup(allSkills []skills.Skill, modes ...SkillLookupMode) func(ctx to
 	// Code mode uses the filtered builtin set so that skills marked
 	// ExcludeFromCodeMode (e.g. generative-ui) are not resolvable at all —
 	// not just hidden from the index. This prevents the coding agent from
-	// loading the generative-ui skill and generating astonish-app fences,
-	// which are Studio-only and have no renderer in Astonish Code.
+	// loading the generative-ui skill and generating troupe-app fences,
+	// which are Studio-only and have no renderer in Troupe Code.
 	var builtins []skills.Skill
 	if mode == SkillLookupModeCode {
 		builtins = skills.BuiltinSkillsForCode()

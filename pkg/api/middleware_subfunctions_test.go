@@ -192,9 +192,9 @@ func TestResolveCredentialHeader(t *testing.T) {
 		expectErr   bool
 	}{
 		{
-			name:        "nil credential returns error",
-			cred:        nil,
-			expectErr:   true,
+			name:      "nil credential returns error",
+			cred:      nil,
+			expectErr: true,
 		},
 		{
 			name:        "API key with custom header",

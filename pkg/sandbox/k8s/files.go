@@ -42,7 +42,7 @@ import (
 )
 
 func sandboxFileCommand(cmd []string) []string {
-	return append([]string{"/usr/local/bin/astonish-shell"}, cmd...)
+	return append([]string{"/usr/local/bin/troupe-shell"}, cmd...)
 }
 
 // ---------------------------------------------------------------------------

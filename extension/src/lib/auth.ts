@@ -8,8 +8,10 @@ export type AuthSession = {
 
 export type OAuthStatus = 'opening_browser' | 'exchanging_code';
 
-const LOCAL_KEY = 'astonishAuth';
-const EXTENSION_CLIENT_ID = 'astonish-chrome-extension';
+const LOCAL_KEY = 'troupeAuth';
+// Pre-rebrand key; read for backwards compatibility, then migrated.
+const LEGACY_LOCAL_KEY = 'astonishAuth';
+const EXTENSION_CLIENT_ID = 'troupe-chrome-extension';
 const EXTENSION_SCOPE = 'chat tool:execute offline_access';
 
 export function normalizeServerUrl(serverUrl: string): string {
@@ -48,12 +50,22 @@ export async function persistSession(session: AuthSession): Promise<void> {
 
 export async function loadSession(): Promise<AuthSession | null> {
   const session = await storageGet<AuthSession>('local', LOCAL_KEY);
-  return session?.serverUrl && session.accessToken ? session : null;
+  if (session?.serverUrl && session.accessToken) return session;
+  // Fall back to the legacy key, migrate the value, then drop the old entry.
+  const legacy = await storageGet<AuthSession>('local', LEGACY_LOCAL_KEY);
+  if (legacy?.serverUrl && legacy.accessToken) {
+    await storageSet('local', { [LOCAL_KEY]: legacy });
+    if (typeof chrome !== 'undefined' && chrome.storage?.local) {
+      await chrome.storage.local.remove(LEGACY_LOCAL_KEY);
+    }
+    return legacy;
+  }
+  return null;
 }
 
 export async function clearSession(): Promise<void> {
   if (typeof chrome === 'undefined' || !chrome.storage) return;
-  await chrome.storage.local.remove(LOCAL_KEY);
+  await chrome.storage.local.remove([LOCAL_KEY, LEGACY_LOCAL_KEY]);
   await chrome.storage.session.remove(['accessToken', 'serverUrl', 'teamSlug']);
 }
 

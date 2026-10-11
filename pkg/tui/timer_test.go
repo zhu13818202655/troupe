@@ -297,4 +297,3 @@ func TestApplyEventPausesTimerOnApproval(t *testing.T) {
 		t.Fatalf("timerAccumulated should be ~5s after pause, got %v", m.timerAccumulated)
 	}
 }
-

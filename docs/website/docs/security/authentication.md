@@ -1,6 +1,6 @@
 # Authentication
 
-Astonish uses a layered authentication architecture. **Upstream authentication** proves who a human is (built-in email/password, OIDC federation). **Downstream authorization** grants applications and workloads constrained access to Astonish through a built-in OAuth 2.0 authorization server that issues Astonish-signed tokens.
+Troupe uses a layered authentication architecture. **Upstream authentication** proves who a human is (built-in email/password, OIDC federation). **Downstream authorization** grants applications and workloads constrained access to Troupe through a built-in OAuth 2.0 authorization server that issues Troupe-signed tokens.
 
 ## Built-in Authentication
 
@@ -30,7 +30,7 @@ The `teams` array drives authorization decisions across the platform — sandbox
 
 ## OIDC Federation
 
-For enterprises with existing identity providers, Astonish federates upstream authentication via **Authorization Code + PKCE**. Supported providers include:
+For enterprises with existing identity providers, Troupe federates upstream authentication via **Authorization Code + PKCE**. Supported providers include:
 
 - SAP Identity Authentication Service (IAS)
 - Microsoft Entra ID (Azure AD)
@@ -54,21 +54,21 @@ Multiple OIDC providers can be configured per organization — users choose thei
 
 ### Team Auto-Mapping
 
-When the OIDC provider includes a groups/teams claim in the ID token, Astonish can automatically map those groups to internal team memberships using the `team_claim` field.
+When the OIDC provider includes a groups/teams claim in the ID token, Troupe can automatically map those groups to internal team memberships using the `team_claim` field.
 
 On each login, team memberships are reconciled — users are added to teams matching their group claims. This keeps access in sync with your identity provider without manual administration.
 
 ## Built-in OAuth Authorization Server
 
-Astonish includes a built-in OAuth 2.0 authorization server that issues **Astonish-signed RS256 access tokens**. These tokens are used by:
+Troupe includes a built-in OAuth 2.0 authorization server that issues **Troupe-signed RS256 access tokens**. These tokens are used by:
 
-- The **CLI** (`astonish login --sso`) for remote chat sessions
+- The **CLI** (`troupe login --sso`) for remote chat sessions
 - The **Chrome extension** for browser side-panel chat
 - **MCP hosts** and external tools for programmatic access
 - **A2A (Agent-to-Agent)** integrations
 - **Service workloads** via Client Credentials grants
 
-The built-in server deliberately separates upstream identity (who you are) from downstream authorization (what you can do in Astonish). An external identity provider does not become an implicit Astonish token issuer — Astonish first validates the upstream login, resolves user and tenant memberships, and then issues its own narrowly scoped credential.
+The built-in server deliberately separates upstream identity (who you are) from downstream authorization (what you can do in Troupe). An external identity provider does not become an implicit Troupe token issuer — Troupe first validates the upstream login, resolves user and tenant memberships, and then issues its own narrowly scoped credential.
 
 ### OAuth Scopes
 
@@ -84,7 +84,7 @@ Scopes are intersected with what each client is allowed to request. The CLI requ
 
 ### Grant Flows
 
-**Authorization Code + PKCE** is the primary flow for human-delegated access. S256 PKCE is mandatory. The user authenticates through the browser, Astonish issues a short-lived authorization code, and the client exchanges it for tokens.
+**Authorization Code + PKCE** is the primary flow for human-delegated access. S256 PKCE is mandatory. The user authenticates through the browser, Troupe issues a short-lived authorization code, and the client exchanges it for tokens.
 
 **Refresh Token** grants use opaque rotating handles. Every successful refresh consumes the old handle and issues a new one. Replay of a consumed refresh token revokes the entire token family.
 
@@ -96,7 +96,7 @@ OAuth access tokens are short-lived **RS256 JWTs** (distinct from the HMAC-SHA25
 
 | Claim | Description |
 |-------|-------------|
-| `iss` | Astonish issuer URL |
+| `iss` | Troupe issuer URL |
 | `aud` | Protected resource URL |
 | `sub` | User subject (user grants) |
 | `org_id` | Organization binding |
@@ -115,12 +115,12 @@ OAuth access tokens are short-lived **RS256 JWTs** (distinct from the HMAC-SHA25
 
 ### Client Types
 
-**First-party public clients** are embedded in Astonish itself:
+**First-party public clients** are embedded in Troupe itself:
 
 | Client | ID | Use case |
 |--------|----|----------|
-| CLI | `astonish-cli` | Remote terminal chat via `astonish login --sso` |
-| Chrome Extension | `astonish-chrome-extension` | Browser side-panel chat |
+| CLI | `troupe-cli` | Remote terminal chat via `troupe login --sso` |
+| Chrome Extension | `troupe-chrome-extension` | Browser side-panel chat |
 
 **Registered clients** are created by organization admins through the Settings → OAuth tab in Studio. Each client is bound to an organization and team, and only the creating admin can manage it.
 
@@ -131,8 +131,8 @@ storage:
   auth:
     oauth_server:
       enabled: true
-      issuer: https://astonish.example.com
-      resource: https://astonish.example.com/api/mcp
+      issuer: https://troupe.example.com
+      resource: https://troupe.example.com/api/mcp
       access_token_ttl_minutes: 15
       refresh_token_ttl_days: 30
 ```
@@ -145,20 +145,20 @@ Connect to a platform instance:
 
 ```bash
 # Email/password login
-astonish login https://astonish.example.com
+troupe login https://troupe.example.com
 
 # OAuth login (opens browser for sign-in)
-astonish login https://astonish.example.com --sso
+troupe login https://troupe.example.com --sso
 
 # Specify org and team
-astonish login https://astonish.example.com --org acme --team backend
+troupe login https://troupe.example.com --org acme --team backend
 ```
 
-The `--sso` flag initiates an **OAuth Authorization Code + PKCE** flow: the CLI starts a temporary loopback HTTP server, opens your browser to the Astonish authorization endpoint, receives the authorization code on the callback, and exchanges it for tokens. No device code or manual code entry is required.
+The `--sso` flag initiates an **OAuth Authorization Code + PKCE** flow: the CLI starts a temporary loopback HTTP server, opens your browser to the Troupe authorization endpoint, receives the authorization code on the callback, and exchanges it for tokens. No device code or manual code entry is required.
 
 When multiple organizations or teams are available, the CLI prompts for interactive selection.
 
-If a stale login is detected, the CLI automatically replaces the old credentials without requiring a manual `astonish logout` first.
+If a stale login is detected, the CLI automatically replaces the old credentials without requiring a manual `troupe logout` first.
 
 ## Token Lifecycle
 

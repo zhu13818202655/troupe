@@ -12,10 +12,10 @@ import (
 // `/bin/sh -c <step>` inside the builder container/pod.
 //
 // The order mirrors the personal-mode wizard:
-//   1. Core tools (apt packages, node, python, uv, docker)
-//   2. Optional tools (from sandbox.OptionalTools catalog)
-//   3. Browser install (Chromium/CloakBrowser + KasmVNC + X11 deps)
-//   4. Extra steps (raw shell, operator escape hatch)
+//  1. Core tools (apt packages, node, python, uv, docker)
+//  2. Optional tools (from sandbox.OptionalTools catalog)
+//  3. Browser install (Chromium/CloakBrowser + KasmVNC + X11 deps)
+//  4. Extra steps (raw shell, operator escape hatch)
 func (c *BaseConfig) Render() ([]string, error) {
 	if err := c.Validate(); err != nil {
 		return nil, err

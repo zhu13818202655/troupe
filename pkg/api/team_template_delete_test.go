@@ -229,7 +229,7 @@ func TestDeleteTeamTemplateStateWith_RemovesRowAndDecrementsRef(t *testing.T) {
 	// Seed: layer with ref_count=1, template referencing it.
 	_ = layers.PutLayer(ctx, &store.SandboxLayer{
 		LayerID:    layerID,
-		CephFSPath: "/mnt/astonish-layers/" + layerID,
+		CephFSPath: "/mnt/troupe-layers/" + layerID,
 		SizeBytes:  26622301,
 		RefCount:   1,
 	})

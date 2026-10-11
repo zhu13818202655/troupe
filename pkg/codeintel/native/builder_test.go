@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	nativeembed "github.com/zhu13818202655/troupe/pkg/codeintel/native/embed"
+	"github.com/zhu13818202655/troupe/pkg/config"
 )
 
 func hasCompiler() bool {
@@ -21,12 +22,24 @@ func hasCompiler() bool {
 }
 
 func TestCacheDir_HonorsXDG(t *testing.T) {
-	t.Setenv("XDG_CONFIG_HOME", "/tmp/astonish-xdg-test")
+	xdg := t.TempDir()
+	t.Setenv("XDG_CONFIG_HOME", xdg)
+
 	dir, err := CacheDir()
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := filepath.Join("/tmp/astonish-xdg-test", "astonish", "lib", nativeembed.Version)
+	// The cache must live under the caller's XDG root, not a hard-coded path.
+	if !strings.HasPrefix(dir, xdg+string(filepath.Separator)) {
+		t.Fatalf("CacheDir() = %q, want a path under XDG_CONFIG_HOME %q", dir, xdg)
+	}
+	// It must resolve through the shared config-dir helper so the cache cannot
+	// drift away from the rest of the application state.
+	cfgDir, err := config.GetConfigDir()
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := filepath.Join(cfgDir, "lib", nativeembed.Version)
 	if dir != want {
 		t.Fatalf("CacheDir() = %q, want %q", dir, want)
 	}
@@ -39,7 +52,7 @@ func TestCachedLibraryPath_UsesPlatformExtension(t *testing.T) {
 		t.Fatal(err)
 	}
 	base := filepath.Base(p)
-	if base != "libastonish-treesitter.so" && base != "libastonish-treesitter.dylib" {
+	if base != "libtroupe-treesitter.so" && base != "libtroupe-treesitter.dylib" {
 		t.Fatalf("unexpected library file name %q", base)
 	}
 }
@@ -80,7 +93,7 @@ func TestEnsureLibrary_BuildsAndCaches(t *testing.T) {
 
 func TestBuildLibrary_NoCompiler(t *testing.T) {
 	// Force compiler discovery to fail regardless of the host toolchain.
-	t.Setenv("CC", "astonish-nonexistent-compiler")
+	t.Setenv("CC", "troupe-nonexistent-compiler")
 	t.Setenv("PATH", t.TempDir())
 
 	_, err := buildLibrary(filepath.Join(t.TempDir(), "out.so"))

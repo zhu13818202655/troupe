@@ -2,7 +2,7 @@
 
 ## Overview
 
-Astonish supports **3-tier Auto model routing** that intelligently routes LLM
+Troupe supports **3-tier Auto model routing** that intelligently routes LLM
 calls to one of three model tiers (strong/medium/weak) based on task complexity.
 The medium tier is optional — when unconfigured, routing falls back to 2-tier
 (strong/weak) operation.
@@ -69,7 +69,7 @@ SubAgentManager.TaskLLM → same RoutingLLM (sub-agents share routing)
 
 `extractLastUserMessage` extracts the actual user-typed input from the LLM
 request, skipping:
-1. Framework-injected per-turn context (`[Astonish Per-Turn Context` prefix)
+1. Framework-injected per-turn context (`[Troupe Per-Turn Context` prefix)
 2. Injected context parts (AGENTS.md, session state) — picks the shortest
    text part as the user's actual input
 

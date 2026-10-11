@@ -47,7 +47,7 @@ func TestDefaultLibrary_OverrideMissingErrors(t *testing.T) {
 	ResetDefaultLibraryForTest()
 	t.Cleanup(ResetDefaultLibraryForTest)
 
-	t.Setenv("TROUPE_TREESITTER_LIB", "/no/such/libastonish-treesitter.so")
+	t.Setenv("TROUPE_TREESITTER_LIB", "/no/such/libtroupe-treesitter.so")
 
 	_, err := DefaultLibrary()
 	if err == nil {

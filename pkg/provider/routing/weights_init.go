@@ -31,13 +31,13 @@ const (
 )
 
 // localTrainingOutputPaths lists candidate locations for the router_weights.npz
-// produced by the astonish-router training project. Checked in order; first
+// produced by the troupe-router training project. Checked in order; first
 // existing path wins. This avoids a network download in development.
 var localTrainingOutputPaths = []string{
 	// Sibling project directory (default clone layout)
-	"../astonish-router/outputs/router_weights.npz",
-	// Absolute path for users who clone astonish-router to their Projects dir
-	"~/Projects/astonish-router/outputs/router_weights.npz",
+	"../troupe-router/outputs/router_weights.npz",
+	// Absolute path for users who clone troupe-router to their Projects dir
+	"~/Projects/troupe-router/outputs/router_weights.npz",
 }
 
 // EnsureRouterWeights ensures the router weights file exists at

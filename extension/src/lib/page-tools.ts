@@ -1,4 +1,6 @@
-export const PAGE_TOOL_FENCE = 'astonish-page-tool';
+// Fence id sent to the model (new brand). Parsing accepts the legacy id too.
+export const PAGE_TOOL_FENCE = 'troupe-page-tool';
+const LEGACY_PAGE_TOOL_FENCE = 'astonish-page-tool';
 
 export const PAGE_TOOL_NAMES = [
   'page_snapshot',
@@ -17,7 +19,7 @@ export type PageToolCall = {
   args: Record<string, unknown>;
 };
 
-const FENCE_RE = new RegExp('```' + PAGE_TOOL_FENCE + '\\s*\\r?\\n([\\s\\S]*?)```', 'g');
+const FENCE_RE = new RegExp('```(?:' + PAGE_TOOL_FENCE + '|' + LEGACY_PAGE_TOOL_FENCE + ')\\s*\\r?\\n([\\s\\S]*?)```', 'g');
 
 const NESTED_KEYS = new Set(['name', 'args', 'arguments']);
 
@@ -48,7 +50,7 @@ function parseCall(raw: string): PageToolCall | null {
   }
 }
 
-/** Extract `astonish-page-tool` fenced JSON calls from agent text. */
+/** Extract `troupe-page-tool` (legacy `astonish-page-tool`) fenced JSON calls from agent text. */
 export function extractPageTools(text: string): PageToolCall[] {
   const calls: PageToolCall[] = [];
   FENCE_RE.lastIndex = 0;
@@ -83,7 +85,7 @@ export function formatPageToolResults(
   });
   return [
     '## Chrome extension page-tool results',
-    'These results are from THIS browser tab. The original page document remains in ### Main content above — do not treat a snapshot as a replacement for it. Read ## Page map before the next page action. Do not page_navigate to the current URL. Use page_snapshot / page_query / page_click / page_fill only when you still need this tab\'s DOM. For work unrelated to this tab, keep using the normal Astonish skill and tool-discovery loop rather than page tools.',
+    'These results are from THIS browser tab. The original page document remains in ### Main content above — do not treat a snapshot as a replacement for it. Read ## Page map before the next page action. Do not page_navigate to the current URL. Use page_snapshot / page_query / page_click / page_fill only when you still need this tab\'s DOM. For work unrelated to this tab, keep using the normal Troupe skill and tool-discovery loop rather than page tools.',
     ...blocks,
   ].join('\n\n');
 }

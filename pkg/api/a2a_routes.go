@@ -11,10 +11,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/zhu13818202655/troupe/pkg/a2a"
 	"github.com/zhu13818202655/troupe/pkg/a2aserver"
 	"github.com/zhu13818202655/troupe/pkg/execution"
-	"github.com/gorilla/mux"
 )
 
 var (
@@ -68,7 +68,7 @@ func AgentCardHandler(w http.ResponseWriter, _ *http.Request) {
 		http.Error(w, "A2A service unavailable", http.StatusServiceUnavailable)
 		return
 	}
-	card := a2a.BuildAgentCard(a2a.AgentCardConfig{Name: "Astonish", Description: "AI agent platform with multi-tool capabilities", BaseURL: service.BaseURL(), Version: "1.0.0", AuthMethods: []string{"bearer"}}, nil)
+	card := a2a.BuildAgentCard(a2a.AgentCardConfig{Name: "Troupe", Description: "AI agent platform with multi-tool capabilities", BaseURL: service.BaseURL(), Version: "1.0.0", AuthMethods: []string{"bearer"}}, nil)
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(card)
 }
@@ -140,7 +140,7 @@ func A2AHandler(w http.ResponseWriter, r *http.Request) {
 	case "agent/getAuthenticatedExtendedCard":
 		skills, description := tenantCardSkills(r)
 		card := a2a.BuildAuthenticatedAgentCard(a2a.AgentCardConfig{
-			Name:        "Astonish",
+			Name:        "Troupe",
 			Description: "AI agent platform with multi-tool capabilities",
 			BaseURL:     service.BaseURL(),
 			Version:     "1.0.0",

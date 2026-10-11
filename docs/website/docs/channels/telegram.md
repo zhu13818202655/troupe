@@ -1,6 +1,6 @@
 # Telegram
 
-The Telegram channel connects Astonish to a Telegram bot, enabling real-time AI conversations directly in Telegram chats.
+The Telegram channel connects Troupe to a Telegram bot, enabling real-time AI conversations directly in Telegram chats.
 
 ## Setup
 
@@ -15,7 +15,7 @@ The Telegram channel connects Astonish to a Telegram bot, enabling real-time AI 
 Run the interactive setup wizard:
 
 ```bash
-astonish channels setup telegram
+troupe channels setup telegram
 ```
 
 The wizard validates your token via the Telegram API, detects users via polling, and stores the token securely in the encrypted credential store.
@@ -37,7 +37,7 @@ To find your Telegram user ID, message [@userinfobot](https://t.me/userinfobot).
 ### 3. Start the Daemon
 
 ```bash
-astonish daemon start
+troupe daemon start
 ```
 
 The daemon manages the Telegram listener alongside other background services.
@@ -95,6 +95,6 @@ Context switches are persistent. Starting a new session (`/new`) resets to the u
 ## Managing the Channel
 
 ```bash
-astonish channels status             # Check channel status
-astonish channels disable telegram   # Disable the channel
+troupe channels status             # Check channel status
+troupe channels disable telegram   # Disable the channel
 ```

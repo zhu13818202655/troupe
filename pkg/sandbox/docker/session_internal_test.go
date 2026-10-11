@@ -14,7 +14,7 @@ func TestDockerRunArgs_OverlayContract(t *testing.T) {
 	db := &DockerBackend{cfg: Config{
 		LayersDir:    "/tmp/layers",
 		UppersDir:    "/tmp/uppers",
-		SandboxImage: "ghcr.io/sap/astonish-sandbox-base:latest",
+		SandboxImage: "ghcr.io/sap/troupe-sandbox-base:latest",
 	}}
 	spec := sandbox.SessionSpec{
 		SessionID:  "sess-1",
@@ -43,7 +43,7 @@ func TestDockerRunArgs_OverlayContract(t *testing.T) {
 	if strings.Contains(joined, "--entrypoint") {
 		t.Error("must not skip the sandbox-base entrypoint")
 	}
-	if strings.Contains(joined, "/mnt/astonish-uppers/sess-1") && strings.Contains(joined, mountOverlay) {
+	if strings.Contains(joined, "/mnt/troupe-uppers/sess-1") && strings.Contains(joined, mountOverlay) {
 		// host persist dir is bound at mountUppers, not as overlay upperdir
 	}
 	// Live overlay upperdir must be the named overlay volume, not the host persist bind.
@@ -66,7 +66,7 @@ func TestDockerRunArgs_A2ASessionIDUsesStructuredUpperMount(t *testing.T) {
 	db := &DockerBackend{cfg: Config{
 		LayersDir:    "/tmp/layers",
 		UppersDir:    "/tmp/uppers",
-		SandboxImage: "ghcr.io/sap/astonish-sandbox-base:latest",
+		SandboxImage: "ghcr.io/sap/troupe-sandbox-base:latest",
 	}}
 	spec := sandbox.SessionSpec{
 		SessionID: "a2a:direct:ast_client:context-id",
@@ -89,8 +89,8 @@ func TestDockerRunArgs_A2ASessionIDUsesStructuredUpperMount(t *testing.T) {
 }
 
 func TestSeedCreateArgs_WrapperSafe(t *testing.T) {
-	image := "ghcr.io/sap/astonish-sandbox-base:latest"
-	args := seedCreateArgs("astonish-seed-base", image)
+	image := "ghcr.io/sap/troupe-sandbox-base:latest"
+	args := seedCreateArgs("troupe-seed-base", image)
 	if len(args) < 2 || args[0] != "container" || args[1] != "create" {
 		t.Fatalf("seed argv must use `container create`, got %v", args)
 	}
@@ -98,24 +98,24 @@ func TestSeedCreateArgs_WrapperSafe(t *testing.T) {
 }
 
 func TestLXCApparmorWrapper_TopLevelCreateBreaksNameValue(t *testing.T) {
-	// The host wrapper that caused `astonish sandbox init` to fail with
+	// The host wrapper that caused `troupe sandbox init` to fail with
 	// "invalid reference format" rewrites top-level create/run and treats
 	// the first non-dash token as the image. Split `--name value` is what
 	// it mishandles; `container create --name=...` must pass through.
-	broken := []string{"create", "--name", "astonish-seed-base", "ghcr.io/sap/astonish-sandbox-base:latest"}
+	broken := []string{"create", "--name", "troupe-seed-base", "ghcr.io/sap/troupe-sandbox-base:latest"}
 	rewritten := lxcApparmorRewrite(broken)
 	if firstNonDash(rewritten[1:]) != "apparmor=unconfined" {
 		t.Fatalf("expected wrapper to treat apparmor=unconfined as the image, got %v", rewritten)
 	}
-	safe := seedCreateArgs("astonish-seed-base", "ghcr.io/sap/astonish-sandbox-base:latest")
+	safe := seedCreateArgs("troupe-seed-base", "ghcr.io/sap/troupe-sandbox-base:latest")
 	if got := lxcApparmorRewrite(safe); !equalStrings(got, safe) {
 		t.Fatalf("wrapper must pass through container create, got %v", got)
 	}
 	runArgs := (&DockerBackend{cfg: Config{
 		LayersDir:    "/tmp/layers",
 		UppersDir:    "/tmp/uppers",
-		SandboxImage: "ghcr.io/sap/astonish-sandbox-base:latest",
-	}}).dockerRunArgs(sandbox.SessionSpec{SessionID: "sess-1"}, "astonish-session-sess-1", "seed", "/tmp/uppers/sess-1")
+		SandboxImage: "ghcr.io/sap/troupe-sandbox-base:latest",
+	}}).dockerRunArgs(sandbox.SessionSpec{SessionID: "sess-1"}, "troupe-session-sess-1", "seed", "/tmp/uppers/sess-1")
 	if got := lxcApparmorRewrite(runArgs); !equalStrings(got, runArgs) {
 		t.Fatalf("wrapper must pass through container run, got %v", got)
 	}
@@ -186,7 +186,7 @@ func TestIsPrunableOverlayVolume(t *testing.T) {
 	if !isPrunableOverlayVolume("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") {
 		t.Error("64-hex dangling anonymous volume should be prunable")
 	}
-	if !isPrunableOverlayVolume("astonish-session-build-base-config-abcdef-overlay") {
+	if !isPrunableOverlayVolume("troupe-session-build-base-config-abcdef-overlay") {
 		t.Error("named session overlay volume should be prunable")
 	}
 	if isPrunableOverlayVolume("postgres_data") {
@@ -203,7 +203,7 @@ func TestContainerName_DoesNotTruncateTo12(t *testing.T) {
 	if a == b {
 		t.Fatalf("names collided after truncation: %s", a)
 	}
-	if !strings.HasPrefix(a, "astonish-session-") {
+	if !strings.HasPrefix(a, "troupe-session-") {
 		t.Errorf("name = %q", a)
 	}
 }
@@ -249,9 +249,9 @@ func TestRecordSession_SetsContainerNameAndPodName(t *testing.T) {
 
 func TestDockerPSEntry_MissingCreatedIsNotAncient(t *testing.T) {
 	sess := (&dockerPSEntry{
-		Names:  "astonish-session-x",
+		Names:  "troupe-session-x",
 		State:  "running",
-		Labels: "astonish.session_id=abc",
+		Labels: "troupe.session_id=abc",
 	}).toSession()
 	if sess == nil {
 		t.Fatal("toSession returned nil")
@@ -292,7 +292,7 @@ func TestDockerRequireRegistered_RejectsUnknownSession(t *testing.T) {
 		t.Fatalf("NewLocalSessionStore: %v", err)
 	}
 	reg := sandbox.NewSessionRegistryFromStore(st)
-	if err := reg.Put("known", "astonish-session-known", sandbox.BaseTemplateID); err != nil {
+	if err := reg.Put("known", "troupe-session-known", sandbox.BaseTemplateID); err != nil {
 		t.Fatalf("Put: %v", err)
 	}
 	db := &DockerBackend{cfg: Config{

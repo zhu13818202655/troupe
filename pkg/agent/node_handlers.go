@@ -18,7 +18,7 @@ import (
 )
 
 // handleUpdateStateNode handles update_state nodes
-func (a *AstonishAgent) handleUpdateStateNode(ctx agent.InvocationContext, node *config.Node, state session.State, yield func(*session.Event, error) bool) bool {
+func (a *TroupeAgent) handleUpdateStateNode(ctx agent.InvocationContext, node *config.Node, state session.State, yield func(*session.Event, error) bool) bool {
 	// Fallback to simple Updates map if Action is not set
 	if node.Action == "" && len(node.Updates) > 0 {
 		stateDelta := make(map[string]any)
@@ -178,7 +178,7 @@ func (a *AstonishAgent) handleUpdateStateNode(ctx agent.InvocationContext, node 
 }
 
 // handleToolApproval handles the approval flow when resuming after pause
-func (a *AstonishAgent) handleToolApproval(ctx agent.InvocationContext, state session.State, yield func(*session.Event, error) bool) bool {
+func (a *TroupeAgent) handleToolApproval(ctx agent.InvocationContext, state session.State, yield func(*session.Event, error) bool) bool {
 	// Check if user provided approval
 	if ctx.UserContent() == nil || len(ctx.UserContent().Parts) == 0 {
 		return true // No user input, continue
@@ -278,7 +278,7 @@ func (a *AstonishAgent) handleToolApproval(ctx agent.InvocationContext, state se
 }
 
 // handleParallelNode handles nodes with parallel configuration
-func (a *AstonishAgent) handleParallelNode(ctx agent.InvocationContext, node *config.Node, state session.State, yield func(*session.Event, error) bool) bool {
+func (a *TroupeAgent) handleParallelNode(ctx agent.InvocationContext, node *config.Node, state session.State, yield func(*session.Event, error) bool) bool {
 	pConfig := node.Parallel
 	if pConfig == nil {
 		return false
@@ -623,7 +623,7 @@ func (a *AstonishAgent) handleParallelNode(ctx agent.InvocationContext, node *co
 }
 
 // handleOutputNode handles output nodes
-func (a *AstonishAgent) handleOutputNode(ctx agent.InvocationContext, node *config.Node, state session.State, yield func(*session.Event, error) bool) bool {
+func (a *TroupeAgent) handleOutputNode(ctx agent.InvocationContext, node *config.Node, state session.State, yield func(*session.Event, error) bool) bool {
 	var parts []string
 	for _, msgPart := range node.UserMessage {
 		// Check if part is a state variable

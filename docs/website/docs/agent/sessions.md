@@ -22,24 +22,24 @@ Studio provides the primary session management experience:
 
 ```bash
 # List your sessions
-astonish sessions list
+troupe sessions list
 
 # Show session details/trace
-astonish sessions show <session-id>
+troupe sessions show <session-id>
 
 # Resume a session in chat
-astonish chat --resume <session-id>
-astonish chat -r <session-id>
+troupe chat --resume <session-id>
+troupe chat -r <session-id>
 
 # Delete a session
-astonish sessions delete <session-id>
+troupe sessions delete <session-id>
 
 # Delete all sessions
-astonish sessions clear
+troupe sessions clear
 ```
 
 ::: tip Plural Command
-The CLI command is `astonish sessions` (plural), not `astonish session`.
+The CLI command is `troupe sessions` (plural), not `troupe session`.
 :::
 
 ## Session Storage

@@ -155,17 +155,17 @@ func RunHeadless(ctx context.Context, cfg *HeadlessConfig) (string, error) {
 		sessionService = session.InMemoryService()
 	}
 
-	// Create the AstonishAgent with auto-approve
-	astonishAgent := agent.NewAstonishAgentWithToolsets(cfg.AgentConfig, llm, internalTools, mcpToolsets)
-	astonishAgent.DebugMode = cfg.DebugMode
-	astonishAgent.AutoApprove = true
-	astonishAgent.SessionService = sessionService
+	// Create the TroupeAgent with auto-approve
+	troupeAgent := agent.NewTroupeAgentWithToolsets(cfg.AgentConfig, llm, internalTools, mcpToolsets)
+	troupeAgent.DebugMode = cfg.DebugMode
+	troupeAgent.AutoApprove = true
+	troupeAgent.SessionService = sessionService
 
 	// Wire credential redactor and store for placeholder substitution
 	if cs := tools.GetCredentialStore(); cs != nil {
-		astonishAgent.Redactor = cs.Redactor()
-		astonishAgent.CredentialStore = cs
-		astonishAgent.PendingSecrets = credentials.NewPendingVault(cs.Redactor())
+		troupeAgent.Redactor = cs.Redactor()
+		troupeAgent.CredentialStore = cs
+		troupeAgent.PendingSecrets = credentials.NewPendingVault(cs.Redactor())
 		// Inject Redactor into context so memory_save can Placeholderize()
 		ctx = credentials.WithRedactor(ctx, cs.Redactor())
 		// Attach proactive secret scanner
@@ -180,22 +180,22 @@ func RunHeadless(ctx context.Context, cfg *HeadlessConfig) (string, error) {
 					scanner.MinTokenLength = sc.MinTokenLength
 				}
 			}
-			astonishAgent.PendingSecrets.Scanner = scanner
+			troupeAgent.PendingSecrets.Scanner = scanner
 		}
 	}
 
 	// Create ADK agent wrapper
 	adkAgent, err := adkagent.New(adkagent.Config{
-		Name:        "astonish_headless",
+		Name:        "troupe_headless",
 		Description: cfg.AgentConfig.Description,
-		Run:         astonishAgent.Run,
+		Run:         troupeAgent.Run,
 	})
 	if err != nil {
 		return "", fmt.Errorf("failed to create ADK agent: %w", err)
 	}
 
 	// Create session
-	userID, appName := "headless_scheduler", "astonish"
+	userID, appName := "headless_scheduler", "troupe"
 	resp, err := sessionService.Create(ctx, &session.CreateRequest{
 		AppName: appName,
 		UserID:  userID,

@@ -19,7 +19,7 @@ import (
 	"google.golang.org/genai"
 )
 
-func (a *AstonishAgent) handleToolNode(ctx context.Context, node *config.Node, state session.State, yield func(*session.Event, error) bool) bool {
+func (a *TroupeAgent) handleToolNode(ctx context.Context, node *config.Node, state session.State, yield func(*session.Event, error) bool) bool {
 	// 1. Resolve arguments
 	resolvedArgs := make(map[string]interface{})
 	for key, val := range node.Args {

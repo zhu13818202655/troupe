@@ -22,7 +22,7 @@ const (
 	httpReqMaxTimeout      = 120 * time.Second
 	httpReqMaxRedirects    = 5
 	httpReqDefaultMaxBytes = 2 * 1024 * 1024 // 2MB
-	httpReqUserAgent       = "Astonish/1.0"
+	httpReqUserAgent       = "Troupe/1.0"
 )
 
 // httpReqSkipSSRF is a test hook to bypass SSRF checks for httptest servers.
@@ -79,7 +79,7 @@ func HttpRequest(ctx tool.Context, args HttpRequestArgs) (HttpRequestResult, err
 	return httpRequest(c, args)
 }
 
-// httpRequest is the shared implementation used by ADK tools and astonish node.
+// httpRequest is the shared implementation used by ADK tools and troupe node.
 func httpRequest(ctx context.Context, args HttpRequestArgs) (HttpRequestResult, error) {
 	if args.URL == "" {
 		return HttpRequestResult{}, fmt.Errorf("url is required")

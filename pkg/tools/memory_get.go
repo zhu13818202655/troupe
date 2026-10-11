@@ -12,7 +12,7 @@ import (
 
 // MemoryGetArgs defines the arguments for the memory_get tool.
 type MemoryGetArgs struct {
-	Path  string `json:"path" jsonschema:"Relative path within the memory directory (e.g. projects/astonish.md or MEMORY.md)"`
+	Path  string `json:"path" jsonschema:"Relative path within the memory directory (e.g. projects/troupe.md or MEMORY.md)"`
 	From  int    `json:"from,omitempty" jsonschema:"Starting line number, 1-indexed (default 1)"`
 	Lines int    `json:"lines,omitempty" jsonschema:"Number of lines to read (default 50)"`
 }

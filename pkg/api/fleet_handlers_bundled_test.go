@@ -73,7 +73,7 @@ func (m *memFleetTemplateStore) Delete(_ context.Context, key string) error {
 	return nil
 }
 
-func (m *memFleetTemplateStore) Count(_ context.Context) int { return len(m.custom) }
+func (m *memFleetTemplateStore) Count(_ context.Context) int    { return len(m.custom) }
 func (m *memFleetTemplateStore) Reload(_ context.Context) error { return nil }
 
 func withFleetTemplates(r *http.Request, ts store.FleetTemplateStore) *http.Request {

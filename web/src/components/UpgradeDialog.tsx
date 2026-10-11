@@ -18,7 +18,7 @@ export default function UpgradeDialog({ info, onClose }: UpgradeDialogProps) {
     {
       title: 'Install Script',
       icon: Terminal,
-      command: 'curl -sSL https://sap.github.io/astonish/install.sh | bash',
+      command: 'curl -sSL https://github.com/zhu13818202655/troupe#readme | bash',
     },
   ]
 
@@ -31,7 +31,7 @@ export default function UpgradeDialog({ info, onClose }: UpgradeDialogProps) {
             Update Available: {info.version}
           </DialogTitle>
           <DialogDescription>
-            A new version of Astonish is available. Choose one of the methods below to update.
+            A new version of Troupe is available. Choose one of the methods below to update.
           </DialogDescription>
         </DialogHeader>
 

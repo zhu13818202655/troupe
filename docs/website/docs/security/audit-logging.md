@@ -1,13 +1,13 @@
 # Audit Logging
 
-Astonish maintains an append-only, immutable audit trail of all security-relevant actions. Audit records cannot be modified or deleted — not by users, not by administrators, not by the application itself.
+Troupe maintains an append-only, immutable audit trail of all security-relevant actions. Audit records cannot be modified or deleted — not by users, not by administrators, not by the application itself.
 
 ## Database-Level Immutability
 
 The audit table is protected at the PostgreSQL grant level:
 
 ```sql
-GRANT INSERT ON audit_log TO astonish_app;
+GRANT INSERT ON audit_log TO troupe_app;
 -- No UPDATE, DELETE, or TRUNCATE granted
 ```
 

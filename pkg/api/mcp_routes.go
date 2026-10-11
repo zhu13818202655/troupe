@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/gorilla/mux"
+	mcp "github.com/modelcontextprotocol/go-sdk/mcp"
 	"github.com/zhu13818202655/troupe/pkg/agent"
 	"github.com/zhu13818202655/troupe/pkg/execution"
 	"github.com/zhu13818202655/troupe/pkg/store"
-	"github.com/gorilla/mux"
-	mcp "github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
 const (
@@ -81,13 +81,13 @@ func mcpBearerMiddleware(validator BearerPrincipalValidator, resolveTenant MCPTe
 }
 
 func newMCPServer(request *http.Request, principal execution.Principal, tokens *mcpContextTokens) *mcp.Server {
-	server := mcp.NewServer(&mcp.Implementation{Name: "astonish", Version: "1.0"}, nil)
+	server := mcp.NewServer(&mcp.Implementation{Name: "troupe", Version: "1.0"}, nil)
 	add := func(name, description string, schema map[string]any, handler func(context.Context, json.RawMessage) (*mcp.CallToolResult, error)) {
 		server.AddTool(&mcp.Tool{Name: name, Title: name, Description: description, InputSchema: schema}, func(ctx context.Context, call *mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 			return handler(ctx, call.Params.Arguments)
 		})
 	}
-	add("get_agent_context", "MANDATORY at the start of every user turn. Returns the authenticated Astonish instructions, relevant memory, tenant-scoped tool catalog, and a token required for discovery and execution.", mcpObjectSchema(map[string]any{"session_id": map[string]any{"type": "string"}, "user_message": map[string]any{"type": "string"}}, "session_id", "user_message"), func(_ context.Context, raw json.RawMessage) (*mcp.CallToolResult, error) {
+	add("get_agent_context", "MANDATORY at the start of every user turn. Returns the authenticated Troupe instructions, relevant memory, tenant-scoped tool catalog, and a token required for discovery and execution.", mcpObjectSchema(map[string]any{"session_id": map[string]any{"type": "string"}, "user_message": map[string]any{"type": "string"}}, "session_id", "user_message"), func(_ context.Context, raw json.RawMessage) (*mcp.CallToolResult, error) {
 		var args struct {
 			SessionID   string `json:"session_id"`
 			UserMessage string `json:"user_message"`
@@ -151,7 +151,7 @@ func newMCPServer(request *http.Request, principal execution.Principal, tokens *
 		described, unavailable := entry.runtime.describe(args.Names)
 		return mcpToolJSON(map[string]any{"state": agent.ProgressiveStateReady, "tools": described, "unavailable": unavailable}), nil
 	})
-	add("execute_tool", "Execute exactly one catalog tool using the protected Astonish runtime. Call get_agent_context and describe_tools first.", mcpObjectSchema(map[string]any{"context_token": map[string]any{"type": "string"}, "name": map[string]any{"type": "string"}, "arguments": map[string]any{"type": "object"}}, "context_token", "name", "arguments"), func(_ context.Context, raw json.RawMessage) (*mcp.CallToolResult, error) {
+	add("execute_tool", "Execute exactly one catalog tool using the protected Troupe runtime. Call get_agent_context and describe_tools first.", mcpObjectSchema(map[string]any{"context_token": map[string]any{"type": "string"}, "name": map[string]any{"type": "string"}, "arguments": map[string]any{"type": "object"}}, "context_token", "name", "arguments"), func(_ context.Context, raw json.RawMessage) (*mcp.CallToolResult, error) {
 		entry, failure := validate(raw)
 		if failure != nil {
 			return failure, nil

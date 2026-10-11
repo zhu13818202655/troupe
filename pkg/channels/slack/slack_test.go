@@ -9,15 +9,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/zhu13818202655/troupe/pkg/channels"
 	slackapi "github.com/slack-go/slack"
 	"github.com/slack-go/slack/slackevents"
 	"github.com/slack-go/slack/socketmode"
+	"github.com/zhu13818202655/troupe/pkg/channels"
 )
 
 func TestSlashCommandThreadTSFromSocketRequest(t *testing.T) {
 	t.Parallel()
-	req := &socketmode.Request{Payload: []byte(`{"type":"slash_commands","command":"/astonish-help","thread_ts":"1355517523.000005"}`)}
+	req := &socketmode.Request{Payload: []byte(`{"type":"slash_commands","command":"/troupe-help","thread_ts":"1355517523.000005"}`)}
 	if got := slashCommandThreadTSFromSocketRequest(req); got != "1355517523.000005" {
 		t.Fatalf("thread timestamp = %q, want payload thread_ts", got)
 	}
@@ -33,7 +33,7 @@ func TestSlackThreadTimestampIgnoresSlashCommandTriggerIDs(t *testing.T) {
 	if got := slackThreadTimestamp("", "TRIGGER123"); got != "" {
 		t.Fatalf("slash command trigger ID resolved as thread timestamp: %q", got)
 	}
-	if got := slackThreadTimestamp("", "/astonish-help:U123"); got != "" {
+	if got := slackThreadTimestamp("", "/troupe-help:U123"); got != "" {
 		t.Fatalf("synthetic command ID resolved as thread timestamp: %q", got)
 	}
 	if got := slackThreadTimestamp("1355517523.000005", "TRIGGER123"); got != "1355517523.000005" {
@@ -85,14 +85,14 @@ func TestHandleSlashCommandWithThreadRoutesRegistryCommandToThread(t *testing.T)
 	}
 
 	got := ch.handleSlashCommandWithThread(context.Background(), slackapi.SlashCommand{
-		Command:     "/astonish-status",
+		Command:     "/troupe-status",
 		UserID:      "U123",
 		UserName:    "alice",
 		ChannelID:   "C123",
 		ChannelName: "general",
 		TriggerID:   "TRIGGER123",
 	}, "1355517523.000005")
-	if got != "Running /astonish-status…" {
+	if got != "Running /troupe-status…" {
 		t.Fatalf("response = %q, want running acknowledgement", got)
 	}
 
@@ -123,12 +123,12 @@ func TestHandleSlashCommandDetachesHandlerFromCancelledRequestContext(t *testing
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 	got := ch.HandleSlashCommand(ctx, slackapi.SlashCommand{
-		Command:   "/astonish-status",
+		Command:   "/troupe-status",
 		UserID:    "U123",
 		ChannelID: "D123",
 		TriggerID: "TRIGGER123",
 	})
-	if got != "Running /astonish-status…" {
+	if got != "Running /troupe-status…" {
 		t.Fatalf("response = %q, want running acknowledgement", got)
 	}
 
@@ -154,7 +154,7 @@ func TestHandleSlashCommandRoutesRegistryCommand(t *testing.T) {
 	}
 
 	got := ch.HandleSlashCommand(context.Background(), slackapi.SlashCommand{
-		Command:     "/astonish-status",
+		Command:     "/troupe-status",
 		Text:        "verbose",
 		UserID:      "U123",
 		UserName:    "alice",
@@ -163,7 +163,7 @@ func TestHandleSlashCommandRoutesRegistryCommand(t *testing.T) {
 		TriggerID:   "TRIGGER123",
 		ResponseURL: "https://hooks.slack.test/commands/123",
 	})
-	if got != "Running /astonish-status…" {
+	if got != "Running /troupe-status…" {
 		t.Fatalf("response = %q, want running acknowledgement", got)
 	}
 
@@ -265,10 +265,10 @@ func TestHandleSlashCommandRejectsSessionScopedCommands(t *testing.T) {
 	}
 
 	got := ch.HandleSlashCommand(context.Background(), slackapi.SlashCommand{
-		Command: "/astonish-new",
+		Command: "/troupe-new",
 		UserID:  "U123",
 	})
-	if got == "" || got == "Running /astonish-new…" {
+	if got == "" || got == "Running /troupe-new…" {
 		t.Fatalf("response = %q, want unsupported-command guidance", got)
 	}
 }
@@ -341,7 +341,7 @@ func TestHandleAppMentionRoutesSlackAliasCommandInThread(t *testing.T) {
 
 	ch.handleAppMention(context.Background(), &slackevents.AppMentionEvent{
 		User:            "U123",
-		Text:            "<@UBOT> /astonish-status verbose",
+		Text:            "<@UBOT> /troupe-status verbose",
 		TimeStamp:       "2000.000001",
 		ThreadTimeStamp: "1000.000001",
 		Channel:         "C123",
@@ -494,7 +494,7 @@ func TestHandleSlashCommandReportsMissingCode(t *testing.T) {
 	if called {
 		t.Fatal("link handler should not be called without a code")
 	}
-	if want := "Usage: /link CODE\n\nGet a link code from the Astonish Settings → Channels page."; got != want {
+	if want := "Usage: /link CODE\n\nGet a link code from the Troupe Settings → Channels page."; got != want {
 		t.Fatalf("response = %q, want %q", got, want)
 	}
 }

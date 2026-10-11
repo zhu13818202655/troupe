@@ -404,12 +404,12 @@ func TestBaseDomainSetAndGet(t *testing.T) {
 		t.Errorf("GetBaseDomain initially = %q, want empty", got)
 	}
 
-	if err := r.SetBaseDomain("astn-sess-abc123", "astonish.local.muxpie.com"); err != nil {
+	if err := r.SetBaseDomain("astn-sess-abc123", "troupe.local.muxpie.com"); err != nil {
 		t.Fatalf("SetBaseDomain: %v", err)
 	}
 
-	if got := r.GetBaseDomain("astn-sess-abc123"); got != "astonish.local.muxpie.com" {
-		t.Errorf("GetBaseDomain = %q, want %q", got, "astonish.local.muxpie.com")
+	if got := r.GetBaseDomain("astn-sess-abc123"); got != "troupe.local.muxpie.com" {
+		t.Errorf("GetBaseDomain = %q, want %q", got, "troupe.local.muxpie.com")
 	}
 
 	if got := r.GetBaseDomain("nonexistent"); got != "" {
@@ -426,11 +426,11 @@ func TestBaseDomainPersistence(t *testing.T) {
 	r1 := newTestRegistryAt(t, dir)
 
 	_ = r1.Put("sess-1", "astn-sess-abc123", "base")
-	_ = r1.SetBaseDomain("astn-sess-abc123", "astonish.local.muxpie.com")
+	_ = r1.SetBaseDomain("astn-sess-abc123", "troupe.local.muxpie.com")
 
 	r2 := newTestRegistryAt(t, dir)
-	if got := r2.GetBaseDomain("astn-sess-abc123"); got != "astonish.local.muxpie.com" {
-		t.Errorf("GetBaseDomain after reload = %q, want %q", got, "astonish.local.muxpie.com")
+	if got := r2.GetBaseDomain("astn-sess-abc123"); got != "troupe.local.muxpie.com" {
+		t.Errorf("GetBaseDomain after reload = %q, want %q", got, "troupe.local.muxpie.com")
 	}
 }
 

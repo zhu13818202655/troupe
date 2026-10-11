@@ -45,10 +45,10 @@ func TestFooterWorkDirText(t *testing.T) {
 	if err != nil || home == "" {
 		t.Skip("no home directory available")
 	}
-	got := footerWorkDirText(filepath.Join(home, "Projects", "astonish"), "")
-	want := "~" + string(filepath.Separator) + "Projects" + string(filepath.Separator) + "astonish"
+	got := footerWorkDirText(filepath.Join(home, "Projects", "troupe"), "")
+	want := "~" + string(filepath.Separator) + "Projects" + string(filepath.Separator) + "troupe"
 	if got != want {
-		t.Fatalf("footerWorkDirText(home/Projects/astonish, \"\") = %q, want %q", got, want)
+		t.Fatalf("footerWorkDirText(home/Projects/troupe, \"\") = %q, want %q", got, want)
 	}
 	if strings.Contains(got, home) {
 		t.Fatalf("footerWorkDirText should not include the raw home path: %q", got)
@@ -75,21 +75,21 @@ func TestFooterWorkDirText(t *testing.T) {
 }
 
 func TestTruncatePathLeft(t *testing.T) {
-	if got := truncatePathLeft("~/Projects/astonish", 80); got != "~/Projects/astonish" {
+	if got := truncatePathLeft("~/Projects/troupe", 80); got != "~/Projects/troupe" {
 		t.Fatalf("short path should be unchanged, got %q", got)
 	}
-	if got := truncatePathLeft("~/Projects/astonish", 0); got != "" {
+	if got := truncatePathLeft("~/Projects/troupe", 0); got != "" {
 		t.Fatalf("width 0 should be empty, got %q", got)
 	}
-	if got := truncatePathLeft("~/Projects/astonish", 1); got != "…" {
+	if got := truncatePathLeft("~/Projects/troupe", 1); got != "…" {
 		t.Fatalf("width 1 should be ellipsis, got %q", got)
 	}
 
-	got := truncatePathLeft("~/very/deep/nested/path/astonish", 12)
+	got := truncatePathLeft("~/very/deep/nested/path/troupe", 12)
 	if !strings.HasPrefix(got, "…") {
 		t.Fatalf("truncated path should start with ellipsis, got %q", got)
 	}
-	if !strings.HasSuffix(got, "astonish") {
+	if !strings.HasSuffix(got, "troupe") {
 		t.Fatalf("truncated path should keep the project name, got %q", got)
 	}
 	if w := lipgloss.Width(got); w > 12 {
@@ -161,7 +161,7 @@ func TestRenderFooterMetaDropsOrTruncatesFolderWhenNarrow(t *testing.T) {
 			Mode:       "code",
 			Provider:   "sap-ai-core",
 			Model:      "anthropic--claude-3.7-sonnet",
-			WorkingDir: "/tmp/very/deep/nested/path/astonish",
+			WorkingDir: "/tmp/very/deep/nested/path/troupe",
 		},
 	}
 	out := stripANSI(m.renderFooterMeta())
@@ -171,7 +171,7 @@ func TestRenderFooterMetaDropsOrTruncatesFolderWhenNarrow(t *testing.T) {
 	if !strings.Contains(out, "sap-ai-core / anthropic--claude-3.7-sonnet") {
 		t.Fatalf("model must remain visible on a narrow footer: %q", out)
 	}
-	if strings.Contains(out, "/tmp/very/deep/nested/path/astonish") {
+	if strings.Contains(out, "/tmp/very/deep/nested/path/troupe") {
 		t.Fatalf("full long path should not leak on a narrow footer: %q", out)
 	}
 	if got := lipgloss.Width(out); got != 48 {

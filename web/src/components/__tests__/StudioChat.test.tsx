@@ -123,7 +123,7 @@ describe('StudioChat', () => {
 
     rerender(<StudioChat {...defaultProps} isPlatformMode platformRole="superadmin" />)
     fireEvent.click(screen.getByRole('switch', { name: 'Debug cache diagnostics' }))
-    expect(storage.get('astonish-studio-cache-debug')).toBe('true')
+    expect(storage.get('troupe-studio-cache-debug')).toBe('true')
     fireEvent.change(screen.getByTestId('chat-input'), { target: { value: 'hello' } })
     fireEvent.keyDown(screen.getByTestId('chat-input'), { key: 'Enter', code: 'Enter' })
 

@@ -542,8 +542,8 @@ func TestFindLastUserTextInstruction_SubstantiveContext(t *testing.T) {
 	// should also include a preceding substantive message (≥ 200 chars) as context.
 	longBugReport := strings.Repeat("The debug panel shows no injection data even though memories are clearly being used. ", 5)
 	contents := []*genai.Content{
-		makeContent("user", longBugReport),            // substantive (200+ chars)
-		makeContent("model", "I see three options..."), // model response
+		makeContent("user", longBugReport),                        // substantive (200+ chars)
+		makeContent("model", "I see three options..."),            // model response
 		makeContent("user", "let's start with debug panel issue"), // short instruction
 		makeFuncCallContent("model", "read_file", map[string]any{"path": "panel.tsx"}),
 		makeFuncResponseContent("user", "read_file", map[string]any{"content": "export default function Panel()"}),

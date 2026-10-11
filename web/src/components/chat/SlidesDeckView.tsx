@@ -426,7 +426,7 @@ export default function SlidesDeckView({ deckSlug, scope = 'personal', fillHeigh
       await saveDeck(deckSlug, { targetSlug: slug, title }, scope)
       setSaveSuccess(true)
       setTimeout(() => { if (mountedRef.current) setSaveSuccess(false) }, 3000)
-      window.dispatchEvent(new CustomEvent('astonish:slides-updated'))
+      window.dispatchEvent(new CustomEvent('troupe:slides-updated'))
     } catch (cause) {
       if (mountedRef.current) setError(cause instanceof Error ? cause.message : 'Failed to save deck')
     } finally {

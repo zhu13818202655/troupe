@@ -139,7 +139,7 @@ export default function EditableEdge({
     e.preventDefault()
     
     // Signal drag start to prevent prop sync
-    window.dispatchEvent(new CustomEvent('astonish:edge-drag-start'))
+    window.dispatchEvent(new CustomEvent('troupe:edge-drag-start'))
 
     // Determine segment we are dragging
     // Segments: 
@@ -294,7 +294,7 @@ export default function EditableEdge({
       }
       
       // Dipatch event to trigger save and signal drag end
-      window.dispatchEvent(new CustomEvent('astonish:edge-drag-stop'))
+      window.dispatchEvent(new CustomEvent('troupe:edge-drag-stop'))
     }
 
     document.addEventListener('mousemove', handleMouseMove)

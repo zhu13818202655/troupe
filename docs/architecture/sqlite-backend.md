@@ -2,7 +2,7 @@
 
 ## Overview
 
-Astonish supports two database backends, selected by configuration:
+Troupe supports two database backends, selected by configuration:
 
 | Backend | Engine | Dependencies | Use Case |
 |---------|--------|--------------|----------|
@@ -42,14 +42,14 @@ By converging on a single architecture with SQLite as the lightweight backend, w
 | File layout | Separate `.db` files per tenant boundary | Maps to PG's per-org DB + per-team schema; enables independent backup/restore |
 | Concurrency | WAL mode + `database/sql` connection pool | Supports concurrent reads; writes are serialized (acceptable for local/small-team) |
 | Multi-tenancy | Same `TenantMiddleware` as pgstore | Handlers remain completely backend-agnostic |
-| Auth | JWT everywhere (same as pgstore) | Unified; CLI stores token locally after `astonish login`, browser gets HttpOnly cookies |
+| Auth | JWT everywhere (same as pgstore) | Unified; CLI stores token locally after `troupe login`, browser gets HttpOnly cookies |
 
 ---
 
 ## Database File Layout
 
 ```
-~/.local/share/astonish/
+~/.local/share/troupe/
 ├── platform.db                    # Platform-level: users, orgs, login sessions, OIDC, settings
 ├── orgs/
 │   └── {org_slug}/
@@ -78,10 +78,10 @@ The default data directory follows XDG conventions:
 
 | Platform | Default Path | Override |
 |----------|-------------|----------|
-| Linux | `~/.local/share/astonish/` | `$XDG_DATA_HOME/astonish/` or `storage.sqlite.data_dir` config |
-| macOS | `~/Library/Application Support/astonish/` | `storage.sqlite.data_dir` config |
+| Linux | `~/.local/share/troupe/` | `$XDG_DATA_HOME/troupe/` or `storage.sqlite.data_dir` config |
+| macOS | `~/Library/Application Support/troupe/` | `storage.sqlite.data_dir` config |
 
-Configuration data (YAML configs, agent definitions) remains in `~/.config/astonish/`. The data directory holds only SQLite databases.
+Configuration data (YAML configs, agent definitions) remains in `~/.config/troupe/`. The data directory holds only SQLite databases.
 
 ### macOS Daemon Startup Diagnosis
 
@@ -91,7 +91,7 @@ On macOS, distinguish three independent readiness boundaries:
 2. **HTTP readiness** — the daemon has completed synchronous setup and logged `HTTP server listening`.
 3. **First-session readiness** — Studio has constructed its cached ChatAgent for the first usable chat request.
 
-A slow launchd invocation does not by itself show whether the HTTP listener or the first Studio session is slow. With `sandbox.enabled: false`, Astonish bypasses the Docker OverlayFS sandbox branch; this does not bypass database, provider, embedding, skills, MCP-cache, scheduler, fleet, channel, or Studio initialization.
+A slow launchd invocation does not by itself show whether the HTTP listener or the first Studio session is slow. With `sandbox.enabled: false`, Troupe bypasses the Docker OverlayFS sandbox branch; this does not bypass database, provider, embedding, skills, MCP-cache, scheduler, fleet, channel, or Studio initialization.
 
 #### Locations and configuration
 
@@ -100,9 +100,9 @@ For a per-user installation, inspect the installed LaunchAgent plist under `~/Li
 Keep these locations separate when troubleshooting:
 
 - macOS configuration and log locations are under the user Library/Application Support and LaunchAgent configuration selected by the installation.
-- SQLite defaults to `~/Library/Application Support/astonish/`.
+- SQLite defaults to `~/Library/Application Support/troupe/`.
 - `storage.sqlite.data_dir` explicitly overrides the SQLite location.
-- YAML configuration and agent definitions remain under `~/.config/astonish/`.
+- YAML configuration and agent definitions remain under `~/.config/troupe/`.
 
 Do not put the SQLite data directory on a synchronized, cloud-backed, removable, or network-mounted location. Prefer a local filesystem path so WAL, locking, and file-latency behavior remain predictable.
 
@@ -1051,14 +1051,14 @@ func (s *SQLiteStore) NeedsBootstrap() bool {
 
 If `platform.db` does not exist, the system enters **setup mode** — it serves only the setup endpoints and the setup UI page until bootstrapping completes.
 
-### CLI Bootstrap (`astonish setup`)
+### CLI Bootstrap (`troupe setup`)
 
 Interactive TUI wizard for first-time setup:
 
 ```
-$ astonish setup
+$ troupe setup
 
-  Welcome to Astonish!
+  Welcome to Troupe!
   Let's set up your instance.
 
   Display name: Alice Smith
@@ -1075,11 +1075,11 @@ $ astonish setup
   ✓ Created admin account
   ✓ Generated JWT signing key
 
-  Setup complete! Start Astonish with:
-    astonish daemon run
+  Setup complete! Start Troupe with:
+    troupe daemon run
 
   Or connect the CLI:
-    astonish chat
+    troupe chat
 ```
 
 The wizard:
@@ -1101,14 +1101,14 @@ storage:
     jwt_secret: "base64-encoded-random-secret"
 ```
 
-11. Issues a JWT token pair and stores it in `~/.config/astonish/credentials` — the user is immediately authenticated for CLI use without a separate `astonish login` step.
+11. Issues a JWT token pair and stores it in `~/.config/troupe/credentials` — the user is immediately authenticated for CLI use without a separate `troupe login` step.
 
 ### Headless Bootstrap
 
 For automated deployments (Docker, scripts):
 
 ```bash
-astonish setup \
+troupe setup \
   --non-interactive \
   --email admin@company.com \
   --password "$ADMIN_PASSWORD" \
@@ -1123,7 +1123,7 @@ Or via environment variables:
 TROUPE_ADMIN_EMAIL=admin@company.com \
 TROUPE_ADMIN_PASSWORD=secret \
 TROUPE_ORG_NAME="My Company" \
-astonish setup --non-interactive
+troupe setup --non-interactive
 ```
 
 ### Studio Setup Page
@@ -1147,29 +1147,29 @@ Both SQLite and PostgreSQL backends use identical JWT authentication. There is n
 - **Access tokens**: HMAC-SHA256, 15-minute TTL, contain full user context (uid, email, org, team, role)
 - **Refresh tokens**: HMAC-SHA256, 90-day TTL, minimal claims (uid, org), hash stored in `login_sessions`
 - **Transport**: HttpOnly cookies for browser; `Authorization: Bearer` header for CLI
-- **Token storage**: CLI stores tokens in `~/.config/astonish/credentials` after `astonish login`; refreshes automatically
+- **Token storage**: CLI stores tokens in `~/.config/troupe/credentials` after `troupe login`; refreshes automatically
 
 ### CLI Authentication Flow
 
 The CLI experience remains frictionless despite requiring tokens:
 
 ```
-$ astonish login
+$ troupe login
   Email: alice@example.com
   Password: ********
-  ✓ Logged in. Token saved to ~/.config/astonish/credentials
+  ✓ Logged in. Token saved to ~/.config/troupe/credentials
 
-$ astonish chat
+$ troupe chat
   # Works immediately — CLI sends stored token automatically
 ```
 
 After initial login:
-1. The CLI reads the stored refresh token from `~/.config/astonish/credentials`
+1. The CLI reads the stored refresh token from `~/.config/troupe/credentials`
 2. On each command, if the access token is expired, the CLI silently refreshes it
 3. The refresh token is valid for 90 days — users rarely need to re-authenticate
-4. `astonish setup` (first-run) automatically stores the initial token after creating the user
+4. `troupe setup` (first-run) automatically stores the initial token after creating the user
 
-The result is that a local user runs `astonish setup` once, and never thinks about auth again for 90 days. But the system always knows exactly which user is making each request, which is essential for correct multi-tenant behavior even on a single machine with multiple users.
+The result is that a local user runs `troupe setup` once, and never thinks about auth again for 90 days. But the system always knows exactly which user is making each request, which is essential for correct multi-tenant behavior even on a single machine with multiple users.
 
 ---
 
@@ -1185,12 +1185,12 @@ storage:
   # SQLite-specific settings (only used when backend: sqlite)
   sqlite:
     # Data directory for .db files
-    # Default: ~/.local/share/astonish/ (Linux) or ~/Library/Application Support/astonish/ (macOS)
+    # Default: ~/.local/share/troupe/ (Linux) or ~/Library/Application Support/troupe/ (macOS)
     data_dir: ""
 
   # PostgreSQL-specific settings (only used when backend: postgres)
   postgres:
-    platform_dsn: "postgres://user:pass@host:5432/astonish_platform?sslmode=prefer"
+    platform_dsn: "postgres://user:pass@host:5432/troupe_platform?sslmode=prefer"
     instance_suffix: "a1b2c3"
 
   # Authentication (shared between backends)
@@ -1221,7 +1221,7 @@ func resolveBackend(cfg *config.StorageConfig) string {
 }
 ```
 
-The `"file"` backend value is no longer recognized. If present in an old config, the daemon prints a clear error message directing the user to run `astonish setup`.
+The `"file"` backend value is no longer recognized. If present in an old config, the daemon prints a clear error message directing the user to run `troupe setup`.
 
 ---
 
@@ -1340,14 +1340,14 @@ pkg/store/sqlitestore/
 
 ## Migration from PostgreSQL to SQLite (and vice versa)
 
-A future `astonish migrate` command can transfer data between backends:
+A future `troupe migrate` command can transfer data between backends:
 
 ```bash
 # Export from PostgreSQL to SQLite
-astonish migrate --from postgres --to sqlite --data-dir ./export/
+troupe migrate --from postgres --to sqlite --data-dir ./export/
 
 # Import from SQLite to PostgreSQL
-astonish migrate --from sqlite --to postgres --platform-dsn "postgres://..."
+troupe migrate --from sqlite --to postgres --platform-dsn "postgres://..."
 ```
 
 This is not required for the initial implementation but the architecture supports it since both backends implement identical interfaces. A migration tool simply reads from one `store.Services` and writes to another.
@@ -1387,7 +1387,7 @@ Recommended migration triggers (documented, not enforced):
 1. **File permissions**: Data directory created with `0750`. Individual `.db` files inherit directory permissions.
 2. **No network exposure**: SQLite has no network listener. Data access is strictly through the application process.
 3. **Credential encryption**: Same AES-256-GCM envelope encryption as pgstore. Encryption keys stored in `org_encryption_keys` table within `org.db`.
-4. **JWT secrets**: Stored in `~/.config/astonish/config.yaml` (not in the database). File permissions should restrict access to the running user.
+4. **JWT secrets**: Stored in `~/.config/troupe/config.yaml` (not in the database). File permissions should restrict access to the running user.
 5. **No RLS equivalent**: SQLite has no row-level security. Isolation is enforced structurally (separate files) and at the application level (stores are scoped by TenantMiddleware). A bug in a handler that bypasses `store.FromRequest()` could theoretically access wrong-tenant data — but this is mitigated by the fact that stores are file-scoped and never cross tenant boundaries.
 
 ### Shared (Both Backends)
@@ -1423,7 +1423,7 @@ Recommended migration triggers (documented, not enforced):
 ### Phase 3: Bootstrap and Auth Integration
 
 1. Implement bootstrap logic (create first user/org/team)
-2. CLI setup wizard (`astonish setup` for SQLite)
+2. CLI setup wizard (`troupe setup` for SQLite)
 3. Studio setup page (web UI for first-run)
 4. Wire `SQLiteStore` into `PlatformAuth` (JWT auth uses `PlatformStore` interface)
 5. Implement `TenantMiddleware` for SQLite

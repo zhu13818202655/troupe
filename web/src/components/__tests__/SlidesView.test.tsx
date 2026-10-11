@@ -112,7 +112,7 @@ describe('SlidesView', () => {
 
     const updatedDeck = { ...personalDeck, updatedAt: new Date(Date.now() + 1000).toISOString() }
     vi.mocked(slidesApi.listSlidesDecks).mockResolvedValue({ decks: [updatedDeck] })
-    window.dispatchEvent(new CustomEvent('astonish:slides-updated'))
+    window.dispatchEvent(new CustomEvent('troupe:slides-updated'))
 
     await waitFor(() => expect(slidesApi.fetchDeckSlideThumbnail).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(container.querySelector('img')).not.toBeNull())

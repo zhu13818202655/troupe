@@ -10,28 +10,28 @@ The daemon is a long-running background process that serves Studio at `http://lo
 
 ```bash
 # Install daemon as a system service
-astonish daemon install [--port 9393]
+troupe daemon install [--port 9393]
 
 # Uninstall the system service
-astonish daemon uninstall
+troupe daemon uninstall
 
 # Start the daemon
-astonish daemon start
+troupe daemon start
 
 # Stop the daemon
-astonish daemon stop
+troupe daemon stop
 
 # Restart the daemon
-astonish daemon restart
+troupe daemon restart
 
 # Check daemon status
-astonish daemon status
+troupe daemon status
 
 # Run in foreground (for debugging)
-astonish daemon run [--port 9393]
+troupe daemon run [--port 9393]
 
 # View daemon logs
-astonish daemon logs [-f] [-n 50]
+troupe daemon logs [-f] [-n 50]
 ```
 
 ### Log Flags
@@ -53,22 +53,22 @@ Jobs are created through chat — ask the AI to schedule a task and it will crea
 
 ```bash
 # List all scheduled jobs
-astonish scheduler list
+troupe scheduler list
 
 # Show scheduler status
-astonish scheduler status
+troupe scheduler status
 
 # Enable a disabled job
-astonish scheduler enable <name>
+troupe scheduler enable <name>
 
 # Disable a job (pauses execution)
-astonish scheduler disable <name>
+troupe scheduler disable <name>
 
 # Trigger immediate execution of a job
-astonish scheduler run <name>
+troupe scheduler run <name>
 
 # Remove a scheduled job
-astonish scheduler remove <name>
+troupe scheduler remove <name>
 ```
 
 The `<name>` argument can be a full job ID, a partial ID prefix (must be unambiguous), or a job name (case-insensitive).
@@ -82,17 +82,17 @@ The `<name>` argument can be a full job ID, a partial ID prefix (must be unambig
 
 ```bash
 # List all jobs
-astonish scheduler ls
+troupe scheduler ls
 
 # Trigger a job manually
-astonish scheduler run daily-report
+troupe scheduler run daily-report
 
 # Disable a job temporarily
-astonish scheduler disable health-check
+troupe scheduler disable health-check
 
 # Re-enable it
-astonish scheduler enable health-check
+troupe scheduler enable health-check
 
 # Remove a job permanently
-astonish scheduler rm old-job
+troupe scheduler rm old-job
 ```

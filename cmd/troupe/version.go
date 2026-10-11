@@ -21,18 +21,19 @@ var Version = "dev"
 
 // Version information
 const (
-	Name   = "Astonish AI Companion"
+	Name   = "Troupe AI Companion"
 	Author = "Rafael Schardosin Silva"
 	GitHub = "https://github.com/zhu13818202655/troupe"
 )
 
 // ASCII Logo with colors using lipgloss
 var asciiLogo = `
-    ___         __              _      __
-   /   |  _____/ /_____  ____  (_)____/ /_
-  / /| | / ___/ __/ __ \/ __ \/ / ___/ __ \
- / ___ |(__  ) /_/ /_/ / / / / (__  ) / / /
-/_/  |_/____/\__/\____/_/ /_/_/____/_/ /_/
+ _____
+|_   _| _ __   ___   _   _  _ __    ___
+  | |  | '__| / _ \ | | | || '_ \  / _ \
+  | |  | |   | (_) || | | || |_) ||  __/
+  | |  |_|    \___/  \__,_|| .__/  \___|
+  \_/                      |_|
 `
 
 func printVersion() {

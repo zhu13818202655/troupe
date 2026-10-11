@@ -1,15 +1,15 @@
 // session.go — Docker session lifecycle methods for DockerBackend.
 //
 // Each session maps to a single Docker container named
-// "astonish-session-<short12>". The container runs the sandbox-base image
-// whose entrypoint (astonish-sandbox-entrypoint) composes the OverlayFS
+// "troupe-session-<short12>". The container runs the sandbox-base image
+// whose entrypoint (troupe-sandbox-entrypoint) composes the OverlayFS
 // rootfs from the template layers and the session's upper directory, then
-// chroots into it and starts the astonish node daemon.
+// chroots into it and starts the troupe node daemon.
 //
 // Overlay volume layout (host → container):
 //
-//	<LayersDir>/<layerID>/      → /mnt/astonish-layers/<layerID>/:ro
-//	<UppersDir>/<sessionID>/    → /mnt/astonish-uppers/<sessionID>/:rw
+//	<LayersDir>/<layerID>/      → /mnt/troupe-layers/<layerID>/:ro
+//	<UppersDir>/<sessionID>/    → /mnt/troupe-uppers/<sessionID>/:rw
 //
 // The sandbox-base entrypoint reads TROUPE_LAYER_CHAIN (comma-separated)
 // and TROUPE_SESSION_ID to compose the overlay at start.
@@ -205,7 +205,7 @@ func (db *DockerBackend) SessionState(ctx context.Context, sessionID string) (sa
 }
 
 // WaitForSessionReady blocks until the container is running and the
-// astonish node daemon inside is ready to accept exec commands.
+// troupe node daemon inside is ready to accept exec commands.
 // For Docker, containers start very quickly (typically <2s), so we poll
 // the container status with a short interval.
 func (db *DockerBackend) WaitForSessionReady(ctx context.Context, sessionID string) error {
@@ -241,17 +241,17 @@ func (db *DockerBackend) WaitForSessionReady(ctx context.Context, sessionID stri
 	}
 }
 
-// ListSessions returns all Docker containers matching the astonish.session_id
+// ListSessions returns all Docker containers matching the troupe.session_id
 // label, filtered by the provided SessionFilter.
 func (db *DockerBackend) ListSessions(ctx context.Context, filter sandbox.SessionFilter) ([]*sandbox.Session, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
 
-	// docker ps --all --filter label=astonish.session_id --format json
+	// docker ps --all --filter label=troupe.session_id --format json
 	out, err := runDocker(ctx, db.cfg.ContainerRuntimePath,
 		"ps", "--all",
-		"--filter", "label=astonish.session_id",
+		"--filter", "label=troupe.session_id",
 		"--format", "{{json .}}",
 	)
 	if err != nil {
@@ -306,16 +306,16 @@ type dockerPSEntry struct {
 
 func (e *dockerPSEntry) toSession() *sandbox.Session {
 	labels := parseDockerLabels(e.Labels)
-	sessionID := labels["astonish.session_id"]
+	sessionID := labels["troupe.session_id"]
 	if sessionID == "" {
 		return nil
 	}
 	st := dockerStateToSessionState(e.State)
 	return &sandbox.Session{
 		SessionID:  sessionID,
-		Type:       sandbox.SessionType(labels["astonish.type"]),
-		OrgSlug:    labels["astonish.org"],
-		TeamSlug:   labels["astonish.team"],
+		Type:       sandbox.SessionType(labels["troupe.type"]),
+		OrgSlug:    labels["troupe.org"],
+		TeamSlug:   labels["troupe.team"],
 		State:      st,
 		BackendRef: e.Names,
 		Labels:     labels,
@@ -426,7 +426,7 @@ func (db *DockerBackend) resolveLayerChain(resolved []string, templateID string)
 }
 
 func layersMountOpt(spec sandbox.SessionSpec) string {
-	if spec.Labels != nil && spec.Labels["astonish.io/purpose"] == "template-builder" {
+	if spec.Labels != nil && spec.Labels["troupe.io/purpose"] == "template-builder" {
 		return ""
 	}
 	return ":ro"
@@ -457,10 +457,10 @@ func (db *DockerBackend) dockerRunArgs(spec sandbox.SessionSpec, cname, layerCha
 		args = append(args, eqFlag("--label", k+"="+v))
 	}
 	args = append(args,
-		eqFlag("--label", "astonish.session_id="+spec.SessionID),
-		eqFlag("--label", "astonish.type="+string(spec.Type)),
-		eqFlag("--label", "astonish.org="+spec.OrgSlug),
-		eqFlag("--label", "astonish.team="+spec.TeamSlug),
+		eqFlag("--label", "troupe.session_id="+spec.SessionID),
+		eqFlag("--label", "troupe.type="+string(spec.Type)),
+		eqFlag("--label", "troupe.org="+spec.OrgSlug),
+		eqFlag("--label", "troupe.team="+spec.TeamSlug),
 	)
 	for k, v := range spec.Labels {
 		args = append(args, eqFlag("--label", k+"="+v))
@@ -540,7 +540,7 @@ func (db *DockerBackend) pruneDanglingOverlayVolumes(ctx context.Context) {
 }
 
 func isPrunableOverlayVolume(name string) bool {
-	if strings.HasSuffix(name, "-overlay") && strings.HasPrefix(name, "astonish-session-") {
+	if strings.HasSuffix(name, "-overlay") && strings.HasPrefix(name, "troupe-session-") {
 		return true
 	}
 	if len(name) != 64 {

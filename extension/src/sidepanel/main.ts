@@ -7,7 +7,7 @@ import {
   sessionIdFromEvent,
   stopChat,
   type HistoryMessage,
-} from '../lib/astonish-client';
+} from '../lib/troupe-client';
 import {
   clearSession,
   loadSession,

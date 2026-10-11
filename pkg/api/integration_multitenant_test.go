@@ -58,8 +58,14 @@ func TestIntegration_MT1_TwoTeamsDifferentModels(t *testing.T) {
 	t.Cleanup(func() {
 		runnerA.Stop()
 		runnerB.Stop()
-		go func() { for range chA {} }()
-		go func() { for range chB {} }()
+		go func() {
+			for range chA {
+			}
+		}()
+		go func() {
+			for range chB {
+			}
+		}()
 	})
 
 	// Run both concurrently (simulating simultaneous requests)
@@ -115,7 +121,10 @@ func TestIntegration_MT2_NoTeamOverrideFallsBackToDefault(t *testing.T) {
 
 	t.Cleanup(func() {
 		runner.Stop()
-		go func() { for range ch {} }()
+		go func() {
+			for range ch {
+			}
+		}()
 	})
 
 	userMsg := &genai.Content{
@@ -299,7 +308,10 @@ func TestIntegration_MT5_OrgOverrideWithoutTeam(t *testing.T) {
 
 	t.Cleanup(func() {
 		runner.Stop()
-		go func() { for range ch {} }()
+		go func() {
+			for range ch {
+			}
+		}()
 	})
 
 	userMsg := &genai.Content{
@@ -368,7 +380,10 @@ func TestIntegration_MT6_IsolationUnderLoad(t *testing.T) {
 				events := collectEventsTimeout(ch, 10*time.Second)
 				text := extractTextFromEventSlice(events)
 				runner.Stop()
-				go func() { for range ch {} }()
+				go func() {
+					for range ch {
+					}
+				}()
 
 				results <- result{teamIdx: tIdx, text: text}
 			}(teamIdx)

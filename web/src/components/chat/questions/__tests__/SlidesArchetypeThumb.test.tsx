@@ -16,8 +16,8 @@ if (typeof (globalThis as { ResizeObserver?: unknown }).ResizeObserver === 'unde
 describe('SlidesArchetypeThumb', () => {
   afterEach(() => {
     cleanup()
-    document.getElementById('astonish-slides-fonts-modern')?.remove()
-    document.getElementById('astonish-slides-fonts-aurora')?.remove()
+    document.getElementById('troupe-slides-fonts-modern')?.remove()
+    document.getElementById('troupe-slides-fonts-aurora')?.remove()
   })
 
   it('mounts a slide from archetype markup without throwing', () => {
@@ -63,7 +63,7 @@ describe('SlidesArchetypeThumb', () => {
         }}
       />,
     )
-    const style = document.getElementById('astonish-slides-fonts-modern')
+    const style = document.getElementById('troupe-slides-fonts-modern')
     expect(style?.textContent).toContain('font-family:"Manrope"')
     expect(style?.textContent).toContain('font-family:"JetBrains Mono"')
     expect(style?.textContent).toContain('/api/docs/slides/templates/modern/media/font%3AManrope%3A400')
@@ -79,7 +79,7 @@ describe('SlidesArchetypeThumb', () => {
         theme={{ displayFont: 'Manrope' }}
       />,
     )
-    expect(document.getElementById('astonish-slides-fonts-aurora')).toBeNull()
-    expect(document.getElementById('astonish-slides-fonts-modern')).toBeNull()
+    expect(document.getElementById('troupe-slides-fonts-aurora')).toBeNull()
+    expect(document.getElementById('troupe-slides-fonts-modern')).toBeNull()
   })
 })

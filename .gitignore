@@ -18,10 +18,14 @@ go.work
 # Binary
 ./astonish
 ./astonish_bin
+./troupe
+./troupe_bin
 ./test_bin
 bin/
 astonish-linux-*
 astonish-sandbox-entrypoint
+troupe-linux-*
+troupe-sandbox-entrypoint
 .buildx-cache/
 
 # macOS specific files

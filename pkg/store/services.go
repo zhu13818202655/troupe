@@ -1,6 +1,6 @@
 package store
 
-// Services is the central dependency container for Astonish.
+// Services is the central dependency container for Troupe.
 //
 // It replaces the package-level Set*/Get* globals that were previously used
 // to wire dependencies between the daemon, launchers, API handlers, and tools.
@@ -192,7 +192,7 @@ type Services struct {
 	TenantRouter TenantRouter
 }
 
-// DeploymentMode indicates the operational mode of Astonish.
+// DeploymentMode indicates the operational mode of Troupe.
 type DeploymentMode string
 
 const (

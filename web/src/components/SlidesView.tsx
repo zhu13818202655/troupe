@@ -320,8 +320,8 @@ export default function SlidesView({ theme, deckSlug, templatesView, isPlatformM
   // Refresh when a deck is published/forked from anywhere (mirrors apps-updated).
   useEffect(() => {
     const handler = () => loadDecks()
-    window.addEventListener('astonish:slides-updated', handler)
-    return () => window.removeEventListener('astonish:slides-updated', handler)
+    window.addEventListener('troupe:slides-updated', handler)
+    return () => window.removeEventListener('troupe:slides-updated', handler)
   }, [loadDecks])
 
   // Deep link / back-nav sync.

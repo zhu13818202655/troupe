@@ -16,7 +16,7 @@ func setupTempA2AConfigDir(t *testing.T) string {
 
 	if runtime.GOOS == "darwin" {
 		// macOS: UserConfigDir() returns $HOME/Library/Application Support
-		configDir := filepath.Join(tmpDir, "Library", "Application Support", "astonish")
+		configDir := filepath.Join(tmpDir, "Library", "Application Support", configDirName)
 		if err := os.MkdirAll(configDir, 0755); err != nil {
 			t.Fatalf("failed to create temp config dir: %v", err)
 		}
@@ -24,7 +24,7 @@ func setupTempA2AConfigDir(t *testing.T) string {
 		return configDir
 	}
 	// Linux/other: UserConfigDir() returns $XDG_CONFIG_HOME or $HOME/.config
-	configDir := filepath.Join(tmpDir, "astonish")
+	configDir := filepath.Join(tmpDir, configDirName)
 	if err := os.MkdirAll(configDir, 0755); err != nil {
 		t.Fatalf("failed to create temp config dir: %v", err)
 	}

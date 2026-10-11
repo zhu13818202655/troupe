@@ -13,7 +13,7 @@ const a2aScope = string(execution.CapabilityA2A)
 // A2ATenantResolver translates OAuth tenant IDs to the slugs required by scoped stores.
 type A2ATenantResolver func(context.Context, string, string) (orgSlug, teamSlug string, err error)
 
-// a2aBearerMiddleware accepts only Astonish-issued OAuth tokens carrying the
+// a2aBearerMiddleware accepts only Troupe-issued OAuth tokens carrying the
 // exact A2A scope, then installs the canonical principal and tenant context.
 func a2aBearerMiddleware(validator BearerPrincipalValidator, resolveTenant A2ATenantResolver, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

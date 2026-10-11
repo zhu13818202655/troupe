@@ -2,7 +2,7 @@
 
 ## Overview
 
-Fleet is Astonish's multi-agent collaboration system. Instead of a single AI agent handling everything, a fleet consists of specialized agents (product owner, architect, developer, QA, UX, E2E tester) that communicate through a shared channel using @mentions. Each agent has its own role, personality, tool access, and memory scope.
+Fleet is Troupe's multi-agent collaboration system. Instead of a single AI agent handling everything, a fleet consists of specialized agents (product owner, architect, developer, QA, UX, E2E tester) that communicate through a shared channel using @mentions. Each agent has its own role, personality, tool access, and memory scope.
 
 Fleets are designed for complex, multi-phase projects where different expertise is needed at different stages -- like a software development team where the PO writes requirements, the architect designs the solution, developers implement it, and QA validates it.
 
@@ -146,7 +146,7 @@ The `ProgressTracker` monitors fleet activity and injects status into agent prom
 
 ### Bundled Software Development Fleet
 
-Astonish ships with a pre-built 6-agent fleet for software development:
+Troupe ships with a pre-built 6-agent fleet for software development:
 
 | Agent | Role | Communicates With |
 |---|---|---|

@@ -200,7 +200,7 @@ export default function AuthTab() {
           <h3 className="text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Identity Providers (SSO)</h3>
           <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
             Configure external identity providers for Single Sign-On (SSO). Supports any OIDC-compliant provider (SAP IAS, Azure AD, Okta, Google, Keycloak, etc.).
-            Users must be pre-provisioned in Astonish before they can authenticate via SSO.
+            Users must be pre-provisioned in Troupe before they can authenticate via SSO.
           </p>
           <div className="flex items-center gap-3">
             <button

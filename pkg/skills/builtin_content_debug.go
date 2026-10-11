@@ -1,7 +1,7 @@
 package skills
 
 // BuiltinDebugRegression is the investigation protocol for regressions and
-// failed-fix follow-ups in Astonish Code. Keep this short: the agent already
+// failed-fix follow-ups in Troupe Code. Keep this short: the agent already
 // has the files; this teaches how to treat evidence.
 const BuiltinDebugRegression = `# Debug regressions
 

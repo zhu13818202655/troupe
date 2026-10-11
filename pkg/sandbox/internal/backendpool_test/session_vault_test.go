@@ -35,8 +35,8 @@ func (m *vaultMemStore) Count(_ context.Context) int { return len(m.creds) }
 func (m *vaultMemStore) Resolve(_ context.Context, name string) (string, string, error) {
 	return store.ResolveCredentialHeader(name, m.Get(context.Background(), name), nil)
 }
-func (m *vaultMemStore) InvalidateToken(context.Context, string)              {}
-func (m *vaultMemStore) SetSecret(context.Context, string, string) error      { return nil }
+func (m *vaultMemStore) InvalidateToken(context.Context, string)         {}
+func (m *vaultMemStore) SetSecret(context.Context, string, string) error { return nil }
 func (m *vaultMemStore) SetSecretBatch(context.Context, map[string]string) error {
 	return nil
 }

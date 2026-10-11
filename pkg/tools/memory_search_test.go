@@ -11,7 +11,7 @@ import (
 	"google.golang.org/adk/tool/toolconfirmation"
 	"google.golang.org/genai"
 
-	astonishmemory "github.com/zhu13818202655/troupe/pkg/memory"
+	troupememory "github.com/zhu13818202655/troupe/pkg/memory"
 	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
@@ -67,21 +67,21 @@ func (m *memorySearchFakeStore) Count() int   { return len(m.results) }
 func (m *memorySearchFakeStore) Close() error { return nil }
 
 func TestMemorySearchFiltersUnrelatedScenarioCards(t *testing.T) {
-	github := astonishmemory.ScenarioCard{
+	github := troupememory.ScenarioCard{
 		CanonicalKey:      "infrastructure-sap-github-enterprise",
 		Title:             "SAP GitHub Enterprise issues API",
 		RecommendedRecipe: []string{"Use GET https://github.wdf.sap.corp/api/v3/issues?filter=assigned&state=open&per_page=50."},
-		Status:            astonishmemory.ScenarioCardStatusVerified,
+		Status:            troupememory.ScenarioCardStatusVerified,
 	}
-	openstack := astonishmemory.ScenarioCard{
+	openstack := troupememory.ScenarioCard{
 		CanonicalKey:      "infrastructure-openstack-service-endpoints",
 		Title:             "OpenStack Octavia load balancer list",
 		RecommendedRecipe: []string{"Use openstack-keystone and GET https://loadbalancer-3.qa-de-1.cloud.sap/v2/lbaas/loadbalancers."},
-		Status:            astonishmemory.ScenarioCardStatusVerified,
+		Status:            troupememory.ScenarioCardStatusVerified,
 	}
 	fallback := &memorySearchFakeStore{results: []store.MemorySearchResult{
-		{ID: "github-card", Snippet: astonishmemory.RenderScenarioCard(github), Category: astonishmemory.ScenarioCardCategory, Score: 0.60},
-		{ID: "openstack-card", Snippet: astonishmemory.RenderScenarioCard(openstack), Category: astonishmemory.ScenarioCardCategory, Score: 0.60},
+		{ID: "github-card", Snippet: troupememory.RenderScenarioCard(github), Category: troupememory.ScenarioCardCategory, Score: 0.60},
+		{ID: "openstack-card", Snippet: troupememory.RenderScenarioCard(openstack), Category: troupememory.ScenarioCardCategory, Score: 0.60},
 	}}
 	ctx := &memorySearchToolCtx{Context: store.WithMemoryStore(context.Background(), fallback)}
 

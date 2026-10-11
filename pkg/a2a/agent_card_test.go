@@ -11,17 +11,17 @@ func TestBuildAgentCard(t *testing.T) {
 		{ID: "code-review", Name: "Code Review", Description: "Reviews code for quality"},
 	}
 	card := BuildAgentCard(AgentCardConfig{
-		Name:        "Astonish",
+		Name:        "Troupe",
 		Description: "AI agent platform",
-		BaseURL:     "https://astonish.example.com",
+		BaseURL:     "https://troupe.example.com",
 		Version:     "1.0.0",
 		AuthMethods: []string{"bearer", "api_key"},
 	}, skills)
 
-	if card.Name != "Astonish" {
-		t.Fatalf("expected name 'Astonish', got %q", card.Name)
+	if card.Name != "Troupe" {
+		t.Fatalf("expected name 'Troupe', got %q", card.Name)
 	}
-	if card.URL != "https://astonish.example.com/api/a2a" {
+	if card.URL != "https://troupe.example.com/api/a2a" {
 		t.Fatalf("expected URL with /api/a2a suffix, got %q", card.URL)
 	}
 	if !card.Capabilities.Streaming {
@@ -43,8 +43,8 @@ func TestBuildAgentCard(t *testing.T) {
 
 func TestBuildAgentCard_AdvertisesJSONRPCInterface(t *testing.T) {
 	card := BuildAgentCard(AgentCardConfig{
-		Name:    "Astonish",
-		BaseURL: "https://astonish.example.com",
+		Name:    "Troupe",
+		BaseURL: "https://troupe.example.com",
 		Version: "1.0.0",
 	}, nil)
 
@@ -55,7 +55,7 @@ func TestBuildAgentCard_AdvertisesJSONRPCInterface(t *testing.T) {
 		t.Fatalf("expected exactly one supported interface, got %d", len(card.SupportedInterfaces))
 	}
 	iface := card.SupportedInterfaces[0]
-	if iface.URL != "https://astonish.example.com/api/a2a" {
+	if iface.URL != "https://troupe.example.com/api/a2a" {
 		t.Fatalf("interface URL = %q, want /api/a2a endpoint", iface.URL)
 	}
 	if iface.ProtocolBinding != "JSONRPC" {
@@ -118,7 +118,9 @@ func TestSkillsFromCapabilities(t *testing.T) {
 			t.Fatalf("skill %q output modes = %#v", skill.ID, skill.OutputModes)
 		}
 	}
-	wantIDs := []string{"a2a-inventory-agent", "astonish-core", "mcp-analytics", "mcp-email-server"}
+	// Skills are sorted by ID. "troupe-core" now sorts after the mcp-* skills
+	// (pre-rebrand it was "astonish-core", which sorted before them).
+	wantIDs := []string{"a2a-inventory-agent", "mcp-analytics", "mcp-email-server", "troupe-core"}
 	if !reflect.DeepEqual(ids, wantIDs) {
 		t.Fatalf("skill IDs = %#v, want %#v", ids, wantIDs)
 	}
@@ -133,18 +135,18 @@ func TestSkillsFromCapabilities(t *testing.T) {
 }
 
 func TestBuildAuthenticatedAgentCard(t *testing.T) {
-	skills := []Skill{{ID: "astonish-core", Name: "Astonish Assistant"}}
+	skills := []Skill{{ID: "troupe-core", Name: "Troupe Assistant"}}
 	card := BuildAuthenticatedAgentCard(AgentCardConfig{
-		Name:        "Astonish",
+		Name:        "Troupe",
 		Description: "generic",
-		BaseURL:     "https://astonish.example.com",
+		BaseURL:     "https://troupe.example.com",
 		AuthMethods: []string{"bearer"},
 	}, skills, "Assistant with 2 built-in tools, 1 MCP integration, and 1 connected agent.")
 
 	if card.Description == "generic" {
 		t.Fatal("expected authenticated description override")
 	}
-	if len(card.Skills) != 1 || card.Skills[0].ID != "astonish-core" {
+	if len(card.Skills) != 1 || card.Skills[0].ID != "troupe-core" {
 		t.Fatalf("authenticated skills = %#v", card.Skills)
 	}
 	if !card.Capabilities.SupportsAuthenticatedExtendedCard {

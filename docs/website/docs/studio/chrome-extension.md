@@ -1,35 +1,35 @@
 # Chrome Extension
 
-The Astonish Chrome extension brings Studio chat directly into any browser tab through Chrome's native side panel. While browsing the web you can ask questions about the current page, fill forms, click elements, and run agent tasks — all without leaving the tab you're on.
+The Troupe Chrome extension brings Studio chat directly into any browser tab through Chrome's native side panel. While browsing the web you can ask questions about the current page, fill forms, click elements, and run agent tasks — all without leaving the tab you're on.
 
 ## Requirements
 
 - Chrome 114 or later (any Chromium-based browser that supports `chrome.sidePanel`)
-- A running Astonish instance (local or cloud) reachable from your browser
+- A running Troupe instance (local or cloud) reachable from your browser
 - The extension loaded in Chrome (see [Installation](#installation))
 
 ## Installation
 
 The extension is distributed as a zip file alongside each release binary on the [GitHub Releases page](https://github.com/zhu13818202655/troupe/releases). It is not published to the Chrome Web Store; you load it as an unpacked extension.
 
-1. **Download** `astonish-extension.zip` from the latest release.
-2. **Unzip** it into a permanent folder (e.g. `~/astonish-extension`). Do not delete this folder — Chrome requires it to remain present while the extension is loaded.
+1. **Download** `troupe-extension.zip` from the latest release.
+2. **Unzip** it into a permanent folder (e.g. `~/troupe-extension`). Do not delete this folder — Chrome requires it to remain present while the extension is loaded.
 3. Open `chrome://extensions` in Chrome.
 4. Enable **Developer mode** (toggle in the top-right corner).
 5. Click **Load unpacked** and select the unzipped folder.
-6. The Astonish icon appears in the Chrome toolbar.
+6. The Troupe icon appears in the Chrome toolbar.
 
 To update the extension, download the new zip, overwrite the folder contents, and click the **↺ refresh** button on the extension card at `chrome://extensions`.
 
 ## Signing In
 
-Click the Astonish toolbar icon to open the side panel. The first time you open it you will see the sign-in screen.
+Click the Troupe toolbar icon to open the side panel. The first time you open it you will see the sign-in screen.
 
 1. Enter your **Studio URL** (e.g. `http://localhost:9393` for a local instance, or your team's cloud URL).
-2. Click **Sign in with OAuth**. The extension opens a browser tab to the Astonish authorization endpoint where you authenticate (using your email/password or your organization's SSO provider).
+2. Click **Sign in with OAuth**. The extension opens a browser tab to the Troupe authorization endpoint where you authenticate (using your email/password or your organization's SSO provider).
 3. After you sign in, the authorization flow redirects back to the extension automatically. The extension receives an **OAuth access token** — it does not use browser cookies or store your password.
 
-The extension uses **OAuth Authorization Code + PKCE** with the built-in `astonish-chrome-extension` public client. Tokens are stored securely in Chrome extension storage and refreshed automatically when they expire.
+The extension uses **OAuth Authorization Code + PKCE** with the built-in `troupe-chrome-extension` public client. Tokens are stored securely in Chrome extension storage and refreshed automatically when they expire.
 
 After sign-in, Chrome will ask you to grant the extension permission to reach your Studio URL. Click **Allow** to continue.
 
@@ -95,7 +95,7 @@ If the target field is not yet in edit mode (for example, a GitHub issue body th
 
 Extension sessions are stored separately from Studio Chat sessions. The extension session picker shows only sessions you created from the extension; Studio's session list shows only sessions created in Studio. This prevents the extension's page-focused conversations from cluttering your Studio history and vice versa.
 
-Sessions are identified by a dedicated `appName` (`astonish-extension`). Opening the side panel on a new tab automatically loads all your extension sessions from the server — you don't need to be on the same tab where a session was originally started.
+Sessions are identified by a dedicated `appName` (`troupe-extension`). Opening the side panel on a new tab automatically loads all your extension sessions from the server — you don't need to be on the same tab where a session was originally started.
 
 ## Sign Out
 
@@ -108,12 +108,12 @@ Click the **Sign out** button in the side panel to clear your credentials from C
 Check that your Studio instance is running and that the URL you entered (e.g. `http://localhost:9393`) is correct. If you are using a local instance, make sure the daemon is started:
 
 ```bash
-astonish daemon start
+troupe daemon start
 ```
 
 ### "Permission denied" or page context not captured
 
-Go to `chrome://extensions`, find Astonish, and click **Details**. Under **Site access**, set it to "On all sites" or individually allow the sites you want the extension to access. Alternatively, grant access site-by-site when prompted on first use.
+Go to `chrome://extensions`, find Troupe, and click **Details**. Under **Site access**, set it to "On all sites" or individually allow the sites you want the extension to access. Alternatively, grant access site-by-site when prompted on first use.
 
 ### Page tools not working on a specific site
 
@@ -121,4 +121,4 @@ Some enterprise sites (SAP Fiori, Salesforce, etc.) use multiple nested iframes.
 
 ### Extension icon not visible
 
-If the Astonish icon is not visible in the toolbar, click the puzzle-piece Extensions icon and pin Astonish.
+If the Troupe icon is not visible in the toolbar, click the puzzle-piece Extensions icon and pin Troupe.

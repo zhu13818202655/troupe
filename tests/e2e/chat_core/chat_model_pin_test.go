@@ -61,7 +61,7 @@ func patchModel(t *testing.T, h *e2eboot.Harness, sessionID, provider, model str
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+h.Token)
-	req.Header.Set("X-Astonish-Team", "general")
+	req.Header.Set("X-Troupe-Team", "general")
 
 	client := &http.Client{Timeout: 30 * time.Second}
 	resp, err := client.Do(req)

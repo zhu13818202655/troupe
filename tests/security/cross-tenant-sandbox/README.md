@@ -9,7 +9,7 @@ dev/staging platform. Keep `.env` out of git.
 Target used while writing this kit (historical Incus platform; local sessions now use Docker OverlayFS):
 
 ```
-https://astonish.local.muxpie.com
+https://troupe.local.muxpie.com
 ```
 
 ## What the bug is
@@ -42,7 +42,7 @@ Personal / SQLite mode is **not** in scope: there is only one tenant.
 ## What you need
 
 - `curl`, `jq`, `python3`, `bash`
-- A **platform-mode** (PostgreSQL) Astonish server with sandbox enabled
+- A **platform-mode** (PostgreSQL) Troupe server with sandbox enabled
 - Two ordinary accounts in **different teams** of the same org (or
   different orgs — either is a finding)
   - **Victim (Team B)** — will own a running sandbox
@@ -71,7 +71,7 @@ chmod +x *.sh
 | `BASE_URL` | yes | Platform URL, no trailing slash |
 | `VICTIM_EMAIL` / `VICTIM_PASSWORD` | yes | Team B account |
 | `ATTACKER_EMAIL` / `ATTACKER_PASSWORD` | yes | Team A account |
-| `VICTIM_TEAM` / `ATTACKER_TEAM` | if multi-team | Force `X-Astonish-Team` |
+| `VICTIM_TEAM` / `ATTACKER_TEAM` | if multi-team | Force `X-Troupe-Team` |
 | `VICTIM_ORG` / `ATTACKER_ORG` | if multi-org | Passed to `/api/auth/login` |
 | `EXPOSE_PORT` | no (default 8080) | Port the attacker tries to open |
 
@@ -146,9 +146,9 @@ inside does not make the access check succeed.
 ## Kubernetes / OpenShell hosts
 
 K8s/OpenShell platforms (for example a previous
-`https://astonish.eu-de-2.cloud.sap` cluster) **cannot simulate the
+`https://troupe.eu-de-2.cloud.sap` cluster) **cannot simulate the
 reported takeover** through these scripts. The Incus host
-`https://astonish.local.muxpie.com` can.
+`https://troupe.local.muxpie.com` can.
 
 Every handler in the report starts with `sandboxConnect()`:
 
@@ -181,7 +181,7 @@ What you *can* capture on K8s as evidence:
 ```
 
 That 503 is the correct outcome on K8s. To exercise 04–08 use the
-Incus host (`https://astonish.local.muxpie.com`) with two teams.
+Incus host (`https://troupe.local.muxpie.com`) with two teams.
 
 ## State files
 
@@ -218,7 +218,7 @@ Then:
 ```bash
 # 03 / 04
 curl -sS -H "Authorization: Bearer $TOKEN" \
-  -H "X-Astonish-Team: $TEAM" \
+  -H "X-Troupe-Team: $TEAM" \
   "$BASE_URL/api/sandbox/containers"
 
 # 05

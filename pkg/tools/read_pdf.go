@@ -185,7 +185,7 @@ func downloadPDFToTemp(url string) (string, string, error) {
 	// Limit download size
 	limitedReader := io.LimitReader(resp.Body, int64(readPDFMaxFileSize))
 
-	tmp, err := os.CreateTemp("", "astonish-pdf-*.pdf")
+	tmp, err := os.CreateTemp("", "troupe-pdf-*.pdf")
 	if err != nil {
 		return "", "", fmt.Errorf("failed to create temp file: %w", err)
 	}

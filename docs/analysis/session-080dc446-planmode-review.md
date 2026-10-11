@@ -1,6 +1,6 @@
 # Session 080dc446 — Plan-Mode Behaviour Review
 
-**Session:** `080dc446-a506-467f-be58-2fbfb2a9d5c7` (code mode, `astonish_code`)
+**Session:** `080dc446-a506-467f-be58-2fbfb2a9d5c7` (code mode, `troupe_code`)
 **Task the user gave the agent:** Collapse the TUI file-diff *dual-gutter* (separate `old`/`new` line-number columns + label header) into a **single line-number column**, colored by change kind (neutral / red / green).
 **What this review checks:** Did the agent follow the new Option B plan-mode instructions — investigate-first methodology, complete dependency-aware plans, first-class `files`/`verify` per phase, decision surfacing, `update_plan` progress tracking, and end-with-verification discipline?
 

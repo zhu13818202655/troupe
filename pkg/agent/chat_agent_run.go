@@ -798,7 +798,7 @@ func (c *ChatAgent) Run(ctx agent.InvocationContext) iter.Seq2[*session.Event, e
 		// ── Code-mode authorization gates ──
 		// Active in code mode (EnforceAuthorization) for both Normal and Ask mode
 		// (planMode/graphPlan handled above). Two independent gates make
-		// `astonish code` safe-by-default despite running tools directly on the host:
+		// `troupe code` safe-by-default despite running tools directly on the host:
 		//
 		//  1. Folder-access gate — a tool touching a path outside the project
 		//     working directory pauses for user authorization (once / session).

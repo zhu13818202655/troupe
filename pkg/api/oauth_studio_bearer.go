@@ -9,7 +9,7 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/store"
 )
 
-// OAuthStudioBearerMiddleware accepts only Astonish-issued OAuth access tokens
+// OAuthStudioBearerMiddleware accepts only Troupe-issued OAuth access tokens
 // for the extension-facing Studio chat endpoints. Cookie/platform-session traffic
 // remains on PlatformAuthMiddleware's existing path.
 func OAuthStudioBearerMiddleware(validator BearerPrincipalValidator, resolveTenant MCPTenantResolver, next http.Handler) http.Handler {

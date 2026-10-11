@@ -167,7 +167,7 @@ func Open(configDir string) (*Store, error) {
 }
 
 // Reload re-reads the credential store from disk, picking up changes made by
-// other processes (e.g., the CLI running "astonish credential add" while the
+// other processes (e.g., the CLI running "troupe credential add" while the
 // daemon is running). The in-memory state and redaction signatures are fully
 // replaced. This is safe to call concurrently with other Store methods.
 func (s *Store) Reload() error {

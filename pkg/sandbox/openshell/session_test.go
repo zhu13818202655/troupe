@@ -170,8 +170,8 @@ func TestCreateSession_WithCertBundles(t *testing.T) {
 		AppConfig: config.SandboxOpenShellConfig{
 			CertBundles: []config.CertBundleConfig{{
 				Name:      "corp-root-ca",
-				ClaimName: "astonish-corp-ca",
-				MountPath: "/etc/astonish-ca/ca-bundle.crt",
+				ClaimName: "troupe-corp-ca",
+				MountPath: "/etc/troupe-ca/ca-bundle.crt",
 				SubPath:   "ca-bundle.crt",
 			}},
 		},
@@ -198,12 +198,12 @@ func TestCreateSession_WithCertBundles(t *testing.T) {
 	if _, ok := k8s["volumes"].([]any); !ok {
 		t.Errorf("volumes missing: %#v", k8s)
 	}
-	if captured.Env["SSL_CERT_FILE"] != "/etc/astonish-ca/ca-bundle.crt" {
+	if captured.Env["SSL_CERT_FILE"] != "/etc/troupe-ca/ca-bundle.crt" {
 		t.Errorf("SSL_CERT_FILE = %q", captured.Env["SSL_CERT_FILE"])
 	}
 	foundRO := false
 	for _, p := range captured.Policy.Filesystem.ReadOnly {
-		if p == "/etc/astonish-ca/ca-bundle.crt" {
+		if p == "/etc/troupe-ca/ca-bundle.crt" {
 			foundRO = true
 			break
 		}

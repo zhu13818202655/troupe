@@ -118,7 +118,7 @@ func (m model) renderSkillsPickerOverlay() string {
 	} else if m.skillsPicker.err != "" {
 		body.WriteString(th.Error.Render(m.skillsPicker.err))
 	} else if len(m.skillsPicker.items) == 0 {
-		body.WriteString(th.Muted.Render("No skills loaded. Add a skill folder to ~/.config/astonish/skills/."))
+		body.WriteString(th.Muted.Render("No skills loaded. Add a skill folder to ~/.config/troupe/skills/."))
 	} else {
 		maxRows := h - 4
 		if maxRows < 3 {

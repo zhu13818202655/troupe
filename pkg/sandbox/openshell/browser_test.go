@@ -25,8 +25,8 @@ func TestKasmvncConfigYAML_LocksViewportResolution(t *testing.T) {
 func TestBuildBrowserLaunchScript_WritesViewportYAMLOverlay(t *testing.T) {
 	script := buildBrowserLaunchScript(BrowserLaunchConfig{}, 1920, 1080, defaultKasmVNCPort)
 	for _, want := range []string{
-		"/tmp/astonish-kasmvnc/.vnc/kasmvnc.yaml",
-		"HOME=/tmp/astonish-kasmvnc",
+		"/tmp/troupe-kasmvnc/.vnc/kasmvnc.yaml",
+		"HOME=/tmp/troupe-kasmvnc",
 		"allow_resize: false",
 		"width: 1920",
 		"height: 1080",

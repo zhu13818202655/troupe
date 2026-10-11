@@ -1,18 +1,18 @@
 # Running as a Service
 
-Astonish runs as a background daemon managed by your operating system's service manager. The daemon serves Studio at `http://localhost:9393`, handles scheduled flows, channel integrations, and persistent sessions. It starts automatically on boot and restarts on failure.
+Troupe runs as a background daemon managed by your operating system's service manager. The daemon serves Studio at `http://localhost:9393`, handles scheduled flows, channel integrations, and persistent sessions. It starts automatically on boot and restarts on failure.
 
 ## Installation
 
-The `daemon install` command registers Astonish with the appropriate service manager for your OS:
+The `daemon install` command registers Troupe with the appropriate service manager for your OS:
 
 ```bash
-astonish daemon install
+troupe daemon install
 ```
 
 This creates:
 - **macOS**: A launchd plist at `~/Library/LaunchAgents/dev.troupe.daemon.plist`
-- **Linux**: A systemd user unit at `~/.config/systemd/user/astonish.service`
+- **Linux**: A systemd user unit at `~/.config/systemd/user/troupe.service`
 
 ### Options
 
@@ -23,23 +23,23 @@ This creates:
 Example with custom port:
 
 ```bash
-astonish daemon install --port 8080
+troupe daemon install --port 8080
 ```
 
 ## Starting and Stopping
 
 ```bash
 # Start the daemon
-astonish daemon start
+troupe daemon start
 
 # Stop the daemon
-astonish daemon stop
+troupe daemon stop
 
 # Restart the daemon
-astonish daemon restart
+troupe daemon restart
 
 # Check status
-astonish daemon status
+troupe daemon status
 ```
 
 ## Running in Foreground
@@ -47,13 +47,13 @@ astonish daemon status
 For debugging, run the daemon in the foreground instead of as a background service:
 
 ```bash
-astonish daemon run
+troupe daemon run
 ```
 
-This starts the server in the current terminal session. Local/default daemon mode writes application logs to the daemon log file so `astonish daemon logs` behaves the same as an installed service. To force logs to the terminal, set `TROUPE_LOG_DEST=stdout`:
+This starts the server in the current terminal session. Local/default daemon mode writes application logs to the daemon log file so `troupe daemon logs` behaves the same as an installed service. To force logs to the terminal, set `TROUPE_LOG_DEST=stdout`:
 
 ```bash
-TROUPE_LOG_DEST=stdout astonish daemon run
+TROUPE_LOG_DEST=stdout troupe daemon run
 ```
 
 Container roles (`TROUPE_MODE=api` or `TROUPE_MODE=worker`) use stdout by default for Kubernetes and other orchestrators. Press `Ctrl+C` to stop a foreground run.
@@ -84,23 +84,23 @@ The unit is enabled via `systemctl --user`. To manually control:
 
 ```bash
 # Disable auto-start
-systemctl --user disable astonish
+systemctl --user disable troupe
 
 # Re-enable
-systemctl --user enable astonish
+systemctl --user enable troupe
 ```
 
 ## Viewing Logs
 
 ```bash
 # Show recent logs (default: last 50 lines)
-astonish daemon logs
+troupe daemon logs
 
 # Follow live logs
-astonish daemon logs -f
+troupe daemon logs -f
 
 # Show last 100 lines
-astonish daemon logs -n 100
+troupe daemon logs -n 100
 ```
 
 ### OS-level log access
@@ -110,17 +110,17 @@ astonish daemon logs -n 100
 log show --predicate 'subsystem == "dev.troupe.daemon"' --last 1h
 
 # Linux: view via journalctl
-journalctl --user -u astonish -f
+journalctl --user -u troupe -f
 ```
 
-Log files are also written to `~/.local/share/astonish/logs/`.
+Log files are also written to `~/.local/share/troupe/logs/`.
 
 ## Uninstalling
 
 Remove the daemon registration:
 
 ```bash
-astonish daemon uninstall
+troupe daemon uninstall
 ```
 
 This stops the service and removes the plist or systemd unit file.

@@ -1,6 +1,6 @@
 # Three-Tier Memory
 
-Astonish memory operates across three tiers — personal, team, and org — searched in parallel and merged with weighted Reciprocal Rank Fusion (RRF). This gives agents access to the full depth of organizational knowledge while prioritizing context that is most relevant to the user.
+Troupe memory operates across three tiers — personal, team, and org — searched in parallel and merged with weighted Reciprocal Rank Fusion (RRF). This gives agents access to the full depth of organizational knowledge while prioritizing context that is most relevant to the user.
 
 ## Tiers and Weights
 

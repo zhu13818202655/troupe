@@ -198,7 +198,7 @@ func TestStartRecording_SandboxPathViaHook(t *testing.T) {
 	if gotDisplay != ":0" || gotW != 1728 || gotH != 996 {
 		t.Fatalf("start args display=%q size=%dx%d", gotDisplay, gotW, gotH)
 	}
-	if gotPath != "/tmp/astonish-recordings/demo.mp4" {
+	if gotPath != "/tmp/troupe-recordings/demo.mp4" {
 		t.Fatalf("path = %q", gotPath)
 	}
 

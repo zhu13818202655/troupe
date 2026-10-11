@@ -2,7 +2,7 @@
 
 ## Overview
 
-Drill is Astonish's AI-composed, mechanically-replayed test engine. The agent creates test suites by analyzing an application, then the suites are executed deterministically with shell commands, browser interactions, and assertions -- without LLM involvement during execution. This separates the creative work (writing tests) from the mechanical work (running tests), ensuring reproducible results.
+Drill is Troupe's AI-composed, mechanically-replayed test engine. The agent creates test suites by analyzing an application, then the suites are executed deterministically with shell commands, browser interactions, and assertions -- without LLM involvement during execution. This separates the creative work (writing tests) from the mechanical work (running tests), ensuring reproducible results.
 
 Drill suites are stored as YAML flow definitions (type: `drill_suite` and `drill`) and executed by a specialized runner that handles multi-service orchestration, readiness checks, assertion evaluation, visual regression, and failure triage.
 
@@ -19,14 +19,14 @@ The only exception is `semantic` assertions and `triage` mode, which use targete
 
 ### Why drills are the preferred live verify for running surfaces
 
-Astonish Code finds files quickly (codegraph). That is not proof a session container exists, an overlay is mounted, or the in-container browser works. `go test ./pkg/sandbox/...` of library code is the wrong harness for those outcomes.
+Troupe Code finds files quickly (codegraph). That is not proof a session container exists, an overlay is mounted, or the in-container browser works. `go test ./pkg/sandbox/...` of library code is the wrong harness for those outcomes.
 
 When a plan phase's `verify_kind` is `behavior` and the surface is sandbox, daemon, browser, CLI, or Studio UI, prefer a **drill** (compose with the LLM, replay mechanically via `run_drill`) over package tests:
 
 1. Overlay mounted at `/sandbox/rootfs`
 2. Product binary present (CloakBrowser at `/home/browser/.cloakbrowser/*/chrome`, not `which chromium`)
 3. `browser_navigate` to a public URL succeeds
-4. Session container named `astonish-session-*` (Docker) or the pod is Running (Kubernetes)
+4. Session container named `troupe-session-*` (Docker) or the pod is Running (Kubernetes)
 
 Builtin skill `verify-live-with-drill` is the agent protocol. Builtin skill `inspect-live-surface` is the diagnostic protocol when the user reports a live miss. Do not install Debian `chromium` to satisfy a PATH probe.
 
@@ -161,13 +161,13 @@ Example:
 
 ```yaml
 type: drill
-suite: astonish-product
+suite: troupe-product
 drill_config:
   mode: tutorial
   tags: [tutorial]
 nodes:
   - name: open_studio
-    narration: "Open Astonish Studio from the home screen."
+    narration: "Open Troupe Studio from the home screen."
     hold_ms: 4000
     record: segment
     type: tool

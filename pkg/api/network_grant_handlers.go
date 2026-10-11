@@ -148,7 +148,7 @@ func NetworkGrantApproveBroaderHandler(w http.ResponseWriter, r *http.Request) {
 	ops := []openshell.PolicyMergeOp{
 		{
 			Type:     openshell.PolicyMergeAddEndpoint,
-			RuleName: "astonish-egress",
+			RuleName: "troupe-egress",
 			Endpoint: &openshell.EndpointSpec{Host: req.Host, Port: port},
 		},
 	}

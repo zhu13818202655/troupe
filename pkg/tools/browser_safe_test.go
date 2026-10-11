@@ -26,32 +26,34 @@ type toolContextStub struct {
 
 // --- ReadonlyContext methods ---
 
-func (s *toolContextStub) UserContent() *genai.Content                    { return nil }
-func (s *toolContextStub) InvocationID() string                           { return "" }
-func (s *toolContextStub) AgentName() string                              { return "" }
-func (s *toolContextStub) ReadonlyState() session.ReadonlyState           { return stubReadonlyState{} }
-func (s *toolContextStub) UserID() string                                 { return "" }
-func (s *toolContextStub) AppName() string                                { return "" }
-func (s *toolContextStub) SessionID() string                              { return s.sessionID }
-func (s *toolContextStub) Branch() string                                 { return "" }
+func (s *toolContextStub) UserContent() *genai.Content          { return nil }
+func (s *toolContextStub) InvocationID() string                 { return "" }
+func (s *toolContextStub) AgentName() string                    { return "" }
+func (s *toolContextStub) ReadonlyState() session.ReadonlyState { return stubReadonlyState{} }
+func (s *toolContextStub) UserID() string                       { return "" }
+func (s *toolContextStub) AppName() string                      { return "" }
+func (s *toolContextStub) SessionID() string                    { return s.sessionID }
+func (s *toolContextStub) Branch() string                       { return "" }
 
 // --- CallbackContext methods ---
 
-func (s *toolContextStub) Artifacts() agent.Artifacts  { return nil }
-func (s *toolContextStub) State() session.State        { return stubState{} }
+func (s *toolContextStub) Artifacts() agent.Artifacts { return nil }
+func (s *toolContextStub) State() session.State       { return stubState{} }
 
 // --- ToolContext methods ---
 
-func (s *toolContextStub) FunctionCallID() string                                                  { return "" }
-func (s *toolContextStub) Actions() *session.EventActions                                          { return nil }
-func (s *toolContextStub) SearchMemory(_ context.Context, _ string) (*memory.SearchResponse, error) { return nil, nil }
-func (s *toolContextStub) ToolConfirmation() *toolconfirmation.ToolConfirmation                    { return nil }
-func (s *toolContextStub) RequestConfirmation(_ string, _ any) error                               { return nil }
+func (s *toolContextStub) FunctionCallID() string         { return "" }
+func (s *toolContextStub) Actions() *session.EventActions { return nil }
+func (s *toolContextStub) SearchMemory(_ context.Context, _ string) (*memory.SearchResponse, error) {
+	return nil, nil
+}
+func (s *toolContextStub) ToolConfirmation() *toolconfirmation.ToolConfirmation { return nil }
+func (s *toolContextStub) RequestConfirmation(_ string, _ any) error            { return nil }
 
 // stubReadonlyState satisfies session.ReadonlyState.
 type stubReadonlyState struct{}
 
-func (stubReadonlyState) Get(string) (any, error)    { return nil, nil }
+func (stubReadonlyState) Get(string) (any, error)     { return nil, nil }
 func (stubReadonlyState) All() iter.Seq2[string, any] { return func(yield func(string, any) bool) {} }
 
 // stubState satisfies session.State.

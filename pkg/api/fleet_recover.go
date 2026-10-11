@@ -193,7 +193,7 @@ func RecoverFleetSession(ctx context.Context, cfg fleet.RecoverFleetConfig, sess
 	}
 
 	// Load project context (AGENTS.md) from the base workspace.
-	// The base (~/astonish_projects/<repo-name>/) is where the wizard generated
+	// The base (~/troupe_projects/<repo-name>/) is where the wizard generated
 	// AGENTS.md; it persists across sessions and daemon restarts.
 	baseDir := plan.ResolveWorkspaceDir()
 	if baseDir != "" && fleetCfg.ProjectContext != nil {

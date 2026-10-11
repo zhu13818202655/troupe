@@ -7,7 +7,7 @@ import (
 	"github.com/zhu13818202655/troupe/pkg/client"
 )
 
-// addRemoteAuthHeaders adds Authorization and X-Astonish-Team headers to a
+// addRemoteAuthHeaders adds Authorization and X-Troupe-Team headers to a
 // request when in remote mode. Called by getDaemonBaseURL's callers after
 // creating their http.Request. For local mode this is a no-op.
 func addRemoteAuthHeaders(req *http.Request) {
@@ -27,7 +27,7 @@ func addRemoteAuthHeaders(req *http.Request) {
 
 	cfg, err := client.LoadRemoteConfig()
 	if err == nil && cfg != nil && cfg.Team != "" {
-		req.Header.Set("X-Astonish-Team", cfg.Team)
+		req.Header.Set("X-Troupe-Team", cfg.Team)
 	}
 }
 

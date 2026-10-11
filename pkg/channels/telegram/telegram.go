@@ -1,4 +1,4 @@
-// Package telegram implements the Telegram channel adapter for Astonish.
+// Package telegram implements the Telegram channel adapter for Troupe.
 // It connects to the Telegram Bot API via long polling, normalizes inbound
 // messages, and delivers outbound responses with HTML formatting and chunking.
 package telegram
@@ -544,7 +544,7 @@ func (t *TelegramChannel) sendWelcome(msg *tgbotapi.Message) {
 		name = "there"
 	}
 
-	text := fmt.Sprintf("Hey %s! I'm Astonish, your AI assistant. Send me a message and I'll help you out.", name)
+	text := fmt.Sprintf("Hey %s! I'm Troupe, your AI assistant. Send me a message and I'll help you out.", name)
 	reply := tgbotapi.NewMessage(msg.Chat.ID, text)
 	if _, err := bot.Send(reply); err != nil {
 		t.logger.Printf("[telegram] Failed to send welcome message: %v", err)
@@ -597,7 +597,7 @@ func (t *TelegramChannel) RefreshCommands(commands *channels.CommandRegistry) {
 // all commands from the given registry plus /start.
 func (t *TelegramChannel) registerBotCommandsFromRegistry(bot *tgbotapi.BotAPI, commands *channels.CommandRegistry) {
 	cmds := []tgbotapi.BotCommand{
-		{Command: "start", Description: "Start a conversation with Astonish"},
+		{Command: "start", Description: "Start a conversation with Troupe"},
 	}
 
 	if commands != nil {
@@ -848,4 +848,3 @@ func (t *TelegramChannel) handleLinkCommand(ctx context.Context, msg *tgbotapi.M
 	reply.ParseMode = ""
 	_, _ = bot.Send(reply)
 }
-

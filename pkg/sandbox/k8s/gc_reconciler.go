@@ -97,7 +97,7 @@ type gcDirInfo struct {
 }
 
 // advisoryLockID is a stable hash for the reconciler's PG advisory lock.
-// hashtext('astonish-sandbox-gc') evaluated once = 1267985313
+// hashtext('troupe-sandbox-gc') evaluated once = 1267985313
 const advisoryLockID int64 = 1267985313
 
 // RunGCReconciler starts the deferred GC reconciler loop. It blocks until
@@ -113,10 +113,10 @@ func RunGCReconciler(ctx context.Context, cfg GCReconcilerConfig) {
 		cfg.UpperGracePeriod = time.Hour
 	}
 	if cfg.LayersPVCName == "" {
-		cfg.LayersPVCName = "astonish-layers"
+		cfg.LayersPVCName = "troupe-layers"
 	}
 	if cfg.UppersPVCName == "" {
-		cfg.UppersPVCName = "astonish-uppers"
+		cfg.UppersPVCName = "troupe-uppers"
 	}
 	if cfg.MaxUpperReclaimsPerCycle <= 0 {
 		cfg.MaxUpperReclaimsPerCycle = 500

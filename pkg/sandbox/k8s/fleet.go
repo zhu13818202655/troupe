@@ -3,7 +3,7 @@
 // Fleet containers are long-running worker pods provisioned from a
 // team-scoped fleet template. They share the session pod shape (same
 // image, same volumes, same RuntimeClass) but carry the label
-// astonish.io/type=fleet so operators and NetworkPolicies can
+// troupe.io/type=fleet so operators and NetworkPolicies can
 // distinguish them, and they use a dedicated `astn-fleet-` name prefix.
 //
 // EnsureFleetContainer is the sole entry point and is **idempotent by
@@ -37,12 +37,12 @@ import (
 // labelFleetKey records the caller-supplied FleetKey on the pod so
 // operators can reverse-lookup without consulting the registry:
 //
-//     kubectl -n troupe-sandboxes get pods \
-//       -l astonish.io/type=fleet,astonish.io/fleet-key=<key>
+//	kubectl -n troupe-sandboxes get pods \
+//	  -l troupe.io/type=fleet,troupe.io/fleet-key=<key>
 //
 // Distinct from labelSessionID so ListSessions selectors remain
 // unambiguous across session / fleet pods.
-const labelFleetKey = "astonish.io/fleet-key"
+const labelFleetKey = "troupe.io/fleet-key"
 
 // fleetPodNamePrefix is the stable prefix for fleet pods. Matches the
 // spec's "astn-fleet-<plan>-<instance>" naming (§5.8), with FleetKey
@@ -107,7 +107,7 @@ func (b *K8sBackend) EnsureFleetContainer(ctx context.Context, spec sandbox.Flee
 	}
 	// On AlreadyExists, fetch the incumbent pod so NodeName/UID reflect
 	// the actual cluster state. This also catches the race where the
-	// pod was created out-of-band (another Astonish pod in a multi-
+	// pod was created out-of-band (another Troupe pod in a multi-
 	// replica deployment beating us to the create).
 	if apierrors.IsAlreadyExists(err) {
 		created, err = b.client.CoreV1().Pods(b.cfg.Namespace).Get(ctx, pod.Name, metav1.GetOptions{})
@@ -153,10 +153,10 @@ func (b *K8sBackend) EnsureFleetContainer(ctx context.Context, spec sandbox.Flee
 // Differences are limited to:
 //
 //   - Pod name prefix: `astn-fleet-` vs `astn-sess-`.
-//   - Type label: `astonish.io/type=fleet` vs `=session`.
-//   - Extra discriminator label: `astonish.io/fleet-key`.
+//   - Type label: `troupe.io/type=fleet` vs `=session`.
+//   - Extra discriminator label: `troupe.io/fleet-key`.
 //   - Session-ID label still present (using FleetKey) so selectors that
-//     enumerate every astonish pod by session-id still resolve fleet
+//     enumerate every troupe pod by session-id still resolve fleet
 //     pods.
 func (b *K8sBackend) buildFleetPodManifest(spec sandbox.FleetSpec) (*corev1.Pod, error) {
 	if spec.FleetKey == "" {
@@ -205,29 +205,29 @@ func (b *K8sBackend) buildFleetPodManifest(spec sandbox.FleetSpec) (*corev1.Pod,
 		Spec: corev1.PodSpec{
 			RestartPolicy: corev1.RestartPolicyNever,
 			Containers: []corev1.Container{
-			{
-				Name:            containerName,
-				Image:           b.cfg.SandboxImage,
-				ImagePullPolicy: imagePullPolicy(b.cfg.SandboxImage),
-				Env: []corev1.EnvVar{
-					{Name: "TROUPE_FLEET_KEY", Value: spec.FleetKey},
-					{Name: "TROUPE_TEMPLATE_ID", Value: spec.TemplateID},
-					{Name: "TROUPE_UPPER_DIR", Value: mountUpper},
-					{Name: "TROUPE_WORK_DIR", Value: mountWork},
-					{Name: "TROUPE_LAYERS_DIR", Value: mountLayers},
-					{Name: "TROUPE_UPPERS_DIR", Value: mountUppers},
-					// PID 1 sleeps after overlay composition; tool calls
-					// arrive via Backend.Exec with attached stdio.
-					{Name: "TROUPE_HANDOFF", Value: "/bin/sleep"},
-					{Name: "TROUPE_HANDOFF_ARGS", Value: "infinity"},
+				{
+					Name:            containerName,
+					Image:           b.cfg.SandboxImage,
+					ImagePullPolicy: imagePullPolicy(b.cfg.SandboxImage),
+					Env: []corev1.EnvVar{
+						{Name: "TROUPE_FLEET_KEY", Value: spec.FleetKey},
+						{Name: "TROUPE_TEMPLATE_ID", Value: spec.TemplateID},
+						{Name: "TROUPE_UPPER_DIR", Value: mountUpper},
+						{Name: "TROUPE_WORK_DIR", Value: mountWork},
+						{Name: "TROUPE_LAYERS_DIR", Value: mountLayers},
+						{Name: "TROUPE_UPPERS_DIR", Value: mountUppers},
+						// PID 1 sleeps after overlay composition; tool calls
+						// arrive via Backend.Exec with attached stdio.
+						{Name: "TROUPE_HANDOFF", Value: "/bin/sleep"},
+						{Name: "TROUPE_HANDOFF_ARGS", Value: "infinity"},
+					},
+					VolumeMounts: []corev1.VolumeMount{
+						{Name: volumeLayers, MountPath: mountLayers, ReadOnly: true},
+						{Name: volumeUppers, MountPath: mountUppers},
+						{Name: volumeOverlay, MountPath: mountOverlay},
+					},
+					Resources: buildResourceRequirements(spec.Limits),
 				},
-				VolumeMounts: []corev1.VolumeMount{
-					{Name: volumeLayers, MountPath: mountLayers, ReadOnly: true},
-					{Name: volumeUppers, MountPath: mountUppers},
-					{Name: volumeOverlay, MountPath: mountOverlay},
-				},
-				Resources: buildResourceRequirements(spec.Limits),
-			},
 			},
 			Volumes: []corev1.Volume{
 				{
@@ -247,7 +247,7 @@ func (b *K8sBackend) buildFleetPodManifest(spec sandbox.FleetSpec) (*corev1.Pod,
 						},
 					},
 				},
-			{Name: volumeOverlay, VolumeSource: corev1.VolumeSource{EmptyDir: &corev1.EmptyDirVolumeSource{}}},
+				{Name: volumeOverlay, VolumeSource: corev1.VolumeSource{EmptyDir: &corev1.EmptyDirVolumeSource{}}},
 			},
 		},
 	}

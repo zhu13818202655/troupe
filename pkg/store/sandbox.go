@@ -216,7 +216,7 @@ type BaseConfigInfo struct {
 //
 // Layers are tar+zstd streams of a filesystem delta, identified by the SHA-256
 // of their canonical uncompressed tar. Each layer is stored once on CephFS at
-// /mnt/astonish-layers/<sha256>/rootfs/ and referenced by any number of
+// /mnt/troupe-layers/<sha256>/rootfs/ and referenced by any number of
 // templates and evicted session uppers.
 //
 // RefCount discipline:
@@ -234,7 +234,7 @@ type BaseConfigInfo struct {
 type SandboxLayer struct {
 	LayerID        string    `json:"layer_id"` // sha256 hex of canonical tar
 	ParentLayer    *string   `json:"parent_layer,omitempty"`
-	CephFSPath     string    `json:"cephfs_path"` // mount path on the RWX PVC (e.g. /mnt/astonish-layers/<layer_id>); field name is historical — filesystem-agnostic
+	CephFSPath     string    `json:"cephfs_path"` // mount path on the RWX PVC (e.g. /mnt/troupe-layers/<layer_id>); field name is historical — filesystem-agnostic
 	SizeBytes      int64     `json:"size_bytes"`
 	RefCount       int       `json:"ref_count"`
 	CreatedBy      string    `json:"created_by,omitempty"`
@@ -417,7 +417,7 @@ type SandboxSessionFilter struct {
 
 // SandboxSessionStore manages team-scoped sandbox runtime metadata. In
 // platform mode it backs {team_schema}.sandbox_sessions; in personal mode
-// it backs ~/.local/share/astonish/sandbox/sandbox_sessions.json.
+// it backs ~/.local/share/troupe/sandbox/sandbox_sessions.json.
 //
 // Implementations MUST be safe for concurrent use.
 type SandboxSessionStore interface {

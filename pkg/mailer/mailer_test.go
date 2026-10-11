@@ -19,10 +19,10 @@ type mockEmailClient struct {
 	mu        sync.Mutex
 }
 
-func (m *mockEmailClient) Connect(_ context.Context) error                   { return nil }
-func (m *mockEmailClient) Close() error                                      { return nil }
-func (m *mockEmailClient) IsConnected() bool                                 { return true }
-func (m *mockEmailClient) Address() string                                   { return m.address }
+func (m *mockEmailClient) Connect(_ context.Context) error { return nil }
+func (m *mockEmailClient) Close() error                    { return nil }
+func (m *mockEmailClient) IsConnected() bool               { return true }
+func (m *mockEmailClient) Address() string                 { return m.address }
 func (m *mockEmailClient) ListMessages(_ context.Context, _ email.ListOpts) ([]email.MessageSummary, error) {
 	return nil, nil
 }
@@ -67,8 +67,8 @@ type testMessage struct {
 	htmlBody string
 }
 
-func (m *testMessage) To() []string   { return m.to }
-func (m *testMessage) Subject() string { return m.subject }
+func (m *testMessage) To() []string     { return m.to }
+func (m *testMessage) Subject() string  { return m.subject }
 func (m *testMessage) TextBody() string { return m.textBody }
 func (m *testMessage) HTMLBody() string { return m.htmlBody }
 

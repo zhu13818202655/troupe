@@ -1,0 +1,184 @@
+name: troupe-local
+
+# Local single-node deployment for macOS (Apple Silicon) via Docker Compose.
+# Backend: PostgreSQL (pgvector). Reverse proxy: Nginx. Sandbox: Docker (DooD).
+#
+# Quickstart:
+#   cd deploy
+#   cp env.example .env          # then fill the two secrets
+#   cp config.example.yaml state/config/config.yaml   # then EDIT model settings
+#   mkdir -p state/config state/data
+#   docker compose up -d --build
+#   open http://localhost:8080
+#
+# Build context is the repo root (..), so this file must stay inside deploy/.
+#
+# ---------------------------------------------------------------------------
+# WHY THESE SPECIFIC CHOICES (each one is load-bearing — read before editing)
+# ---------------------------------------------------------------------------
+# 1. postgres image MUST be pgvector/pgvector, not postgres:*-alpine.
+#    BootstrapPlatform runs `CREATE EXTENSION IF NOT EXISTS vector` and returns
+#    the error immediately (entstore/bootstrap.go:127-129). Plain PostgreSQL has
+#    no pgvector -> hard startup failure.
+#
+# 2. POSTGRES_DB must NOT be the platform database name.
+#    Schema creation is only complete when the platform DB does *not* exist:
+#    NewPlatformServices then fails, the daemon calls BootstrapPlatform and
+#    runs a full ent Schema.Create (24 tables). If the DB already exists, the
+#    store opens fine and only the 10-table whitelist is created
+#    (platform_extras.go:78-94 + :114-131) — leaving `users`, `organizations`,
+#    `platform_settings` and `platform_secrets` missing, silently.
+#    Hence POSTGRES_DB=postgres (the image's maintenance DB).
+#
+# 3. /var/run/docker.sock is mounted because sandbox is enabled. The Docker
+#    sandbox backend creates session containers through the Docker API. It runs
+#    unprivileged by default (pkg/sandbox/config.go:113-115).
+#
+# 4. Config mount path is /root/.config/troupe (not .../astonish). GetConfigDir
+#    renamed the directory to "troupe" with a fallback to the legacy one when
+#    only that exists (pkg/config/app_config.go GetConfigDir).
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL + pgvector (platform + per-org databases)
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: ${POSTGRES_IMAGE:-pgvector/pgvector:pg17}
+    container_name: troupe-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-troupe}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-troupe}
+      # Intentionally NOT the platform database — see note 2 above.
+      POSTGRES_DB: ${POSTGRES_MAINTENANCE_DB:-postgres}
+      # Bootstrap creates custom roles and databases and must install the
+      # vector extension, so this account needs CREATEDB + CREATEROLE.
+      # The official image grants SUPERUSER to POSTGRES_USER, which covers both.
+
+    volumes:
+      - ./state/postgres:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-troupe} -d ${POSTGRES_MAINTENANCE_DB:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+
+    networks:
+      - troupe-net
+
+    labels:
+      com.troupe.role: database
+
+  # ---------------------------------------------------------------------------
+  # Application (Studio UI + REST/SSE API, single binary)
+  # ---------------------------------------------------------------------------
+  troupe:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      args:
+        VERSION: ${IMAGE_VERSION:-dev}
+        GO_IMAGE: ${GO_IMAGE:-golang:1.27-bookworm}
+        NODE_IMAGE: ${NODE_IMAGE:-node:22-bookworm-slim}
+        DEBIAN_BASE: ${DEBIAN_BASE:-debian:bookworm-slim}
+        UV_VERSION: ${UV_VERSION:-0.12.1}
+        # Debian apt mirror for the runtime stage; empty = official source.
+        APT_MIRROR: ${APT_MIRROR:-}
+        # npm registry; empty = official registry.npmjs.org.
+        NPM_REGISTRY: ${NPM_REGISTRY:-}
+    image: ${IMAGE_NAME:-troupe-local}:${IMAGE_VERSION:-latest}
+    container_name: troupe
+
+    # `daemon run` is the only command that serves Studio (cmd/troupe/root.go:87).
+    # Note: there is no `studio` subcommand — the legacy root docker-compose.yml
+    # was broken in exactly that way.
+    command: ["daemon", "run"]
+
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    environment:
+      TROUPE_LOG_DEST: ${TROUPE_LOG_DEST:-stdout}
+      TROUPE_MASTER_KEY: ${TROUPE_MASTER_KEY:-}
+      TROUPE_JWT_SECRET: ${TROUPE_JWT_SECRET:-}
+      # default = HTTP + scheduler + channels + fleet monitors (recommended).
+      TROUPE_MODE: ${TROUPE_MODE:-default}
+      # Storage backend DSN. config.yaml's storage.postgres.platform_dsn takes
+      # precedence if set (app_config.go:698-707); env is the fallback.
+      TROUPE_PLATFORM_DSN: ${TROUPE_PLATFORM_DSN:?set TROUPE_PLATFORM_DSN in deploy/.env}
+      # Sandbox image for Docker-backed sessions. The runtime default is
+      # ghcr.io/sap/troupe-sandbox-base:latest, which you almost certainly
+      # cannot pull; build it locally and point here:
+      #   make sandbox-entrypoint build-linux-arm64 docker-sandbox-base
+      TROUPE_SANDBOX_IMAGE: ${TROUPE_SANDBOX_IMAGE:-ghcr.io/sap/troupe-sandbox-base:dev}
+      # Model download endpoint for the built-in local embedder (all-MiniLM-L6-v2,
+      # ~23 MB, fetched on first boot). Empty = upstream huggingface.co. Read
+      # directly by gomlx/go-huggingface (hub/repo.go): HF_ENDPOINT.
+      # Set to https://hf-mirror.com when huggingface.co is unreachable — without
+      # it the daemon aborts at "pre-warm Studio chat agent" because building the
+      # semantic tool index needs a working embedder.
+      HF_ENDPOINT: ${HF_ENDPOINT:-}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    volumes:
+      # Config dir: config.yaml, .store_key, credentials.enc, models/, logs/
+      - ./state/config:/root/.config/troupe
+      # Sandbox session containers (Docker-out-of-Docker). See note 3.
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    # Published only on loopback; Nginx is the intended entrypoint.
+    # Map "9393:9393" here if you want to bypass Nginx.
+    expose:
+      - "9393"
+
+    networks:
+      - troupe-net
+
+    labels:
+      com.troupe.role: app
+
+  # ---------------------------------------------------------------------------
+  # Reverse proxy (Nginx)
+  #
+  # Required for SSE correctness and as the future TLS terminator. The app
+  # already sets `X-Accel-Buffering: no`, but Nginx still needs buffering and
+  # read-timeout tuning so chat streams are not chunked or cut off.
+  # ---------------------------------------------------------------------------
+  nginx:
+    image: ${NGINX_IMAGE:-nginx:1.27-alpine}
+    container_name: troupe-nginx
+    restart: unless-stopped
+
+    depends_on:
+      troupe:
+        condition: service_healthy
+
+    ports:
+      # host:container — 8080 avoids clashing with local dev servers.
+      - "${NGINX_HTTP_PORT:-8080}:80"
+
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # Optional self-signed cert for HTTPS. Generate with:
+      #   openssl req -x509 -newkey rsa:2048 -nodes -days 365 \
+      #     -keyout deploy/nginx/certs/tls.key -out deploy/nginx/certs/tls.crt \
+      #     -subj "/CN=troupe.local"
+      - ./nginx/certs:/etc/nginx/certs:ro
+
+    networks:
+      - troupe-net
+
+    labels:
+      com.troupe.role: proxy
+
+networks:
+  troupe-net:
+    driver: bridge

@@ -144,9 +144,9 @@ func (b *K8sBackend) BuildTemplate(ctx context.Context, spec sandbox.TemplateBui
 	}
 
 	// Run build steps sequentially. Each step is a single /bin/sh -c
-	// invocation wrapped through the astonish-shell chroot wrapper so
+	// invocation wrapped through the troupe-shell chroot wrapper so
 	// writes land in /sandbox/rootfs (which is backed by the overlay
-	// upper at /var/astonish/overlay/upper). Non-zero exits abort the
+	// upper at /var/troupe/overlay/upper). Non-zero exits abort the
 	// build; stderr is surfaced in the returned error for diagnostics.
 	for i, step := range spec.Steps {
 		if err := ctx.Err(); err != nil {
@@ -160,7 +160,7 @@ func (b *K8sBackend) BuildTemplate(ctx context.Context, spec sandbox.TemplateBui
 			spec.Progress(fmt.Sprintf("Running step %d/%d: %s", i+1, len(spec.Steps), display))
 		}
 		res, err := b.execInPod(ctx, podName, sandbox.ExecSpec{
-			Command: []string{"/usr/local/bin/astonish-shell", "/bin/sh", "-c", step},
+			Command: []string{"/usr/local/bin/troupe-shell", "/bin/sh", "-c", step},
 		})
 		if err != nil {
 			return nil, fmt.Errorf("sandbox/k8s: BuildTemplate: step %d (%q): %w", i, truncate(step, 120), err)
@@ -265,7 +265,7 @@ func (b *K8sBackend) RefreshTemplate(ctx context.Context, templateID string) (*s
 
 // DeleteTemplate removes a content-addressed layer's bytes from the
 // layers PVC. On K8s this spawns a short-lived pod that mounts the PVC
-// and runs `rm -rf /mnt/astonish-layers/<templateID>`. The pod is
+// and runs `rm -rf /mnt/troupe-layers/<templateID>`. The pod is
 // always cleaned up (defer-delete) regardless of success or failure.
 //
 // Callers MUST have already decremented/verified ref_count==0 before
@@ -362,7 +362,7 @@ func (b *K8sBackend) DeleteTemplate(ctx context.Context, templateID string, forc
 //
 //   - The layers PVC is mounted READ-WRITE so the in-pod tar pipeline
 //     can atomic-rename the staging directory into place.
-//   - Labels advertise astonish.io/type=template-builder so NetworkPolicy
+//   - Labels advertise troupe.io/type=template-builder so NetworkPolicy
 //     selectors and operator queries can distinguish builders from
 //     sessions.
 //
@@ -411,11 +411,11 @@ func (b *K8sBackend) buildTemplateBuilderPodManifest(spec sandbox.TemplateBuildS
 	// rules stay aligned across session / fleet / template pods.
 	//
 	// The builder pod mirrors a session pod's overlay composition: the
-	// image's ENTRYPOINT (astonish-sandbox-entrypoint) runs, composes
+	// image's ENTRYPOINT (troupe-sandbox-entrypoint) runs, composes
 	// the overlay with ParentLayers as lowerdirs, then hands off to
 	// /bin/sleep infinity. Build steps are exec'd through the
-	// astonish-shell wrapper which chroots into the composed overlay,
-	// so writes land in /var/astonish/overlay/upper — exactly as they
+	// troupe-shell wrapper which chroots into the composed overlay,
+	// so writes land in /var/troupe/overlay/upper — exactly as they
 	// do in interactive team-template-editor sessions.
 	pod := &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
@@ -444,7 +444,7 @@ func (b *K8sBackend) buildTemplateBuilderPodManifest(spec sandbox.TemplateBuildS
 						{Name: "TROUPE_LAYERS_DIR", Value: mountLayers},
 						{Name: "TROUPE_UPPERS_DIR", Value: mountUppers},
 						// PID 1 sleeps after overlay composition; build steps
-						// arrive via execInPod through the astonish-shell wrapper.
+						// arrive via execInPod through the troupe-shell wrapper.
 						{Name: "TROUPE_HANDOFF", Value: "/bin/sleep"},
 						{Name: "TROUPE_HANDOFF_ARGS", Value: "infinity"},
 					},
@@ -491,8 +491,8 @@ func (b *K8sBackend) buildTemplateBuilderPodManifest(spec sandbox.TemplateBuildS
 // The pipeline:
 //  1. tar's the overlay upper dir with fixed canonical options (see §5.11).
 //  2. Tees the stream through sha256sum into a staging directory on
-//     /mnt/astonish-layers.
-//  3. Atomic-renames staging → /mnt/astonish-layers/<sha>/. If a
+//     /mnt/troupe-layers.
+//  3. Atomic-renames staging → /mnt/troupe-layers/<sha>/. If a
 //     directory with that sha already exists (content dedup via
 //     idempotent sha256), the staging copy is removed.
 //  4. Computes the on-disk size of the final rootfs directory.
@@ -533,7 +533,7 @@ func (b *K8sBackend) captureUpperAsLayer(ctx context.Context, podName, parentLay
 
 // buildCaptureScript emits the shell pipeline (see captureUpperAsLayer
 // for the sequencing). layersPath is the in-pod mount point for the
-// RW layer store (typically /mnt/astonish-layers). builderID is a
+// RW layer store (typically /mnt/troupe-layers). builderID is a
 // short unique token embedded in the staging path to avoid collisions
 // between concurrent captures on the same CephFS directory.
 //

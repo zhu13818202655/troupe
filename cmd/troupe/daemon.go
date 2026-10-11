@@ -339,7 +339,7 @@ func requireSystemPrivileges(action string) error {
 func printDaemonUsage() {
 	fmt.Println("usage: troupe daemon <command> [options]")
 	fmt.Println("")
-	fmt.Println("Manage the Astonish background daemon service.")
+	fmt.Println("Manage the Troupe background daemon service.")
 	fmt.Println("")
 	fmt.Println("commands:")
 	fmt.Println("  install     Install as a system service (launchd on macOS, systemd on Linux)")

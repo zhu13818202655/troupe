@@ -377,4 +377,3 @@ func TestProse_HeadingBarOffLeavesHeadingsAsWords(t *testing.T) {
 		t.Fatalf("expected heading glued to the next paragraph without a bar:\n%q", plain)
 	}
 }
-

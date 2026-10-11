@@ -23,7 +23,7 @@ type FleetConfig struct {
 	Agents           map[string]FleetAgentConfig `yaml:"agents" json:"agents"`
 	Settings         FleetSettings               `yaml:"settings,omitempty" json:"settings,omitempty"`
 	ProjectContext   *ProjectContextConfig       `yaml:"project_context,omitempty" json:"project_context,omitempty"`
-	WorkspaceBaseDir string                      `yaml:"workspace_base_dir,omitempty" json:"workspace_base_dir,omitempty"` // Default base directory for project workspaces (e.g., "~/astonish_projects")
+	WorkspaceBaseDir string                      `yaml:"workspace_base_dir,omitempty" json:"workspace_base_dir,omitempty"` // Default base directory for project workspaces (e.g., "~/troupe_projects")
 }
 
 // PlanWizardConfig defines how an AI-guided plan creation session should behave

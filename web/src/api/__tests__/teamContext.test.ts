@@ -156,8 +156,22 @@ describe('teamFetch auth refresh', () => {
 
     await teamFetch('/api/memories/team')
     const firstHeaders = fetchMock.mock.calls[0][1].headers as Headers
-    expect(firstHeaders.get('X-Astonish-Team')).toBe('cronus')
+    expect(firstHeaders.get('X-Troupe-Team')).toBe('cronus')
     const retryHeaders = fetchMock.mock.calls[1][1].headers as Headers
-    expect(retryHeaders.get('X-Astonish-Team')).toBe('cronus')
+    expect(retryHeaders.get('X-Troupe-Team')).toBe('cronus')
+  })
+})
+
+describe('legacy storage migration', () => {
+  it('reads the pre-rebrand astonish_active_team key on load, migrates it, and drops the old entry', async () => {
+    localStorage.setItem('astonish_active_team', 'legacy-team')
+
+    vi.resetModules()
+    const mod = await import('../teamContext')
+
+    expect(mod.getActiveTeam()).toBe('legacy-team')
+    expect(localStorage.getItem('troupe_active_team')).toBe('legacy-team')
+    expect(localStorage.getItem('astonish_active_team')).toBeNull()
+    localStorage.removeItem('troupe_active_team')
   })
 })

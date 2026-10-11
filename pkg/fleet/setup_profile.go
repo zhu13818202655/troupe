@@ -48,15 +48,15 @@ type SetupStep struct {
 
 // SetupField describes a single captured value within a step.
 type SetupField struct {
-	ID       string              `yaml:"id" json:"id"`
-	Label    string              `yaml:"label" json:"label"`
-	Type     string              `yaml:"type" json:"type"`
-	Required bool                `yaml:"required,omitempty" json:"required,omitempty"`
-	When     string              `yaml:"when,omitempty" json:"when,omitempty"`
-	Options  []SetupFieldOption  `yaml:"options,omitempty" json:"options,omitempty"`
-	MapsTo   string              `yaml:"maps_to" json:"maps_to"`
-	Default  any                 `yaml:"default,omitempty" json:"default,omitempty"`
-	Hint     string              `yaml:"hint,omitempty" json:"hint,omitempty"`
+	ID       string             `yaml:"id" json:"id"`
+	Label    string             `yaml:"label" json:"label"`
+	Type     string             `yaml:"type" json:"type"`
+	Required bool               `yaml:"required,omitempty" json:"required,omitempty"`
+	When     string             `yaml:"when,omitempty" json:"when,omitempty"`
+	Options  []SetupFieldOption `yaml:"options,omitempty" json:"options,omitempty"`
+	MapsTo   string             `yaml:"maps_to" json:"maps_to"`
+	Default  any                `yaml:"default,omitempty" json:"default,omitempty"`
+	Hint     string             `yaml:"hint,omitempty" json:"hint,omitempty"`
 }
 
 // SetupFieldOption is one choice for enum fields.
@@ -184,10 +184,10 @@ func SetupProfileToYAML(p *SetupProfile) ([]byte, error) {
 // DefaultSetupProfileTemplate returns a minimal custom profile scaffold.
 func DefaultSetupProfileTemplate(key, name string) *SetupProfile {
 	return &SetupProfile{
-		Key:  key,
-		Name: name,
-		Description: "Custom setup profile",
-		Domain: "custom",
+		Key:              key,
+		Name:             name,
+		Description:      "Custom setup profile",
+		Domain:           "custom",
 		PinnedToolGroups: []string{"fleet", "credentials"},
 		Steps: []SetupStep{
 			{

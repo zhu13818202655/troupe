@@ -2,12 +2,12 @@
 
 Miscellaneous commands for setup, status, and system management.
 
-## `astonish setup`
+## `troupe setup`
 
-Interactive first-run wizard that configures your Astonish installation:
+Interactive first-run wizard that configures your Troupe installation:
 
 ```bash
-astonish setup
+troupe setup
 ```
 
 Walks you through:
@@ -18,139 +18,139 @@ Walks you through:
 - Setting up browser automation
 - Initializing container sandboxes (optional)
 
-## `astonish status`
+## `troupe status`
 
-Display the current state of all Astonish subsystems:
+Display the current state of all Troupe subsystems:
 
 ```bash
-astonish status
+troupe status
 ```
 
 Shows provider configuration, daemon status, MCP servers, memory state, and more.
 
-## `astonish --version`
+## `troupe --version`
 
 Print version and build information:
 
 ```bash
-astonish --version
+troupe --version
 # or
-astonish -v
+troupe -v
 ```
 
 ::: info
 This is a flag, not a subcommand. Use `--version` or `-v`.
 :::
 
-## `astonish login`
+## `troupe login`
 
 Authenticate with a remote platform instance:
 
 ```bash
-astonish login
+troupe login
 ```
 
-Used when connecting the CLI to a cloud-deployed Astonish platform. After login, commands like `chat`, `flows`, and `scheduler` operate against the remote server.
+Used when connecting the CLI to a cloud-deployed Troupe platform. After login, commands like `chat`, `flows`, and `scheduler` operate against the remote server.
 
-## `astonish logout`
+## `troupe logout`
 
 Disconnect from the remote platform:
 
 ```bash
-astonish logout
+troupe logout
 ```
 
-## `astonish daemon`
+## `troupe daemon`
 
 Manage the background daemon service and Studio web UI (local-only):
 
 ```bash
 # Install as a system service (auto-starts on login)
-astonish daemon install
+troupe daemon install
 
 # Start / stop / restart the service
-astonish daemon start
-astonish daemon stop
-astonish daemon restart
+troupe daemon start
+troupe daemon stop
+troupe daemon restart
 
 # Check service status
-astonish daemon status
+troupe daemon status
 
 # Run in the foreground (starts the Studio HTTP server on :9393)
-astonish daemon run
+troupe daemon run
 
 # View logs
-astonish daemon logs
+troupe daemon logs
 
 # Uninstall the service
-astonish daemon uninstall
+troupe daemon uninstall
 ```
 
-`astonish daemon run` starts the Studio web interface at `http://localhost:9393`. The installed service runs this automatically in the background on login.
+`troupe daemon run` starts the Studio web interface at `http://localhost:9393`. The installed service runs this automatically in the background on login.
 
-## `astonish config`
+## `troupe config`
 
 Manage configuration:
 
 ```bash
-astonish config
+troupe config
 ```
 
-## `astonish tools`
+## `troupe tools`
 
 Manage MCP servers and tools:
 
 ```bash
 # List all available tools
-astonish tools list
+troupe tools list
 
 # List MCP servers
-astonish tools servers
+troupe tools servers
 
 # Refresh tool cache
-astonish tools refresh
+troupe tools refresh
 
 # Enable/disable an MCP server
-astonish tools enable <name>
-astonish tools disable <name>
+troupe tools enable <name>
+troupe tools disable <name>
 
 # Edit MCP configuration
-astonish tools edit
+troupe tools edit
 
 # Browse MCP server store
-astonish tools store
+troupe tools store
 
 # Search tools
-astonish tools search <query>
+troupe tools search <query>
 ```
 
-## `astonish sessions`
+## `troupe sessions`
 
 Manage chat sessions:
 
 ```bash
-astonish sessions
+troupe sessions
 ```
 
-## `astonish credentials`
+## `troupe credentials`
 
 Manage the encrypted credential store (local-only):
 
 ```bash
-astonish credentials
+troupe credentials
 ```
 
-## `astonish sandbox`
+## `troupe sandbox`
 
 Manage container sandboxes (local-only):
 
 ```bash
-astonish sandbox
+troupe sandbox
 ```
 
 ## Deprecated Commands
 
-### `astonish memory`
+### `troupe memory`
 
 ::: warning Deprecated
 The `memory` CLI command is no longer available. Memory is managed through the agent's built-in memory tools during chat sessions, or via Studio Settings.

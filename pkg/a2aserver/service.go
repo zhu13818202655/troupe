@@ -11,9 +11,9 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/google/uuid"
 	"github.com/zhu13818202655/troupe/pkg/a2a"
 	"github.com/zhu13818202655/troupe/pkg/channels"
-	"github.com/google/uuid"
 )
 
 const defaultMaxActiveTasks = 20

@@ -91,9 +91,9 @@ func runAndCollect(t *testing.T, env *integrationTestEnv, msg string, timeout ..
 		nil, // titleSetter — not needed for integration tests
 		userMsg,
 		msg,
-		true, // autoApprove
-		"",   // systemContext
-		nil,  // pinnedToolGroups
+		true,  // autoApprove
+		"",    // systemContext
+		nil,   // pinnedToolGroups
 		false, // planMode
 	)
 
